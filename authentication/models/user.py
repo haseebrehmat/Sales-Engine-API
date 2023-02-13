@@ -1,7 +1,8 @@
 from django.db import models
-from settings.utils.timestamped import TimeStamped
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+
+from settings.utils.model_fields import TimeStamped, LowercaseEmailField
 
 
 class CustomUserManager(BaseUserManager):
@@ -35,7 +36,7 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
     username = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = LowercaseEmailField(unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=True)

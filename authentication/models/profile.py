@@ -1,7 +1,6 @@
 from django.db import models
-
 from authentication.models import User
-from settings.utils.timestamped import TimeStamped
+from settings.utils.model_fields import TimeStamped
 
 
 class Profile(TimeStamped):

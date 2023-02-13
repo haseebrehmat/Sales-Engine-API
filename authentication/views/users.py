@@ -40,6 +40,11 @@ class UserPermission(APIView):
             status_code = status.HTTP_406_NOT_ACCEPTABLE
         return Response(message, status_code)
 
+
 class LoginView(TokenObtainPairView):
     # Replace the serializer with your custom
     serializer_class = JwtSerializer
+
+
+# class FirebaseTokenObtainPairView(TokenObtainPairView):
+#     serializer_class = FirebaseTokenObtainPairSerializer

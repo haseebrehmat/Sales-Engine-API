@@ -91,6 +91,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
 ]
 
 
@@ -129,11 +130,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=800),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
 }
-OAUTH2_PROVIDER = {
-        'ACCESS_TOKEN_EXPIRE_SECONDS': 60 * 15,
-        'OAUTH_SINGLE_ACCESS_TOKEN': True,
-        'OAUTH_DELETE_EXPIRED': True
- }
 
 # DRF configurations
 REST_FRAMEWORK = {
