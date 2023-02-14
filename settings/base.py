@@ -147,6 +147,6 @@ REST_FRAMEWORK = {
 
 # Email Configurations
 ANYMAIL = {
-    "SENDINBLUE_API_KEY": "<your v3 API key>",
+    "SENDINBLUE_API_KEY": env("SEND_IN_BLUE_API_KEY"),
 }
 EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
