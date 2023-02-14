@@ -29,6 +29,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'anymail',
 ]
 
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
@@ -116,13 +117,7 @@ AUTH_USER_MODEL = "authentication.User"
 # Django Cors Settings
 CORS_ALLOW_ALL_ORIGINS = True
 
-# # DRF Configurations
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     )
-# }
-
+# DRF Configurations
 SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
@@ -131,7 +126,6 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
 }
 
-# DRF configurations
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -150,3 +144,9 @@ REST_FRAMEWORK = {
         'user': '10/minute'
     }
 }
+
+# Email Configurations
+ANYMAIL = {
+    "SENDINBLUE_API_KEY": "<your v3 API key>",
+}
+EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
