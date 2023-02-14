@@ -21,7 +21,8 @@ INSTALLED_APPS = [
 ]
 
 CUSTOM_APPS = [
-    'authentication'
+    'authentication',
+    'job_portal'
 ]
 
 THIRD_PARTY_APPS = [
@@ -30,7 +31,9 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'anymail',
+    'django_filters',
 ]
+
 
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 
@@ -131,9 +134,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
     'DEFAULT_THROTTLE_CLASSES': [
         # 'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
@@ -142,14 +145,28 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '10/minute',
         'user': '10/minute'
-    }
+    },
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+    # 'DATETIME_FORMAT': '%B %d, %Y',
+    # "DATETIME_INPUT_FORMATS": ["%d-%m-%Y"],
 }
 
 # Email Configurations
-# ANYMAIL = {
-#     "SENDINBLUE_API_KEY": env("SEND_IN_BLUE_API_KEY"),
-# }
-# EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+ANYMAIL = {
+    "SENDINBLUE_API_KEY": env("SEND_IN_BLUE_API_KEY"),
+}
+EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': None
+}
 
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
