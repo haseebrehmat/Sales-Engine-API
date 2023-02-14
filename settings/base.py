@@ -146,7 +146,13 @@ REST_FRAMEWORK = {
 }
 
 # Email Configurations
-ANYMAIL = {
-    "SENDINBLUE_API_KEY": env("SEND_IN_BLUE_API_KEY"),
-}
-EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+# ANYMAIL = {
+#     "SENDINBLUE_API_KEY": env("SEND_IN_BLUE_API_KEY"),
+# }
+# EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env('EMAIL_PORT')
+FROM_EMAIL = env('FROM_EMAIL')

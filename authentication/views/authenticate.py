@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.models import User
+from settings.utils.helpers import get_host
 
 
 class UserLogin(APIView):
@@ -20,10 +21,7 @@ class UserLogin(APIView):
             data = "Credentials cannot not be empty"
         else:
             try:
-                # User.objects.get(email=email)
-                host = request.get_host()
-                if 'http' not in host:
-                    host = 'http://' + host
+                host = get_host(request)
                 url = host + '/api/auth/authenticate/'
                 headers = {
                     "Content-Type": "application/json"
