@@ -1,30 +1,21 @@
 from rest_framework import serializers
 
-from apps.db_api.models import JobDetailsModel
-
-JOB_STATUS_CHOICE = [
-    (0,'To Apply'),
-    (1, 'Applied'),
-    (2,'Hired'),
-    (3, 'Rejected'),
-    (4, 'Warm Lead'),
-    (5,'Hot Lead'),
-]
+from job_portal.models import JobDetail
 
 class JobDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = JobDetailsModel
+        model = JobDetail
         fields = "__all__"
 
-class JobKeywordsSerializer(serializers.Serializer):
+class JobKeywordSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500)
     count = serializers.IntegerField(default=0)
 
-class LinksSerializer(serializers.Serializer):
+class LinkSerializer(serializers.Serializer):
     next = serializers.CharField(max_length=500)
     previous = serializers.CharField(max_length=500)
 
-class TechKeywordsSerializer(serializers.Serializer):
+class TechKeywordSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500)
     count = serializers.IntegerField(default=0)
 
@@ -41,9 +32,9 @@ class JobDetailOutputSerializer(serializers.Serializer):
         format="%d-%m-%Y",
         input_formats=["%d-%m-%Y", "%Y-%m-%d"],)
     data = JobDetailSerializer(many=True, source='*')
-    links = LinksSerializer(many=False,source='*')
-    tech_keywords_count_list = TechKeywordsSerializer(many=True,source='*')
-    job_source_count_list = JobKeywordsSerializer(many=True,source='*')
+    links = LinkSerializer(many=False,source='*')
+    tech_keywords_count_list = TechKeywordSerializer(many=True,source='*')
+    job_source_count_list = JobKeywordSerializer(many=True,source='*')
     job_type_count_list = JobTypeSerializer(many=True,source='*')
 
     class Meta:

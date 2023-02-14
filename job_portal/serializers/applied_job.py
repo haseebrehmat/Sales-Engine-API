@@ -4,13 +4,13 @@ from django.core import serializers as dj_serializers
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from apps.db_api.models import JobDetailsModel, AppliedJobStatusModel
-from apps.db_api.serializers.job_detail_serializers import JobDetailSerializer, LinksSerializer
+from job_portal.models import JobDetail, AppliedJobStatus
+from job_portal.serializers.job_detail import JobDetailSerializer, LinkSerializer
 
 
 class AppliedJobDetailSerializer(serializers.Serializer):
     job_details = JobDetailSerializer()
-    links = LinksSerializer(many=False, source='*')
+    links = LinkSerializer(many=False, source='*')
 
     class Meta:
         fields = ['links', 'job_details', 'id']
@@ -28,7 +28,7 @@ class AppliedJobDetailSerializer(serializers.Serializer):
 
 class AppliedJobOuputSerializer(serializers.Serializer):
     data = AppliedJobDetailSerializer(many=True, source='*')
-    links = LinksSerializer(many=False,source='*')
+    links = LinkSerializer(many=False,source='*')
 
     class Meta:
         fields = ['links','data']
@@ -42,12 +42,12 @@ class AppliedJobOuputSerializer(serializers.Serializer):
         return result
 
 
-class AppliedJobStatusSerializer(serializers.ModelSerializer):
+class JobStatusSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
     status = serializers.IntegerField(required=True)
 
     class Meta:
-        model = AppliedJobStatusModel
+        model = AppliedJobStatus
         fields = "__all__"
 
     errors = {}
@@ -60,8 +60,8 @@ class AppliedJobStatusSerializer(serializers.ModelSerializer):
         job_id = validated_data.pop('job')
         print(validated_data)
 
-        job_details = JobDetailsModel.objects.filter(id=job_id).update(job_status = job_status)
-        obj = AppliedJobStatusModel.objects.get(job_id=job_id)
+        job_details = JobDetail.objects.filter(id=job_id).update(job_status = job_status)
+        obj = AppliedJobStatus.objects.get(job_id=job_id)
         return obj
 
     def is_valid(self, *args, **kwargs):
@@ -81,7 +81,7 @@ class AppliedJobStatusSerializer(serializers.ModelSerializer):
         if attrs.get("job", None):
             job_id = attrs.get("job", None)
             job_status = attrs.get("status", None)
-            applied_obj = AppliedJobStatusModel.objects.filter(job_id=job_id)
+            applied_obj = AppliedJobStatus.objects.filter(job_id=job_id)
 
             if request.method == 'PATCH':
                 pass
@@ -105,10 +105,10 @@ class AppliedJobStatusSerializer(serializers.ModelSerializer):
         job_id = validated_data.pop('job')
         print(validated_data)
 
-        job_details = JobDetailsModel.objects.get(id=job_id)
+        job_details = JobDetail.objects.get(id=job_id)
         job_details.job_status = job_status
         job_details.save()
-        obj = AppliedJobStatusModel.objects.create(job=job_details)
+        obj = AppliedJobStatus.objects.create(job=job_details)
         obj.save()
         return obj
 

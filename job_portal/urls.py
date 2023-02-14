@@ -1,22 +1,17 @@
-"""job_portal URL Configuration
+"""job_portal URL Configuration"""
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.urls import path
-from apps.job_parser.views import JobDataUploadView
+from django.urls import path, include
+from rest_framework import routers
 
-app_name = 'job_parser_api'
+from job_portal.views import JobDetailsView, JobDataUploadView, ChangeJobStatusView, AppliedJobDetailsView
+
+router = routers.DefaultRouter()
+router.register(r'', JobDetailsView, basename='job_details')
+
+app_name = 'job_portal'
 urlpatterns = [
-    path('upload_data/', JobDataUploadView.as_view(),name='job_data_upload'),
+    path('upload_data/', JobDataUploadView.as_view(),name='upload_job_data'),
+    path('job_details/', include(router.urls)),
+    path('job_status/', ChangeJobStatusView.as_view(), name='change_job_status'),
+    path('applied_job_details/', AppliedJobDetailsView.as_view(), name='applied_job_details'),
 ]
