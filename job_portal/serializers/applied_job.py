@@ -26,6 +26,26 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         # result['job_details'] = job_details
         return job_details
 
+
+class TeamAppliedJobDetailSerializer(serializers.Serializer):
+    job_details = JobDetailSerializer()
+    links = LinkSerializer(many=False, source='*')
+
+    class Meta:
+        fields = ['links', 'job_details']
+
+    def to_representation(self, instance):
+        # Here instance is instance of your model
+        # so you can build your dict however you like
+        result = OrderedDict()
+        result['status'] = instance.job.job_status
+        json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
+        job_details = json_results['fields']
+        job_details['id'] = json_results['pk']
+        job_details['applied_by'] = instance.applied_by.pk
+        # result['job_details'] = job_details
+        return job_details
+
 class AppliedJobOuputSerializer(serializers.Serializer):
     data = AppliedJobDetailSerializer(many=True, source='*')
     links = LinkSerializer(many=False,source='*')

@@ -31,8 +31,6 @@ class JobDetail(models.Model):
         return self.job_title
 
 
-
-
 class AppliedJobStatus(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -49,7 +47,6 @@ class AppliedJobStatus(models.Model):
         on_delete=models.CASCADE,
         blank=True, null=False)
     applied_date = models.DateTimeField(default=timezone.now)
-
 
     class Meta:
         db_table = "applied_job_status"

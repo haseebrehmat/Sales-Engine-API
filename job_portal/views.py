@@ -1,11 +1,12 @@
+import uuid
 from threading import Thread
-
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter, SearchFilter
-import django_filters
+
+from authentication.models import User
+from authentication.models.team_management import TeamManagement
+from django.contrib.auth.models import Group
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django_filters import CharFilter
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import pagination, status
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -14,17 +15,26 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentication.serializers.users import  UserSerializer
 from job_portal.classifier.job_classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
-from job_portal.exceptions import InvalidFileException
-from job_portal.filters.applied_job import CustomAppliedJobFilter
+from job_portal.exceptions import InvalidFileException, NotAuthorized
+from job_portal.filters.applied_job import CustomAppliedJobFilter, TeamBasedAppliedJobFilter
 from job_portal.filters.job_detail import CustomJobFilter
 from job_portal.models import AppliedJobStatus, JobDetail
 from job_portal.pagination.applied_job import AppliedJobPagination
 from job_portal.pagination.job_detail import CustomPagination
-from job_portal.serializers.applied_job import AppliedJobDetailSerializer
+from job_portal.serializers.applied_job import AppliedJobDetailSerializer, JobStatusSerializer, \
+    TeamAppliedJobDetailSerializer
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer, JobDataUploadSerializer
 
+
+def is_valid_uuid(val):
+    try:
+        uuid.UUID(str(val))
+        return True
+    except ValueError:
+        return False
 
 
 class JobDetailsView(ModelViewSet):
@@ -54,7 +64,7 @@ class JobDetailsView(ModelViewSet):
         return Response(serializer.data)
 
 class ChangeJobStatusView(CreateAPIView,UpdateAPIView):
-    serializer_class = AppliedJobStatus
+    serializer_class = JobStatusSerializer()
     queryset = AppliedJobStatus.objects.all()
     http_method_names = ['post','patch']
     lookup_field = 'job'
@@ -67,8 +77,21 @@ class ChangeJobStatusView(CreateAPIView,UpdateAPIView):
         msg = {"msg":"Job status changed successfully",'details':'Job status changed successfully'}
         return Response(msg, status=status.HTTP_200_OK, headers=headers)
 
+
+
     def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+        job_id = request.data['job']
+        if is_valid_uuid(job_id):
+            result = JobDetail.objects.filter(pk=job_id)
+            if result.count() > 0:
+                return self.create(request, *args, **kwargs)
+            else:
+                msg = {"msg": "Invalid Job", 'details': f'No such job exist with id {job_id}'}
+                return Response(msg, status=status.HTTP_404_NOT_FOUND)
+        else:
+            msg = {"msg": "Invalid Job ID",
+                   'details': f'{job_id} is not a valid job ID'}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -149,3 +172,51 @@ class JobDataUploadView(CreateAPIView):
             ) for job_item in classify_data.data_frame.itertuples()]
 
         JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True,batch_size=1000)
+
+
+
+class ListAppliedJobView(ListAPIView):
+    queryset = AppliedJobStatus.objects.all()
+    pagination_class = AppliedJobPagination
+    filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
+    serializer_class = TeamAppliedJobDetailSerializer
+    model = AppliedJobStatus
+    filterset_class = TeamBasedAppliedJobFilter
+    ordering = ('-applied_date')
+    search_fields = ['applied_by']
+    ordering_fields = ['applied_date', 'job__job_posted_date']
+
+    # @method_decorator(cache_page(60*2))
+    @swagger_auto_schema(responses={200: TeamAppliedJobDetailSerializer(many=True)})
+    def get(self, request, *args, **kwargs):
+        # check for the roles here
+        user_role_id = None
+        roles_list = self.request.user.groups.values_list('id', flat=True)
+
+        if roles_list.count() > 0:
+            user_role_id =  roles_list[0]
+            group_role = Group.objects.get(id=user_role_id)
+            if group_role.name == 'TL':
+
+                bd_id_list = TeamManagement.objects.get(user_id = self.request.user).reporting.values_list('id',flat=True)
+                bd_users  = User.objects.filter(id__in=bd_id_list)
+                bd_query = UserSerializer(bd_users,many=True)
+
+
+                job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list)
+                query_ = job_list
+                queryset = self.filter_queryset(query_)
+                page = self.paginate_queryset(queryset)
+                if page is not None:
+                    serializer = self.get_serializer(page, many=True)
+                    data = self.get_paginated_response(serializer.data)
+                    data.data['team_memmbers'] = bd_query.data
+                    return data
+
+
+                serializer = self.get_serializer(queryset, many=True)
+                return Response(serializer.data)
+            else:
+                raise NotAuthorized(detail=f"User does not have any roles defined")
+        else:
+            raise NotAuthorized(detail=f"User cannot access the data with role")
