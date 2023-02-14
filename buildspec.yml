@@ -22,7 +22,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - python manage.py runserver --settings=settings.production
+      - python manage.py runserver --settings=settings.production 0.0.0.0:8000
 artifacts:
   files:
     - '**/*'
