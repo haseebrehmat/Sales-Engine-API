@@ -116,6 +116,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'staticfiles'),
     ]
 # Add these new lines
 
@@ -184,3 +185,4 @@ EMAIL_PORT = env('EMAIL_PORT')
 FROM_EMAIL = env('FROM_EMAIL')
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
