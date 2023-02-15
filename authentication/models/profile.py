@@ -1,10 +1,15 @@
-from django.db import models
+import uuid
 
+from django.db import models
 from authentication.models import User
-from settings.utils.timestamped import TimeStamped
+from settings.utils.model_fields import TimeStamped
 
 
 class Profile(TimeStamped):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)

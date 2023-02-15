@@ -21,7 +21,9 @@ INSTALLED_APPS = [
 ]
 
 CUSTOM_APPS = [
-    'authentication'
+    'authentication',
+    'job_portal',
+    'dashboard'
 ]
 
 THIRD_PARTY_APPS = [
@@ -29,7 +31,10 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'anymail',
+    'django_filters',
 ]
+
 
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 
@@ -91,6 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
 ]
 
 
@@ -115,13 +121,7 @@ AUTH_USER_MODEL = "authentication.User"
 # Django Cors Settings
 CORS_ALLOW_ALL_ORIGINS = True
 
-# # DRF Configurations
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     )
-# }
-
+# DRF Configurations
 SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
@@ -129,13 +129,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=800),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
 }
-OAUTH2_PROVIDER = {
-        'ACCESS_TOKEN_EXPIRE_SECONDS': 60 * 15,
-        'OAUTH_SINGLE_ACCESS_TOKEN': True,
-        'OAUTH_DELETE_EXPIRED': True
- }
 
-# DRF configurations
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -152,5 +146,31 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '10/minute',
         'user': '10/minute'
-    }
+    },
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+    # 'DATETIME_FORMAT': '%B %d, %Y',
+    # "DATETIME_INPUT_FORMATS": ["%d-%m-%Y"],
 }
+
+# Email Configurations
+ANYMAIL = {
+    "SENDINBLUE_API_KEY": env("SEND_IN_BLUE_API_KEY"),
+}
+EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': None
+}
+
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env('EMAIL_PORT')
+FROM_EMAIL = env('FROM_EMAIL')
