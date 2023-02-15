@@ -31,8 +31,6 @@ class JobDetail(models.Model):
         return self.job_title
 
 
-
-
 class AppliedJobStatus(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -50,10 +48,9 @@ class AppliedJobStatus(models.Model):
         blank=True, null=False)
     applied_date = models.DateTimeField(default=timezone.now)
 
-
     class Meta:
         db_table = "applied_job_status"
         ordering = ["id"]
 
     def __str__(self):
-        return str(self.id)
+        return str(self.id.uuid4())
