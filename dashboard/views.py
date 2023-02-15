@@ -2,22 +2,18 @@ import copy
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import QuerySet, Count, Subquery
+from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 from dashboard.filters.dashboard_analytics import CustomJobFilter
 from dashboard.serializers.dashboard_anylatics import DashboardAnalyticsSerializer
 from job_portal.models import AppliedJobStatus, JobDetail
-from job_portal.paginations.job_detail import CustomPagination
 
 class DashboardAnalyticsView(ListAPIView):
     queryset = AppliedJobStatus.objects.all()
