@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 import environ
@@ -42,6 +43,7 @@ INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -52,8 +54,8 @@ MIDDLEWARE = [
 ]
 
 THIRD_PARTY_MIDDLEWARES = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware'
+    # 'corsheaders.middleware.CorsMiddleware',
+    # 'django.middleware.common.CommonMiddleware'
 ]
 
 CUSTOM_MIDDLEWARES = [
@@ -112,6 +114,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    ]
+# Add these new lines
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -174,3 +182,5 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('EMAIL_PORT')
 FROM_EMAIL = env('FROM_EMAIL')
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
