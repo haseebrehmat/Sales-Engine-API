@@ -22,7 +22,8 @@ INSTALLED_APPS = [
 
 CUSTOM_APPS = [
     'authentication',
-    'job_portal'
+    'job_portal',
+    'dashboard'
 ]
 
 THIRD_PARTY_APPS = [

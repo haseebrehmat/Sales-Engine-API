@@ -75,14 +75,14 @@ class JobStatusSerializer(serializers.ModelSerializer):
     validated_data = {}
     _validated_data = []
 
-    def update(self, instance, validated_data):
-        job_status = validated_data.pop('status')
-        job_id = validated_data.pop('job')
-        print(validated_data)
-
-        job_details = JobDetail.objects.filter(id=job_id).update(job_status = job_status)
-        obj = AppliedJobStatus.objects.get(job_id=job_id)
-        return obj
+    # def update(self, instance, validated_data):
+    #     job_status = validated_data.pop('status')
+    #     job_id = validated_data.pop('job')
+    #     print(validated_data)
+    #
+    #     job_details = JobDetail.objects.filter(id=job_id).update(job_status = job_status)
+    #     obj = AppliedJobStatus.objects.get(job_id=job_id)
+    #     return obj
 
     def is_valid(self, *args, **kwargs):
         # override drf.serializers.Serializer.is_valid
@@ -120,17 +120,17 @@ class JobStatusSerializer(serializers.ModelSerializer):
         self._validated_data = [[k, v] for k, v in attrs.items()]
         return attrs
 
-    def create(self, validated_data):
-        job_status = validated_data.pop('status')
-        job_id = validated_data.pop('job')
-        print(validated_data)
-
-        job_details = JobDetail.objects.get(id=job_id)
-        job_details.job_status = job_status
-        job_details.save()
-        obj = AppliedJobStatus.objects.create(job=job_details)
-        obj.save()
-        return obj
+    # def create(self, validated_data):
+    #     job_status = validated_data.pop('status')
+    #     job_id = validated_data.pop('job')
+    #     # print(validated_data)
+    #
+    #     job_details = JobDetail.objects.get(id=job_id)
+    #     job_details.job_status = job_status
+    #     job_details.save()
+    #     obj = AppliedJobStatus.objects.create(job=job_details)
+    #     obj.save()
+    #     return obj
 
     def to_representation(self, instance):
         # Here instance is instance of your model
