@@ -16,7 +16,7 @@ phases:
     commands:
       - echo Prebuild ops
       - ls
-      - pwd
+      - systemctl start docker
       - sudo docker-compose down
       - sudo docker-compose build
   build:
