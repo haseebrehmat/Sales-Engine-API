@@ -15,7 +15,7 @@ phases:
   pre_build:
     commands:
       - echo Prebuild ops
-      - cd /home/ubuntu/Octagon-BE
+      - ls
       - sudo docker-compose down
       - sudo docker-compose build
   build:
