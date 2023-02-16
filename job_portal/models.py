@@ -53,4 +53,4 @@ class AppliedJobStatus(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        return str(self.id)
+        return self.applied_by.username
