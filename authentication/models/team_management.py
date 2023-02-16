@@ -22,9 +22,10 @@ class TeamManagement(TimeStamped):
         default=uuid.uuid4,
         editable=False)
     user = models.OneToOneField('User', on_delete=models.CASCADE, blank=True, null=True)
-    reporting = models.ManyToManyField('User',related_name='repoting_user', blank=True, null=True)
+    reporting = models.ManyToManyField('User',related_name='repoting_user')
 
     objects = TeamManagementManager()
 
     def __str__(self):
-        return str(self.id)
+        if self.user.groups.values_list('name').count():
+            return f"{self.user.username}__{self.user.groups.values_list('name')[0][0]}"

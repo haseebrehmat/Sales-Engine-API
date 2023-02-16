@@ -1,6 +1,7 @@
 import uuid
 from threading import Thread
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import AllowAny
 
 from authentication.models import User
 from authentication.models.team_management import TeamManagement
@@ -49,6 +50,7 @@ class JobDetailsView(ModelViewSet):
     search_fields = ['job_title', 'job_description']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type','job_posted_date','company_name']
+    permission_classes = (AllowAny, )
 
     @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
@@ -134,6 +136,8 @@ class AppliedJobDetailsView(ListAPIView):
     ordering = ('-job_id__job_posted_date')
     search_fields = ['job__job_title', 'job__job_description','job__tech_keywords', 'job__job_type']
     ordering_fields = ['job__tech_keywords', 'job__job_type', 'job__job_posted_date']
+    permission_classes = (AllowAny, )
+
 
     # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: AppliedJobDetailSerializer(many=False)})
@@ -150,6 +154,8 @@ class AppliedJobDetailsView(ListAPIView):
 
 class JobDataUploadView(CreateAPIView):
     serializer_class = JobDataUploadSerializer
+    permission_classes = (AllowAny, )
+
 
     def post(self, request, *args, **kwargs):
         job_file = request.FILES.getlist('file_upload',[])

@@ -1,5 +1,6 @@
 import copy
 import json
+from collections import OrderedDict
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Count
@@ -11,10 +12,134 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from authentication.models import User
 from dashboard.filters.dashboard_analytics import CustomJobFilter
 from dashboard.serializers.dashboard_anylatics import DashboardAnalyticsSerializer
 from job_portal.models import AppliedJobStatus, JobDetail
 
+
+def add_user():
+    from authentication.models import User
+
+    array = [
+        {
+            "first_name": "Sharjeel",
+            "last_name": "Shahzad",
+            "email": "sharjeels@maverickslabs.io",
+            "password": "123",
+            "username": "sharjeel"
+        },
+        {
+            "first_name": "Tehseen",
+            "last_name": "Hassan",
+            "email": "tehseenh@maverickslabs.io",
+            "password": "123",
+            "username": "sharjeel"
+        },
+        {
+            "first_name": "Najeeb",
+            "last_name": "Ahmedy",
+            "email": "najeeba@maverickslabs.io",
+            "password": "123",
+            "username": "najeeb"
+        },
+        {
+            "first_name": "Ahmed",
+            "last_name": "Yar",
+            "email": "ahmedy@maverickslabs.io",
+            "password": "123",
+            "username": "ahmed"
+        },
+        {
+            "first_name": "Jazil",
+            "last_name": "",
+            "email": "jazil@maverickslabs.io",
+            "password": "123",
+            "username": "jazil"
+        },
+        {
+            "first_name": "Muaz",
+            "last_name": "Khan",
+            "email": "muazk@maverickslabs.io",
+            "password": "123",
+            "username": "muaz"
+        },
+        {
+            "first_name": "Muhammad",
+            "last_name": "Zaid",
+            "email": "muhammadz@maverickslabs.io",
+            "password": "123",
+            "username": "muhammad_zaid"
+        },
+        {
+            "first_name": "Faghar",
+            "last_name": "A",
+            "email": "faghara@maverickslabs.io",
+            "password": "123",
+            "username": "faghar"
+        },
+        {
+            "first_name": "Muhammad",
+            "last_name": "Hayyan",
+            "email": "muhammadh@maverickslabs.io",
+            "password": "123",
+            "username": "muhammadh_hayyan"
+        },
+        {
+            "first_name": "Farhan",
+            "last_name": "Ali",
+            "email": "farhana@maverickslabs.io",
+            "password": "123",
+            "username": "farhan"
+        },
+        {
+            "first_name": "Salman",
+            "last_name": "Amir",
+            "email": "salmana@maverickslabs.io",
+            "password": "123",
+            "username": "salman"
+        },
+        {
+            "first_name": "Ali",
+            "last_name": "Hamza",
+            "email": "aliH@maverickslabs.io",
+            "password": "123",
+            "username": "ali_hamza"
+        },
+        {
+            "first_name": "Assam",
+            "last_name": "Ud Din",
+            "email": "assamuddin@maverickslabs.io",
+            "password": "123",
+            "username": "asam"
+        },
+        {
+            "first_name": "Rohan",
+            "last_name": "Malik",
+            "email": "rohanm@maverickslabs.io",
+            "password": "123",
+            "username": "rohanm"
+        },
+        {
+            "first_name": "Faisal",
+            "last_name": "Javaid",
+            "email": "faisalj@maverickslabs.io",
+            "password": "123",
+            "username": "faisal"
+        },
+        {
+            "first_name": "Ahmad",
+            "last_name": "Khalid",
+            "email": "ahmadk@maverickslabs.io",
+            "password": "123",
+            "username": "ahmed_khalid"
+        }
+    ]
+    for i in array:
+        user = User.objects.create_user(
+            username=i['username'],
+            email=i['email'],
+            password='123')
 class DashboardAnalyticsView(ListAPIView):
     queryset = AppliedJobStatus.objects.all()
     serializer_class = DashboardAnalyticsSerializer
@@ -30,6 +155,7 @@ class DashboardAnalyticsView(ListAPIView):
 
     @swagger_auto_schema(responses={200: DashboardAnalyticsSerializer(many=False)})
     def get(self, request, *args, **kwargs):
+        # add_user()
         return self.list(request, *args, **kwargs)
 
 
@@ -48,17 +174,23 @@ class DashboardAnalyticsView(ListAPIView):
         unique_count_dic = json.dumps(list(job_status_counts), cls=DjangoJSONEncoder)
         status_count_data = json.loads(unique_count_dic)
         status_count_dic = self.map_status(status_count_data)
+        status_count_dic = [{'name': i[0], 'value': i[1]} for i in status_count_dic.items()]
 
         # without pagination
         unique_users = list(set(AppliedJobStatus.objects.all().values_list('applied_by__id')))
         unique_users_list = []
-        for item in unique_users:
+        for item in list(unique_users):
             data = []
             if queryset.count()>0:
                 data = queryset.filter(applied_by=item).values('job__job_status').annotate(count=Count('job__job_status'))
             user_count_dic = json.dumps(list(data), cls=DjangoJSONEncoder)
             user_status_count_data = json.loads(user_count_dic)
             user_status_count_dic = self.map_status(user_status_count_data)
+            # get userdata
+
+            user_object = User.objects.get(id=str(item[0]))
+            user_status_count_dic['name'] = user_object.username
+            user_status_count_dic['id'] = user_object.id
             unique_users_list.append(copy.deepcopy(user_status_count_dic))
 
         final_dictionary = {
@@ -71,18 +203,16 @@ class DashboardAnalyticsView(ListAPIView):
         return Response(final_dictionary)
 
     def map_status(self,status_count_data):
-        result_data = {
+        result_data = OrderedDict({
             'total':0,
-            'applied':0,
             'prospects':0,
-            'hired':0,
+            'cold': 0,
+            'warm': 0,
+            'hot': 0,
             'rejected':0,
-            'cold':0,
-            'warm':0,
-            'hot':0
-        }
+            'hired': 0,
+        })
         job_status_keys = {
-            1: 'applied',
             2: 'hired',
             3: 'rejected',
             4: 'cold',
@@ -92,11 +222,10 @@ class DashboardAnalyticsView(ListAPIView):
         for i in status_count_data:
             if i['job__job_status'] in job_status_keys:
                 result_data[job_status_keys[i['job__job_status']]]+= i['count']
+                # data[job_status_keys[i['job__job_status']]] = i['count']
         # calculate total, prospects
 
         result_data['total'] = len(status_count_data)
-        result_data['applied'] = len(status_count_data)
         # result_data['prospects'] = (result_data['total']) - (result_data['hired']+result_data['rejected']+result_data['cold'] + result_data['warm'] + result_data['rejected'])
-
         return copy.deepcopy(result_data)
         # return result_data

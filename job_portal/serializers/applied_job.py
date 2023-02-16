@@ -43,6 +43,7 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
         job_details = json_results['fields']
         job_details['id'] = json_results['pk']
         job_details['applied_by'] = instance.applied_by.pk
+        job_details['applied_by_name'] = instance.applied_by.username
         # result['job_details'] = job_details
         return job_details
 
