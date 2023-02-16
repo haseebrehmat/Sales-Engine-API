@@ -18,9 +18,10 @@ class UserLogin(APIView):
         email = request.data.get("email", "")
         password = request.data.get("password", "")
         if email == "" or password == "":
-            data = "Credentials cannot not be empty"
+            data = {"detail": "Credentials cannot not be empty"}
         else:
             try:
+                User.objects.get(email=email)
                 host = get_host(request)
                 url = host + '/api/auth/authenticate/'
                 headers = {
@@ -37,11 +38,15 @@ class UserLogin(APIView):
                 )
                 status_code = resp.status_code
                 if status_code == 500:
-                    data = "Something went wrong! Contact support"
+                    data = {"detail": "Something went wrong! Contact support"}
+                elif status_code == 401:
+                    data = {
+                        "detail": 'Wrong password. Try again or click Forgot password to reset it.'
+                    }
                 else:
                     data = json.loads(resp.text)
 
             except User.DoesNotExist:
-                data = "Email doesn't exist"
+                data = {"detail": "User not found"}
 
         return Response(data, status_code)

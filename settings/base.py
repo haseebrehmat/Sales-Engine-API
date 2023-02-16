@@ -168,10 +168,8 @@ REST_FRAMEWORK = {
 }
 
 # Email Configurations
-# ANYMAIL = {
-#     "SENDINBLUE_API_KEY": env("SEND_IN_BLUE_API_KEY"),
-# }
-EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+#EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
@@ -184,5 +182,6 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('EMAIL_PORT')
 FROM_EMAIL = env('FROM_EMAIL')
 
+REACT_APP_URL = env('REACT_APP_URL')
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
