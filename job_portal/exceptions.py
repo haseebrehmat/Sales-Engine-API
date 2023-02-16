@@ -12,3 +12,8 @@ class NotAuthorized(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = _('File not supported.')
     default_code = 'error'
+
+class NoActiveUserException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _('No active user found')
+    default_code = 'error'

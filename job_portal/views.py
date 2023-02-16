@@ -19,7 +19,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentication.serializers.users import  UserSerializer
 from job_portal.classifier.job_classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
-from job_portal.exceptions import InvalidFileException, NotAuthorized
+from job_portal.exceptions import InvalidFileException, NotAuthorized, NoActiveUserException
 from job_portal.filters.applied_job import CustomAppliedJobFilter, TeamBasedAppliedJobFilter
 from job_portal.filters.job_detail import CustomJobFilter
 from job_portal.models import AppliedJobStatus, JobDetail
@@ -80,12 +80,18 @@ class ChangeJobStatusView(CreateAPIView,UpdateAPIView):
         job_details = JobDetail.objects.get(id=job_id)
         job_details.job_status = job_status
         job_details.save()
-        obj = AppliedJobStatus.objects.create(job=job_details,applied_by=self.request.user)
-        obj.save()
-        data = JobStatusSerializer(obj,many=False)
-        headers = self.get_success_headers(data.data)
-        msg = {"msg":"Job status changed successfully",'details':'Job status changed successfully'}
-        return Response(msg, status=status.HTTP_200_OK, headers=headers)
+
+        # get current user
+        current_user = self.request.user
+        if current_user:
+            obj = AppliedJobStatus.objects.create(job=job_details,applied_by=current_user)
+            obj.save()
+            data = JobStatusSerializer(obj,many=False)
+            headers = self.get_success_headers(data.data)
+            msg = {"msg":"Job status changed successfully",'details':'Job status changed successfully'}
+            return Response(msg, status=status.HTTP_200_OK, headers=headers)
+        else:
+            raise NoActiveUserException(detail=f'No active user found')
 
 
 
