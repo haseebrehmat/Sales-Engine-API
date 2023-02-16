@@ -18,128 +18,7 @@ from dashboard.serializers.dashboard_anylatics import DashboardAnalyticsSerializ
 from job_portal.models import AppliedJobStatus, JobDetail
 
 
-def add_user():
-    from authentication.models import User
 
-    array = [
-        {
-            "first_name": "Sharjeel",
-            "last_name": "Shahzad",
-            "email": "sharjeels@maverickslabs.io",
-            "password": "123",
-            "username": "sharjeel"
-        },
-        {
-            "first_name": "Tehseen",
-            "last_name": "Hassan",
-            "email": "tehseenh@maverickslabs.io",
-            "password": "123",
-            "username": "tehseen"
-        },
-        {
-            "first_name": "Najeeb",
-            "last_name": "Ahmedy",
-            "email": "najeeba@maverickslabs.io",
-            "password": "123",
-            "username": "najeeb"
-        },
-        {
-            "first_name": "Ahmed",
-            "last_name": "Yar",
-            "email": "ahmedy@maverickslabs.io",
-            "password": "123",
-            "username": "ahmed"
-        },
-        {
-            "first_name": "Jazil",
-            "last_name": "",
-            "email": "jazil@maverickslabs.io",
-            "password": "123",
-            "username": "jazil"
-        },
-        {
-            "first_name": "Muaz",
-            "last_name": "Khan",
-            "email": "muazk@maverickslabs.io",
-            "password": "123",
-            "username": "muaz"
-        },
-        {
-            "first_name": "Muhammad",
-            "last_name": "Zaid",
-            "email": "muhammadz@maverickslabs.io",
-            "password": "123",
-            "username": "muhammad_zaid"
-        },
-        {
-            "first_name": "Faghar",
-            "last_name": "A",
-            "email": "faghara@maverickslabs.io",
-            "password": "123",
-            "username": "faghar"
-        },
-        {
-            "first_name": "Muhammad",
-            "last_name": "Hayyan",
-            "email": "muhammadh@maverickslabs.io",
-            "password": "123",
-            "username": "muhammadh_hayyan"
-        },
-        {
-            "first_name": "Farhan",
-            "last_name": "Ali",
-            "email": "farhana@maverickslabs.io",
-            "password": "123",
-            "username": "farhan"
-        },
-        {
-            "first_name": "Salman",
-            "last_name": "Amir",
-            "email": "salmana@maverickslabs.io",
-            "password": "123",
-            "username": "salman"
-        },
-        {
-            "first_name": "Ali",
-            "last_name": "Hamza",
-            "email": "aliH@maverickslabs.io",
-            "password": "123",
-            "username": "ali_hamza"
-        },
-        {
-            "first_name": "Assam",
-            "last_name": "Ud Din",
-            "email": "assamuddin@maverickslabs.io",
-            "password": "123",
-            "username": "asam"
-        },
-        {
-            "first_name": "Rohan",
-            "last_name": "Malik",
-            "email": "rohanm@maverickslabs.io",
-            "password": "123",
-            "username": "rohanm"
-        },
-        {
-            "first_name": "Faisal",
-            "last_name": "Javaid",
-            "email": "faisalj@maverickslabs.io",
-            "password": "123",
-            "username": "faisal"
-        },
-        {
-            "first_name": "Ahmad",
-            "last_name": "Khalid",
-            "email": "ahmadk@maverickslabs.io",
-            "password": "123",
-            "username": "ahmed_khalid"
-        }
-    ]
-    for i in array:
-        user = User.objects.create_user(
-            username=i['username'],
-            email=i['email'],
-            password='123')
 class DashboardAnalyticsView(ListAPIView):
     queryset = AppliedJobStatus.objects.all()
     serializer_class = DashboardAnalyticsSerializer
@@ -155,7 +34,6 @@ class DashboardAnalyticsView(ListAPIView):
 
     @swagger_auto_schema(responses={200: DashboardAnalyticsSerializer(many=False)})
     def get(self, request, *args, **kwargs):
-        add_user()
         return self.list(request, *args, **kwargs)
 
 
