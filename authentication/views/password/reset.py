@@ -8,8 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.models import User, PasswordChangeLogs, ResetPassword
 from django.core.mail import EmailMultiAlternatives
-from settings.base import FROM_EMAIL, REACT_APP_URL
-from settings.utils.helpers import get_host
+from settings.base import FROM_EMAIL
 
 
 class PasswordReset(APIView):

@@ -84,6 +84,7 @@ class ChangeJobStatusView(CreateAPIView,UpdateAPIView):
         # get current user
         current_user = self.request.user
         if current_user:
+        # if current_user and current_user.groups.name=='BD':
             obj = AppliedJobStatus.objects.create(job=job_details,applied_by=current_user)
             obj.save()
             data = JobStatusSerializer(obj,many=False)

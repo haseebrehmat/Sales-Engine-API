@@ -29,3 +29,4 @@ class TeamManagement(TimeStamped):
     def __str__(self):
         if self.user.groups.values_list('name').count():
             return f"{self.user.username}__{self.user.groups.values_list('name')[0][0]}"
+        return f"{self.user.username}__NONE"

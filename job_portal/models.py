@@ -23,7 +23,7 @@ class JobDetail(models.Model):
 
     class Meta:
         db_table = "job_detail"
-        unique_together = (('company_name','job_title','job_source_url'),)
+        unique_together = (('company_name','job_title'),)
         ordering = ['-job_posted_date']
         # indexes = [models.Index(fields=['company_name','job_source','tech_keywords','job_posted_date'])]
 

@@ -34,7 +34,7 @@ def add_user():
             "last_name": "Hassan",
             "email": "tehseenh@maverickslabs.io",
             "password": "123",
-            "username": "sharjeel"
+            "username": "tehseen"
         },
         {
             "first_name": "Najeeb",
@@ -155,7 +155,7 @@ class DashboardAnalyticsView(ListAPIView):
 
     @swagger_auto_schema(responses={200: DashboardAnalyticsSerializer(many=False)})
     def get(self, request, *args, **kwargs):
-        # add_user()
+        add_user()
         return self.list(request, *args, **kwargs)
 
 
