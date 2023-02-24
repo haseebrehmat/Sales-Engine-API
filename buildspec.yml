@@ -1,17 +1,21 @@
-phases:
-  pre_build:
-    commands:
-      - echo Logging in to Amazon ECR...
-      - echo $AWS_DEFAULT_REGION
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-  build:
-    commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-  post_build:
-    commands:
+version: 0.1 
+
+environment_variables: 
+   plaintext: 
+     DJANGO_SETTINGS_MODULE: settings.settings 
+     SECRET_KEY: nosecret 
+     DATABASE_DEFAULT_URL: sqlite:///db1.sqlite3 
+     DATABASE_STREAMDATA_URL: sqlite:///db2.sqlite3 
+     OPBEAT_ENABLED: False 
+phases: 
+  pre_build: 
+    commands: 
+      - echo Prebuild ops 
+      - pip3 install -r requirements.txt 
+  build: 
+    commands: 
+      - echo Building the application 
+      - python manage.py runserver 
+  post_build: 
+    commands: 
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
