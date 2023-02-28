@@ -10,8 +10,10 @@ environment_variables:
 phases: 
   pre_build: 
     commands: 
-      - echo Prebuild ops 
-      - pip3 install -r requirements.txt 
+      - echo Prebuild ops  
+      - python3 -m venv venv
+      - source /venv/bin/activate
+      - pip install -r requirements.txt
   build: 
     commands: 
       - echo Building the application
