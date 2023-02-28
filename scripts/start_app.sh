@@ -1,6 +1,6 @@
 #!/usr/bin/bash 
 
-sed -i 's/\[]/\["54.219.174.88"]/' /home/ubuntu/Octagon-BE/settings/production.py
+sed -i 's/\[]/\["3.86.7.0/"]/' /home/ubuntu/Octagon-BE/settings/production.py
 
 python manage.py migrate 
 python manage.py makemigrations     
