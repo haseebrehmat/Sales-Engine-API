@@ -2,11 +2,12 @@ from datetime import timedelta
 from pathlib import Path
 import environ
 
-root = environ.Path("env")
+root = environ.Path(".env")
 env = environ.Env(DEBUG=(bool, False),)     # set default values and casting
 environ.Env.read_env()                      # reading .env file
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+print("hello",BASE_DIR)
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ["*"]
 
