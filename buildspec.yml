@@ -12,7 +12,8 @@ phases:
     commands: 
       - echo Prebuild ops  
       - python3 -m venv venv
-      - . /venv/bin/activate
+      - pwd
+      - . venv/bin/activate
       - pip install -r requirements.txt
   build: 
     commands: 
