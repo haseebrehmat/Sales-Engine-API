@@ -19,3 +19,5 @@ phases:
   post_build: 
     commands: 
       - echo Build completed on `date`
+
+file_exists_behavior: OVERWRITE
