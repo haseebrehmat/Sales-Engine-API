@@ -14,7 +14,8 @@ phases:
       - pip3 install -r requirements.txt 
   build: 
     commands: 
-      - echo Building the application 
+      - echo Building the application
+      - cat buildspec.yml 
       - python manage.py runserver & 
   post_build: 
     commands: 
