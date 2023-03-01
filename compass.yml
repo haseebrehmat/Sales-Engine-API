@@ -1,8 +1,10 @@
 name: Octagon-BE
 id: 'ari:cloud:compass:b902fc91-f602-4d38-9ff0-26239b7902a0:component/42b44239-8145-48db-8bef-ec0880b96787/829517ab-437c-4768-b1a3-f6e8dbea0fcb'
 description: AI-ML Based Sales Engine
+configVersion: 1
 ownerId: 'ari:cloud:teams::team/d3c552d4-3bed-4baa-b4a4-a8a4567074c5'
 fields:
+  lifecycle: Active
   tier: 4
 links:
   - name: Octagon-BE
