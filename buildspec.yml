@@ -21,4 +21,7 @@ phases:
     commands: 
       - echo Build completed on `date`
 
+artifacts:
+  files:
+    - '**/*'
 file_exists_behavior: OVERWRITE
