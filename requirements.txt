@@ -5,7 +5,6 @@ djangorestframework==3.14.0
 django-filter==22.1
 rest-framework-roles
 djangorestframework-simplejwt==5.2.2
-psycopg2==2.9.5
 psycopg2-binary==2.9.5
 requests
 drf-yasg==1.21.5
