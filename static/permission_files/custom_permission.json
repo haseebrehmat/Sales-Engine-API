@@ -139,6 +139,25 @@
                 "codename": "view_job_portal",
                 "name": "View Job Portal"
             }
+        ],
+        "module": "Team Management",
+        "permissions": [
+            {
+                "codename": "view_team",
+                "name": "View Teams"
+            },
+            {
+                "codename": "create_team",
+                "name": "Create Team"
+            },
+            {
+                "codename": "edit_team",
+                "name": "Edit Team"
+            },
+            {
+                "codename": "delete_team",
+                "name": "Delete Team"
+            }
         ]
     }
 ]

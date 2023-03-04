@@ -82,3 +82,4 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register([CustomPermission, Company, Role, Profile, CompanyAPIIntegration])
 admin.site.register(Team)
+admin.site.unregister(Group)
