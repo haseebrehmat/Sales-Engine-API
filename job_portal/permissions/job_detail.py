@@ -1,6 +1,4 @@
 from rest_framework.permissions import BasePermission
-
-from settings.utils.endpoint_access import check_access
 from utils.helpers import validate_request
 
 

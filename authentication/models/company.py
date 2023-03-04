@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 
-from authentication.utils.company_api_enums import API_CHOICES
+from utils.company_api_enums import API_CHOICES
 from settings.utils.model_fields import TimeStamped
 
 
