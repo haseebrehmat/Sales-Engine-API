@@ -3,16 +3,17 @@ import uuid
 from django.contrib.auth.hashers import make_password
 from django.template.loader import render_to_string
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.models import User, PasswordChangeLogs, ResetPassword
 from django.core.mail import EmailMultiAlternatives
 from settings.base import FROM_EMAIL
+from settings.utils.helpers import validate_password
 
 
 class PasswordReset(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         status_code = status.HTTP_406_NOT_ACCEPTABLE
@@ -64,7 +65,7 @@ class PasswordReset(APIView):
         confirm_password = request.data.get("confirm_password")
         if password != "":
             if password == confirm_password:
-                if self.validate_password(password):
+                if validate_password(password):
                     try:
                         queryset = ResetPassword.objects.get(reset_code=request.data.get("code"))
                         if queryset.status:
@@ -88,7 +89,3 @@ class PasswordReset(APIView):
         else:
             message = "Password cannot be empty"
         return Response({"detail": message}, status_code)
-
-    def validate_password(self, password):
-        password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
-        return re.match(password_pattern, password)

@@ -889,7 +889,7 @@ function querystring(query) {
 
   //
   // Little nifty parsing hack, leverage the fact that RegExp.exec increments
-  // the lastIndex property so we can continue executing this loop until we've
+  // the lastIndex property so we continue executing this loop until we've
   // parsed all results.
   //
   for (;
@@ -1146,7 +1146,7 @@ function URL(address, location, parser) {
     );
 
     //
-    // Hostname, host and protocol should be lowercased so they can be used to
+    // Hostname, host and protocol should be lowercased so they be used to
     // create a proper `origin`.
     //
     if (instruction[4]) url[key] = url[key].toLowerCase();
@@ -1354,8 +1354,8 @@ var ignore = { hash: 1, query: 1 }
  * Worker or through a worker using a blob. And with the blobble begins the
  * trouble as the location object will contain the URL of the blob, not the
  * location of the page where our code is loaded in. The actual origin is
- * encoded in the `pathname` so we can thankfully generate a good "default"
- * location from it so we can generate proper relative URL's again.
+ * encoded in the `pathname` so we thankfully generate a good "default"
+ * location from it so we generate proper relative URL's again.
  *
  * @param {Object|String} loc Optional default location object.
  * @returns {Object} lolcation object.

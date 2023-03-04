@@ -1,12 +1,13 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from authentication.models import User, PasswordChangeLogs
 
 
 class PasswordManagement(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         status_code = status.HTTP_406_NOT_ACCEPTABLE
@@ -27,5 +28,5 @@ class PasswordManagement(APIView):
         else:
             message = "Your current password is not valid"
 
-        return Response(message, status_code)
+        return Response({'detail': message}, status_code)
 

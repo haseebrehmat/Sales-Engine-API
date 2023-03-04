@@ -1,0 +1,69 @@
+from rest_framework import status
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from authentication.models import Role, User
+from authentication.permissions import RolePermissions
+from authentication.serializers.role import RoleSerializer
+from authentication.serializers.users import UserSerializer
+from settings.utils.custom_pagination import CustomPagination
+
+
+class RoleView(ListAPIView):
+    pagination_class = CustomPagination
+    serializer_class = RoleSerializer
+    queryset = Role.objects.all()
+    permission_classes = (RolePermissions,)
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(company__profile__user=self.request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = RoleSerializer(data=request.data, context=request)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            data["company_id"] = request.data.get("company", "")
+            data["permissions"] = request.data.get("permissions", "")
+            serializer.create(data)
+            return Response({"detail": "Role created successfully"}, status=status.HTTP_201_CREATED)
+
+
+class RoleDetailView(ListAPIView):
+    pagination_class = CustomPagination
+    permission_classes = (RolePermissions,)
+
+    def get(self, request, pk):
+        queryset = Role.objects.filter(pk=pk).first()
+        serializer = RoleSerializer(queryset, many=False)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        queryset = Role.objects.filter(pk=pk).first()
+        serializer = RoleSerializer(queryset, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(permissions=request.data.get("permissions"))
+            return Response({"detail": "Role updated successfully"}, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, pk):
+        Role.objects.filter(pk=pk).delete()
+        return Response({"detail": "Role deleted successfully"}, status=status.HTTP_200_OK)
+
+
+class RoleUserView(APIView):
+
+    def get(self, request, pk):
+        users = User.objects.filter(roles=pk)
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+

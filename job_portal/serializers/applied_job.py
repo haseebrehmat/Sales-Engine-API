@@ -23,6 +23,7 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
         job_details = json_results['fields']
         job_details['id'] = json_results['pk']
+        job_details['applied_date'] = instance.applied_date
         # result['job_details'] = job_details
         return job_details
 
@@ -36,7 +37,7 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         # Here instance is instance of your model
-        # so you can build your dict however you like
+        # so you build your dict however you like
         result = OrderedDict()
         result['status'] = instance.job.job_status
         json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
@@ -47,16 +48,17 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
         # result['job_details'] = job_details
         return job_details
 
+
 class AppliedJobOuputSerializer(serializers.Serializer):
     data = AppliedJobDetailSerializer(many=True, source='*')
-    links = LinkSerializer(many=False,source='*')
+    links = LinkSerializer(many=False, source='*')
 
     class Meta:
-        fields = ['links','data']
+        fields = ['links', 'data']
 
     def to_representation(self, instance):
         # Here instance is instance of your model
-        # so you can build your dict however you like
+        # so you build your dict however you like
         result = OrderedDict()
         result['status'] = instance.job.job_status
         result['job_id'] = instance.job.id
@@ -97,7 +99,8 @@ class JobStatusSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
 
         if attrs.get("status", None) == None and attrs.get("status", None) == 0:
-            self._errors.update({"status":{"error": "Status is required between [0-6]","details": "Status is required between [1-6]"}})
+            self._errors.update({"status": {"error": "Status is required between [0-6]",
+                                            "detail": "Status is required between [1-6]"}})
 
         if attrs.get("job", None):
             job_id = attrs.get("job", None)
@@ -106,8 +109,9 @@ class JobStatusSerializer(serializers.ModelSerializer):
 
             if request.method == 'PATCH':
                 pass
-            elif applied_obj.count()>0:
-                self._errors.update({"job_id":{"error": "This job is already applied","details": "This job is already applied"}})
+            elif applied_obj.count() > 0:
+                self._errors.update(
+                    {"job_id": {"error": "This job is already applied", "detail": "This job is already applied"}})
 
         if len(self._errors):
             # set the overriden DRF values
@@ -135,7 +139,7 @@ class JobStatusSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         # Here instance is instance of your model
-        # so you can build your dict however you like
+        # so you build your dict however you like
         result = OrderedDict()
         result['status'] = instance.job.job_status
         result['job_id'] = instance.job.id

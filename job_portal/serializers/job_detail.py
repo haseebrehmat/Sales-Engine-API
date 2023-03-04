@@ -2,18 +2,22 @@ from rest_framework import serializers
 
 from job_portal.models import JobDetail
 
+
 class JobDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobDetail
         fields = "__all__"
 
+
 class JobKeywordSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500)
     count = serializers.IntegerField(default=0)
 
+
 class LinkSerializer(serializers.Serializer):
     next = serializers.CharField(max_length=500)
     previous = serializers.CharField(max_length=500)
+
 
 class TechKeywordSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500)

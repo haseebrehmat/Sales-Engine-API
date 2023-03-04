@@ -8,7 +8,17 @@ class JwtSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['permissions'] = list(user.get_group_permissions())
+        try:
+            token['permissions'] = list(user.roles.permissions.values_list('codename', flat=True))
+        except:
+            token["permissions"] = None
+
+        try:
+            token['role'] = user.roles.name
+        except:
+            token['role'] = None
+        token['username'] = user.username
+
         token['email'] = user.email
         token['is_superuser'] = user.is_superuser
         token['is_staff'] = user.is_staff

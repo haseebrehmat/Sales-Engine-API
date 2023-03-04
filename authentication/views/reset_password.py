@@ -12,9 +12,9 @@ def render_reset_page(request, email, code):
     try:
         queryset = ResetPassword.objects.get(reset_code=code)
     except ResetPassword.DoesNotExist:
-        return HttpResponse("<h1 align='center'>Reset code doesn't exist</h1>")
+        return HttpResponse({'detail':"<h1 align='center'>Reset code doesn't exist</h1>"})
     expiry_time = queryset.updated_at + timedelta(hours=24)
     current_time = timezone.now()
     if current_time > expiry_time or queryset.status:
-        return HttpResponse("<h1 align='center'>Reset link expired!</h1>")
+        return HttpResponse({'detail': "<h1 align='center'>Reset link expired!</h1>"})
     return redirect(f"{REACT_APP_URL}/reset-password?email={email}&code={code}")

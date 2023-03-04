@@ -12,16 +12,15 @@ class AppliedJobPagination(pagination.PageNumberPagination):
     page_query_param = 'page'
     query = JobDetail.objects.all()
 
-
     def get_paginated_response(self, data):
         response = Response({
             'links': {
                 'next': self.get_next_link(),
                 'previous': self.get_previous_link(),
-                'num_pages':self.page.paginator.num_pages
+                'num_pages': self.page.paginator.num_pages
             },
             'filtered_jobs': self.page.paginator.count,
             'data': data,
-            'job_status_choice':dict(JOB_STATUS_CHOICE)
+            'job_status_choice': dict(JOB_STATUS_CHOICE)
         })
         return response

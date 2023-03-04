@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
-from pathlib import Path
 import environ
+
 
 env = environ.Env(
     # set casting, default value
@@ -10,6 +10,9 @@ env = environ.Env(
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
+
+
+print(env('DEBUG'))
 SECRET_KEY = env('SECRET_KEY')
 ENVIRONMENT = env('ENVIRONMENT')
 ALLOWED_HOSTS = ["*"]

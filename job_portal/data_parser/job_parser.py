@@ -12,21 +12,22 @@ class JobParser(object):
     def validate_file(self):
         # file check extensions validation
         message = {}
-        valid_extensions = ['.csv', '.xlsx','.ods','odf','.odt']
+        valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
         for file_item in self.filelist:
             ext = os.path.splitext(file_item.name)[1]
             if not ext.lower() in valid_extensions:
-                message = {'error': 'Unsupported file extension', 'details': 'Unsupported file extension'}
-                return False,message
+                message = {'detail': 'Unsupported file extension'}
+                return False, message
             # read and check if columns match
 
             df = pd.read_csv(file_item, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file_item, nrows=1)
             file_item.file.seek(0)
-            if not set(self.job_desc_cols).issubset(df.columns):
+            if (set(self.job_desc_cols).issubset(df.columns) and len(df.columns) == len(self.job_desc_cols)) == False:
                 unsupported_cols_list = list(set(df.columns).difference(set(self.job_desc_cols)))
-                message = {"error": 'Unsupported columns exist in file', "details": ",".join(unsupported_cols_list)}
+                message = {'detail': 'Unsupported columns exist in file: ' + ",".join(unsupported_cols_list)}
                 return False, message
-        return True,message
+        return True, message
+
 
     def parse_file(self):
         data_frame = []

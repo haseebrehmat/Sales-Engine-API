@@ -32,11 +32,11 @@
     factory(jQuery);
   }
 } (function (jQuery) {
-  // This is needed so we can catch the AMD loader configuration and use it
+  // This is needed so we catch the AMD loader configuration and use it
   // The inner file should be wrapped (by `banner.start.js`) in a function that
   // returns the AMD loader references.
   var S2 =(function () {
-  // Restore the Select2 AMD loader so it can be used
+  // Restore the Select2 AMD loader so it be used
   // Needed mostly in the language files, where the loader is not inserted
   if (jQuery && jQuery.fn && jQuery.fn.select2 && jQuery.fn.select2.amd) {
     var S2 = jQuery.fn.select2.amd;

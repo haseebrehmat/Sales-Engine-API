@@ -1,7 +1,5 @@
 from settings.base import *
 
-DEBUG = True
-
 DATABASES = {
     'default': {
         'ENGINE': env("STAGING_DB_ENGINE"),
