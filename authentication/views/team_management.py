@@ -45,7 +45,7 @@ class TeamDetailView(APIView):
         serializer = TeamManagementSerializer(queryset, request.data)
 
         if serializer.is_valid():
-            serializer.save(group=request.data.get("reporting"))
+            serializer.save(reporting_to=request.data.get("reporting_to"), members=request.data.get("members"))
 
             message = "Team updated successfully!"
             status_code = status.HTTP_200_OK

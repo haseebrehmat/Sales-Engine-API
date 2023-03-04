@@ -24,3 +24,14 @@ class TeamManagementSerializer(serializers.ModelSerializer):
         team.members.clear()
         for member in members:
             team.members.add(member)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name")
+        members = validated_data.get("members")
+        instance.reporting_to_id = validated_data.get("reporting_to")
+        members = User.objects.filter(id__in=members)
+        instance.members.clear()
+        for member in members:
+            instance.members.add(member)
+        instance.save()
+        return instance
