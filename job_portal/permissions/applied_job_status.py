@@ -8,13 +8,14 @@ class ApplyJobPermission(BasePermission):
     def has_permission(self, request, view):
         permissions = {
             'GET': None,
-            'PATCH': ['change_job_status'],
-            'POST': None,
+            'PATCH': None,
+            'POST': ['change_job_status'],
             'PUT': None,
             'DELETE': None
         }
         # if not request.user.is_superuser:
         #     return True
+        print("jasdlfjsadlf",request.method)
         if request.user.is_authenticated:
             return validate_request(request, permissions)
         else:

@@ -46,7 +46,6 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         if is_valid_uuid(job_id):
             result = JobDetail.objects.filter(pk=job_id)
             if result.count() > 0:
-                print(request.user.role.role_association.code)
                 return self.create(request, *args, **kwargs)
             else:
                 msg = {'detail': f'No such job exist with id {job_id}'}

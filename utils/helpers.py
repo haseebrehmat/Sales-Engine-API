@@ -5,6 +5,6 @@ def validate_request(request, permissions):
         return False
     if request.method in permissions.keys():
         for perm in permissions[request.method]:
-            if perm in ",".join(user_permissions):
+            if perm in user_permissions:
                 return True
     return False
