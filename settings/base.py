@@ -3,12 +3,15 @@ from datetime import timedelta
 from pathlib import Path
 import environ
 
-root = environ.Path("env")
-env = environ.Env(DEBUG=(bool, False),)     # set default values and casting
-environ.Env.read_env()                      # reading .env file
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
 SECRET_KEY = env('SECRET_KEY')
+ENVIRONMENT = env('ENVIRONMENT')
 ALLOWED_HOSTS = ["*"]
 
 
@@ -32,8 +35,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
-    'anymail',
-    'django_filters',
+    'django_filters'
 ]
 
 
@@ -49,13 +51,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'authentication.middleware.permissions.PermissionMiddleware'
-
 ]
 
 THIRD_PARTY_MIDDLEWARES = [
-    # 'corsheaders.middleware.CorsMiddleware',
-    # 'django.middleware.common.CommonMiddleware'
 ]
 
 CUSTOM_MIDDLEWARES = [
@@ -105,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Karachi'
 USE_I18N = True
 USE_TZ = True
 
@@ -117,7 +115,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     # os.path.join(BASE_DIR, 'staticfiles'),
-    ]
+]
+
 # Add these new lines
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -152,25 +151,20 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     # API Throttling
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/minute',
-        'user': '10/minute'
-    },
+    # 'DEFAULT_THROTTLE_RATES': {
+    #     'anon': '10/minute',
+    #     'user': '10/minute'
+    # },
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
-    ],
-    # 'DATETIME_FORMAT': '%B %d, %Y',
-    # "DATETIME_INPUT_FORMATS": ["%d-%m-%Y"],
+    ]
 }
 
 # Email Configurations
-
-#EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
-
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': None
@@ -180,7 +174,7 @@ EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS=True
+EMAIL_USE_TLS = True
 FROM_EMAIL = env('FROM_EMAIL')
 
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
@@ -190,3 +184,4 @@ REACT_APP_URL = env('REACT_APP_URL')
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+CHATGPT_API_KEY = env('CHATGPT_API_KEY')
