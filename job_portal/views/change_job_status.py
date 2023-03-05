@@ -36,7 +36,7 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
             obj.save()
             data = JobStatusSerializer(obj, many=False)
             headers = self.get_success_headers(data.data)
-            msg = {'detail': 'Job status changed successfully'}
+            msg = {'detail': 'Job applied successfully'}
             return Response(msg, status=status.HTTP_200_OK, headers=headers)
         else:
             raise NoActiveUserException(detail=f'No active user found')
