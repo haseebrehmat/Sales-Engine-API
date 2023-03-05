@@ -135,17 +135,19 @@ class UserDetailView(APIView):
                 data["password"] = make_password(password)
             else:
                 return Response({"detail": "Please choose a strong password"}, status.HTTP_406_NOT_ACCEPTABLE)
+        if email != "":
+            data['email'] = email
 
         user = User.objects.filter(email=email)
-        if user.first() is None:    # If email doesn't exist
-            pass        # Go update detail
-
+        if len(user) == 0:
+            user = User.objects.filter(id=pk)
+            pass
         else:
             if str(user.first().id) == pk:  # Incase if email is not assign to any user
                 pass    # Go update detail
             else:       # Through an error
                 return Response({"detail": "User with this email already exist"}, status=status.HTTP_400_BAD_REQUEST)
-
+        
         user.update(**data)
         user = user.first()
         company_id = request.data.get("company")
