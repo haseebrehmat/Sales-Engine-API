@@ -99,8 +99,7 @@ class JobStatusSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
 
         if attrs.get("status", None) == None and attrs.get("status", None) == 0:
-            self._errors.update({"status": {"error": "Status is required between [0-6]",
-                                            "detail": "Status is required between [1-6]"}})
+            self._errors.update({"detail":"Status is required between [0-6]"})
 
         if attrs.get("job", None):
             job_id = attrs.get("job", None)
@@ -110,8 +109,7 @@ class JobStatusSerializer(serializers.ModelSerializer):
             if request.method == 'PATCH':
                 pass
             elif applied_obj.count() > 0:
-                self._errors.update(
-                    {"job_id": {"error": "This job is already applied", "detail": "This job is already applied"}})
+                self._errors.update({"detail": "This job is already applied"})
 
         if len(self._errors):
             # set the overriden DRF values
