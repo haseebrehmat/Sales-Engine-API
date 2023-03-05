@@ -1,5 +1,6 @@
 from settings.base import *
-DEBUG = True
+
+DEBUG=True
 DATABASES = {
     'default': {
         'ENGINE': env("LOCAL_DB_ENGINE"),

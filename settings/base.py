@@ -1,14 +1,17 @@
+import os
 from datetime import timedelta
-from pathlib import Path
 import environ
 
-root = environ.Path(".env")
-env = environ.Env(DEBUG=(bool, False),)     # set default values and casting
-environ.Env.read_env()                      # reading .env file
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-print("hello",BASE_DIR)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
+
 SECRET_KEY = env('SECRET_KEY')
+ENVIRONMENT = env('ENVIRONMENT')
 ALLOWED_HOSTS = ["*"]
 
 
@@ -22,7 +25,9 @@ INSTALLED_APPS = [
 ]
 
 CUSTOM_APPS = [
-    'authentication'
+    'authentication',
+    'job_portal',
+    'dashboard'
 ]
 
 THIRD_PARTY_APPS = [
@@ -30,7 +35,9 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'django_filters'
 ]
+
 
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 
@@ -38,18 +45,15 @@ INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'authentication.middleware.permissions.PermissionMiddleware'
-
 ]
 
 THIRD_PARTY_MIDDLEWARES = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware'
 ]
 
 CUSTOM_MIDDLEWARES = [
@@ -92,13 +96,14 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Karachi'
 USE_I18N = True
 USE_TZ = True
 
@@ -107,6 +112,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    # os.path.join(BASE_DIR, 'staticfiles'),
+]
+
+# Add these new lines
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -116,13 +129,7 @@ AUTH_USER_MODEL = "authentication.User"
 # Django Cors Settings
 CORS_ALLOW_ALL_ORIGINS = True
 
-# # DRF Configurations
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     )
-# }
-
+# DRF Configurations
 SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
@@ -130,13 +137,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=800),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
 }
-OAUTH2_PROVIDER = {
-        'ACCESS_TOKEN_EXPIRE_SECONDS': 60 * 15,
-        'OAUTH_SINGLE_ACCESS_TOKEN': True,
-        'OAUTH_DELETE_EXPIRED': True
- }
 
-# DRF configurations
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -150,8 +151,37 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     # API Throttling
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/minute',
-        'user': '10/minute'
-    }
+    # 'DEFAULT_THROTTLE_RATES': {
+    #     'anon': '10/minute',
+    #     'user': '10/minute'
+    # },
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ]
 }
+
+# Email Configurations
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': None
+}
+
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = True
+FROM_EMAIL = env('FROM_EMAIL')
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+
+REACT_APP_URL = env('REACT_APP_URL')
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+CHATGPT_API_KEY = env('CHATGPT_API_KEY')

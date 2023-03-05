@@ -1,18 +1,24 @@
-from django.db import models
+import uuid
 
-from authentication.models import User
-from settings.utils.timestamped import TimeStamped
+from django.db import models
+from settings.utils.model_fields import TimeStamped
 
 
 class Profile(TimeStamped):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
+    user = models.OneToOneField("User", on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
     employee_id = models.CharField(max_length=100, blank=True, null=True)
-    company = models.CharField(max_length=100, blank=True, null=True, unique=True)
+    company = models.ForeignKey('Company', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"{self.first_name} - {self.employee_id}"
 
     class Meta:
+        db_table = "profile"
         unique_together = ("company", "employee_id")
+        default_permissions = ()

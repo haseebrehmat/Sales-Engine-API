@@ -1,0 +1,5 @@
+from authentication.permissions.company_management import CompanyPermissions
+from authentication.permissions.integration_management import IntegrationPermissions
+from authentication.permissions.role_management import RolePermissions
+from authentication.permissions.team_management import TeamPermissions
+from authentication.permissions.user_management import UserPermissions

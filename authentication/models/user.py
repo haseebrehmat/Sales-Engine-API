@@ -1,7 +1,12 @@
+import uuid
+
 from django.db import models
-from settings.utils.timestamped import TimeStamped
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin, AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from settings.utils.model_fields import TimeStamped, LowercaseEmailField
 
 
 class CustomUserManager(BaseUserManager):
@@ -34,18 +39,43 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
     username = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = LowercaseEmailField(unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=True)
+    roles = models.ForeignKey(
+        "Role",
+        on_delete=models.CASCADE,
+        verbose_name="roles",
+        blank=True,
+        null=True,
+        help_text="The roles of this user belongs to. A user will get all permissions "
+                  "granted to each of their roles.")
+    groups = None
+
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username"]
 
     objects = CustomUserManager()
 
     def __str__(self):
         return self.email
 
+    class Meta:
+        default_permissions = ()
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    # TODO://
+    pass
 
 
+@receiver(post_save, sender=User)
+def create_role(sender, instance, created, **kwargs):
+    # TODO://
+    pass

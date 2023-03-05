@@ -16,9 +16,9 @@ class GroupSerializer(serializers.ModelSerializer):
         permissions = validated_data.pop("permissions")
 
         group = Group.objects.create(**validated_data)
-        for permission in permissions:
+        for pemission_id in set(permissions):
             try:
-                perm = Permission.objects.get(id=permission['id'])
+                perm = Permission.objects.get(id=pemission_id)
                 group.permissions.add(perm)
             except Permission.DoesNotExist:
                 raise ValidationError("Permission not found")
@@ -29,9 +29,9 @@ class GroupSerializer(serializers.ModelSerializer):
         group = Group.objects.get(name=instance.name)
         group.permissions.clear()
         # group = Group.objects.create(**validated_data)
-        for permission in permissions:
+        for pemission_id in set(permissions):
             try:
-                perm = Permission.objects.get(id=permission['id'])
+                perm = Permission.objects.get(id=pemission_id)
                 group.permissions.add(perm)
             except Permission.DoesNotExist:
                 raise ValidationError("Permission not found")

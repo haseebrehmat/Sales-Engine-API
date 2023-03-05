@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.serializers.group import GroupSerializer
-from settings.utils.permission_manager import UserPermissions
+from settings.utils.permission_managers import UserPermissions
 
 
 def get_permission(app, group):
