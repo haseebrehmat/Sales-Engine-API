@@ -7,7 +7,7 @@ class UserPermissions(BasePermission):
 
     def has_permission(self, request, view):
         permissions = {
-            'GET': ['view_team'],
+            'GET': ['view_team','view_user'],
             'POST': ['create_team'],
             'PUT': ['edit_team', 'change_user_status'],
             'DELETE': ['delete_team']

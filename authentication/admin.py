@@ -16,10 +16,10 @@ class UserProfileInlineAdmin(admin.StackedInline):
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('id', 'username', 'email', 'roles')
-    list_filter = ('is_admin',)
+    list_display = ('id', 'username','is_superuser','email', 'roles')
+    list_filter = ('email','roles',)
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password', 'roles')}),
+        (None, {'fields': ('username', 'email','is_superuser', 'password', 'roles')}),
 
         ('Permissions', {'fields': ('is_admin',)}),
     )
