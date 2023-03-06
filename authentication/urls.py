@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from authentication.views.authenticate import UserLogin, LogoutView
+from authentication.views.authenticate import UserLogin
 from authentication.views.company import CompanyView, CompanyDetailView
 from authentication.views.integrations import IntegrationView, IntegrationDetailView
 from authentication.views.password.change import PasswordManagement
@@ -16,7 +16,6 @@ from authentication.views.users import UserPermission
 urlpatterns = [
     path('login/', UserLogin.as_view()),
     path('authenticate/', LoginView.as_view(), name='token_obtain_pair'),
-    path('logout/', LogoutView.as_view(), name='auth_logout'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('permission/', PermissionView.as_view()),
     path('all_permissions/', get_all_permissions),
