@@ -63,7 +63,12 @@ class RoleDetailView(ListAPIView):
 class RoleUserView(APIView):
 
     def get(self, request, pk):
-        users = User.objects.filter(roles=pk)
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
+        user_profile = request.user.profile
+        if user_profile and user_profile.company:
+            users = User.objects.filter(profile__company=user_profile.company).filter(roles=pk)
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response({"detail": "Current user has no company assign"}, status=status.HTTP_400_BAD_REQUEST)
+
 
