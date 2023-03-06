@@ -16,7 +16,7 @@ class Profile(TimeStamped):
     company = models.ForeignKey('Company', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.first_name} - {self.employee_id}"
+        return f"{self.user.username}"
 
     class Meta:
         db_table = "profile"
