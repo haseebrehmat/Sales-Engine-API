@@ -1,9 +1,10 @@
 import json
 import requests
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+from rest_framework.response import Response
+from rest_framework import status
 from authentication.models import User
 from settings.utils.helpers import get_host
 
@@ -19,7 +20,10 @@ class UserLogin(APIView):
             data = {"detail": "Credentials cannot not be empty"}
         else:
             try:
-                User.objects.get(email=email)
+                user = User.objects.get(email=email)
+                if not user.is_active:
+                    return Response({"detail": "User is no longer active, Contact Admin"}, status.HTTP_401_UNAUTHORIZED)
+
                 host = get_host(request)
                 url = host + '/api/auth/authenticate/'
                 headers = {
@@ -48,3 +52,16 @@ class UserLogin(APIView):
                 data = {"detail": "User not found"}
 
         return Response(data, status_code)
+
+
+# class LogoutView(APIView):
+#     permission_classes = (IsAuthenticated,)
+#
+#     def post(self, request):
+#         print(request.user.id)
+#         tokens = OutstandingToken.objects.filter(user_id=request.user.id)
+#         for token in tokens:
+#             print("in token loop")
+#             t, _ = BlacklistedToken.objects.get_or_create(token=token)
+#             print(t, _)
+#         return Response(status=status.HTTP_205_RESET_CONTENT)

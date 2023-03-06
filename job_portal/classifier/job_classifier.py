@@ -16,12 +16,16 @@ class JobClassifier(object):
     def find_job_techkeyword(job_title):
         skills = {k.lower(): [i.lower() for i in v]
                   for k, v in keyword.items()}
+        
+        if job_title == "Python Web Developer":
+            print("hello")
+            print(job_title)
         if isinstance(job_title, str):
             job_title = ",".join(job_title.split("/")).lower()
             class_list = []
             for class_key, class_value in skills.items():
                 for i in class_value:
-                    if i in job_title:
+                    if job_title == i:
                         class_list.append(class_key)
 
             final_result = list(set(class_list))
