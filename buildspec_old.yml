@@ -1,0 +1,35 @@
+version: 0.1
+
+environment_variables:
+  plaintext:
+    DJANGO_SETTINGS_MODULE: settings.production
+    SECRET_KEY: nosecret
+    DATABASE_DEFAULT_URL: sqlite:///db1.sqlite3
+    DATABASE_STREAMDATA_URL: sqlite:///db2.sqlite3
+    STREAM_INCOMING_PRIVATE_KEY: changeme
+    STREAM_INCOMING_PUBLIC_KEY: changeme
+    GOOGLE_API_KEY: changeme
+    OPBEAT_ENABLED: False
+
+phases:
+  install:
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  pre_build:
+    commands:
+      - echo Prebuild ops
+      - ls
+      - sudo docker-compose down
+      - sudo docker-compose build
+  build:
+    commands:
+      - echo Building the application
+      - sudo docker-compose up
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      -
+artifacts:
+  files:
+    - '**/*'
