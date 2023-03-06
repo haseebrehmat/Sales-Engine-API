@@ -1,10 +1,10 @@
 import uuid
-
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from authentication.models.profile import Profile
 
 from settings.utils.model_fields import TimeStamped, LowercaseEmailField
 
@@ -71,11 +71,9 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
-    # TODO://
-    pass
-
-
-@receiver(post_save, sender=User)
-def create_role(sender, instance, created, **kwargs):
-    # TODO://
-    pass
+    if created:
+        print("Profile Signal Activated")
+        Profile.objects.create(user=instance)
+        pass
+    else:
+        instance.profile.save()

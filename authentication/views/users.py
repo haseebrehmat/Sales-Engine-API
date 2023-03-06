@@ -102,7 +102,8 @@ class UserView(ListAPIView):
 
         company_id = request.user.profile.company_id
         if company_id != "":
-            Profile.objects.create(user_id=user.id, company_id=company_id)
+            profile, created = Profile.objects.update_or_create(user_id=user.id,defaults={'company_id':company_id})
+            user.profile = profile
 
         role_id = request.data.get("roles", "")
         if role_id != "":
