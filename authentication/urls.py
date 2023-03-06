@@ -1,10 +1,11 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from authentication.views.authenticate import UserLogin
+from authentication.views.authenticate import UserLogin, LogoutView
 from authentication.views.company import CompanyView, CompanyDetailView
 from authentication.views.integrations import IntegrationView, IntegrationDetailView
 from authentication.views.password.change import PasswordManagement
 from authentication.views.password.reset import PasswordReset
+from authentication.views.profile import ProfileView
 from authentication.views.reset_password import render_reset_page
 from authentication.views.role import RoleView, RoleDetailView, RoleUserView
 from authentication.views.team_management import TeamView, TeamDetailView
@@ -15,6 +16,7 @@ from authentication.views.users import UserPermission
 urlpatterns = [
     path('login/', UserLogin.as_view()),
     path('authenticate/', LoginView.as_view(), name='token_obtain_pair'),
+    path('logout/', LogoutView.as_view(), name='auth_logout'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('permission/', PermissionView.as_view()),
     path('all_permissions/', get_all_permissions),
@@ -31,6 +33,7 @@ urlpatterns = [
     path('team/<str:pk>/', TeamDetailView.as_view()),
     path('user/', UserView.as_view()),
     path('user/<str:pk>/', UserDetailView.as_view()),
+    path('user_profile/', ProfileView.as_view()),
     path('role/', RoleView.as_view()),
     path('role/<str:pk>/', RoleDetailView.as_view()),
     path('role_users/<str:pk>/', RoleUserView.as_view()),
