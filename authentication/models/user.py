@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
     is_staff = models.BooleanField(default=True)
     roles = models.ForeignKey(
         "Role",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         verbose_name="roles",
         blank=True,
         null=True,
