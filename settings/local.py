@@ -11,3 +11,5 @@ DATABASES = {
         'PORT': env("LOCAL_DB_PORT"),
     }
 }
+
+print("Local")
