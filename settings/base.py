@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 import environ
+from pathlib import Path
 
 env = environ.Env(
     # set casting, default value
@@ -9,6 +10,7 @@ env = environ.Env(
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
+#BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env('SECRET_KEY')
 ENVIRONMENT = env('ENVIRONMENT')
@@ -185,3 +187,16 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 CHATGPT_API_KEY = env('CHATGPT_API_KEY')
+
+
+AWS_ACCESS_KEY_ID = 'AKIAQDQXUW4VV7HSLFXE'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'octagon-user-profile-images'
+AWS_S3_REGION_NAME = 'us-west-1'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_DEFAULT_ACL = 'public-read'
+AWS_QUERYSTRING_AUTH = False
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'path/to/store/my/files/') 
