@@ -25,14 +25,14 @@ class UserAdmin(BaseUserAdmin):
     )
 
     add_fieldsets = BaseUserAdmin.add_fieldsets + (
-        (None, {'fields': ('email',)}),
+        (None, {'fields': ('email','roles')}),
     )
 
     search_fields = ('username', 'email')
     ordering = ('username', 'email')
     filter_horizontal = ()
 
-    inlines = [UserProfileInlineAdmin]
+    # inlines = [UserProfileInlineAdmin]
 
 
 # class CustomUserAdmin(BaseUserAdmin):
