@@ -72,6 +72,7 @@ class UserView(ListAPIView):
         email = request.data.get("email", "")
         username = request.data.get("username", "")
         password = request.data.get("password", "")
+        file = request.data.get("file", "")
         conditions = [
             email != "",
             password != "",
@@ -79,7 +80,7 @@ class UserView(ListAPIView):
         ]
         if all(conditions):
             if validate_password(password):
-                status_code, message = self.create_user(email, password, username, request)
+                status_code, message = self.create_user(email, password, username, file, request)
 
             else:
                 message = "Please choose a strong password"
@@ -88,7 +89,7 @@ class UserView(ListAPIView):
             message = "Required fields cannot be empty"
         return Response({"detail": message}, status_code)
 
-    def create_user(self, email, password, username, request):
+    def create_user(self, email, password, username, file, request):
         is_exist = User.objects.filter(email=email)
         if len(is_exist)>0:
             return status.HTTP_400_BAD_REQUEST, "User already exist"
@@ -102,7 +103,7 @@ class UserView(ListAPIView):
 
         company_id = request.user.profile.company_id
         if company_id != "":
-            profile, created = Profile.objects.update_or_create(user_id=user.id,defaults={'company_id':company_id})
+            profile, created = Profile.objects.update_or_create(user_id=user.id,defaults={'company_id':company_id}, file=file)
             user.profile = profile
 
         role_id = request.data.get("roles", "")

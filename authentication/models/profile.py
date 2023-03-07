@@ -14,6 +14,7 @@ class Profile(TimeStamped):
     last_name = models.CharField(max_length=100, blank=True, null=True)
     employee_id = models.CharField(max_length=100, blank=True, null=True)
     company = models.ForeignKey('Company', on_delete=models.CASCADE, blank=True, null=True)
+    file = models.FileField(upload_to='profiles/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}"
