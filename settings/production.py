@@ -10,3 +10,4 @@ DATABASES = {
         'PORT': env("PRODUCTION_DB_PORT"),
     }
 }
+print("Production")

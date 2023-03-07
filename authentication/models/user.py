@@ -68,12 +68,3 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
 
     class Meta:
         default_permissions = ()
-
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        print("Profile Signal Activated")
-        Profile.objects.create(user=instance)
-        pass
-    else:
-        instance.profile.save()
