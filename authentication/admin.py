@@ -13,7 +13,7 @@ class UserProfileInlineAdmin(admin.StackedInline):
     model = Profile
     max_num = 1
     delete = False
-
+  
 
 class UserAdmin(BaseUserAdmin):
     list_display = ('id', 'username','is_superuser','email', 'roles')
@@ -32,7 +32,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('username', 'email')
     filter_horizontal = ()
 
-    # inlines = [UserProfileInlineAdmin]
+    inlines = [UserProfileInlineAdmin,]
 
 
 # class CustomUserAdmin(BaseUserAdmin):
@@ -79,7 +79,15 @@ class UserAdmin(BaseUserAdmin):
 #     if db_field.name == "user":
 #         kwargs["queryset"] = User.objects.filter(groups__name='TL')
 #     return super().formfield_for_foreignkey(db_field, request, **kwargs)
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ('name','company', 'description',)
+    list_filter = ('company',)
+
+
+
+
 admin.site.register(User, UserAdmin)
-admin.site.register([CustomPermission, Company, Role, Profile, CompanyAPIIntegration])
+admin.site.register([CustomPermission, Company,Profile, CompanyAPIIntegration])
 admin.site.register(Team)
 admin.site.unregister(Group)
+admin.site.register(Role,RoleAdmin)
