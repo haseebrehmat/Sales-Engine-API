@@ -56,13 +56,17 @@ class UserView(ListAPIView):
     queryset = User.objects.all()
 
     def get(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
+        if request.GET.get("type") == "dropdown":
+            queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
+            serializer = UserSerializer(queryset, many=True)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+            queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
