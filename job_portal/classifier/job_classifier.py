@@ -3,7 +3,7 @@ from django.utils import timezone
 import pandas as pd
 from dateutil import parser
 from job_portal.models import JobDetail
-from job_portal.utils.keywords_dic import keyword
+from job_portal.utils.keywords_dic import keyword, languages
 from django.db.models import F, Value
 
 
@@ -14,13 +14,9 @@ class JobClassifier(object):
 
     @staticmethod
     def find_job_techkeyword(job_title):
-        skills = {k.lower(): [i.lower() for i in v]
-                  for k, v in keyword.items()}
+        skills = {k.lower(): [i.lower() for i in v] for k, v in keyword.items()}
         
-        if job_title == "Python Web Developer":
-            print("hello")
-            print(job_title)
-        if isinstance(job_title, str):
+        if isinstance(job_title, str):  # Full Stack Django Developer
             job_title = ",".join(job_title.split("/")).lower()
             class_list = []
             for class_key, class_value in skills.items():
@@ -28,8 +24,17 @@ class JobClassifier(object):
                     if job_title == i:
                         class_list.append(class_key)
 
+            count = 0
+            for key, value in languages.items():
+                count += 1
+                print(count)
+                data = [key for x in value if x in job_title]
+                class_list.extend(data)
+
             final_result = list(set(class_list))
             # result_data = ",".join(final_result)
+            print("Terminated")
+
             return final_result[0] if len(final_result) > 0 else 'others'
         else:
             return 'others'
