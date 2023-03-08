@@ -19,7 +19,6 @@ class ProfileView(APIView):
 
     def put(self, request):
         instance = Profile.objects.filter(user_id=request.user.id).first()
-        #company = instance.company_id
         data = request.data
         #data["user_id"] = request.user.id
         object_name = request.data.get("file", "")
