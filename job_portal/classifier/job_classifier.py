@@ -12,14 +12,21 @@ class JobClassifier(object):
     def __init__(self, dataframe: pd.DataFrame):
         self.data_frame = dataframe
 
-
-
-    def classifier_stage1(self,job_title):
+    def classifier_stage1(self, job_title):
         final_result = list()
         if isinstance(job_title, str):  # Full Stack Django Developer
+            print(job_title)
             class_list = []
             for key, value in languages.items():
                 data = [key for x in value if x in job_title]
+                if len(data) > 0:
+                    if "javascript" in job_title:
+                        data = ["JavaScript"]
+                    elif "java" in job_title:
+                        data = ["java"]
+                    else:
+                        pass
+
                 class_list.extend(data)
 
             final_result = list(set(class_list))
