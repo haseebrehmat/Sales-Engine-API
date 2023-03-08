@@ -25,7 +25,7 @@ class Team(TimeStamped):
         default=uuid.uuid4,
         editable=False)
     name = models.CharField(max_length=250, blank=True, null=True)
-    reporting_to = models.ForeignKey('User', on_delete=models.CASCADE, blank=True, null=True)
+    reporting_to = models.ForeignKey('User', on_delete=models.SET_NULL, blank=True, null=True)
     members = models.ManyToManyField('User', related_name='reporting_user')
 
     objects = TeamManagementManager()
