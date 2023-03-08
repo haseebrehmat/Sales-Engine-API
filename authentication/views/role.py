@@ -34,7 +34,11 @@ class RoleView(ListAPIView):
         serializer = RoleSerializer(data=request.data, context=request)
         if serializer.is_valid():
             data = serializer.validated_data
-            data["company_id"] = request.data.get("company", "")
+            try:
+                company_id = request.user.profile.company_id
+            except:
+                return Response({"detail": "User company not selected"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            data["company_id"] = company_id
             data["permissions"] = request.data.get("permissions", "")
             serializer.create(data)
             return Response({"detail": "Role created successfully"}, status=status.HTTP_201_CREATED)
