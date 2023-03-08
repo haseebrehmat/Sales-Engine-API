@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
     is_staff = models.BooleanField(default=True)
     roles = models.ForeignKey(
         "Role",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         verbose_name="roles",
         blank=True,
         null=True,
@@ -68,12 +68,3 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
 
     class Meta:
         default_permissions = ()
-
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        print("Profile Signal Activated")
-        Profile.objects.create(user=instance)
-        pass
-    else:
-        instance.profile.save()
