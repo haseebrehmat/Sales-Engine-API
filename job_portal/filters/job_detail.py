@@ -30,10 +30,13 @@ class CustomJobFilter(FilterSet):
         # all
         # recruiter
         # non-recruiter
-
-        if value == 'non-recruiter':
-            # TODO:// need to be specific to the company once operative
-            blacklist_company = [i.compnay_name for i in BlacklistJobs.objects.all()]
+        blacklist_company = [i.compnay_name for i in BlacklistJobs.objects.all()]
+        if value == 'recruiter':
+            queryset = queryset.filter(company_name__iregex=r'(' + '|'.join(blacklist_company) + ')')
+            return queryset
+        
+        elif value == 'non-recruiter':
             queryset = queryset.exclude(company_name__iregex=r'(' + '|'.join(blacklist_company) + ')')
             return queryset
-        return queryset
+        else:
+            return queryset
