@@ -65,6 +65,7 @@ class JobCleanerView(APIView):
         try:
             job_data = JobDetail.objects.all()
             count_update = self.update_data(job_data)
+
             return Response({'detail': f'{count_update} jobs updated successfully with new tech keywords!'}, status=204)
         except Exception as e:
             return Response({'detail': 'Jobs are not updated with new tech keywords!'}, status=404)
@@ -86,5 +87,68 @@ class JobCleanerView(APIView):
 
         # update scores of all users in one operation
         JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
+        return update_count
+
+
+class JobTypeCleanerView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request):
+        try:
+            job_data = JobDetail.objects.all()
+            count_update = self.update_data(job_data)
+            
+            return Response({'detail': f'{count_update} jobs types updated successfully !'}, status=204)
+        except Exception as e:
+            return Response({'detail': 'Jobs types are not updated!'}, status=404)
+
+    def update_data(self, job_data):
+        user_bulk_update_list = []
+        data = pd.DataFrame(list(job_data.values('pk', 'job_type')))
+        classify_data = JobClassifier(data)
+        classify_data.update_job_type()
+        update_count = 0
+
+        for key in classify_data.data_frame.itertuples():
+            update_item = JobDetail.objects.get(id=key.pk)
+            if update_item.job_type != key.job_type:
+                update_count+=1
+                update_item.job_type = key.job_type
+                # append the updated user object to the list
+                user_bulk_update_list.append(update_item)
+
+        # update scores of all users in one operation
+        JobDetail.objects.bulk_update(user_bulk_update_list, ['job_type'])
+        return update_count
+    
+
+class JobSourceCleanerView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request):
+        try:
+            job_data = JobDetail.objects.all()
+            count_update = self.update_data(job_data)
+            
+            return Response({'detail': f'{count_update} jobs source updated successfully !'}, status=204)
+        except Exception as e:
+            return Response({'detail': 'Jobs source are not updated!'}, status=404)
+
+    def update_data(self, job_data):
+        user_bulk_update_list = []
+        data = pd.DataFrame(list(job_data.values('pk', 'job_source')))
+        classify_data = JobClassifier(data)
+        classify_data.update_job_source()
+        update_count = 0
+
+        for key in classify_data.data_frame.itertuples():
+            update_item = JobDetail.objects.get(id=key.pk)
+            if update_item.job_source != key.job_source:
+                update_count+=1
+                update_item.job_source = key.job_source
+                # append the updated user object to the list
+                user_bulk_update_list.append(update_item)
+        # update scores of all users in one operation
+        JobDetail.objects.bulk_update(user_bulk_update_list, ['job_source'])
         return update_count
 

@@ -106,7 +106,7 @@ class JobClassifier(object):
 
     def convert_date(self, job_date):
         value = None
-        regex_date = r'(?i)[1-2]\d{3}-(0[1-9]|1[0-2])-(3[0-1]|[1-2]\d|0[1-9])T?\s?([0-9]\d:([0-9]\d+):([0-9]\d+)).([0-9]\d+)z?'
+        regex_date = r'(?i)[1-2]\d{3}-(0[1-9]|1[0-2])-(3[0-1]|[1-2]\d|0[1-9])t?\s?([0-9]\d:([0-9]\d+):([0-9]\d+)).([0-9]\d+)z?'
         value = re.match(regex_date, string=job_date)
         if value and value.groups():
             datetime = parser.parse(job_date)
@@ -114,16 +114,16 @@ class JobClassifier(object):
 
     def clean_job_type(self, job_type):
         value = None
-        job_type = job_type.lower()
-        if job_type == 'contract':
-            value = 'Contract'
+        if job_type in ['contract','contractor']:
+            value = 'contract'
         elif job_type in ['fulltime', 'full', 'fulltime', 'full/time', 'full-time']:
-            value = 'Full Time'
+            value = 'full time'
         else:
             value = job_type
         return value
-
+    
     def classify(self):
+        self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
             lambda x: self.classify_job(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
@@ -141,9 +141,17 @@ class JobClassifier(object):
         # self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].replace('', timezone.now()) #for test now None
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
             lambda x: self.clean_job_type(str(x)))
-
+    
 
     def update_tech_stack(self):
-        # update jobs with new tech keywords according to job title
+        self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
             lambda x: self.classify_job(str(x)) if (x is not None) else None)
+    
+    def update_job_type(self):
+        self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        self.data_frame['job_type'] = self.data_frame['job_type'].apply(
+            lambda x: self.clean_job_type(str(x)) if (x is not None) else None)
+    
+    def update_job_source(self):
+        self.data_frame['job_source'] = self.data_frame['job_source'].map(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
