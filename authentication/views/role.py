@@ -29,6 +29,8 @@ class RoleView(ListAPIView):
         return Response(serializer.data)
 
     def post(self, request):
+        if request.data.get("company", "") == "":
+            return Response({"detail": "Company ID cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         serializer = RoleSerializer(data=request.data, context=request)
         if serializer.is_valid():
             data = serializer.validated_data
