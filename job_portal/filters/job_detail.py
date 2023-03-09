@@ -32,11 +32,18 @@ class CustomJobFilter(FilterSet):
         # non-recruiter
         blacklist_company = [i.company_name for i in BlacklistJobs.objects.all()]
         if value == 'recruiter':
-            queryset = queryset.filter(company_name__iregex=r'(' + '|'.join(blacklist_company) + ')')
-            return queryset
+            if len(blacklist_company) == 0:
+                return JobDetail.objects.none()
+
+            else:
+                queryset = queryset.filter(company_name__iregex=r'(' + '|'.join(blacklist_company) + ')')
+                return queryset
         
         elif value == 'non-recruiter':
-            queryset = queryset.exclude(company_name__iregex=r'(' + '|'.join(blacklist_company) + ')')
-            return queryset
+            if len(blacklist_company) == 0:
+                return queryset
+            else:
+                queryset = queryset.exclude(company_name__iregex=r'(' + '|'.join(blacklist_company) + ')')
+                return queryset
         else:
             return queryset
