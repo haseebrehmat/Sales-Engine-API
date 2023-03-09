@@ -13,7 +13,7 @@ from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDeta
 
 
 class JobDetailsView(ModelViewSet):
-    queryset = JobDetail.objects.filter(job_status=0)
+    queryset = JobDetail.objects.all()
     serializer_class = JobDetailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     model = JobDetail

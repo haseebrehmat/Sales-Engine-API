@@ -23,7 +23,6 @@ class JobDetail(models.Model):
     tech_keywords = models.TextField(null=True, blank=True)
     job_posted_date = models.DateTimeField(null=True, blank=True)
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
-    job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
     block = models.BooleanField(default=False)
 
     class Meta:
@@ -43,8 +42,8 @@ class AppliedJobStatus(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    job = models.OneToOneField(
-        JobDetail,
+    job = models.ForeignKey(
+        'JobDetail',
         blank=True,
         null=True,
         on_delete=models.CASCADE)
@@ -54,6 +53,7 @@ class AppliedJobStatus(models.Model):
         on_delete=models.CASCADE,
         blank=True, null=False)
     applied_date = models.DateTimeField(default=timezone.now)
+    job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
 
     class Meta:
         default_permissions = ()
