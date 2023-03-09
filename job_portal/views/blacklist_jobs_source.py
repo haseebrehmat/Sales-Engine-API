@@ -41,7 +41,7 @@ class BlackListJobsView(APIView):
         company = request.user.profile.company
         company_name = request.data.get('company_name',None)
         if company and company_name:
-            black_company,is_created = BlacklistJobs.objects.get_or_create(company=request.user.profile.company,company_name__iexact=company_name)
+            black_company,is_created = BlacklistJobs.objects.get_or_create(company=request.user.profile.company,company_name=company_name)
             JobDetail.objects.filter(company_name__iexact=company_name).update(block=True)
             return Response({"detail": "User company has been blacklisted"},
                             status=status.HTTP_200_OK)
