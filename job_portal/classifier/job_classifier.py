@@ -3,7 +3,7 @@ from django.utils import timezone
 import pandas as pd
 from dateutil import parser
 from job_portal.models import JobDetail
-from job_portal.utils.keywords_dic import keyword
+from job_portal.utils.keywords_dic import keyword, languages
 from django.db.models import F, Value
 
 
@@ -12,27 +12,50 @@ class JobClassifier(object):
     def __init__(self, dataframe: pd.DataFrame):
         self.data_frame = dataframe
 
-    @staticmethod
-    def find_job_techkeyword(job_title):
-        skills = {k.lower(): [i.lower() for i in v]
-                  for k, v in keyword.items()}
-        
-        if job_title == "Python Web Developer":
-            print("hello")
+    def classifier_stage1(self, job_title):
+        final_result = list()
+        if isinstance(job_title, str):  # Full Stack Django Developer
             print(job_title)
-        if isinstance(job_title, str):
-            job_title = ",".join(job_title.split("/")).lower()
             class_list = []
-            for class_key, class_value in skills.items():
-                for i in class_value:
-                    if job_title == i:
-                        class_list.append(class_key)
+            for key, value in languages.items():
+                data = [key for x in value if x in job_title]
+                if len(data) > 0:
+                    if "javascript" in job_title:
+                        data = ["JavaScript"]
+                    elif "java" in job_title:
+                        data = ["java"]
+                    else:
+                        pass
+
+                class_list.extend(data)
 
             final_result = list(set(class_list))
-            # result_data = ",".join(final_result)
-            return final_result[0] if len(final_result) > 0 else 'others'
-        else:
-            return 'others'
+        return final_result[0] if len(final_result) > 0 else 'others'
+
+    def classifier_stage2(self, job_title):
+        skills = {k.lower(): [i.lower() for i in v] for k, v in keyword.items()}
+        for class_key, class_value in skills.items():
+            data = [class_key for i in class_value if job_title == i]
+
+        final_result = list(set(data))
+        return final_result[0] if len(final_result) > 0 else 'others'
+
+    def find_job_techkeyword(self, job_title):
+            job_title = ",".join(job_title.split("/")).lower()
+
+            # run stage 1 of the classififer
+            data = self.classifier_stage1(job_title)
+            if data == "others":
+                return self.job_classifier_stage2(job_title)
+            return data
+
+    def job_classifier_stage2(self, job_title):
+        skills = {k.lower(): [i.lower() for i in v] for k, v in keyword.items()}
+        for class_key, class_value in skills.items():
+            data = [class_key for i in class_value if job_title == i]
+
+        final_result = list(set(data))
+        return final_result[0] if len(final_result) > 0 else 'others'
 
     def classify_job(self, job_title):
         return self.find_job_techkeyword(job_title)
@@ -101,7 +124,7 @@ class JobClassifier(object):
 
     def convert_date(self, job_date):
         value = None
-        regex_date = r'(?i)[1-2]\d{3}-(0[1-9]|1[0-2])-(3[0-1]|[1-2]\d|0[1-9])T?\s?([0-9]\d:([0-9]\d+):([0-9]\d+)).([0-9]\d+)z?'
+        regex_date = r'(?i)[1-2]\d{3}-(0[1-9]|1[0-2])-(3[0-1]|[1-2]\d|0[1-9])t?\s?([0-9]\d:([0-9]\d+):([0-9]\d+)).([0-9]\d+)z?'
         value = re.match(regex_date, string=job_date)
         if value and value.groups():
             datetime = parser.parse(job_date)
@@ -109,16 +132,16 @@ class JobClassifier(object):
 
     def clean_job_type(self, job_type):
         value = None
-        job_type = job_type.lower()
-        if job_type == 'contract':
-            value = 'Contract'
+        if job_type in ['contract','contractor']:
+            value = 'contract'
         elif job_type in ['fulltime', 'full', 'fulltime', 'full/time', 'full-time']:
-            value = 'Full Time'
+            value = 'full time'
         else:
             value = job_type
         return value
-
+    
     def classify(self):
+        self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
             lambda x: self.classify_job(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
@@ -136,9 +159,11 @@ class JobClassifier(object):
         # self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].replace('', timezone.now()) #for test now None
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
             lambda x: self.clean_job_type(str(x)))
-
-
-    def update_tech_stack(self):
-        # update jobs with new tech keywords according to job title
-        self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
-            lambda x: self.classify_job(str(x)) if (x is not None) else None)
+    
+    def update_job_type(self):
+        self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        self.data_frame['job_type'] = self.data_frame['job_type'].apply(
+            lambda x: self.clean_job_type(str(x)) if (x is not None) else None)
+    
+    def update_job_source(self):
+        self.data_frame['job_source'] = self.data_frame['job_source'].map(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
