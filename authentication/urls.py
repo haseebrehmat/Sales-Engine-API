@@ -6,6 +6,7 @@ from authentication.views.integrations import IntegrationView, IntegrationDetail
 from authentication.views.password.change import PasswordManagement
 from authentication.views.password.reset import PasswordReset
 from authentication.views.profile import ProfileView
+from authentication.views.profile_image import ProfileViewImage
 from authentication.views.reset_password import render_reset_page
 from authentication.views.role import RoleView, RoleDetailView, RoleUserView
 from authentication.views.team_management import TeamView, TeamDetailView
@@ -33,6 +34,7 @@ urlpatterns = [
     path('user/', UserView.as_view()),
     path('user/<str:pk>/', UserDetailView.as_view()),
     path('user_profile/', ProfileView.as_view()),
+    path('user_profile_image/', ProfileViewImage.as_view()),
     path('role/', RoleView.as_view()),
     path('role/<str:pk>/', RoleDetailView.as_view()),
     path('role_users/<str:pk>/', RoleUserView.as_view()),
