@@ -24,6 +24,7 @@ class JobDetail(models.Model):
     job_posted_date = models.DateTimeField(null=True, blank=True)
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
     job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
+    block = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()
@@ -75,7 +76,7 @@ class BlacklistJobs(TimeStamped):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    compnay_name = models.CharField(max_length=100,blank=True,null=True)
+    company_name = models.CharField(max_length=100,blank=True,null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     
     class Meta:

@@ -43,6 +43,8 @@ class BlackListJobsView(APIView):
         if company and company_name:
             black_company,is_created = BlacklistJobs.objects.get_or_create(company=request.user.profile.company,company_name=company_name)
             JobDetail.objects.filter(company_name__iexact=company_name).update(block=True)
+            return Response({"detail": "User company has been blacklisted"},
+                            status=status.HTTP_200_OK)
         else:
             return Response({"detail": "User has no company assign or company_name field is empty"}, status=status.HTTP_200_OK)
 
@@ -55,6 +57,9 @@ class NonBlackListJobsView(APIView):
         if company and company_name:
             BlacklistJobs.objects.filter(company=request.user.profile.company,company_name=company_name).delete()
             JobDetail.objects.filter(company_name__iexact=company_name).update(block=False)
+            return Response({"detail": "User company has been removed from blacklisted"},
+                            status=status.HTTP_200_OK)
+
         else:
             return Response({"detail": "User has no company assign or company_name field is empty"}, status=status.HTTP_200_OK)
 
