@@ -16,7 +16,7 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     serializer_class = JobStatusSerializer
     queryset = AppliedJobStatus.objects.all()
     http_method_names = ['post', 'patch']
-    lookup_field = 'job'
+    lookup_field = 'id'
     permission_classes = (ApplyJobPermission,JobStatusPermission)
 
 
@@ -59,14 +59,18 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     def update(self, request, *args, **kwargs):
         self.kwargs = request.data
         job_status = self.request.data.get('status',None)
-        job_id = self.request.data.get('job',None)
-        applied_by = self.request.data.get('applied_by',None)
+        id = self.request.data.get('id',None)
+        obj = AppliedJobStatus.objects.get(id=id)
+
         instance = self.get_queryset().filter(id=self.kwargs.get('job',''))
         # current use must be the lead
-        user_team = Team.objects.filter(reporting_to=request.user,members=applied_by)
-        if len(instance) != 0 and len(user_team) != 0:
+        user_team = Team.objects.filter(reporting_to=request.user,members=obj.applied_by)
+        if len(user_team) == 0:
+            msg = {'detail': 'User is not a part of the current user team'}
+            return Response(msg, status=status.HTTP_200_OK)
+
+        if len(instance) != 0:
             instance.update(job_status=job_status)
-            obj = AppliedJobStatus.objects.get(id=job_id)
             data = JobStatusSerializer(obj, many=False)
 
             msg = {"data": data.data, 'detail': 'Job status updated successfully'}
