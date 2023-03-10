@@ -699,7 +699,7 @@ keyword = {
 }
 
 languages = {
-    "php": [
+    "PHP": [
         "cakephp",
         "php/laravel",
         "magento",
@@ -717,7 +717,7 @@ languages = {
         "alpinejs",
         "php"
     ],
-    "javascript": [
+    "JavaScript": [
         "javascript",
         "gastsbyjs",
         "materialui",
@@ -730,6 +730,7 @@ languages = {
         "react.js",
         "node",
         "vue",
+        "vuejs",
         "nest",
         "requirejs",
         "featherjs",
@@ -738,9 +739,8 @@ languages = {
         "vue.js",
         "cssinjs",
         "angular",
-        "angular 9",
         "nodejs",
-        "angular2+",
+        "angular",
         "express.js",
         "yarn",
         "angular 10",
@@ -748,11 +748,8 @@ languages = {
         "vue",
         "front end",
         "nuxt.js",
-        "vuejs",
-        "angular8",
         "angular",
         "angularjs",
-        "celery",
         "hapi.js",
         "react js",
         "socket.io",
@@ -792,13 +789,14 @@ languages = {
         "ractive.js",
         "cosmjs"
     ],
-    "python": [
-        "python",
+    "Python": [
+        "python"
         "django",
         "automation engineer",
-        "full stack developer",
+        "full stack django developer",
+        "full stack python developer",
         "machine learning",
-        "web developer",
+        "python web developer",
         "data scientist",
         "data analyst",
         "flask",
@@ -809,7 +807,7 @@ languages = {
         "tableau",
         "hadoop"
     ],
-    "database": [
+    "Database": [
         "database",
         "sql",
         "postgres"
@@ -857,7 +855,7 @@ languages = {
         "cassandra",
         "ms-sql"
     ],
-    "ruby": [
+    "Ruby": [
         "ruby",
         "kql",
         "ruby architect",
@@ -891,7 +889,7 @@ languages = {
         "ruby/rails",
         "wireframes"
     ],
-    "go/golang": [
+    "Go / Golang": [
         "golang",
         "microservices developer - go",
         "database developer - go",
@@ -911,13 +909,12 @@ languages = {
         "software engineer - go",
         "go web",
         "cloud developer - go",
-        "cloud",
         "go web developer",
-        "microservices",
         "devops",
         "api developer - go"
     ],
-    "c#": [
+    "C#": [
+        "c#"
         "unity",
         ".net",
         ".net core",
@@ -935,7 +932,7 @@ languages = {
         "dot net",
         "dotnet"
     ],
-    "c/c++": [
+    "C / C++": [
         "embedded c",
         "data structures",
         "opengl",
@@ -950,13 +947,14 @@ languages = {
         "linux kernel",
         "c++",
         "autocad",
-        "c",
         "blender3d",
         "unity3d"
     ],
-    "java": [
+    "Java": [
+        "java"
         "android"
         "jpm",
+        "j2ee"
         "core java",
         "javase",
         "java ee",
@@ -974,7 +972,7 @@ languages = {
         "java developer",
         "maven"
     ],
-    "ios": [
+    "IOS": [
         "ios"
         "ios developer",
         "restful",
@@ -987,7 +985,7 @@ languages = {
         "mobile development",
         "objective c"
     ],
-    "ui/ux": [
+    "UI / UX": [
         "ui designer",
         "ui developer",
         "ux designer",
@@ -1011,7 +1009,7 @@ languages = {
         "ui/ux consultant",
         "ui/ux analyst"
     ],
-    "cloud/networking": [
+    "Cloud / Networking": [
         "network engineer",
         "network administrator",
         "network technician",
