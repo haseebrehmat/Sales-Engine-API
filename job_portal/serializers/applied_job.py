@@ -19,7 +19,7 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         # Here instance is instance of your model
         # so you can build your dict however you like
         result = OrderedDict()
-        result['status'] = instance.job.job_status
+        result['status'] = instance.job_status
         json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
         job_details = json_results['fields']
         job_details['id'] = json_results['pk']
