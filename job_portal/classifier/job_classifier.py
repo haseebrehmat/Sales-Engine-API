@@ -159,7 +159,12 @@ class JobClassifier(object):
         # self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].replace('', timezone.now()) #for test now None
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
             lambda x: self.clean_job_type(str(x)))
-    
+
+    def update_tech_stack(self):
+        # update jobs with new tech keywords according to job title
+        self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
+            lambda x: self.classify_job(str(x)) if (x is not None) else None)
     def update_job_type(self):
         self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
