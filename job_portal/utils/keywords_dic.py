@@ -1031,5 +1031,6 @@ languages = {
         "network automation engineer",
         "network integration engineer",
         "network systems engineer"
-    ]
+    ],
+    "servicenow":["servicenow","servicenow"]
 }
