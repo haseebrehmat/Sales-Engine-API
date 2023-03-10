@@ -31,7 +31,8 @@ class CustomJobFilter(FilterSet):
         # all
         # recruiter
         # non-recruiter
-        blacklist_company = [i.company_name for i in BlacklistJobs.objects.all()]
+        value = value.lower()
+        blacklist_company = [i.company_name.lower() for i in BlacklistJobs.objects.all()]
         if value == 'recruiter':
             if len(blacklist_company) == 0:
                 return JobDetail.objects.none()
