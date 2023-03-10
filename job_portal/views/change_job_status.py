@@ -17,7 +17,7 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     queryset = AppliedJobStatus.objects.all()
     http_method_names = ['post', 'patch']
     lookup_field = 'id'
-    permission_classes = (ApplyJobPermission,JobStatusPermission)
+    permission_classes = [ApplyJobPermission|JobStatusPermission,]
 
 
     def create(self, request, *args, **kwargs):
