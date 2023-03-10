@@ -9,8 +9,9 @@ class ApplyJobPermission(BasePermission):
     def has_permission(self, request, view):
         permissions = {
             'GET': None,
+            'PATCH': ['change_job_status'],
+            'POST': ['apply_job'],
             'PATCH': None,
-            'POST': ['apply_job', 'change_job_status'],
             'PUT': None,
             'DELETE': None
         }
