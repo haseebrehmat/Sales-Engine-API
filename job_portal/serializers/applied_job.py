@@ -41,10 +41,12 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
         result = OrderedDict()
         json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
         job_details = json_results['fields']
-        job_details['id'] = json_results['pk']
+        job_details['id'] = instance.pk
         job_details['applied_by'] = instance.applied_by.pk
         job_details['applied_by_name'] = instance.applied_by.username
         job_details['status'] = instance.job_status
+        job_details['status'] = instance.job_status
+        job_details['applied_date'] = instance.applied_date
         # result['job_details'] = job_details
         return job_details
 
