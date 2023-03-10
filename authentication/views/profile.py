@@ -7,7 +7,6 @@ from authentication.models import Profile, User
 from authentication.serializers.profile import ProfileSerializer
 from settings.utils.helpers import serializer_errors
 
-
 class ProfileView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -27,7 +26,8 @@ class ProfileView(APIView):
             request.data.get("first_name", "") != "",
             request.data.get("last_name", "") != "",
             request.data.get("email", "") != "",
-            request.data.get("username", "") != ""
+            request.data.get("username", "") != "",
+            #request.data.get("employee_id", "") != ""
         ]
         username = request.data.get("email", request.user.username)
         email = request.data.get("email", request.user.email)
@@ -40,6 +40,7 @@ class ProfileView(APIView):
 
         instance = Profile.objects.filter(user_id=request.user.id).first()
         data = request.data
+        data._mutable = True
         data["user_id"] = request.user.id
         if instance is None:    # Incase Profile Doesn't exist
             instance = Profile.objects.create(user_id=request.user.id)
@@ -49,4 +50,5 @@ class ProfileView(APIView):
             return Response({"detail": "Profile updated successfully"}, status=status.HTTP_200_OK)
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
+
 
