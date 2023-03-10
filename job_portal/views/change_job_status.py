@@ -59,8 +59,8 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     def update(self, request, *args, **kwargs):
         self.kwargs = request.data
         job_status = self.request.data.get('status',None)
-        id = self.request.data.get('id',None)
-        obj = AppliedJobStatus.objects.filter(id=id)
+        job = self.request.data.get('job',None)
+        obj = AppliedJobStatus.objects.filter(id=job)
         if len(obj) > 0:
             obj = obj.first()
             instance = self.get_queryset().filter(id=self.kwargs.get('job',''))
