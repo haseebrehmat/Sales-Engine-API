@@ -4,11 +4,13 @@
         "permissions": [
             {
                 "codename": "view_dashboard",
-                "name": "View Dashboard"
+                "name": "View Dashboard",
+                "child": ["view_statistics"]
             },
             {
                 "codename": "view_statistics",
-                "name": "View Statistics"
+                "name": "View Statistics",
+                "parent": ["view_dashboard"]
             }
         ]
     },
@@ -17,23 +19,28 @@
         "permissions": [
             {
                 "codename": "view_user",
-                "name": "View Users"
+                "name": "View Users",
+                "child": ["create_user", "view_user", "edit_user", "delete_user", "change_user_status"]
             },
             {
                 "codename": "create_user",
-                "name": "Create User"
+                "name": "Create User",
+                "parent": ["view_user"]
             },
             {
                 "codename": "edit_user",
-                "name": "Edit User"
+                "name": "Edit User",
+                "parent": ["view_user"]
             },
             {
                 "codename": "delete_user",
-                "name": "Delete User"
+                "name": "Delete User",
+                "parent": ["view_user"]
             },
             {
                 "codename": "change_user_status",
-                "name": "Change User Status"
+                "name": "Change User Status",
+                "parent": ["view_user"]
             }
         ]
     },
@@ -42,23 +49,28 @@
         "permissions": [
             {
                 "codename": "view_company",
-                "name": "View Companies"
+                "name": "View Companies",
+                "child": ["create_company", "view_company", "edit_company", "delete_company", "change_company_status"]
             },
             {
                 "codename": "create_company",
-                "name": "Create Company"
+                "name": "Create Company",
+                "parent": ["view_company"]
             },
             {
                 "codename": "edit_company",
-                "name": "Edit Company"
+                "name": "Edit Company",
+                "parent": ["view_company"]
             },
             {
                 "codename": "delete_company",
-                "name": "Delete Company"
+                "name": "Delete Company",
+                "parent": ["view_company"]
             },
             {
                 "codename": "change_company_status",
-                "name": "Change Company Status"
+                "name": "Change Company Status",
+                "parent": ["view_company"]
             }
         ]
     },
@@ -67,19 +79,23 @@
         "permissions": [
             {
                 "codename": "view_integration",
-                "name": "View Integrations"
+                "name": "View Integrations",
+                "child": ["create_integration", "view_integration", "edit_integration", "delete_integration"]
             },
             {
                 "codename": "create_integration",
-                "name": "Create Integration"
+                "name": "Create Integration",
+                "parent": ["view_integration"]
             },
             {
                 "codename": "edit_integration",
-                "name": "Edit Integration"
+                "name": "Edit Integration",
+                "parent": ["view_integration"]
             },
             {
                 "codename": "delete_integration",
-                "name": "Delete Integration"
+                "name": "Delete Integration",
+                "parent": ["view_integration"]
             }
         ]
     },
@@ -88,19 +104,23 @@
         "permissions": [
             {
                 "codename": "view_role",
-                "name": "View Roles"
+                "name": "View Roles",
+                "child": ["create_role", "view_role", "edit_role", "delete_role"]
             },
             {
                 "codename": "create_role",
-                "name": "Create Role"
+                "name": "Create Role",
+                "parent": ["view_role"]
             },
             {
                 "codename": "edit_role",
-                "name": "Edit Role"
+                "name": "Edit Role",
+                "parent": ["view_role"]
             },
             {
                 "codename": "delete_role",
-                "name": "Delete Role"
+                "name": "Delete Role",
+                "parent": ["view_role"]
             }
         ]
     },
@@ -108,20 +128,18 @@
         "module": "Jobs",
         "permissions": [
             {
-                "codename": "apply_job",
-                "name": "Apply Job"
-            },
-            {
                 "codename": "view_applied_job",
                 "name": "View Applied Jobs"
             },
             {
                 "codename": "view_team_applied_job",
-                "name": "View Team Applied Jobs"
+                "name": "View Team Applied Jobs",
+                "child": ["change_job_status"]
             },
             {
                 "codename": "change_job_status",
-                "name": "Change Job Status"
+                "name": "Change Job Status",
+                "parent": ["view_team_applied_job"]
             },
             {
                 "codename": "view_user_applied_job",
@@ -129,34 +147,48 @@
             },
             {
                 "codename": "view_job_uploader",
-                "name": "View Job Uploader"
+                "name": "View Job Uploader",
+                "child": ["upload_csv"]
             },
             {
                 "codename": "upload_csv",
-                "name": "Upload CSV"
+                "name": "Upload CSV",
+                "parent": ["view_job_uploader"]
             },
             {
                 "codename": "view_job_portal",
-                "name": "View Job Portal"
+                "name": "View Job Portal",
+                "child": ["apply_job"]
+            },
+            {
+                "codename": "apply_job",
+                "name": "Apply Job",
+                "parent": ["view_job_portal"]
             }
-        ],
+        ]
+    },
+    {
         "module": "Team Management",
         "permissions": [
             {
                 "codename": "view_team",
-                "name": "View Teams"
+                "name": "View Teams",
+                "child": ["create_team", "view_team", "edit_team", "delete_team"]
             },
             {
                 "codename": "create_team",
-                "name": "Create Team"
+                "name": "Create Team",
+                "parent": ["view_team"]
             },
             {
                 "codename": "edit_team",
-                "name": "Edit Team"
+                "name": "Edit Team",
+                "parent": ["view_team"]
             },
             {
                 "codename": "delete_team",
-                "name": "Delete Team"
+                "name": "Delete Team",
+                "parent": ["view_team"]
             }
         ]
     }
