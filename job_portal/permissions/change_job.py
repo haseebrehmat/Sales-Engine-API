@@ -10,7 +10,7 @@ class JobStatusPermission(BasePermission):
             'GET': None,
             'POST': ['apply_job'],
             'PUT': None,
-            'PATCH': None,
+            'PATCH': ['change_job_status'],
             'DELETE': None
         }
         # if not request.user.is_superuser:

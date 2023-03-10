@@ -2,6 +2,8 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from authentication.models import Team
 from job_portal.exceptions import NoActiveUserException
 from job_portal.models import AppliedJobStatus, JobDetail
 from job_portal.permissions.applied_job_status import ApplyJobPermission
@@ -25,14 +27,13 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         job_id = self.request.data.get('job')
 
         job_details = JobDetail.objects.get(id=job_id)
-        job_details.job_status = job_status
-        job_details.save()
-
         # get current user
         current_user = self.request.user
         if current_user:
-            # if current_user and current_user.groups.name=='BD':
-            obj = AppliedJobStatus.objects.create(job=job_details, applied_by=current_user)
+            # make sure the current user apply only one time on one job
+            obj,create = AppliedJobStatus.objects.get_or_create(job=job_details, applied_by=current_user)
+            if not create:
+                return Response({'detail':'User already applied on this job'}, status=status.HTTP_400_BAD_REQUEST,)
             obj.save()
             data = JobStatusSerializer(obj, many=False)
             headers = self.get_success_headers(data.data)
@@ -56,22 +57,20 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
         self.kwargs = request.data
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True, request=request)
+        job_status = self.request.data.get('status',None)
+        job_id = self.request.data.get('job',None)
+        applied_by = self.request.data.get('applied_by',None)
+        instance = self.get_queryset().filter(id=self.kwargs.get('job',''))
+        # current use must be the lead
+        user_team = Team.objects.filter(reporting_to=request.user,members=applied_by)
+        if len(instance) != 0 and len(user_team) != 0:
+            instance.update(job_status=job_status)
+            obj = AppliedJobStatus.objects.get(id=job_id)
+            data = JobStatusSerializer(obj, many=False)
 
-        job_status = self.request.data.get('status')
-        job_id = self.request.data.get('job')
-
-        JobDetail.objects.filter(id=job_id).update(job_status=job_status)
-        obj = AppliedJobStatus.objects.get(job_id=job_id)
-        data = JobStatusSerializer(obj, many=False)
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        msg = {"data": data.data, 'detail': 'Job status updated successfully'}
-        return Response(msg, status=status.HTTP_200_OK)
+            msg = {"data": data.data, 'detail': 'Job status updated successfully'}
+            return Response(msg, status=status.HTTP_200_OK)
+        else:
+            msg = {'detail': 'Applied job id not found'}
+            return Response(msg, status=status.HTTP_200_OK)
