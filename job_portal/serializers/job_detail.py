@@ -4,6 +4,7 @@ from job_portal.models import JobDetail
 
 
 class JobDetailSerializer(serializers.ModelSerializer):
+    job_status = serializers.CharField(default=0)
     class Meta:
         model = JobDetail
         fields = "__all__"
