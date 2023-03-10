@@ -100,5 +100,5 @@ class JobStatusSerializer(serializers.ModelSerializer):
         # so you build your dict however you like
         result = OrderedDict()
         result['status'] = instance.job_status
-        result['job_id'] = instance.job.id
+        result['job_id'] = instance.id
         return result
