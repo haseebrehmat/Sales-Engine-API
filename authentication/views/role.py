@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,10 +15,13 @@ class RoleView(ListAPIView):
     serializer_class = RoleSerializer
     queryset = Role.objects.all()
     permission_classes = (RolePermissions,)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'company__name', 'permissions__name', 'permissions__module']
 
     def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         queryset = queryset.filter(company__profile__user=self.request.user)
+        queryset = self.filter_queryset(queryset)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -29,8 +32,8 @@ class RoleView(ListAPIView):
         return Response(serializer.data)
 
     def post(self, request):
-        if request.data.get("company", "") == "":
-            return Response({"detail": "Company ID cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        # if request.data.get("company", "") == "":
+        #     return Response({"detail": "Company ID cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         serializer = RoleSerializer(data=request.data, context=request)
         if serializer.is_valid():
             data = serializer.validated_data

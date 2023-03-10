@@ -1,6 +1,5 @@
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
@@ -16,6 +15,8 @@ class CompanyView(ListAPIView):
     serializer_class = CompanySerializer
 
     permission_classes = (CompanyPermissions,)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'code']
 
     def get_queryset(self):
         return Company.objects.all()
