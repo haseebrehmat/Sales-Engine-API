@@ -796,17 +796,9 @@ languages = {
         "automation engineer",
         "full stack django developer",
         "full stack python developer",
-        "machine learning",
         "python web developer",
-        "data scientist",
-        "data analyst",
         "flask",
-        "data engineer",
         "python developer",
-        "artificial intelligence",
-        "ml engineer",
-        "tableau",
-        "hadoop"
     ],
     "Database": [
         "database",
@@ -952,7 +944,6 @@ languages = {
         "unity3d"
     ],
     "Java": [
-        "android",
         "jpm",
         "j2ee",
         "java",
@@ -986,6 +977,10 @@ languages = {
         "mobile development",
         "objective c"
     ],
+
+    "Android":["android","kotlin"],
+
+
     "UI / UX": [
         "ui designer",
         "ui developer",
@@ -1032,5 +1027,6 @@ languages = {
         "network integration engineer",
         "network systems engineer"
     ],
-    "servicenow":["servicenow","servicenow"]
+    "servicenow":["service now","servicenow"],
+
 }
