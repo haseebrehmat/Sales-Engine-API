@@ -13,7 +13,7 @@ from authentication.serializers.user_permission import UserPermissionSerializer
 from authentication.serializers.users import UserSerializer
 from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import validate_password
-
+import boto3
 
 class UserPermission(APIView):
     permission_classes = (UserPermissions,)
