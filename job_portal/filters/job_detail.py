@@ -15,6 +15,7 @@ class CustomJobFilter(FilterSet):
     # tech_keywords = CharFilter(field_name='tech_keywords',lookup_expr='iexact')
     tech_keywords = CharFilter(method='tech_keywords_field',field_name='tech_keywords')
     job_visibility = CharFilter(method='filter_company',field_name='job_visibility')
+    job_title = CharFilter(field_name='job_title',lookup_expr='iexact')
 
 
     class Meta:

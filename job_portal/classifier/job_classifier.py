@@ -13,11 +13,11 @@ class JobClassifier(object):
         self.data_frame = dataframe
 
     def classifier_stage1(self, job_title):
+        language_dict = languages
         final_result = list()
         if isinstance(job_title, str):  # Full Stack Django Developer
-            print(job_title)
             class_list = []
-            for key, value in languages.items():
+            for key, value in language_dict.items():
                 data = [key for x in value if x in job_title]
                 if len(data) > 0:
                     if "javascript" in job_title:
@@ -33,6 +33,7 @@ class JobClassifier(object):
         return final_result[0] if len(final_result) > 0 else 'others'
 
     def classifier_stage2(self, job_title):
+        data = []
         skills = {k.lower(): [i.lower() for i in v] for k, v in keyword.items()}
         for class_key, class_value in skills.items():
             data = [class_key for i in class_value if job_title == i]
@@ -41,7 +42,7 @@ class JobClassifier(object):
         return final_result[0] if len(final_result) > 0 else 'others'
 
     def find_job_techkeyword(self, job_title):
-            job_title = ",".join(job_title.split("/")).lower()
+            # job_title = ",".join(job_title.split("/")).lower()
 
             # run stage 1 of the classififer
             data = self.classifier_stage1(job_title)

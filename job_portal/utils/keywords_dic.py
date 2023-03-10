@@ -305,6 +305,7 @@ keyword = {
         "Data Solutions Engineer"
     ],
     "Service Now": [
+        "ServiceNow Developer",
         "Service Desk Analyst",
         "IT Service Management Specialist",
         "Service Now Administrator",
@@ -790,7 +791,7 @@ languages = {
         "cosmjs"
     ],
     "Python": [
-        "python"
+        "python",
         "django",
         "automation engineer",
         "full stack django developer",
@@ -914,7 +915,7 @@ languages = {
         "api developer - go"
     ],
     "C#": [
-        "c#"
+        "c#",
         "unity",
         ".net",
         ".net core",
@@ -951,10 +952,10 @@ languages = {
         "unity3d"
     ],
     "Java": [
-        "java"
-        "android"
+        "android",
         "jpm",
-        "j2ee"
+        "j2ee",
+        "java",
         "core java",
         "javase",
         "java ee",
@@ -973,7 +974,7 @@ languages = {
         "maven"
     ],
     "IOS": [
-        "ios"
+        "ios",
         "ios developer",
         "restful",
         "core data",
