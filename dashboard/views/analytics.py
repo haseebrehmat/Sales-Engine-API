@@ -13,7 +13,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_roles.granting import allof, is_self
-from authentication.models import User
+from authentication.models import User, Team
 from dashboard.filters.dashboard_analytics import CustomJobFilter
 from dashboard.permissions.dashboard import DashboardPermission
 from dashboard.serializers.dashboard_anylatics import DashboardAnalyticsSerializer
@@ -60,9 +60,11 @@ class DashboardAnalyticsView(ListAPIView):
     # @method_decorator(cache_page(60*2))
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        # get all users under the current user team
+        user_team = Team.objects.filter(reporting_to=request.user).values_list('members__id',flat=True)
 
         # get all statistics
-        job_status_counts = queryset.values('job__job_status').annotate(count=Count('job__job_status'))
+        job_status_counts = queryset.filter(applied_by__in=user_team).values('job_status').annotate(count=Count('job_status'))
         unique_count_dic = json.dumps(list(job_status_counts), cls=DjangoJSONEncoder)
         status_count_data = json.loads(unique_count_dic)
         status_count_dic = self.map_status(status_count_data)
@@ -75,8 +77,8 @@ class DashboardAnalyticsView(ListAPIView):
         for item in list(unique_users):
             data = []
             if queryset.count() > 0:
-                data = queryset.filter(applied_by=item).values('job__job_status').annotate(
-                    count=Count('job__job_status'))
+                data = queryset.filter(applied_by=item).values('job_status').annotate(
+                    count=Count('job_status'))
             user_count_dic = json.dumps(list(data), cls=DjangoJSONEncoder)
             user_status_count_data = json.loads(user_count_dic)
             user_status_count_dic = self.map_status(user_status_count_data)
@@ -115,8 +117,8 @@ class DashboardAnalyticsView(ListAPIView):
             7: 'prospects'
         }
         for i in status_count_data:
-            if i['job__job_status'] in job_status_keys:
-                result_data[job_status_keys[i['job__job_status']]] += i['count']
+            if i['job_status'] in job_status_keys:
+                result_data[job_status_keys[i['job_status']]] += i['count']
                 # data[job_status_keys[i['job__job_status']]] = i['count']
         # calculate total, prospects
         # result_data['prospects'] = (result_data['total']) - (result_data['hired']+result_data['rejected']+result_data['cold'] + result_data['warm'] + result_data['rejected'])

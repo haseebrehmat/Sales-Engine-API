@@ -1,13 +1,11 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
-from django.db import transaction
 from rest_framework import status
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from rest_framework import filters
 from authentication.permissions import UserPermissions
 from authentication.serializers.jwt_serializer import JwtSerializer
 from authentication.models import User, Profile, Role
@@ -54,15 +52,24 @@ class UserView(ListAPIView):
     serializer_class = UserSerializer
     pagination_class = CustomPagination
     queryset = User.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username', 'email', 'roles__name', 'roles__company__name']
 
     def get(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
+        if request.GET.get("type") == "dropdown":
+            queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
+            queryset = self.filter_queryset(queryset)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            serializer = UserSerializer(queryset, many=True)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+            queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
+            queryset = self.filter_queryset(queryset)
+
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

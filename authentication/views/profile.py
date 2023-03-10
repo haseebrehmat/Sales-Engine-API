@@ -13,7 +13,13 @@ class ProfileView(APIView):
     def get(self, request):
         queryset = Profile.objects.filter(user_id=request.user.id).first()
         serializer = ProfileSerializer(queryset, many=False)
-        return Response(serializer.data, status.HTTP_200_OK)
+        data = []
+        if len(serializer.data) > 0:
+            data = serializer.data
+            data.update(**data["user"])
+            del data["user"]
+
+        return Response(data, status.HTTP_200_OK)
 
     def put(self, request):
         conditions = [
@@ -36,7 +42,7 @@ class ProfileView(APIView):
         data = request.data
         data._mutable = True
         data["user_id"] = request.user.id
-        if instance is None:  # Incase Profile Doesn't exist
+        if instance is None:    # Incase Profile Doesn't exist
             instance = Profile.objects.create(user_id=request.user.id)
         serializer = ProfileSerializer(instance, data=request.data)
         if serializer.is_valid():

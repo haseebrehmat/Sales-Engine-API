@@ -23,7 +23,7 @@ class JobDetail(models.Model):
     tech_keywords = models.TextField(null=True, blank=True)
     job_posted_date = models.DateTimeField(null=True, blank=True)
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
-    job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
+    block = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()
@@ -42,8 +42,8 @@ class AppliedJobStatus(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    job = models.OneToOneField(
-        JobDetail,
+    job = models.ForeignKey(
+        'JobDetail',
         blank=True,
         null=True,
         on_delete=models.CASCADE)
@@ -53,11 +53,13 @@ class AppliedJobStatus(models.Model):
         on_delete=models.CASCADE,
         blank=True, null=False)
     applied_date = models.DateTimeField(default=timezone.now)
+    job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
 
     class Meta:
         default_permissions = ()
         db_table = "applied_job_status"
         ordering = ["id"]
+        unique_together = [("applied_by","job")]
 
     def __str__(self):
         return self.applied_by.username
@@ -67,7 +69,9 @@ class AppliedJobStatus(models.Model):
 def change_status(sender, instance, created, **kwargs):
     #set job_status to 1
     if created:
-        JobDetail.objects.filter(id=instance.job_id).update(job_status=1)
+        # initial apply job_status will be 1
+        instance.job_status=1
+        instance.save()
 
 
 class BlacklistJobs(TimeStamped):
@@ -75,7 +79,7 @@ class BlacklistJobs(TimeStamped):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    compnay_name = models.CharField(max_length=100,blank=True,null=True)
+    company_name = models.CharField(max_length=100,blank=True,null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     
     class Meta:

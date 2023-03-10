@@ -1,4 +1,5 @@
-from rest_framework import status
+from rest_framework import status, filters
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
@@ -8,11 +9,14 @@ from authentication.serializers.team_management import TeamManagementSerializer
 from settings.utils.helpers import serializer_errors
 
 
-class TeamView(APIView):
+class TeamView(ListAPIView):
     permission_classes = (TeamPermissions, )
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'reporting_to__username', 'reporting_to__email', 'members__username',  'members__email']
 
     def get(self, request):
-        queryset = Team.objects.all()
+        queryset = Team.objects.filter(reporting_to__profile__company=request.user.profile.company)
+        queryset = self.filter_queryset(queryset)
         serializer = TeamManagementSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -5,9 +5,10 @@ from utils.helpers import validate_request
 
 class AppliedJobDetailPermission(BasePermission):
     message = "You don't have access to this endpoint!"
+
     def has_permission(self, request, view):
         permissions = {
-            'GET': ['view_applied_job','view_user_applied_job'],
+            'GET': ['view_applied_job', 'view_user_applied_job'],
             'POST': None,
             'PUT': None,
             'DELETE': None

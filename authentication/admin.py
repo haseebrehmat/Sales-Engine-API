@@ -16,13 +16,19 @@ class UserProfileInlineAdmin(admin.StackedInline):
   
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('id', 'username','is_superuser','email', 'roles')
+    list_display = ('id', 'username','is_superuser','email','company_profile', 'roles')
     list_filter = ('email','roles',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'is_superuser', 'password', 'roles', 'is_active')}),
 
         ('Permissions', {'fields': ('is_admin',)}),
     )
+
+    def company_profile(self, x):
+        if x.profile.company:
+            return x.profile.company.name
+    
+    company_profile.short_description = 'company'
 
     add_fieldsets = BaseUserAdmin.add_fieldsets + (
         (None, {'fields': ('email','roles')}),

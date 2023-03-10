@@ -4,7 +4,8 @@ def validate_request(request, permissions):
     except Exception as e:
         return False
     if request.method in permissions.keys():
-        for perm in permissions[request.method]:
-            if perm in user_permissions:
-                return True
+        if permissions[request.method] is not None:
+            for perm in permissions[request.method]:
+                if perm in user_permissions:
+                    return True
     return False

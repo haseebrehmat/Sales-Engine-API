@@ -33,8 +33,6 @@ class RoleSerializer(serializers.ModelSerializer):
         return instance
 
 
-
-
 class JobKeywordSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500)
     count = serializers.IntegerField(default=0)

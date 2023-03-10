@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.models import User, PasswordChangeLogs
+from settings.utils.helpers import validate_password
 
 
 class PasswordManagement(APIView):
@@ -18,6 +19,8 @@ class PasswordManagement(APIView):
                 message = "New password cannot be empty"
             elif request.data.get("old_password") == request.data.get("new_password"):
                 message = "New password and current password cannot be same"
+            elif not validate_password(request.data.get("new_password")):
+                message = "Please choose a strong password"
             else:
                 user = User.objects.get(pk=request.user.pk)
                 user.set_password(new_password)

@@ -14,7 +14,7 @@ class Role(TimeStamped):
         default=uuid.uuid4,
         editable=False)
     name = models.CharField(blank=True, null=True, max_length=100)
-    company = models.ForeignKey("Company", on_delete=models.CASCADE, null=True, blank=True)
+    company = models.ForeignKey("Company", on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     permissions = models.ManyToManyField(CustomPermission)
 
