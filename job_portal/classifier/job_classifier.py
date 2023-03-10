@@ -32,15 +32,6 @@ class JobClassifier(object):
             final_result = list(set(class_list))
         return final_result[0] if len(final_result) > 0 else 'others'
 
-    def classifier_stage2(self, job_title):
-        data = []
-        skills = {k.lower(): [i.lower() for i in v] for k, v in keyword.items()}
-        for class_key, class_value in skills.items():
-            data = [class_key for i in class_value if job_title == i]
-
-        final_result = list(set(data))
-        return final_result[0] if len(final_result) > 0 else 'others'
-
     def find_job_techkeyword(self, job_title):
             # job_title = ",".join(job_title.split("/")).lower()
 
@@ -51,11 +42,12 @@ class JobClassifier(object):
             return data
 
     def job_classifier_stage2(self, job_title):
+        final_result =[]
         skills = {k.lower(): [i.lower() for i in v] for k, v in keyword.items()}
         for class_key, class_value in skills.items():
-            data = [class_key for i in class_value if job_title == i]
-
-        final_result = list(set(data))
+            data = [class_key for i in class_value if job_title == i.lower()]
+            final_result.extend(data)
+        final_result = list(set(final_result))
         return final_result[0] if len(final_result) > 0 else 'others'
 
     def classify_job(self, job_title):
