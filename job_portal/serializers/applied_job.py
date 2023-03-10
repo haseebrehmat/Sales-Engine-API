@@ -60,8 +60,8 @@ class AppliedJobOuputSerializer(serializers.Serializer):
         # Here instance is instance of your model
         # so you build your dict however you like
         result = OrderedDict()
-        result['status'] = instance.job.job_status
-        result['job_id'] = instance.job.id
+        result['status'] = instance.job_status
+        result['job_id'] = instance.id
         return result
 
 
