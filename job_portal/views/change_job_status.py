@@ -62,6 +62,7 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         id = self.request.data.get('id',None)
         obj = AppliedJobStatus.objects.filter(id=id)
         if len(obj) > 0:
+            obj = obj.first()
             instance = self.get_queryset().filter(id=self.kwargs.get('job',''))
             # current use must be the lead
             user_team = Team.objects.filter(reporting_to=request.user,members=obj.applied_by)
@@ -77,7 +78,7 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
                 return Response(msg, status=status.HTTP_200_OK)
             else:
                 msg = {'detail': 'Applied job id not found'}
-                return Response(msg, status=status.HTTP_200_OK)
+                return Response(msg, status=status.HTTP_400_BAD_REQUEST)
         else:
             msg = {'detail': 'Applied job id not found'}
-            return Response(msg, status=status.HTTP_200_OK)
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
