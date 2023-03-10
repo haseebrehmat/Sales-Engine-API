@@ -64,9 +64,9 @@ class JobCleanerView(APIView):
     def put(self, request):
         try:
             job_data = JobDetail.objects.all()
-            count_update = self.update_data(job_data)
-
-            return Response({'detail': f'{count_update} jobs updated successfully with new tech keywords!'}, status=204)
+            thread = Thread(target=self.update_data, args=(job_data,), )
+            thread.start()
+            return Response({'detail': f'jobs updated successfully with new tech keywords!'}, status=204)
         except Exception as e:
             return Response({'detail': 'Jobs are not updated with new tech keywords!'}, status=404)
 
@@ -96,9 +96,9 @@ class JobTypeCleanerView(APIView):
     def put(self, request):
         try:
             job_data = JobDetail.objects.all()
-            count_update = self.update_data(job_data)
-            
-            return Response({'detail': f'{count_update} jobs types updated successfully !'}, status=204)
+            thread = Thread(target=self.update_data, args=(job_data,), )
+            thread.start()
+            return Response({'detail': f'Jobs types updated successfully !'}, status=204)
         except Exception as e:
             return Response({'detail': 'Jobs types are not updated!'}, status=404)
 
@@ -128,9 +128,9 @@ class JobSourceCleanerView(APIView):
     def put(self, request):
         try:
             job_data = JobDetail.objects.all()
-            count_update = self.update_data(job_data)
-            
-            return Response({'detail': f'{count_update} jobs source updated successfully !'}, status=204)
+            thread = Thread(target=self.update_data, args=(job_data,), )
+            thread.start()
+            return Response({'detail': f'Jobs source updated successfully !'}, status=204)
         except Exception as e:
             return Response({'detail': 'Jobs source are not updated!'}, status=404)
 
