@@ -39,8 +39,7 @@ class ProfileView(APIView):
                 return Response({"detail": "User with this email already exist"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         instance = Profile.objects.filter(user_id=request.user.id).first()
-        data = request.data
-        data._mutable = True
+        data = request.data.copy()
         data["user_id"] = request.user.id
         if instance is None:    # Incase Profile Doesn't exist
             instance = Profile.objects.create(user_id=request.user.id)
