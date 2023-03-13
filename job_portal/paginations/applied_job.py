@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import pagination
 from rest_framework.response import Response
 
@@ -13,6 +15,7 @@ class AppliedJobPagination(pagination.PageNumberPagination):
     query = JobDetail.objects.all()
 
     def get_paginated_response(self, data):
+
         response = Response({
             'links': {
                 'next': self.get_next_link(),
@@ -21,6 +24,6 @@ class AppliedJobPagination(pagination.PageNumberPagination):
             },
             'filtered_jobs': self.page.paginator.count,
             'data': data,
-            'job_status_choice': dict(JOB_STATUS_CHOICE)
+            'job_status_choice': dict(JOB_STATUS_CHOICE),
         })
         return response
