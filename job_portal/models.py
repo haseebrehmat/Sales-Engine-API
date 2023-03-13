@@ -75,10 +75,10 @@ def change_status(sender, instance, created, **kwargs):
 
 
 class BlacklistJobs(TimeStamped):
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False)
+    # id = models.UUIDField(
+    #     primary_key=True,
+    #     default=uuid.uuid4,
+    #     editable=False)
     company_name = models.CharField(max_length=100,blank=True,null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     

@@ -16,7 +16,6 @@ class CustomPagination(pagination.PageNumberPagination):
     page_query_param = 'page'
     query = JobDetail.objects.all()
 
-
     def get_paginated_response(self, data):
         response = Response({
             'links': {
@@ -55,7 +54,9 @@ class CustomPagination(pagination.PageNumberPagination):
         unique_keyword_object = JobDetail.objects.extra(   select={     'name': 'tech_keywords'   } ).values('name').annotate(value=Count('tech_keywords'))
         unique_count_dic = json.dumps(list(unique_keyword_object), cls=DjangoJSONEncoder)
         unique_count_data = json.loads(unique_count_dic)
-        return sorted(unique_count_data, key=lambda x: x["value"],reverse=True)
+        keywords = sorted(unique_count_data, key=lambda x: x["value"], reverse=True)
+
+        return keywords
 
     def total_job_count(self):
         job_count = JobDetail.objects.count()

@@ -49,7 +49,7 @@ class JobDataUploadView(CreateAPIView):
                 job_type=job_item.job_type,
                 address=job_item.address,
                 job_description=job_item.job_description,
-                tech_keywords=job_item.tech_keywords,
+                tech_keywords=job_item.tech_keywords.replace(" ", "").lower(),
                 job_posted_date=job_item.job_posted_date,
                 job_source_url=job_item.job_source_url,
             ) for job_item in classify_data.data_frame.itertuples()]
