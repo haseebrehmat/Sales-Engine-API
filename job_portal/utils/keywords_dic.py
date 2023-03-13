@@ -982,6 +982,8 @@ languages = {
 
 
     "UI / UX": [
+        "ui",
+        "ux",
         "ui designer",
         "ui developer",
         "ux designer",

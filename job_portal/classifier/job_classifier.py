@@ -159,9 +159,11 @@ class JobClassifier(object):
         self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
             lambda x: self.classify_job(str(x)) if (x is not None) else None)
     def update_job_type(self):
-        self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        self.data_frame['job_type'] = self.data_frame['job_type'].apply(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
             lambda x: self.clean_job_type(str(x)) if (x is not None) else None)
     
     def update_job_source(self):
+        self.data_frame['job_source'] = self.data_frame['job_source'].apply(
+            lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['job_source'] = self.data_frame['job_source'].map(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
