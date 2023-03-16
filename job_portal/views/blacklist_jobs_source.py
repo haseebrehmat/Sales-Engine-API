@@ -9,22 +9,27 @@ class BlackListJobsView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
+        status_code = status.HTTP_406_NOT_ACCEPTABLE
         # add word to blacklist and mark all companies blacklisted
         if request.user.profile and request.user.profile.company:
             company_name = request.data.get('company_name', False)
-            if company_name:
+            if company_name and company_name != "":
                 company_name = company_name.lower()
                 black_company, is_created = BlacklistJobs.objects.get_or_create(company=request.user.profile.company,
                                                                                 company_name=company_name)
 
                 JobDetail.objects.filter(company_name__iexact=company_name).update(block=True)
-                return Response({"detail": "User company has been blacklisted"},
-                                status=status.HTTP_200_OK)
+                message = "User company has been blacklisted"
+                status_code = status.HTTP_200_OK
             else:
-                return Response({"detail": "Company name field is empty"},
-                                status=status.HTTP_200_OK)
+                if company_name == "":
+                    message = "Company doesn't exist, It cannot be marked as recruiter"
+                else:
+                    message = "Company name field is empty"
         else:
-            return Response({"detail": "User has no company assign"}, status=status.HTTP_200_OK)
+            message = "User has no company assign"
+
+        return Response({"detail": message}, status_code)
 
 
 class NonBlackListJobsView(APIView):
@@ -33,9 +38,10 @@ class NonBlackListJobsView(APIView):
     def post(self, request):
         # add word to blacklist and mark all companies blacklisted
         if request.user.profile and request.user.profile.company:
-            company_name = request.data.get('company_name',None)
+            company_name = request.data.get('company_name', None)
             if company_name:
-                BlacklistJobs.objects.filter(company=request.user.profile.company,company_name__iexact=company_name).delete()
+                BlacklistJobs.objects.filter(company=request.user.profile.company,
+                                             company_name__iexact=company_name).delete()
                 JobDetail.objects.filter(company_name__iexact=company_name).update(block=False)
                 return Response({"detail": "User company has been removed from blacklisted"},
                                 status=status.HTTP_200_OK)

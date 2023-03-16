@@ -2,9 +2,6 @@ import uuid
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, AbstractUser
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from authentication.models.profile import Profile
 
 from settings.utils.model_fields import TimeStamped, LowercaseEmailField
 
@@ -56,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
         null=True,
         help_text="The roles of this user belongs to. A user will get all permissions "
                   "granted to each of their roles.")
-    groups = None
+    # groups = None
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
