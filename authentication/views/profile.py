@@ -7,6 +7,7 @@ from authentication.models import Profile, User
 from authentication.serializers.profile import ProfileSerializer
 from settings.utils.helpers import serializer_errors
 
+
 class ProfileView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -27,9 +28,8 @@ class ProfileView(APIView):
             request.data.get("last_name", "") != "",
             request.data.get("email", "") != "",
             request.data.get("username", "") != "",
-            #request.data.get("employee_id", "") != ""
         ]
-        username = request.data.get("email", request.user.username)
+        username = request.data.get("username", request.user.username)
         email = request.data.get("email", request.user.email)
         if not all(conditions):
             return Response({"detail": "Fields cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -39,8 +39,7 @@ class ProfileView(APIView):
                 return Response({"detail": "User with this email already exist"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         instance = Profile.objects.filter(user_id=request.user.id).first()
-        data = request.data
-        data._mutable = True
+        data = request.data.copy()
         data["user_id"] = request.user.id
         if instance is None:    # Incase Profile Doesn't exist
             instance = Profile.objects.create(user_id=request.user.id)

@@ -30,7 +30,7 @@ class JobDetail(models.Model):
         db_table = "job_detail"
         unique_together = (('company_name', 'job_title'),)
         ordering = ['-job_posted_date']
-        indexes = [models.Index(fields=['company_name','job_source','tech_keywords','job_posted_date'])]
+        indexes = [models.Index(fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
         index_together = ['company_name', 'job_title']
 
     def __str__(self):
@@ -59,7 +59,7 @@ class AppliedJobStatus(models.Model):
         default_permissions = ()
         db_table = "applied_job_status"
         ordering = ["id"]
-        unique_together = [("applied_by","job")]
+        unique_together = [("applied_by", "job")]
 
     def __str__(self):
         return self.applied_by.username
@@ -67,10 +67,10 @@ class AppliedJobStatus(models.Model):
 
 @receiver(post_save, sender=AppliedJobStatus)
 def change_status(sender, instance, created, **kwargs):
-    #set job_status to 1
+    # set job_status to 1
     if created:
         # initial apply job_status will be 1
-        instance.job_status=1
+        instance.job_status = 1
         instance.save()
 
 
@@ -79,8 +79,8 @@ class BlacklistJobs(TimeStamped):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    company_name = models.CharField(max_length=100,blank=True,null=True)
+    company_name = models.CharField(max_length=100, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    
+
     class Meta:
         default_permissions = ()

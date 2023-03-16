@@ -15,6 +15,7 @@ from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import validate_password
 import boto3
 
+
 class UserPermission(APIView):
     permission_classes = (UserPermissions,)
 
@@ -63,7 +64,11 @@ class UserView(ListAPIView):
             serializer = UserSerializer(queryset, many=True)
         else:
             queryset = self.filter_queryset(self.get_queryset())
-            queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
+            if request.user.is_superuser:
+                queryset = self.queryset.filter(roles__name="Owner").exclude(id=request.user.id)
+            else:
+                queryset = self.queryset.filter(profile__company=request.user.profile.company).exclude(
+                    id=request.user.id)
             queryset = self.filter_queryset(queryset)
 
             page = self.paginate_queryset(queryset)
@@ -82,7 +87,7 @@ class UserView(ListAPIView):
         conditions = [
             email != "",
             password != "",
-            username != ""
+            username != "",
         ]
         if all(conditions):
             if validate_password(password):
@@ -97,19 +102,17 @@ class UserView(ListAPIView):
 
     def create_user(self, email, password, username, request):
         is_exist = User.objects.filter(email=email)
-        if len(is_exist)>0:
+        if len(is_exist) > 0:
             return status.HTTP_400_BAD_REQUEST, "User already exist"
         user = User.objects.create(
             email=email,
             username=username,
             password=make_password(password))
 
-
         # Assign permission to all the group
-
-        company_id = request.user.profile.company_id
+        company_id = request.data.get("company", "")
         if company_id != "":
-            profile, created = Profile.objects.update_or_create(user_id=user.id,defaults={'company_id':company_id})
+            profile, created = Profile.objects.update_or_create(user_id=user.id, defaults={'company_id': company_id})
             user.profile = profile
 
         role_id = request.data.get("roles", "")
@@ -152,10 +155,10 @@ class UserDetailView(APIView):
             pass
         else:
             if str(user.first().id) == pk:  # Incase if email is not assign to any user
-                pass    # Go update detail
-            else:       # Through an error
+                pass  # Go update detail
+            else:  # Through an error
                 return Response({"detail": "User with this email already exist"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         user.update(**data)
         user = user.first()
         company_id = request.data.get("company")

@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 
@@ -33,17 +35,33 @@ class ListAppliedJobView(ListAPIView):
     @swagger_auto_schema(responses={200: TeamAppliedJobDetailSerializer(many=True)})
     def get(self, request, *args, **kwargs):
         try:
-            bd_id_list = Team.objects.get(reporting_to=self.request.user).members.values_list('id', flat=True)
-            bd_users = User.objects.filter(id__in=bd_id_list)
+            bd_id_list = []
+            if request.user.is_superuser:
+                bd_users = User.objects.all()
+
+            elif request.user.roles.name.lower() == "owner":
+                # queryset = Team.objects.filter(reporting_to__profile__company=request.user.profile.company)
+                bd_users = User.objects.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
+                # for x in queryset:
+                #     bd_id_list = [i for i in x.members.values_list('id', flat=True)]
+                #     bd_users = User.objects.filter(id__in=bd_id_list)
+
+            else:
+                bd_id_list = Team.objects.get(reporting_to=self.request.user).members.values_list('id', flat=True)
+                bd_users = User.objects.filter(id__in=bd_id_list)
+
             bd_query = UserSerializer(bd_users, many=True)
             job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list)
-            query_ = job_list
-            queryset = self.filter_queryset(query_)
+            queryset = self.filter_queryset(job_list)
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = self.get_serializer(page, many=True)
                 data = self.get_paginated_response(serializer.data)
                 data.data['team_members'] = bd_query.data
+                end_time = datetime.now()
+                start_time = end_time - timedelta(hours=12)
+                data.data['last_12_hours_count'] = queryset.filter(applied_date__range=[start_time, end_time]).count()
+
                 return data
 
             serializer = self.get_serializer(queryset, many=True)

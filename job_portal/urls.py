@@ -3,6 +3,7 @@
 from django.urls import path, include
 from rest_framework import routers
 
+from job_portal.classifier.update_job_stacks import UpdateJobStackView
 from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, ChangeJobStatusView, AppliedJobDetailsView, \
     ListAppliedJobView
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
@@ -30,4 +31,5 @@ urlpatterns = [
     path('job_sources/', JobSourcesView.as_view()),
     path('clean_job_type/', JobTypeCleanerView.as_view()),
     path('clean_job_source/', JobSourceCleanerView.as_view()),
+    path('clean_job_techstacks/', UpdateJobStackView.as_view()),
 ]

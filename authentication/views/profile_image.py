@@ -2,19 +2,17 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from authentication.exceptions import InvalidUserException
 from authentication.models import Profile
-from authentication.serializers.profile import ProfileSerializer
-from settings.utils.helpers import serializer_errors
 import boto3
 
 
 class ProfileViewImage(APIView):
     permission_classes = (IsAuthenticated,)
+
     def put(self, request):
         conditions = [
             request.data.get("file", "") != "",
-            #request.data.get("employee_id", "") != ""
+            # request.data.get("employee_id", "") != ""
         ]
         if not all(conditions):
             return Response({"detail": "Fields cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -22,13 +20,29 @@ class ProfileViewImage(APIView):
         instance = Profile.objects.filter(user_id=request.user.id).first()
         if instance is None:  # Incase Profile Doesn't exist
             instance = Profile.objects.create(user_id=request.user.id)
-        serializer = ProfileSerializer(instance, data=request.data)
-        if serializer.is_valid():
-            url = self.upload_image(object_name=request.data.get('file'), user_id=request.user.id)
-            serializer.save(file_url=url)
-            return Response({"detail": "Profile updated successfully"}, status=status.HTTP_200_OK)
-        data = serializer_errors(serializer)
-        raise InvalidUserException(data)
+
+        image = request.data.get('file')
+        valid_images = [
+            'image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+        ]
+        status_code = status.HTTP_406_NOT_ACCEPTABLE
+        if image.content_type not in valid_images:
+            message = "Image format is not valid, please choose JPG, JPEG, PNG or Webp"
+
+        elif image.size > 4096000:    # 4096000 Bytes => 4 mbs
+            message = "Image cannot be greater than 8mb"
+        else:
+            url = self.upload_image(object_name=image, user_id=request.user.id)
+            instance.file_url = url
+            instance.save()
+            message = "Profile updated successfully"
+            status_code = status.HTTP_200_OK
+
+        return Response({"detail": message, "image_url": url}, status=status_code)
+
     def upload_image(self, object_name, user_id):
         file_name = user_id
         s3 = boto3.client('s3', aws_access_key_id='AKIAQDQXUW4VV7HSLFXE',
@@ -41,5 +55,3 @@ class ProfileViewImage(APIView):
                                      'ACL': 'public-read'})
         file_url = "https://octagon-user-profile-images.s3.us-west-1.amazonaws.com/profile_images/" + str(file_name)
         return file_url
-
-

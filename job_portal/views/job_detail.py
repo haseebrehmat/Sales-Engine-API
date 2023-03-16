@@ -1,6 +1,7 @@
 from threading import Thread
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
@@ -21,7 +22,7 @@ class JobDetailsView(ModelViewSet):
     pagination_class = CustomPagination
     filterset_class = CustomJobFilter
     ordering = ('-job_posted_date')
-    search_fields = ['$job_title']
+    search_fields = ['$job_title', 'company_name']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
     permission_classes = (JobDetailPermission,)
@@ -30,9 +31,14 @@ class JobDetailsView(ModelViewSet):
     @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
     def list(self, request, *args, **kwargs):
         current_user = request.user
+
+        if request.user.profile.company is None:  # in case if no company is assigned
+            return Response({"detail": "No company has been assigned to this user"},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
         if len(current_user_jobs_list) > 0:
-            queryset = self.get_queryset().exclude(id__in=current_user_jobs_list.values_list('job_id',flat=True))
+            queryset = self.get_queryset().exclude(id__in=current_user_jobs_list.values_list('job_id', flat=True))
         else:
             queryset = self.get_queryset()
         # pass the queryset to the remaining filters

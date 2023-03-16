@@ -49,7 +49,7 @@ class JobDataUploadView(CreateAPIView):
                 job_type=job_item.job_type,
                 address=job_item.address,
                 job_description=job_item.job_description,
-                tech_keywords=job_item.tech_keywords,
+                tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
                 job_posted_date=job_item.job_posted_date,
                 job_source_url=job_item.job_source_url,
             ) for job_item in classify_data.data_frame.itertuples()]
@@ -79,9 +79,9 @@ class JobCleanerView(APIView):
 
         for key in classify_data.data_frame.itertuples():
             update_item = JobDetail.objects.get(id=key.pk)
-            if update_item.tech_keywords != key.tech_keywords:
-                update_count+=1
-                update_item.tech_keywords = key.tech_keywords
+            if update_item.tech_keywords != key.tech_keywords.lower():
+                update_count += 1
+                update_item.tech_keywords = key.tech_keywords.lower()
                 # append the updated user object to the list
                 user_bulk_update_list.append(update_item)
 
@@ -112,7 +112,7 @@ class JobTypeCleanerView(APIView):
         for key in classify_data.data_frame.itertuples():
             update_item = JobDetail.objects.get(id=key.pk)
             if update_item.job_type != key.job_type:
-                update_count+=1
+                update_count += 1
                 update_item.job_type = key.job_type
                 # append the updated user object to the list
                 user_bulk_update_list.append(update_item)
@@ -120,7 +120,7 @@ class JobTypeCleanerView(APIView):
         # update scores of all users in one operation
         JobDetail.objects.bulk_update(user_bulk_update_list, ['job_type'])
         return update_count
-    
+
 
 class JobSourceCleanerView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -144,11 +144,10 @@ class JobSourceCleanerView(APIView):
         for key in classify_data.data_frame.itertuples():
             update_item = JobDetail.objects.get(id=key.pk)
             if update_item.job_source != key.job_source:
-                update_count+=1
+                update_count += 1
                 update_item.job_source = key.job_source
                 # append the updated user object to the list
                 user_bulk_update_list.append(update_item)
         # update scores of all users in one operation
         JobDetail.objects.bulk_update(user_bulk_update_list, ['job_source'])
         return update_count
-

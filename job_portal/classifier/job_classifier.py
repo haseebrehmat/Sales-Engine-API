@@ -3,7 +3,7 @@ from django.utils import timezone
 import pandas as pd
 from dateutil import parser
 from job_portal.models import JobDetail
-from job_portal.utils.keywords_dic import keyword, languages
+from job_portal.utils.keywords_dic import keyword, languages, developer
 from django.db.models import F, Value
 
 
@@ -33,22 +33,29 @@ class JobClassifier(object):
         return final_result[0] if len(final_result) > 0 else 'others'
 
     def find_job_techkeyword(self, job_title):
-            # job_title = ",".join(job_title.split("/")).lower()
+        # job_title = ",".join(job_title.split("/")).lower()
 
-            # run stage 1 of the classififer
-            data = self.classifier_stage1(job_title)
-            if data == "others":
-                return self.job_classifier_stage2(job_title)
-            return data
+        # run stage 1 of the classififer
+        data = self.classifier_stage1(job_title)
+        if data == "others":
+            return self.job_classifier_stage2(job_title)
+        return data
 
     def job_classifier_stage2(self, job_title):
-        final_result =[]
+        final_result = []
         skills = {k.lower(): [i.lower() for i in v] for k, v in keyword.items()}
         for class_key, class_value in skills.items():
             data = [class_key for i in class_value if job_title == i.lower()]
             final_result.extend(data)
         final_result = list(set(final_result))
-        return final_result[0] if len(final_result) > 0 else 'others'
+        return final_result[0] if len(final_result) > 0 else self.job_classifier_other_dev_stage(job_title)
+
+    def job_classifier_other_dev_stage(self, job_title):
+        dev_list = map(str.lower, developer)
+        for x in dev_list:
+            if x in job_title.lower():
+                return "others dev"
+        return "others"
 
     def classify_job(self, job_title):
         return self.find_job_techkeyword(job_title)
@@ -117,7 +124,8 @@ class JobClassifier(object):
 
     def convert_date(self, job_date):
         value = None
-        regex_date = r'(?i)[1-2]\d{3}-(0[1-9]|1[0-2])-(3[0-1]|[1-2]\d|0[1-9])t?\s?([0-9]\d:([0-9]\d+):([0-9]\d+)).([0-9]\d+)z?'
+        regex_date = r'(?i)[1-2]\d{3}-(0[1-9]|1[0-2])-(3[0-1]|[1-2]\d|0[1-9])t?\s?([0-9]\d:([0-9]\d+):([0-9]\d+)).([' \
+                     r'0-9]\d+)z?'
         value = re.match(regex_date, string=job_date)
         if value and value.groups():
             datetime = parser.parse(job_date)
@@ -125,16 +133,22 @@ class JobClassifier(object):
 
     def clean_job_type(self, job_type):
         value = None
-        if job_type in ['contract','contractor']:
+        if job_type in ['contract', 'contractor']:
             value = 'contract'
         elif job_type in ['fulltime', 'full', 'fulltime', 'full/time', 'full-time']:
             value = 'full time'
         else:
             value = job_type
         return value
-    
+
     def classify(self):
-        self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        custom_columns = self.data_frame.columns.values.tolist()
+        custom_columns.remove("job_source_url")
+        my_job_sources = self.data_frame["job_source_url"]
+        custom_df = self.data_frame[custom_columns]
+        self.data_frame = custom_df.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        self.data_frame["job_source_url"] = my_job_sources
+
         self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
             lambda x: self.classify_job(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
@@ -158,12 +172,15 @@ class JobClassifier(object):
         self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
             lambda x: self.classify_job(str(x)) if (x is not None) else None)
+
     def update_job_type(self):
-        self.data_frame['job_type'] = self.data_frame['job_type'].apply(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        self.data_frame['job_type'] = self.data_frame['job_type'].apply(
+            lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
             lambda x: self.clean_job_type(str(x)) if (x is not None) else None)
-    
+
     def update_job_source(self):
         self.data_frame['job_source'] = self.data_frame['job_source'].apply(
             lambda s: s.lower().strip() if type(s) == str else str(s).strip())
-        self.data_frame['job_source'] = self.data_frame['job_source'].map(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
+        self.data_frame['job_source'] = self.data_frame['job_source'].map(
+            lambda s: s.lower().strip() if type(s) == str else str(s).strip())

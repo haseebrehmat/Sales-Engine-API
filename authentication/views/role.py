@@ -20,7 +20,11 @@ class RoleView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(company__profile__user=self.request.user)
+        print(self.request.user.profile)
+        if self.request.user.is_superuser:
+            queryset = queryset.filter(company_id=None).exclude(id=self.request.user.roles.id)
+        else:
+            queryset = queryset.filter(company__profile__user=self.request.user)
         queryset = self.filter_queryset(queryset)
 
         page = self.paginate_queryset(queryset)
@@ -32,8 +36,14 @@ class RoleView(ListAPIView):
         return Response(serializer.data)
 
     def post(self, request):
-        # if request.data.get("company", "") == "":
-        #     return Response({"detail": "Company ID cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        fix_roles = [
+            "admin",
+            "owner"
+        ]
+        if request.data.get("name").lower() in fix_roles:
+            return Response({"detail": f"You cannot create role with name '{request.data.get('name')}'"},
+                            status.HTTP_406_NOT_ACCEPTABLE)
+
         serializer = RoleSerializer(data=request.data, context=request)
         if serializer.is_valid():
             data = serializer.validated_data
@@ -57,6 +67,14 @@ class RoleDetailView(ListAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def put(self, request, pk):
+        fix_roles = [
+            "admin",
+            "owner"
+        ]
+        if request.data.get("name").lower() in fix_roles:
+            return Response({"detail": f"User cannot modify role with the name '{request.data.get('name')}'"},
+                            status.HTTP_406_NOT_ACCEPTABLE)
+
         queryset = Role.objects.filter(pk=pk).first()
         serializer = RoleSerializer(queryset, data=request.data)
 
@@ -74,7 +92,7 @@ class RoleUserView(APIView):
     def get(self, request, pk):
         user_profile = request.user.profile
         if user_profile and user_profile.company:
-            users = User.objects.filter(profile__company=user_profile.company).filter(roles=pk)
+            users = User.objects.filter(profile__company=user_profile.company, roles=pk).exclude(roles__name="Owner")
             serializer = UserSerializer(users, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
         else:
