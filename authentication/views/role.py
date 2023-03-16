@@ -92,7 +92,7 @@ class RoleUserView(APIView):
     def get(self, request, pk):
         user_profile = request.user.profile
         if user_profile and user_profile.company:
-            users = User.objects.filter(profile__company=user_profile.company).filter(roles=pk)
+            users = User.objects.filter(profile__company=user_profile.company, roles=pk).exclude(roles__name="Owner")
             serializer = UserSerializer(users, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
         else:
