@@ -3,11 +3,12 @@ import os
 import numpy as np
 import pandas as pd
 
+
 class JobParser(object):
-    def __init__(self,filelist):
+    def __init__(self, filelist):
         self.filelist = filelist
         self.job_desc_cols = ['job_title', 'company_name', 'job_source', 'job_type', 'address', 'job_description',
-                          'job_posted_date', 'job_source_url']
+                              'job_posted_date', 'job_source_url']
 
     def validate_file(self):
         # file check extensions validation
@@ -28,7 +29,6 @@ class JobParser(object):
                 return False, message
         return True, message
 
-
     def parse_file(self):
         data_frame = []
         for file in self.filelist:
@@ -38,22 +38,22 @@ class JobParser(object):
                 df = self.read_csv(file)
             elif file.name.endswith('xlsx'):
                 df = self.read_xlsx(file)
-            elif file.name.endswith(('.ods','odf','.odt')):
+            elif file.name.endswith(('.ods', 'odf', '.odt')):
                 df = self.read_odf(file)
             data_frame.append(df)
 
         # concatenate and slice only first 7 columns
-        self.data_frame = pd.concat(data_frame, axis=0, ignore_index=True).iloc[:,:8]
+        self.data_frame = pd.concat(data_frame, axis=0, ignore_index=True).iloc[:, :8]
         # self.data_frame = self.data_frame.where((pd.notnull(self.data_frame)), "")
 
     @classmethod
-    def read_csv(self,file_path:str) -> pd:
-        return pd.read_csv(file_path,engine='c',nrows=1)
+    def read_csv(self, file_path: str) -> pd:
+        return pd.read_csv(file_path, engine='c', nrows=1)
 
     @classmethod
-    def read_odf(self,file_path:str) -> pd:
-        return pd.read_excel(file_path,engine='odf',nrows=1)
+    def read_odf(self, file_path: str) -> pd:
+        return pd.read_excel(file_path, engine='odf', nrows=1)
 
     @classmethod
-    def read_xlsx(self,file_path:str) -> pd:
+    def read_xlsx(self, file_path: str) -> pd:
         return pd.read_excel(file_path).replace(np.nan, '', regex=True)

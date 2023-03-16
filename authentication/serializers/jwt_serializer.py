@@ -22,5 +22,9 @@ class JwtSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         token['is_superuser'] = user.is_superuser
         token['is_staff'] = user.is_staff
+        try:
+            token['company'] = str(user.profile.company.id)
+        except:
+            token["company"] = None
 
         return token

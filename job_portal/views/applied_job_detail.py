@@ -21,9 +21,9 @@ class AppliedJobDetailsView(ListAPIView):
     serializer_class = AppliedJobDetailSerializer
     model = AppliedJobStatus
     filterset_class = CustomAppliedJobFilter
-    ordering = ('-applied_date')
+    ordering = ('-applied_date',)
     search_fields = ['job__job_title', 'job__job_description', 'job__tech_keywords', 'job__job_type']
-    ordering_fields = ['job__tech_keywords', 'job__job_type', 'job__job_posted_date','applied_date']
+    ordering_fields = ['job__tech_keywords', 'job__job_type', 'job__job_posted_date', 'applied_date']
     permission_classes = (AppliedJobDetailPermission,)
 
     # @method_decorator(cache_page(60*2))
