@@ -36,22 +36,23 @@ class ListAppliedJobView(ListAPIView):
     def get(self, request, *args, **kwargs):
         try:
             bd_id_list = []
-            if request.user.is_superuser:
-                bd_users = User.objects.all()
+            # if request.user.is_superuser:
+            #     queryset =
+            #     bd_users = User.objects.all()
 
-            elif request.user.roles.name.lower() == "owner":
-                # queryset = Team.objects.filter(reporting_to__profile__company=request.user.profile.company)
-                bd_users = User.objects.filter(profile__company=request.user.profile.company).exclude(id=request.user.id)
-                # for x in queryset:
-                #     bd_id_list = [i for i in x.members.values_list('id', flat=True)]
-                #     bd_users = User.objects.filter(id__in=bd_id_list)
+            if request.user.roles.name.lower() == "owner":
+                queryset = Team.objects.filter(reporting_to__profile__company=request.user.profile.company).select_related()
+                # bd_users = User.objects.filter(profile__company=request.user.profile.company)
+                for x in queryset:
+                    members = [i for i in x.members.values_list("id", flat=True)]
+                    bd_id_list.extend(members)
 
             else:
                 bd_id_list = Team.objects.get(reporting_to=self.request.user).members.values_list('id', flat=True)
-                bd_users = User.objects.filter(id__in=bd_id_list)
 
+            bd_users = User.objects.filter(id__in=bd_id_list).select_related()
             bd_query = UserSerializer(bd_users, many=True)
-            job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list)
+            job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list).select_related()
             queryset = self.filter_queryset(job_list)
             page = self.paginate_queryset(queryset)
             if page is not None:
