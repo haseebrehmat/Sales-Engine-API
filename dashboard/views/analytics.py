@@ -61,10 +61,15 @@ class DashboardAnalyticsView(ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         # get all users under the current user team
-        user_team = Team.objects.filter(
-            reporting_to=request.user,
-            reporting_to__profile__company=request.user.profile.company
-        ).values_list('members__id', flat=True)
+        if request.user.roles.name == "Owner":
+            user_team = Team.objects.filter(
+                reporting_to__profile__company=request.user.profile.company
+            ).values_list('members__id', flat=True)
+        else:
+            user_team = Team.objects.filter(
+                reporting_to=request.user,
+                reporting_to__profile__company=request.user.profile.company
+            ).values_list('members__id', flat=True)
 
         # get all statistics
         queryset = queryset.filter(applied_by__in=user_team)
