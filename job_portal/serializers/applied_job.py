@@ -48,9 +48,9 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
         job_details['status'] = instance.job_status
         job_details['applied_date'] = instance.applied_date
         try:
-            job_details['job_source'] = instance.job_source
-            job_details['tech_stack'] = instance.tech_stack
-            job_details['job_type'] = instance.job_type
+            job_details['job_source'] = instance.job.job_source
+            job_details['tech_stack'] = instance.job.tech_stack
+            job_details['job_type'] = instance.job.job_type
         except Exception as e:
             print("Exception in applied job serializer", e)
 
