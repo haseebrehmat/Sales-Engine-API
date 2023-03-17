@@ -61,9 +61,14 @@ class DashboardAnalyticsView(ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         # get all users under the current user team
-        user_team = Team.objects.filter(reporting_to=request.user).values_list('members__id',flat=True)
+        user_team = Team.objects.filter(
+            reporting_to=request.user,
+            reporting_to__profile__company=request.user.profile.company
+        ).values_list('members__id', flat=True)
 
         # get all statistics
+        queryset = queryset.filter(applied_by__in=user_team)
+
         job_status_counts = queryset.filter(applied_by__in=user_team).values('job_status').annotate(count=Count('job_status'))
         unique_count_dic = json.dumps(list(job_status_counts), cls=DjangoJSONEncoder)
         status_count_data = json.loads(unique_count_dic)
@@ -72,7 +77,7 @@ class DashboardAnalyticsView(ListAPIView):
         status_count_dic = [{'name': i[0], 'value': i[1]} for i in status_count_dic.items()]
 
         # without pagination
-        unique_users = list(set(AppliedJobStatus.objects.all().values_list('applied_by__id')))
+        unique_users = list(set(queryset.values_list('applied_by__id')))
         unique_users_list = []
         for item in list(unique_users):
             data = []
