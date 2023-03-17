@@ -61,20 +61,18 @@ class DashboardAnalyticsView(ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         # get all users under the current user team
-        if request.user.roles.name == "Owner":
-            user_team = Team.objects.filter(
-                reporting_to__profile__company=request.user.profile.company
-            ).values_list('members__id', flat=True)
+        if request.user.is_superuser:
+            return Response({"detail": "Admin can't view dashboard"}, status=406)
+
         else:
             user_team = Team.objects.filter(
-                reporting_to=request.user,
                 reporting_to__profile__company=request.user.profile.company
             ).values_list('members__id', flat=True)
 
         # get all statistics
         queryset = queryset.filter(applied_by__in=user_team)
 
-        job_status_counts = queryset.filter(applied_by__in=user_team).values('job_status').annotate(count=Count('job_status'))
+        job_status_counts = queryset.values('job_status').annotate(count=Count('job_status'))
         unique_count_dic = json.dumps(list(job_status_counts), cls=DjangoJSONEncoder)
         status_count_data = json.loads(unique_count_dic)
         status_count_dic = self.map_status(status_count_data)
@@ -132,5 +130,6 @@ class DashboardAnalyticsView(ListAPIView):
                 # data[job_status_keys[i['job__job_status']]] = i['count']
         # calculate total, prospects
         # result_data['prospects'] = (result_data['total']) - (result_data['hired']+result_data['rejected']+result_data['cold'] + result_data['warm'] + result_data['rejected'])
+        result_data['total'] = len(status_count_data)
         return copy.deepcopy(result_data)
         # return result_data
