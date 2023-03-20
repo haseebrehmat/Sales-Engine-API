@@ -3,7 +3,7 @@ from django.utils import timezone
 import pandas as pd
 from dateutil import parser
 from job_portal.models import JobDetail
-from job_portal.utils.keywords_dic import keyword, languages, developer
+from job_portal.utils.keywords_dic import keyword, languages, developer, regular_expressions
 from django.db.models import F, Value
 
 
@@ -13,12 +13,19 @@ class JobClassifier(object):
         self.data_frame = dataframe
 
     def classifier_stage1(self, job_title):
+        job_title = job_title.lower()
+
+        # check regular expression
+        for regex in regular_expressions:
+            if re.search(regex['exp'], job_title):
+                return regex['tech_stack']
+
         language_dict = languages
         final_result = list()
         if isinstance(job_title, str):  # Full Stack Django Developer
             class_list = []
             for key, value in language_dict.items():
-                data = [key for x in value if x in job_title]
+                data = [key for x in value if x.lower() in job_title]
                 if len(data) > 0:
                     if "javascript" in job_title:
                         data = ["JavaScript"]
