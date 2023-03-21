@@ -67,7 +67,7 @@ keyword = {
         "ROR Solutions Developer",
         "Ruby on Rails Technical Lead"
     ],
-    "Ml Enginner": [
+    "Ml Engineer": [
         "Machine Learning Engineer",
         "Machine Learning Developer",
         "Artificial Intelligence Engineer",
@@ -385,7 +385,6 @@ keyword = {
         "Hiring Flutter/Android Developers"
     ],
     "ios": [
-        "ios",
         "Sr ios developer.##w2only",
         "sr ios developers/ Architect",
         "senior software engineer",
@@ -522,6 +521,12 @@ languages = {
         "service-now",
         "servicenow"
     ],
+    "salesforce": [
+        "salesforce",
+        "sales force",
+        "salesforce crm",
+        "salesforce crm developer"
+    ],
     "qa": [
         "SDET",
         "qa",
@@ -557,9 +562,9 @@ languages = {
         "qa automation",
         "qa manual",
     ],
-    "Ml Enginner": [
+    "Ml Engineer": [
         "ai ml",
-        "Ml Enginner",
+        "Ml Engineer",
         "ml data engineer",
         "Machine Learning",
         "Machine Learn",
@@ -639,7 +644,6 @@ languages = {
         "Cryptocurrency",
         "DApp",
         "DLT",
-        "DeFi",
         "Decentralization",
         "Decentralized Autonomous Organization",
         "Decryption",
@@ -692,24 +696,16 @@ languages = {
         "Testnet",
         "Token",
         "Tokenization",
-        "Transaction",
         "Transaction Pool",
         "Trustless",
         "Turing Complete",
         "UTXO",
-        "Wallet",
         "Web3.js",
         "Zero-Knowledge Proof",
         "blockchain ecosystem",
         "cryptography",
         "cypher",
         "web3"
-    ],
-    "salesforce": [
-        "salesforce",
-        "sales force",
-        "salesforce crm",
-        "salesforce crm developer"
     ],
     "Dynamics": [
         "dynamics",
@@ -1073,12 +1069,8 @@ languages = {
         "api developer - go"
     ],
     "C#/Dot Net": [
-        "c#",
         "C# Dot Net",
-        "unity",
-        ".net",
         ".net core",
-        "asp",
         "sql server",
         "xamarin.forms",
         "xamarin",
@@ -1086,9 +1078,9 @@ languages = {
         "asp.net",
         "netsuite development",
         "blaserc# developer",
-        "wpf",
         "dot net",
         "dotnet",
+        "dot-net",
         ".NET Developer",
         ".NET Full Stack",
         ".NET Full-Stack",
@@ -1130,8 +1122,6 @@ languages = {
         "C# Technical Consultant",
     ],
     "C/C++": [
-        "c developer",
-        "c engineer",
         "c++ engineer",
         "c/c++ engineer",
         "c / c++ engineer",
@@ -1143,7 +1133,6 @@ languages = {
         "c/c++ program",
         "c / c++ program",
         "embedded c",
-        "data structures",
         "opengl c",
         "winapi",
         "3d max",
@@ -1151,7 +1140,6 @@ languages = {
         "unreal engine",
         "linux kernel",
         "c++",
-        "autocad",
         "blender3d",
         "c robotics"
     ],
@@ -1171,8 +1159,9 @@ languages = {
         "kotlin",
         "mobile application develop",
         "Mobile application",
-        "Mobile developer",
+        "Mobile develop",
         "mobile development",
+        "mobile app",
     ],
     "UI/UX": [
         "ui/ux",
@@ -1282,19 +1271,35 @@ languages = {
 regular_expressions = [
     {
         'tech_stack': 'Ruby on Rails',
-        'exp': '(?i)(^|\W)(ror)(\W|$)'
+        'exp': '(?i)(^|\W)(ror|ruby)(\W|$)'
     },
     {
         'tech_stack': 'UI/UX',
         'exp': '(?i)(^|\W)(ux|ui)(\W|$)'
     },
     {
-        'tech_stack': 'Ml Enginner',
-        'exp': '(?i)(^|\W)(ai|ml|machine learn)(\W|$)'
+        'tech_stack': 'Ml Engineer',
+        'exp': '(?i)(^|\W)(ai|ml|machine learning)(\W|$)'
     },
     {
         'tech_stack': 'Go/Golang',
         'exp': '(?i)(^|\W)(go|golang)(\W|$)'
+    },
+    {
+        'tech_stack': 'blockchain',
+        'exp': '(?i)(^|\W)(defi)(\W|$)'
+    },
+    {
+        'tech_stack': 'C#/Dot Net',
+        'exp': '(?i)(^|\W)(unity|dotnet|dot net|dot-net|c#|asp|.net|net|wpf|netcore)(\W|$)'
+    },
+    {
+        'tech_stack': 'C/C++',
+        'exp': '(?i)(^|\W)(c developer|c programmer|c engineer|c programming|c program|c development)(\W|$)'
+    },
+    {
+        'tech_stack': 'ios',
+        'exp': '(?i)(^|\W)(ios)(\W|$)'
     }
 ]
 
