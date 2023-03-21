@@ -1,1 +1,1 @@
-from job_scraper.models.job import Job
+from job_scraper.models.scheduler import SchedulerSync

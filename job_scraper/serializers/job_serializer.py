@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
-from job_scraper.models import Job
+from job_scraper.models import SchedulerSync
+
 
 class JobSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Job
-    fields = '__all__'
+    class Meta:
+        model = SchedulerSync
+        fields = '__all__'

@@ -1,8 +1,9 @@
 from django.urls import path
-from job_scraper.views.job_view import JobView
+
+from job_scraper.views.sync_scheduler import SyncScheduler
 
 urlpatterns = [
-  path('jobs', JobView.get, name="jobs"),
+  path('sync/', SyncScheduler.as_view(), name="jobs"),
 ]
 
-scheduler.start()
+# scheduler.start()

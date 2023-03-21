@@ -2,13 +2,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-import job_scraper.schedulers
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
     path('api/job_portal/', include('job_portal.urls')),
-    path('api/dashboard/', include('dashboard.urls'))
+    path('api/dashboard/', include('dashboard.urls')),
+    path('api/job_scraper/', include("job_scraper.urls"))
 ]
 
 
