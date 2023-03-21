@@ -719,7 +719,6 @@ languages = {
         "ms-dynamics",
         "D365",
         "ms dynamics",
-        "ms-dynamics",
     ],
     "flutter": [
         "flutter",
@@ -758,6 +757,9 @@ languages = {
     ],
     "React Native": [
         "react native",
+        "react-native",
+        "react_native",
+        "reactnative",
         "Lead Mobile Developer (React Native)",
         "Sr React Native Developer",
         "Fullstack Developer (React Native, Node.js, Typescript) - Remote",
