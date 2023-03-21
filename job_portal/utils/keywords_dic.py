@@ -1168,7 +1168,11 @@ languages = {
     ],
     "Android": [
         "android",
-        "kotlin"
+        "kotlin",
+        "mobile application develop",
+        "Mobile application",
+        "Mobile developer",
+        "mobile development",
     ],
     "UI/UX": [
         "ui/ux",
