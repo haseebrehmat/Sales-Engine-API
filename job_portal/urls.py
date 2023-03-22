@@ -18,7 +18,7 @@ router.register(r'', JobDetailsView, basename='job_details')
 app_name = 'job_portal'
 urlpatterns = [
     path('upload_data/', JobDataUploadView.as_view(), name='upload_job_data'),
-    path('manual_upload_data/', ManualJobUploadView.as_view()),
+    path('manual_jobs/', ManualJobUploadView.as_view()),
     path('job_details/', include(router.urls)),
     path('job_status/', ChangeJobStatusView.as_view(), name='change_job_status'),
     path('applied_job_details/', AppliedJobDetailsView.as_view(),

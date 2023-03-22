@@ -24,6 +24,7 @@ class JobDetail(models.Model):
     job_posted_date = models.DateTimeField(null=True, blank=True)
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
     block = models.BooleanField(default=False)
+    is_manual = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()

@@ -18,15 +18,17 @@ class ManualJobUploadSerializer(serializers.ModelSerializer):
         job_posted_date = validated_data.get('job_posted_date')
         job_source_url = validated_data.get('job_source_url')
         tech_keywords = validated_data.get('tech_keywords')
+        is_manual = True
         obj = JobDetail.objects.create(job_title=job_title.lower(),
                                        company_name=company_name.lower(),
                                        job_source=job_source.lower(),
                                        job_type=job_type.lower(),
                                        address=address.lower(),
-                                       job_description=job_description,
+                                       job_description=job_description.lower(),
                                        job_posted_date=job_posted_date,
                                        job_source_url=job_source_url,
                                        tech_keywords=tech_keywords.lower(),
+                                       is_manual=is_manual
                                        )
         return obj
 
