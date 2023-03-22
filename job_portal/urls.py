@@ -10,6 +10,7 @@ from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSources
 from job_portal.views.cover_letter.download import DownloadCoverView
 from job_portal.views.cover_letter.generate_cover import GenerateCoverView
 from job_portal.views.job_upload import JobSourceCleanerView, JobTypeCleanerView
+from job_portal.views.manual_job_upload import ManualJobUploadView
 
 router = routers.DefaultRouter()
 router.register(r'', JobDetailsView, basename='job_details')
@@ -17,6 +18,7 @@ router.register(r'', JobDetailsView, basename='job_details')
 app_name = 'job_portal'
 urlpatterns = [
     path('upload_data/', JobDataUploadView.as_view(), name='upload_job_data'),
+    path('manual_jobs/', ManualJobUploadView.as_view()),
     path('job_details/', include(router.urls)),
     path('job_status/', ChangeJobStatusView.as_view(), name='change_job_status'),
     path('applied_job_details/', AppliedJobDetailsView.as_view(),
