@@ -11,16 +11,15 @@ class SyncScheduler(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request):
-        queryset = SchedulerSync.objects.filter(id=1).first()
+        queryset = SchedulerSync.objects.first()
 
-        if queryset is None:
-            message = "Sync in progress, It will take a while"
-            SchedulerSync.objects.create(running=True)
-            load_job_scrappers()
-        elif not queryset.running:
-            message = "Sync in progress, It will take a while"
-            load_job_scrappers()
-        else:
+        if queryset is not None and queryset.running:
             message = "Sync in progress, Process is already running in the background"
-        # return Response({"detail": message}, status=status.HTTP_200_OK)
+
+        else:
+            message = "Sync in progress, It will take a while"
+            if queryset is None:
+                SchedulerSync.objects.create(running=True)
+            load_job_scrappers()
+
         return Response({"detail": message}, status=status.HTTP_200_OK)

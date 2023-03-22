@@ -63,7 +63,7 @@ class JobCleanerView(APIView):
 
     def put(self, request):
         try:
-            job_data = JobDetail.objects.all()
+            job_data = JobDetail.objects.all().select_related()
             thread = Thread(target=self.update_data, args=(job_data,), )
             thread.start()
             return Response({'detail': f'jobs updated successfully with new tech keywords!'}, status=204)

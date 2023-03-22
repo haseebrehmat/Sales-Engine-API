@@ -5,81 +5,93 @@ import pandas as pd
 import time
 
 
-
 class CareerBuilderScraping:
 
-  # returns driver
-  def driver():
-    return webdriver.Chrome(executable_path='chromedriver.exe')
+    # returns driver
+    def driver():
+        return webdriver.Chrome(executable_path='chromedriver.exe')
 
-  # calls url
-  def request_url(driver, url):
-    driver.get(url)
+    # calls url
+    def request_url(driver, url):
+        driver.get(url)
 
-  # append data for csv file
-  def append_data(data, field):
-    data.append(str(field).strip("+"))
+    # driver wait after login to complete it's verification process
+    def driver_wait():
+        time.sleep(3)
+        time.sleep(3)
 
-  # check if there is more jobs available or not
-  def data_exists(driver):
-    finished = "display: none;"
-    page_exists = driver.find_element(By.CLASS_NAME, "btn-clear-blue")
-    display = page_exists.get_attribute('style')
-    return False if finished in display else True
+    # append data for csv file
+    def append_data(data, field):
+        data.append(str(field).strip("+"))
 
-  def find_jobs(driver, scrapped_data):
-    count = 0
-    jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
+    # check if there is more jobs available or not
+    def data_exists(driver):
+        finished = "display: none;"
+        page_exists = driver.find_element(By.CLASS_NAME, "btn-clear-blue")
+        display = page_exists.get_attribute('style')
+        return False if finished in display else True
 
-    for job in jobs:
-      print(count)
-      data = []
-      time.sleep(1)
-      job.click()
-      time.sleep(3)
+    def find_jobs(driver, scrapped_data, job_type):
+        count = 0
+        jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
 
-      job_title = driver.find_element(By.CLASS_NAME,"jdp_title_header")
-      CareerBuilderScraping.append_data(data, job_title.text)
-      c_name = driver.find_elements(By.CLASS_NAME,"data-display-header_info-content")
-      company = c_name[0].find_elements(By.TAG_NAME,"span")
-      CareerBuilderScraping.append_data(data, company[0].text)
-      CareerBuilderScraping.append_data(data, company[1].text)
-      job_description = driver.find_element(By.CLASS_NAME,"jdp-left-content")
-      CareerBuilderScraping.append_data(data, job_description.text)
-      CareerBuilderScraping.append_data(data, driver.current_url)
-      job_posted_date = driver.find_elements(By.CLASS_NAME,"data-results-publish-time")
-      CareerBuilderScraping.append_data(data, job_posted_date[count].text)
+        for job in jobs:
+            print(count)
+            data = []
+            time.sleep(1)
+            job.click()
+            time.sleep(3)
 
-      scrapped_data.append(data)
-      count += 1
+            job_title = driver.find_element(By.CLASS_NAME, "jdp_title_header")
+            CareerBuilderScraping.append_data(data, job_title.text)
+            c_name = driver.find_elements(By.CLASS_NAME, "data-display-header_info-content")
+            company = c_name[0].find_elements(By.TAG_NAME, "span")
+            CareerBuilderScraping.append_data(data, company[0].text)
+            CareerBuilderScraping.append_data(data, company[1].text)
+            job_description = driver.find_element(By.CLASS_NAME, "jdp-left-content")
+            CareerBuilderScraping.append_data(data, job_description.text)
+            CareerBuilderScraping.append_data(data, driver.current_url)
+            job_posted_date = driver.find_elements(By.CLASS_NAME, "data-results-publish-time")
+            CareerBuilderScraping.append_data(data, job_posted_date[count].text)
+            CareerBuilderScraping.append_data(data, "Careerbuilder")
+            CareerBuilderScraping.append_data(data, job_type)
 
-  # find's job name
-  def load_jobs(driver):
-    time.sleep(2)
+            scrapped_data.append(data)
+            count += 1
 
-    if not CareerBuilderScraping.data_exists(driver):
-      return False
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                        "job_source", "job_type"]
+        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+        df.to_csv(CAREER_BUILDER_CSV, index=False)
 
-    next_page = driver.find_element(By.CLASS_NAME, "btn-clear-blue")
-    next_page.click()
-    time.sleep(3)
+    # find's job name
+    def load_jobs(driver):
+        time.sleep(2)
 
-    return True
+        if not CareerBuilderScraping.data_exists(driver):
+            return False
 
-# code starts from here
+        next_page = driver.find_element(By.CLASS_NAME, "btn-clear-blue")
+        next_page.click()
+        time.sleep(3)
+
+        return True
+
+
 def career_builder():
-  scrapped_data = []
-  scrap = CareerBuilderScraping
-  driver = scrap.driver()
-  driver.maximize_window()
-  scrap.request_url(driver, CAREERBUILDER_CONTRACT_RESULTS)
-  while(scrap.load_jobs(driver)):
-    print("Fetching...")
+    count = 0
+    scrapped_data = []
+    scrap = CareerBuilderScraping
+    driver = scrap.driver()
+    driver.maximize_window()
+    types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
+    job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+    for url in types:
+        scrap.request_url(driver, url)
+        while (scrap.load_jobs(driver)):
+            print("Loading...")
+        scrap.find_jobs(driver, scrapped_data, job_type[count])
+        count = count + 1
 
-  scrap.find_jobs(driver, scrapped_data)
+    print(SCRAPING_ENDED)
 
-  columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date"]
-  df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-  df.to_csv(CAREER_BUILDER_CSV)
-
-  print(SCRAPING_ENDED)
