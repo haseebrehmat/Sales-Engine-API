@@ -67,7 +67,7 @@ keyword = {
         "ROR Solutions Developer",
         "Ruby on Rails Technical Lead"
     ],
-    "Ml Enginner": [
+    "Ml Engineer": [
         "Machine Learning Engineer",
         "Machine Learning Developer",
         "Artificial Intelligence Engineer",
@@ -241,15 +241,15 @@ keyword = {
         "Java Developer with Automation Testing ExperienceSenior Automation Testing",
         "Software Automation Testing Engineer",
         "Full Stack Software Engineer Leading Automation TestingLead QA Engineer",
-        "Automation TestingETL Data warehouse (Database) Manual",
-        "Automation TestingElectrical Engineer",
+        "Automation Testing ETL Data warehouse (Database) Manual",
+        "Automation Testing Electrical Engineer",
         "Automation Testing DesignSenior R&D Engineer Software",
         "Automation Testing (m/f/d)IT - Technical Test Lead Finacle-IVS",
-        "Automation testingElectrical Engineer",
+        "Automation testing Electrical Engineer",
         "Automation Testing Design#6834#2",
         "Automation Testing(Java/C#-API",
         "Automation using Rest Assured",
-        "Automation TestingPython",
+        "Automation Testing Python",
         "Automation Testing (with good coding/development background)",
         "Automation Testing - Ruby",
         "Mobile Automation Testing (with good coding/development background)",
@@ -385,13 +385,10 @@ keyword = {
         "Hiring Flutter/Android Developers"
     ],
     "ios": [
-        "ios",
         "Sr ios developer.##w2only",
         "sr ios developers/ Architect",
-        "senior software engineer",
         "ios (remote-eligible)",
         "sr ios engineer-FT  Remote",
-        "senior software engineer",
         "ios (remote-eligible)",
         "mobile ios developer",
         "application architect V (ios developer)",
@@ -522,6 +519,12 @@ languages = {
         "service-now",
         "servicenow"
     ],
+    "salesforce": [
+        "salesforce",
+        "sales force",
+        "salesforce crm",
+        "salesforce crm developer"
+    ],
     "qa": [
         "SDET",
         "qa",
@@ -557,9 +560,9 @@ languages = {
         "qa automation",
         "qa manual",
     ],
-    "Ml Enginner": [
+    "Ml Engineer": [
         "ai ml",
-        "Ml Enginner",
+        "Ml Engineer",
         "ml data engineer",
         "Machine Learning",
         "Machine Learn",
@@ -606,6 +609,7 @@ languages = {
         "Data Warehouse",
         "Data Architect",
         "Data Mining",
+        "Data Integration",
     ],
     "Data Science/Data Scientist": [
         "Data Science",
@@ -639,7 +643,6 @@ languages = {
         "Cryptocurrency",
         "DApp",
         "DLT",
-        "DeFi",
         "Decentralization",
         "Decentralized Autonomous Organization",
         "Decryption",
@@ -692,24 +695,16 @@ languages = {
         "Testnet",
         "Token",
         "Tokenization",
-        "Transaction",
         "Transaction Pool",
         "Trustless",
         "Turing Complete",
         "UTXO",
-        "Wallet",
         "Web3.js",
         "Zero-Knowledge Proof",
         "blockchain ecosystem",
         "cryptography",
         "cypher",
         "web3"
-    ],
-    "salesforce": [
-        "salesforce",
-        "sales force",
-        "salesforce crm",
-        "salesforce crm developer"
     ],
     "Dynamics": [
         "dynamics",
@@ -759,6 +754,7 @@ languages = {
         "react native",
         "react-native",
         "react_native",
+        "reactnative",
         "Lead Mobile Developer (React Native)",
         "Sr React Native Developer",
         "Fullstack Developer (React Native, Node.js, Typescript) - Remote",
@@ -903,7 +899,6 @@ languages = {
         "preact",
         "recoil",
         "node",
-        "robot",
         "angular12",
         "ionic",
         "react hooks",
@@ -1072,12 +1067,8 @@ languages = {
         "api developer - go"
     ],
     "C#/Dot Net": [
-        "c#",
         "C# Dot Net",
-        "unity",
-        ".net",
         ".net core",
-        "asp",
         "sql server",
         "xamarin.forms",
         "xamarin",
@@ -1085,9 +1076,9 @@ languages = {
         "asp.net",
         "netsuite development",
         "blaserc# developer",
-        "wpf",
         "dot net",
         "dotnet",
+        "dot-net",
         ".NET Developer",
         ".NET Full Stack",
         ".NET Full-Stack",
@@ -1129,8 +1120,6 @@ languages = {
         "C# Technical Consultant",
     ],
     "C/C++": [
-        "c developer",
-        "c engineer",
         "c++ engineer",
         "c/c++ engineer",
         "c / c++ engineer",
@@ -1142,7 +1131,6 @@ languages = {
         "c/c++ program",
         "c / c++ program",
         "embedded c",
-        "data structures",
         "opengl c",
         "winapi",
         "3d max",
@@ -1150,7 +1138,6 @@ languages = {
         "unreal engine",
         "linux kernel",
         "c++",
-        "autocad",
         "blender3d",
         "c robotics"
     ],
@@ -1167,12 +1154,19 @@ languages = {
     ],
     "Android": [
         "android",
-        "kotlin"
+        "kotlin",
+        "mobile application develop",
+        "Mobile application",
+        "Mobile develop",
+        "mobile development",
+        "mobile app",
+        "full stack mobile engineer",
     ],
     "UI/UX": [
         "ui/ux",
         "front end",
         "front-end",
+        "frontend",
         "ui designer",
         "ui developer",
         "ux designer",
@@ -1207,6 +1201,9 @@ languages = {
         "network technician",
         "network analyst",
         "networking",
+        "network",
+        "netsuite",
+        "netsuite administrator",
         "network architect",
         "network security engineer",
         "network operations center (noc) technician",
@@ -1277,19 +1274,47 @@ languages = {
 regular_expressions = [
     {
         'tech_stack': 'Ruby on Rails',
-        'exp': '(?i)(^|\W)(ror)(\W|$)'
+        'exp': '(?i)(^|\W)(ror|ruby)(\W|$)'
     },
     {
         'tech_stack': 'UI/UX',
         'exp': '(?i)(^|\W)(ux|ui)(\W|$)'
     },
     {
-        'tech_stack': 'Ml Enginner',
-        'exp': '(?i)(^|\W)(ai|ml|machine learn)(\W|$)'
+        'tech_stack': 'Ml Engineer',
+        'exp': '(?i)(^|\W)(ai|ml|machine learning)(\W|$)'
     },
     {
         'tech_stack': 'Go/Golang',
         'exp': '(?i)(^|\W)(go|golang)(\W|$)'
+    },
+    {
+        'tech_stack': 'blockchain',
+        'exp': '(?i)(^|\W)(defi)(\W|$)'
+    },
+    {
+        'tech_stack': 'C#/Dot Net',
+        'exp': '(?i)(^|\W)(unity|dotnet|dot net|dot-net|c#|asp|.net|net|wpf|netcore)(\W|$)'
+    },
+    {
+        'tech_stack': 'ios',
+        'exp': '(?i)(^|\W)(ios)(\W|$)'
+    },
+    {
+        'tech_stack': 'flutter',
+        'exp': '(?i)(^|\W)(flutter|dart)(\W|$)'
+    },
+    {
+        'tech_stack': 'Android',
+        'exp': '(?i)(^|\W)(android|kotlin)(\W|$)'
+    },
+    {
+        'tech_stack': 'Java',
+        'exp': '(?i)(^|\W)(java)(\W|$)'
+    },
+    {
+        'tech_stack': 'C/C++',
+        'exp': '(?i)(^|\W)(c developer|c programmer|c engineer|c programming|c program|c development)(\W|$)'
     }
 ]
 
@@ -1331,6 +1356,8 @@ developer = [
     "backend engineer",
     "coder",
     "developer",
+    "filenet",
+    "fullstack",
     "full stack",
     "full-stack",
     "frontend engineer",
@@ -1351,6 +1378,8 @@ developer = [
     "full-stack software-engineer",
     "full-stack web developer",
     "full-stack web-developer",
+    "information technology",
+    "informationtechnology",
     "junior api developer",
     "junior back-end developer",
     "junior backend developer",
@@ -1375,6 +1404,7 @@ developer = [
     "lead web engineer",
     "lead web-developer",
     "lead web-engineer",
+    "mobile engineer",
     "programmer",
     "programmers",
     "programming",

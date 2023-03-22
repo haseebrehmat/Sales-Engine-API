@@ -13,36 +13,24 @@ class JobClassifier(object):
         self.data_frame = dataframe
 
     def classifier_stage1(self, job_title):
-        job_title = job_title.lower()
-
         # check regular expression
         for regex in regular_expressions:
             if re.search(regex['exp'], job_title):
                 return regex['tech_stack']
 
         language_dict = languages
-        final_result = list()
-        if isinstance(job_title, str):  # Full Stack Django Developer
-            class_list = []
-            for key, value in language_dict.items():
-                data = [key for x in value if x.lower() in job_title]
-                if len(data) > 0:
-                    if "javascript" in job_title:
-                        data = ["JavaScript"]
-                    elif "java" in job_title:
-                        data = ["java"]
-                    else:
-                        pass
-
-                class_list.extend(data)
-
-            final_result = list(set(class_list))
-        return final_result[0] if len(final_result) > 0 else 'others'
+        # final_result = list()
+        for key, value in language_dict.items():
+            for x in value:
+                if x.lower() in job_title:
+                    return key
+        return 'others'
 
     def find_job_techkeyword(self, job_title):
         # job_title = ",".join(job_title.split("/")).lower()
 
         # run stage 1 of the classififer
+        job_title = job_title.lower()
         data = self.classifier_stage1(job_title)
         if data == "others":
             return self.job_classifier_stage2(job_title)
@@ -60,7 +48,7 @@ class JobClassifier(object):
     def job_classifier_other_dev_stage(self, job_title):
         dev_list = map(str.lower, developer)
         for x in dev_list:
-            if x in job_title.lower():
+            if x in job_title:
                 return "others dev"
         return "others"
 
