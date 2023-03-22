@@ -18,6 +18,7 @@ class ManualJobUploadView(ListAPIView):
             request.data.get("address", "") != "",
             request.data.get("job_source_url", "") != "",
             request.data.get("job_posted_date", "") != "",
+            request.data.get("tech_keywords", "") != "",
         ]
         if not all(conditions):
             return Response({"detail": "Fields cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
