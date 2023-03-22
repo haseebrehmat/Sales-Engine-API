@@ -241,15 +241,15 @@ keyword = {
         "Java Developer with Automation Testing ExperienceSenior Automation Testing",
         "Software Automation Testing Engineer",
         "Full Stack Software Engineer Leading Automation TestingLead QA Engineer",
-        "Automation TestingETL Data warehouse (Database) Manual",
-        "Automation TestingElectrical Engineer",
+        "Automation Testing ETL Data warehouse (Database) Manual",
+        "Automation Testing Electrical Engineer",
         "Automation Testing DesignSenior R&D Engineer Software",
         "Automation Testing (m/f/d)IT - Technical Test Lead Finacle-IVS",
-        "Automation testingElectrical Engineer",
+        "Automation testing Electrical Engineer",
         "Automation Testing Design#6834#2",
         "Automation Testing(Java/C#-API",
         "Automation using Rest Assured",
-        "Automation TestingPython",
+        "Automation Testing Python",
         "Automation Testing (with good coding/development background)",
         "Automation Testing - Ruby",
         "Mobile Automation Testing (with good coding/development background)",
@@ -387,10 +387,8 @@ keyword = {
     "ios": [
         "Sr ios developer.##w2only",
         "sr ios developers/ Architect",
-        "senior software engineer",
         "ios (remote-eligible)",
         "sr ios engineer-FT  Remote",
-        "senior software engineer",
         "ios (remote-eligible)",
         "mobile ios developer",
         "application architect V (ios developer)",
@@ -611,6 +609,7 @@ languages = {
         "Data Warehouse",
         "Data Architect",
         "Data Mining",
+        "Data Integration",
     ],
     "Data Science/Data Scientist": [
         "Data Science",
@@ -900,7 +899,6 @@ languages = {
         "preact",
         "recoil",
         "node",
-        "robot",
         "angular12",
         "ionic",
         "react hooks",
@@ -1162,11 +1160,13 @@ languages = {
         "Mobile develop",
         "mobile development",
         "mobile app",
+        "full stack mobile engineer",
     ],
     "UI/UX": [
         "ui/ux",
         "front end",
         "front-end",
+        "frontend",
         "ui designer",
         "ui developer",
         "ux designer",
@@ -1201,6 +1201,9 @@ languages = {
         "network technician",
         "network analyst",
         "networking",
+        "network",
+        "netsuite",
+        "netsuite administrator",
         "network architect",
         "network security engineer",
         "network operations center (noc) technician",
@@ -1294,12 +1297,24 @@ regular_expressions = [
         'exp': '(?i)(^|\W)(unity|dotnet|dot net|dot-net|c#|asp|.net|net|wpf|netcore)(\W|$)'
     },
     {
-        'tech_stack': 'C/C++',
-        'exp': '(?i)(^|\W)(c developer|c programmer|c engineer|c programming|c program|c development)(\W|$)'
-    },
-    {
         'tech_stack': 'ios',
         'exp': '(?i)(^|\W)(ios)(\W|$)'
+    },
+    {
+        'tech_stack': 'flutter',
+        'exp': '(?i)(^|\W)(flutter|dart)(\W|$)'
+    },
+    {
+        'tech_stack': 'Android',
+        'exp': '(?i)(^|\W)(android|kotlin)(\W|$)'
+    },
+    {
+        'tech_stack': 'Java',
+        'exp': '(?i)(^|\W)(java)(\W|$)'
+    },
+    {
+        'tech_stack': 'C/C++',
+        'exp': '(?i)(^|\W)(c developer|c programmer|c engineer|c programming|c program|c development)(\W|$)'
     }
 ]
 
@@ -1341,6 +1356,8 @@ developer = [
     "backend engineer",
     "coder",
     "developer",
+    "filenet",
+    "fullstack",
     "full stack",
     "full-stack",
     "frontend engineer",
@@ -1361,6 +1378,8 @@ developer = [
     "full-stack software-engineer",
     "full-stack web developer",
     "full-stack web-developer",
+    "information technology",
+    "informationtechnology",
     "junior api developer",
     "junior back-end developer",
     "junior backend developer",
@@ -1385,6 +1404,7 @@ developer = [
     "lead web engineer",
     "lead web-developer",
     "lead web-engineer",
+    "mobile engineer",
     "programmer",
     "programmers",
     "programming",
