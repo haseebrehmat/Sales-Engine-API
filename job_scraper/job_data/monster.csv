@@ -1,0 +1,1133 @@
+job_title,company_name,address,job_description,job_source_url,job_posted_date,job_source,job_type
+Software Engineer Senior,Stefanini,"Dearborn, MI","Stefanini Group is hiring!
+Stefanini is looking for Software Engineer Senior at Remote Location
+For quick apply, please reach out Rakesh Singh:
+Phone: 248 728 2010
+Email: rakesh.singh@stefanini.com
+Open to W2 candidates only!
+Position Description:
+We have initiated an effort to deploy S/4 HANA (ERP) to significantly reduce the size and complexity of Stefanini technical footprint, refocus on differentiating capabilities, and standardize business processes. The current ERP focus is on the transformation of Finance and Direct Procurement. This job request is for a Technical Lead position that would be responsible for VMware Tanzu (Tanzu = Pivotal Cloud Foundry / PCF) of this ERP program.
+
+
+Skills Required:
+Systems Architect - implementing and laying down entire enterprise infrastructure 2. Application Architect - designing microservices using 12 factor app methodologies 3. TANZU (Tanzu = PCF / Pivotal Cloud Foundry) administration 4. Cloud Solutions Architect with Tanzu TAS (formerly Pivotal Cloud Foundry (PCF) in AWS/GCP/on-prem 5. DevOps activities in an Agile development framework 6. Java, SpringBoot, JavaScript, JSON and REST API/SOPA UI/Web Services/API development 7. CI/CD methodologies 8. Cloud Infrastructure as a services (IaaS) (GCP preferable) 9. Network ingress and egress patterns 10. Deployment of API's, usage of Apigee and troubleshooting API's and Apigee Proxy framework 11. Cloud Computing: virtualization technologies, Infrastructure as a Service, Platform as a Service and Software as a Service Cloud delivery models and the current competitive landscape. 12. Data migration practices and technologies
+Skills Preferred:
+* Ability to see big picture, identifies patterns and dependencies in very complex projects, and decomposes complex systems into their foundational elements. * Proven ability to 'Own Working Together' with various IT and business organizations * Excellent organizational skills * Collaborate with Stefanini Business, IT & Implementation partners to successfully implement ERP per scope
+Experience Required:
+5+ years of experience with developing VMware Tanzu (Tanzu = Pivotal Cloud Found ry / PCF)
+Experience Preferred:
+5+ years of experience with developing VMware Tanzu (Tanzu = Pivotal Cloud Foundry / PCF)
+Education Required:
+Bachelor's Degree
+Listed Salary Range may vary based on experience, qualifications, and local market, Also some positions may Include bonuses and other Incentives
+About Stefanini Group
+The Stefanini Group is a global provider of offshore, onshore and near shore outsourcing, IT digital consulting, systems integration, application and strategic staffing services to Fortune 1000 enterprises around the world. Our presence is in countries like Americas, Europe, Africa and Asia, and more than 400 clients across a broad spectrum of markets, including financial services, manufacturing, telecommunications, chemical services, technology, public sector, and utilities. Stefanini is a CMM level 5, IT consulting, company with global presence. We are CMM Level 5 company.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Software Developer,Softworld Inc,"Lexington, MA","Software Developer
+Lexington, MA
+3+ years of work
+US Citizens ONLY/ Secret Clearance preferred
+Description:
+A Software Developer is required to contribute to analyses across a broad range of issues central to the survivability of advanced air vehicles against modern air defenses. The scope of analyses will range from high-fidelity one-vs-one platform engagements to large networked force-on-force simulations.
+The position responsibilities include:
+Development and exercising of air defense sensor detection/tracking, command/control and mission planning software tools within a modern, object-oriented, modular architecture
+Integration of system analysis and threat modeling into existing modeling capabilities
+Surveying and capturing recent intelligence data to improve modeling data quality and validity
+Assist in the preparation of PowerPoint and/or technical reports to convey findings to both internal and external audiences
+Author clear and thorough documentation of all modified or developed capabilities
+Education:
+The group is seeking a candidate with a BS/BA in Physics, Engineering, Applied Math or Computer Science. Candidates with a relevant advanced degree will be given preference.
+Required:
+Strong academic or professional background in software development to include experience working with code of varying degrees of maturity
+Proficiency in MATLAB, an object-oriented programing language (e.g., C++ or Python) and shell scripting
+Familiarity with undergraduate engineering level introductory physics (Mechanics and Electricity/Optics) and associated mathematics
+Experience running physics-based software and performing subsequent data analysis to reveal an understanding of underlying phenomena
+Preferred:
+Previous experience with air defense sensor, detection/tracking, command/control or mission planning model development and/or testing
+Comfortable operating in both Linux and Windows environments, to include Virtual Machines
+Familiarity with verification and validation of simulation models
+Background in data visualization and display toolkits/methodologies
+Excellent communication skills
+Candidates with relevant professional experience will be given preference
+An ability to take guidance and work within a small team, while working independently to achieve individual goals. Must be able to prioritize and handle multiple tasks. Self-motivated with demonstrated ability to excel under limited guidance
+THIRD PARTY AGENCIES, SUBCONTRACTORS, AND RECRUITERS NEED NOT APPLY. Applicants received from firms will not be considered. Subcontracting is not available for this position.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+FPGA Firmware Engineer,Softworld Inc,"Canonsburg, PA","FPGA Firmware Engineer
+
+US Citizen ONLY / Secret Clearance preferred
+Canonsburg, PA
+6 months to hire
+
+Seeking a mid-level electrical/computer engineer to develop, integrate, test, and support custom FPGA firmware within the Torpedo Systems Group (TSG). The TSG designs, develops, demonstrates, produces, assembles, tests and delivers torpedo SONAR arrays and electronic assemblies. The TSG team works with the Navy, internal production staff and the representatives from other companies to advance torpedo performance and lower production costs.
+Job Duties
+Be part of a team comprised of design, system engineering, and electrical engineering to develop embedded systems. Duties include:
+architect, design, and document FPGA firmware hierarchies, components, interfaces, and data flows
+develop firmware in accordance with detailed designs descriptions
+simulate and test firmware components in preparation for integration
+define FPGA timing, pinout, and placement constraints
+review synthesis and timing reports, address issues
+integrate and test firmware on target hardware
+identify necessary schematic updates and hardware reworks to support design
+utilize FPGA tools and laboratory equipment for integration and debug
+document failures, identify root causes, implement fixes, and verify changes
+maintain configuration management documentation for the FPGA design
+Skills
+Candidate must have:
+experience implementing FPGA firmware including custom VHDL components containing state machines, synchronous/asynchronous logic, processes, and external interfaces
+understanding of the underlying FPGA fabric the firmware utilizes
+experience working across cross-clock boundaries
+familiarity with Xilinx (AMD) and/or Altera (Intel) compiler, programming, and debug tools
+experience reviewing schematics, parts lists, and re-work documentation
+methodical problem-solving skills
+motivation to independently research and resolve issues
+strong written and oral communication skills
+Candidates should have:
+familiarity with floor planning and timing optimizations
+Candidates with the following skills would be a plus:
+working knowledge of standard network protocols (e.g., IPv4, UDP, TCP/IP)
+implementing custom digital signal processing filters
+Education/Experience
+BS in Computer Engineering, Electrical Engineering, or similar degree
+5+ years of engineering experience required
+THIRD PARTY AGENCIES, SUBCONTRACTORS, AND RECRUITERS NEED NOT APPLY. Applicants received from firms will not be considered. Subcontracting is not available for this position.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Mobile Test Engineer,INSPYR Solutions,"Omaha, NE","Title: Mobile Test Engineer
+Location: Omaha, NE work is on site. Candidates must be local. 
+Duration: 6 months contract to hire. 
+Compensation: $45 - $50 per hour W2. No C2C allowed. 
+Work Requirements: US Citizen, GC Holders or Authorized to Work in the US
+ 
+Qualified candidates may send a copy of their resume (Word Format) to Harold Miller at
+hmiller@inspyrsolutions.com
+ 
+ 
+Job Description:
+We are looking to hire a results-driven Mobile test engineer to analyze, troubleshoot, and optimize Mobile products for our clients. In this role, you will be evaluating mobile devices, testing live applications, and troubleshooting updates, among other duties.
+To ensure success as a Mobile test engineer, you should be able to test mobile products across multiple platforms including web applications, iOS, and Android. Ultimately, a top-notch Mobile test engineer should be able to work on various coding programs such as HTML and JAVA and display a solid knowledge of Mobile operating systems.
+
+
+Mobile Test Engineer Responsibilities:
+Testing Mobile devices to ensure their configuration, operation, and capabilities work efficiently.
+Working with device manufacturers, product managers, and development teams to test and optimize mobile products.
+Developing automated test scripts and frameworks for improved Mobile app performance.
+Working with a variety of databases and coding programs, such as Objective-C, Java, HTML, as well as XML and JSON feeds.
+Updating operating systems, specifically iOS, Android,
+Producing clear and concise test reports and releasing notes to co-workers when needed.
+Providing feedback to development teams on technical, troubleshooting, or operational issues.
+Assisting with the configuration of test environments.
+Suggesting new processes and policies to improve mobile development techniques.
+ 
+Skillset / Experience:
+Basic Qualifications for Consideration:
+5 years experience testing Mobile/WEB application testing and development applications
+Experience using SQL for test data creation and verification
+Experience with test case development and execution tools such as Jira Test Management, qTest, or other
+Working knowledge of mobile operating systems such as iOS and Android.
+Drives continuous improvement through all processes, including but not limited to, team standards, test planning, resourcing and test execution, as well as debugging, metric collection, and reporting.
+Bachelor's in engineering, computer science, computer engineering, information technology, or a similar degree.
+Must be US citizen or Green Card holder and will need to pass a US Government background check.
+Experience in developing automated test scripts.
+Experience to automation with Opium & Selenium Tools
+Ability to develop software applications using programming or scripting languages such as Java and HTML.
+Experience in using configuration management or version control tools.
+Strong communication and interpersonal skills.
+Ability to meet challenging deadlines and work in a fast-paced environment.
+
+Preferred Skills, Experience, and Education:
+Bachelors Degree or equivalent work experience and/or Certifications.
+Knowledge of Opium & Selenium with automation
+Knowledge of Jira, SharePoint, Workday and or corporate based type applications.
+Knowledge of reporting tools such as Microsoft BI, Jira dashboards, Excel pivot tables, etc.
+ 
+Our benefits package includes: 
+Comprehensive medical benefits
+Competitive pay, 401(k)
+Retirement plan
+…and much more!
+ 
+About INSPYR Solutions:
+
+
+As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly-skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+ 
+INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Data Engineer,Digital Pacers,"Redmond, WA"," Role: Data Engineer 
+Location: Remote
+Duration: Long Term Contract
+
+Skillsets Required:
+•We are looking for a Data Engineer who has experience with the following technology stack: C#, Cosmos
+•Experience with Azure is not mandatory, but is good to have.
+•Experience building Data Pipelines, ETL/ELT.
+
+About the team:
+•The Education team is looking for a Data Engineer. The team a solid and growing team with passion to make a difference in the future of education.
+•This new role is pivotal to ensuring our customers and deployment teams are designing, creating and deploying identity, integration, and solutions across the M365 platforms and devices.
+•Our mission is to help teachers, students, parents and all educational organizations achieve more by providing services & tools to improve learning outcomes through the thoughtful and effective use of data. We see this effort as a huge opportunity to make a difference in the future of Global Education.
+•The Education Team  is a group of high talented, passionate, and eager program managers, project and product managers, engineers, architects, and brings a focused approach to deliver value across all of the Education spectrum.
+•We have resources, opportunity, and above all phenomenal customers across K12 and Higher Education as well as working hand-in-hand with our Partners, EdTech Providers (ISVs), and System Integrators to build, deploy, and growth the Education market.
+Azure,C#,Cosmos,Cosmosdb,ETL,ELT,Data Engineer",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Hashicorp Engineer (100% Remote),"V-Soft Consulting Group, Inc.","Lenola, NJ","Hashicorp Engineer (100% Remote)
+Primary Location: Moorestown, New Jersey
+  V-Soft Consulting is currently hiring for a Hashicorp Engineer (100% Remote) for our premier client in Moorestown, New Jersey.
+ Education and Experience »
+Experience on the Vault HashiCorp product (programming tool to create, manage and store secrets specific to a development project. Login credentials, encryption keys, passwords, or tokens.
+Experience in installation/configuration and administration.
+Experience with design and implementation of least privilege or zero trust technologies.
+Experience with troubleshooting issues and assisting to mitigate issues, including root cause analysis.
+Desired skills:
+4-5 years of experience with HashiCorp Vault.
+Have basic network knowledge (TCP/IP, TLS, Load Balancer, DNS, etc.), on Front tools (LB, Web servers’ type NginX, HA proxy).
+Hands on AWS (basic networking, ec2, db, iam) experience or other cloud.
+Hands on experience on DevOps tools (Ansible/terraform/Packer/GitHub Action/Concourse (CI/CD).
+Knowledge/understanding of OAuth2 (+OIDC) based AuthN + AuthZ, AWS Auth, Kubernetes Auth and other Cloud based Auth Methods.
+Strong understanding and development knowledge of Python/Go a plus.
+Working knowledge of Webservices, SOAP, REST and SQL.
+Experience participating in a cross-functional role-modeling exercise with both business and technical users to create roles that accurately reflect the organization’s business and corresponding IT access authorizations to fulfill those Business needs.
+Experience on both Agile/Scrum and Waterfall methodology of software development for different modules.
+ Knowledge, Skills and Abilities »
+HashiCorp - rebuilt (open to remote and someone more Ops slanted vs Development now).
+Looking for someone adept in HashiCorp product line – at least 4-5 years of experience.
+ Nice to Haves
+Terraform.
+AWS – other cloud experience might be considered.
+CICD – Concourse ideal.
+4-5 years of HashiCorp.
+ WHAT YOU’LL DO:
+Job Responsibilities:
+Develop innovative approaches/solutions to complex design problems while meeting aggressive deadlines with attention to detail.
+Protect customers, employees and vendors by incorporating security and compliance into all recommendations, deliveries, decisions and daily job responsibilities.
+Follows security policies and procedures, continuously identifies and recommends opportunities for improving security.
+Provide leadership and direction for technical infrastructure support.
+Working with onshore / offshore model for solution delivery, operational support and shift handovers.
+Subject Matter Expert (SME) on HasiCorp Product (Vault/Ansible/Terraform) and AWS for designing and architecting platform solutions to handle future growth and implement new functionalities as they become available.
+Preserve Infrastructure monitoring, logging & alerting systems.
+Drive architectural initiatives that align our business needs and technical capabilities for Identity Management and Access Governance solutions.
+Supervisory/metric knowledge (tools: Grafana, Fluentd, ELK).
+ Interested?
+Qualified candidates should send their resumes to ailapakurthi@vsoftconsulting.com
+ V-Soft Consulting Group is recognized among the top 100 fastest growing staffing companies in North America, V-Soft Consulting Group is headquartered in Louisville, KY with strategic locations in India, Canada and the U.S. V-Soft is known as an agile, innovative technology services company holding several awards and distinctions and has a wide variety of partnerships across diverse technology stacks.
+ As a valued V-Soft Consultant, you’re eligible for full benefits (Medical, Dental, Vision), a 401(k) plan, competitive compensation and more. V-Soft is partnered with numerous Fortune 500 companies, exceptionally positioned to advance your career growth.
+ For more information or to view all our open jobs, please visit www.vsoftconsulting.com or call (844) 425-8425.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Senior .NET Developer,"TekPartners, A P2P Staffing Company","Charlotte, NC","Title: Senior Software Developer
+
+Location: Remote, USA (Supporting EST) Travel: Quarterly Travel to Charlotte
+
+Duration: Contract (12 months, potential to convert)
+
+Work Authorization: USC/GC holder, no opportunity for sponsorship
+
+INSPYR is looking for a Senior Software Developer to drive innovation and continue building out the critical client products that process millions of records of data per month. Our product teams are responsible for creating premier customer experiences using technical capabilities that are deployed on AWS.
+
+As a member of this technology team, leveraging agile methodology, you will influence architecture and design across enterprise/cross-functional teams in a high paced environment, participate in understanding customer/associate feedback to resolve or improve technical issues and implement new functionality and enhancements for existing features. We are seeking a technical candidate with strong analytical, design, planning and problem-solving skills as well as effective communication skills.
+
+Responsibilities
+
+Collaborate with architecture team to ensure best practices are being followed on the team.
+Conduct peer reviews
+Active participation and collaboration with Scrum Team in grooming sessions to address technical concerns, drive creative solutions, and ensure User Stories addresses the business needs.
+Mentor/coach more junior developers
+Basic Qualifications
+
+5+ years of developer experience in Microsoft technologies
+Extensive hands-on experience in or ability to quickly learn ASP.NET MVC, .NET Core, C#, SQL, Telerik, Javascript, JQuery, Entity Framework, LINQ
+Experience with HTML/CSS, Angular 12 and/or Angular JS
+Must have extensive AWS knowledge. Amazon modernization, lambdas, server functions, and containerization.
+Demonstrated ability to leverage agile methodologies partnering with stakeholders and product team to deliver high quality solutions.
+T-SQL, SQL Server Management Studio (SSMS)
+Team Foundation Server (TFS) and/or Azure Dev Ops
+Unit Testing, MSTest and Just Mock, or equivalent
+REST API Development and Integration
+Experience Optimizing API performance and DB queries/stored procedures
+Strong troubleshooting and learning capabilities
+Self-motivated
+Bonus Qualifications
+
+Razor Engine, Kendo UI, Automapper, nLog, Powershell, GIT, Lucene experience
+Experience writing data-intensive processes and/or parallel development is a plus.
+SSIS/ETLs/Cube
+BIRT
+Our benefits package includes:
+
+Comprehensive medical benefits
+Competitive pay, 401(k)
+Retirement plan
+…and much more!
+About INSPYR Solutions:
+
+
+
+TekPartners and Genuent are becoming INSPYR Solutions. As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly-skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+
+INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Emerson Syncade Recipe Developer,Alpha Consulting Corp.,"Bothell, WA","EMERSON SYNCADE RECIPE DEVELOPER
+BOTHELL, WA
+
+Project Description:
+The Emerson Syncade Recipe Developer role will deliver electronic batch record configuration and validation in the Emerson Syncade Manufacturing Execution System (MES).
+Develop, validate, and deploy new and revised recipes in the Emerson Syncade MES system .
+Perform system configuration tasks and testing with supervision .
+Participate in validation activities including the development and execution of IQ/OQ/PQ protocols and testing .
+Perform dry runs and verification testing .
+Participate in cross-functional teams to assess and communicate planning, development, and testing solutions for recipe creation and modification .
+Perform support of floor operations on a rotational basis .
+Deliver updates to system lifecycle documents such as User Requirements Specifications, Configuration Specifications, Function Specification, Design Specifications, and Test Cases .
+Work with local and network IT to develop and deliver holistic solutions in the MES system .
+Participate in cross-functional teams including Manufacturing, IT, and Quality .
+Lead design reviews with internal customers .
+Perform peer reviews of configuration and protocols .
+Complete documentation of development and validation activities .
+
+Required Skills:
+Bachelor's degree or equivalent experience.
+2+ years in computer or science-based field .
+Direct experience in Emerson Syncade MES System.
+Experience in another MES system will be considered.
+Experience with writing and executing validation protocols.
+Technical writing competency and GMP procedure writing.
+Experience with SQL and XML coding in an MES construct.
+Experience with cell therapy or other biopharmaceutical manufacturing.
+Flexibility to work within manufacturing schedules.
+Strong interpersonal skills to work with teams in different functions and organizations.
+
+This 12+ month position starts ASAP.
+
+Please E-MAIL your resume (attachment to email) with rate and availability to Krysty:
+krysty@alphaconsulting.com
+
+
+ALPHA'S REQUIREMENT #23-00408
+MUST BE ELIGIBLE TO WORK IN THE U.S. AS AN HOURLY W2 EMPLOYEE",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Full Stack Engineer,Softworld Inc,"Waltham, MA","Full-Stack Software Engineer
+Duration: 6+ month contract
+Location: 2 days a week in Weston, MA - The rest of the week remote
+Qualifications:
+Senior level Full Stack Engineer, this is a Microsoft focused environment
+Need strong C# development experience
+Heavy back-end experience, need high proficiency with SQL Server
+Some front end development is needed but not much (they use JavaScript and React but it doesn't like the language is that critical)
+Industry experience does not matter, the technical skills is more important
+Architecture experience is not required but they need a solid understanding of system architecture requirements
+They will be working on some legacy applications and some development of new applications
+Should have some basic SSIS or ETL experience as well
+
+THIRD PARTY AGENCIES, SUBCONTRACTORS, AND RECRUITERS NEED NOT APPLY. Applicants received from firms will not be considered. Subcontracting is not available for this position.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Database Developer,Genesis10,"New York, NY","Genesis10 is currently seeking a Database Developer with our client in the financial industry located in New York, NY. This is a 6 + month contract position.
+
+Responsibilities:
+Developing and delivering complex software requirements to accomplish business goals
+Ensuring software is developed to meet functional, non-functional, and compliance requirements
+Coding solutions and unit tests to deliver a requirement/story per the defined acceptance criteria and compliance requirements
+Ensuring solution can be integrated successfully into the overall application/system with clear, robust, and well-tested interfaces
+Becoming familiar with development and testing practices of the client
+Contributing to story refinement and defining/clarifying requirements
+Participating and guiding team in sizing/estimating work necessary to realize a story/requirement through the delivery lifecycle
+Performing spike/proof of concept efforts as necessary to mitigate risk or implement new ideas
+Utilizing multiple architectural components (across data, application, business) in design and development of client requirements
+Assisting team with resolving technical complexities involved in realizing story work
+Contributing to existing test suites (integration, regression, performance)
+Performing analysis of test reports, identifying any test issues/errors, and Triaging underlying cause
+Documenting and communicating required information for deployment, maintenance, support, and business functionality
+Participating, contributing, and coaching team members in the delivery/release (CI-CD) events (e.g., branching timelines, pull requests, issue triage, merge/conflict resolution, release notes)
+
+Requirements:
+Strong software engineering skills with deep hands-on programming experience in database programming and design using SQL, PL/SQL using Oracle 19c or better (5-7 years)
+In-Depth knowledge of database concepts and hands-on experience in:
+Oracle SQL
+Oracle PL/SQL
+Database Objects
+Database design and development
+Full life-cycle development experience working in data centric applications such as data warehouse, data mart, operational data store, etc. ecosystem including data modelling through final solution
+Ability to perform analysis of performance bottlenecks, propose options, and implement performance tuning recommendations for Oracle database queries/code and batch processes
+ETL Design and Development: Informatica and/or DataStage
+Monitoring performance, troubleshoot and tuning ETL processes as appropriate
+Developing ETL workflows for periodic data loads from source to target databases
+Applying ETL principles and practices, and ability to implement complex solutions to problems
+Designing and building scalable ETL solutions
+Skilled at ideation, design, and deployment of ETL solutions
+Full life-cycle development experience working in data centric applications such as data warehouse, data mart, operational data store, etc. ecosystem including data modeling, ETL, etc.
+Experience working in an Agile team
+Strong written and oral communicator who can work with minimum supervision
+Must be able to clearly and succinctly articulate progress, issues, solutions, plans, results, and success
+Ability to provide technical leadership to initiatives and teams
+
+Desired skills:
+Experience in financial services industry is a plus.
+Exposure to CI/CD tools like Jenkins, Maven etc.
+Advanced understanding of SQL, PL/SQL stored procedures, triggers, partitions, primary keys, different indexes, views
+Linux/Unix shell scripting
+Debugging and modifying existing application
+Installing configuration of applications and maintaining environments
+Toad
+Batch scheduling software such as Autosys
+Jira
+Python
+SQL*Loader
+External Tables and Directories
+Data Modelling
+Data Dictionary
+Common Packages such as UTLFile, DBMS_OUTPUT
+Oracle Enterprise Manager (OEM)
+Demonstrated ability to analyze and determine the feasibility of leveraging the Oracle Enterprise Manager solution as the centralized proactive maintenance solution for Oracle database processes, i.e., report on performance and provide metrics
+Experience with dimensional data models and data model tools such as Toad Data Modeler and/or PowerDesigner
+Experience in BigData (Hadoop) and Exadata is a plus
+Planning skills -- ability to think ahead and be proactive
+Ability to build strong relationships with people of all levels of the organization and influence to bring about positive change
+Positive ""can do "" attitude
+Continuous improvement mindset
+Ability to encourage and accept feedback from all stakeholders with an open mind and take appropriate actions to follow up
+Voracious learner
+Intellectually curious
+Self-motivated
+
+Pay Range: $51.78 - $59.78
+
+Only candidates available and ready to work directly as Genesis10 employees will be considered for this position.
+
+If you have the described qualifications and are interested in this exciting opportunity, please apply!
+
+About Genesis10:
+Ranked a Top Staffing Firm in the U.S. by Staffing Industry Analysts for six consecutive years, Genesis10 puts thousands of consultants and employees to work across the United States every year in contract, contract-for-hire, and permanent placement roles. With more than 300 active clients, Genesis10 provides access to many of the Fortune 100 firms and a variety of mid-market organizations across the full spectrum of industry verticals.
+
+For contract roles, Genesis10 offers the benefits listed below. If this is a perm-placement opportunity, our recruiter can talk you through the unique benefits offered for that particular client.
+
+Benefits of Working with Genesis10:
+Access to hundreds of clients, most who have been working with Genesis10 for 5-20+ years.
+The opportunity to have a career-home in Genesis10; many of our consultants have been working exclusively with Genesis10 for years.
+Access to an experienced, caring recruiting team (more than 7 years of experience, on average.)
+Behavioral Health Platform
+Medical, Dental, Vision
+Health Savings Account
+Voluntary Hospital Indemnity (Critical Illness & Accident)
+Voluntary Term Life Insurance
+401K
+Sick Pay (for applicable states/municipalities)
+Commuter Benefits (Dallas, NYC, SF)
+Remote opportunities available
+
+For multiple years running, Genesis10 has been recognized as a Top Staffing Firm in the U.S., as a Best Company for Work-Life Balance, as a Best Company for Career Growth, for Diversity, and for Leadership, amongst others. To learn more and to view all our available career opportunities, please visit us at our website.
+
+Genesis10 is an Equal Opportunity Employer. Candidates will receive consideration without regard to their race, color, religion, sex, sexual orientation, gender identity, national origin, disability, or status as a protected veteran.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Teradata Developer,Enterprise,"Charlotte, NC","MAJOR INVESTMENT BANK IS LOOKING FOR TERADATA DEVELOPER FOR A LONG TERM CONTRACT POSITION IN CHARLOTTE, NORTH CAROLINA
+ Industry  : Finance
+Position  :  Teradata Developer
+Location :  Charlotte, North Carolina
+Duration :  12 -18 Months (Contract to Hire)
+ Looking for a candidate eligible to convert**
+ Responsibilities :
+Must Haves:
+4+ years of Teradata Development experience
+Looking for Junior to Mid-level candidates
+Linux experience
+Strong Communication
+ Plusses:
+Banking/Finance domain experience
+.Net Experience is a huge plus
+ Job Description:
+Strong communication and ownership skills needed to lead project initiatives.
+BAU support, and migration from Teradata to Hadoop.
+This position will work in the Marketing space on a customer incentive system that also has taxable reporting.
+Will work on a team of 4-5 developers onshore and offshore.
+If Interested please reach out to (973)-381-6989  or send your resumes at pragya.tiwari@collabera.com
+Teradata,Teradata Development ,Linux,Database,Data Warehousing",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Performance Engineer with Spring Boot,US Tech Solutions,"O'Fallon, MO","US Tech Solutions is seeking a ""Performance Engineer with Spring Boot "" for a 12 Month position with a client in O'Fallon, MO
+  Job Poster: Emmadi Srikanth
+   Job Title: ""Performance Engineer with Spring Boot""
+ Description:   
+Experience and Required Skills:
+-Strong Experience in Performance Engineering for Cloud-native applications using Agile methodologies -Experience in Jmeter, Java Micro Benchmark Harness (JMH), Micro Services, NATS or Equivalent messaging services.
+-Expertise in Java, Spring Boot, Containers (PAAS) -Experience in Online / Real time scalable solutions -Experience in CI and CD -Involved and spearhead software performance initiatives -Result oriented individual with Automation experience and Code Quality Excellent Communicator
+ Job Responsibilities:  
+- Engineering experience, preferably in high volume, low latency transaction processing systems (such as payments transaction switching, high frequency trading systems or global real-time event streaming systems etc.)
+- Experience testing RESTful APIs
+- Experience running tests leveraging Spring Boot
+- Experience in financial system encryption (PIN Blocks, CHIP, CVC) would be beneficial
+- Experience with various coding languages Java, Go, C/C++,ESQL, etc. would be desired
+- Experience with deployment via CI/CD would be beneficial
+ Work experience:   
+-8+ years
+ Education:
+-Bachelor’s degree or equivalent experience related to work.
+
+About US Tech Solutions:  
+Your talent, our opportunities - This is the premise behind US Tech Solutions. 
+You have the skill we have the opportunity. As a team, we work passionately for you to get the right career opportunity across industry verticals and functions. For past sixteen years, leading Global 
+Companies and Fortune 500 come to us to get the right talent. Whether you want to work as full-time, contractor or part-time, technical or non-technical our talent consultants will connect with the right career opportunity globally. 
+Connect with our talent team today. 
+USTECH was founded in 2000 by Manoj Agarwal. Today, we are a global firm offering talent solutions to 150 customers including 20% of Fortune 500 across Financial Services, Healthcare, Life Sciences, Aerospace, Energy, Retail, Telecom, Technology, Manufacturing, and Engineering. We are headquartered in New Jersey with 40 global locations across the USA, Canada, Europe, and India. Deloitte has recognized USTECH as one of the fastest growing private businesses for the past five consecutive years and INC 500 for the past three. We have also been rated “The Top Business in the US"" by Diversity Business since 2011. To learn more about how US Tech Solutions visit our website: www.ustechsolutions.com. 
+“U.S. Tech Solutions, Inc. is an Affirmative Action, Equal Opportunity Employer. Our employment decisions are made without regard to race, color, religion, gender, national origin, age, disability, marital status, veteran or military status, or any other legally protected status.” 
+  Apply: Interested candidates are requested to send their resume to Ganji Arun Kumar at emmadis@ustechsolutionsinc.com  ",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+C#/.NET Developer,Stefanini,"Greensboro, NC","Stefanini Group is in search for a C#/.NET/JavaScript Developer! This is for a globally recognized automotive company based in Greensboro, NC!
+
+Open to C2C candidates as well!
+
+Please reach out to me for immediate interview: Venus Pisco at (248) 936-5005) / Venus.Vinoya@stefanini.com
+
+Description:
+C#/.NET/JavaScript Developer - Our client is looking for an Application Software Developer Senior to Solution Delivery Americas. The Application Software Developer understands the user requirements, architecture, and design, validates such requirements and design with the stakeholders and delivers software development, and unit testing services that support business requirements. The unique combination of analysis, technical skills and knowledge of various configuration management tools and understanding of business requirements allows the Application Software Developer to analyze, build and manage software applications that are tailored to business specific needs. As an Application Software Developer you perform coding, unit testing and documentation of software units defined by the design document. You also participate in software modification during integration testing. You adhere to the project/assignment timelines as agreed with the Project Manager or other authorized personnel and develop efficient software according to business requirements within given time frame. Your job also entails ensuring compliance with relevant IT Services processes, methods and tools, and business processes. //LOCATION: Greensboro, NC //
+
+The position will require good communication skills and time management. Responsible for maintenance and production support activities following the established development standards. The ability to provide research, design and testing functions as needed.
+
+* 5+ years programming experience with C#, .NET and JavaScript.
+* 3+ years of systems/software analysis and design experience.
+* 3+ years SQL programming experience.
+* 1+ years delivering solutions as a member of an Agile team.
+* Ability to work in a team environment, manage multiple clients, and provide consultative skills throughout the process.
+* Experience working in a highly matrixed organization.
+* REACT and AWS experience a plus.
+
+Expected in the office on Tuesday and Thursday each week. Project demands could require more days per week.
+
+
+
+About Stefanini Group
+The Stefanini Group is a global provider of offshore, onshore and near shore outsourcing, IT digital consulting, systems integration, application and strategic staffing services to Fortune 1000 enterprises around the world. Our presence is in countries like Americas, Europe, Africa and Asia, and more than 400 clients across a broad spectrum of markets, including financial services, manufacturing, telecommunications, chemical services, technology, public sector, and utilities. Stefanini is a CMM level 5, IT consulting, company with global presence. We are CMM Level 5 company.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Data Engineer(Completely Remote),C2S Technologies Inc,(REMOTE),"Data Engineer – MS experience(Mandatory)
+Location – Redmond, WA – remote
+Duration – 12+ months
+
+
+
+The role is for data engineer who actively participates in scrum meetings and work on sprint items. He also works as an escalation point to support operation teams for any job/pipeline failure and publish related issue..
+ Technical Skills needed are 
+ Top priority
+Azure (data brick, Azure Synapse, Azure data brick migration to Azure Synapse, Pipelines, Py.Spark)
+PowerShell script
+Tabular cubes, DAX
+MS SQL, SSIS
+MS Cosmos
+ Others
+Power BI  
+Tableau App + Tableau Pre builder",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+"Consultant/Developer - Collibra Application, Data Management Support","ICONMA, LLC","Charlotte, NC","Developer/consultant with the Collibra development team.
+Participates in development activities to implement strategic Data Management capabilities focusing on integration with Collibra via Java APIs and migrating a Collibra Mule soft backend to Python.
+Works closely with business and technology partners to provide data governance and understand data domain requirements and issues.
+Will assist with guidance on development and implementation of data quality rules, monitoring of data quality, and helps drive data analysis, data quality improvement and issue resolution.
+               Requirements
+Excellent organizational skills.
+Relational database expertise, including SQL expertise.
+Python expertise.
+Java in a J2EE/MuleSoft environment, API development/usage.
+Linux/Unix expertise, sound knowledge of the command line interface.
+Autosys can schedule and create jobs.
+Strong analytical skills, ability to collect, organize, and analyze information.
+Experience in database modelling, architecture, design, and implementation.
+Excellent oral, written, and presentation skills, including the ability to work in person, virtually, and in a globally staffed environment.
+Adept at handling multiple tasks and adapting to daily changing requirements.
+               Desired:
+Knowledge of Collibra workflows.
+MuleSoft experience.
+ As an equal opportunity employer, ICONMA prides itself on creating an employment environment that supports and encourages the abilities of all persons regardless of race, color, gender, age, sexual orientation, citizenship, or disability.
+
+
+Dylan Kumar
+
+248) 537-0791",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Java / Golang Developer,Ascendion,"Raleigh, NC","About Ascendion
+Ascendion is a full-service digital engineering solutions company. We make and manage software platforms and products that power growth and deliver captivating experiences to consumers and employees. Our engineering, cloud, data, experience design, and talent solution capabilities accelerate transformation and impact for enterprise clients. Headquartered in New Jersey, our workforce of 6,000+ Ascenders delivers solutions from around the globe. Ascendion is built differently to engineer the next.
+Ascendion | Engineering to elevate life
+We have a culture built on opportunity, inclusion, and a spirit of partnership. Come, change the world with us:
+•Build the coolest tech for world’s leading brands
+•Solve complex problems – and learn new skills
+•Experience the power of transforming digital engineering for Fortune 500 clients
+•Master your craft with leading training programs and hands-on experience
+Experience a community of change makers!
+Join a culture of high-performing innovators with endless ideas and a passion for tech. Our culture is the fabric of our company, and it is what makes us unique and diverse. The way we share ideas, learning, experiences, successes, and joy allows everyone to be their best at Ascendion.
+About the Role:
+Job Title:           Java Developer
+Duration:           12+ months 
+Pay Rate:           $50-$54 per hour  
+MUST HAVES:
+•5+ years of Java development (middle tier, back-end focus)
+•Strong background with kafka
+•Strong background working with springboot
+•API Development
+•AWS Experience (S3/File System)
+•Experience with Mongo & Postgres
+•Golang Experience 
+
+Want to change the world? Let us know.
+Tell us about your experiences, education, and ambitions. Bring your knowledge, unique viewpoint, and creativity to the table. Let’s talk!
+Java ,spring, springboot,angular,Golang ,AWS",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Senior JavaScript Developer,"ICONMA, LLC",(REMOTE),"Manipulating existing vendor sites through the C1 shopping different browsers.
+Primarily focused on Frontend using Coupon Codes - Scripts development.
+Juniper ticketing.
+ Requirements
+Hands on Sr. JavaScript Developer role with strong Frontend development background.
+3+ yrs. of Core JavaScript exp is a must.
+1+ yrs. of exp with AWS/GCP/Azure OR another cloud service is a must.
+2+ yrs. of exp in open-source frameworks is a must.
+jQuery exp is a must.
+ Nice to have:
+ React/Angular/Node/TypeScript.
+ As an equal opportunity employer, ICONMA prides itself on creating an employment environment that supports and encourages the abilities of all persons regardless of race, color, gender, age, sexual orientation, citizenship, or disability.
+
+
+Raja Visampalli
+M: (703) 348-0198
+ ",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Application System Engineer-Supervisory,RMS Computer Corporation,"Tampa, FL","Our client, a leading global financial services company, has approximately 200 million customer accounts and does business in more than 140 countries. They provide consumers, corporations, governments and institutions with financial products and services, including consumer banking and credit, corporate and investment banking, securities brokerage, transaction services, and wealth management.
+
+Description:
+This position is primarily responsible for supporting day-to-day activities related to monitoring the governance and implementations of change and configuration management activity for major / minor releases and infrastructure modifications across all GFT application development community. These include but are not limited to ensuring control check points are enforced and monitored to minimize any risk of unauthorized changes in controlled information system environments for GFT applications and oversight for all GFT Configuration Management Data Base (CMDB) activities in the ServiceNow tool. This role will also be heavily involved in validating and documenting details of these responsibilities as part of the SaaS implementation for ServiceNow 3.0.
+
+Production Control – Application Support & Technical Specialist for Change and Configuration Management:
+Job Title: GPA Production Control Lead - Applications Support Tech Lead Analyst T&M
+• Support the management of the process which reviews, approves, monitors, and reports on changes/releases across all GFT application controlled (UAT/QA, COB and/or Prod) environments.
+• Review integration points between SaaS implementation team, application development and production control with a focus on identifying the introduction of any gaps in the controls
+• Identify process recommendations to support continuous service improvements with opportunities for the reduction of manual touch points via automation. Capture those resulting from SaaS implementation.
+• Support Management Operational Reporting (MOR) monthly metrics, recognizing the importance of trending and the impact to incident volume resulting from major releases.
+• Support the review of Management Control Assessment (MCA) breaches and review repeat escalations for process improvement optimizations and/or opportunities for automation across various business and technical processes, and alignment with SaaS implementation.
+• Administer and maintain audit documentation for Change Management and Configuration Management Data Base (CMDB) monitoring in support of GFT applications and foundational ServiceNow data in SaaS.
+• Coordinate and work on multiple projects simultaneously while effectively managing multiple independent tasks to meet deadlines.
+• Establish an understanding of the GFT CSDM and the impact to established policy and procedures related to management of Change, Major/Standard Incident, Problem, Request and Procurement.
+
+Qualifications:
+- Minimum 5 years professional experience with at least 3 years in a technical role.
+- Practical problem solving and strategic thinking skills and data analysis.
+- Demonstrated leadership and relationship building skills with a service oriented attitude.
+- Ability to work in a fast-paced environment, adjusting quickly to changes and re-prioritization.
+- Proficient using basic technical tools and systems. Highly proficient in MS PowerPoint and Excel (including Pivot tables and macros).
+- Clear, concise written and verbal communication skills to exchange complex information, especially where explaining technical items to non-technical/junior employees.
+- Ability to define, create and improve procedures to ensure consistency and adherence to all necessary corporate information technology policies.
+
+Education Level: Bachelor's Degree or equivalent experience.
+
+168447
+
+Please see our complete list of jobs at:
+www.rmscorp.com",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+System Improvement Engineer,US Tech Solutions,"Atlanta, GA","Job Description:
+Experience in planning utility projects including GRID modernization. Overhead to underground feeder conversions, reliability improvements.
+Significant experience dealing with commercial/industrial customers with complex distributions systems. (i.e. Network, Auto-Transfer multi-feeder, Distribution Ductline)
+Significant Electric Utility Project Management Experience including organization approach, Time Management of multiple projects, Strong Communications skills, ability to create and Manage construction timelines (Gantt Charts), Lead pre-construction meetings.
+Experience with client construction standards.
+Distribution high voltage switching experience to predict needs.
+ Skills:
+Project Managements certification a plus.
+Experience in JETS, DistView, GIS, Socket, TEAMS, Auto-CAD, MOBI applications, Distribution.
+ Education:
+Bachelors in Engineering/Engineering Technology.
+ About US Tech Solutions:
+Your talent, our opportunities - This is the premise behind US Tech Solutions.
+You have the skill we have the opportunity. As a team, we work passionately for you to get the right career opportunity across industry verticals and functions. For past sixteen years, leading Global
+Companies and Fortune 500 come to us to get the right talent. Whether you want to work as full-time, contractor or part-time, technical or non-technical our talent consultants will connect with the right career opportunity globally.
+Connect with our talent team today.
+USTECH was founded in 2000 by Manoj Agarwal. Today, we are a global firm offering talent solutions to 150 customers including 20% of Fortune 500 across Financial Services, Healthcare, Life Sciences, Aerospace, Energy, Retail, Telecom, Technology, Manufacturing, and Engineering. We are headquartered in New Jersey with 40 global locations across the USA, Canada, Europe, and India. Deloitte has recognized USTECH as one of the fastest growing private businesses for the past five consecutive years and INC 500 for the past three. We have also been rated “The Top Business in the US"" by Diversity Business since 2011. To learn more about how US Tech Solutions visit our website: www.ustechsolutions.com.
+“U.S. Tech Solutions, Inc. is an Affirmative Action, Equal Opportunity Employer. Our employment decisions are made without regard to race, color, religion, gender, national origin, age, disability, marital status, veteran or military status, or any other legally protected status.”
+ Apply: Interested candidates are requested to send their resume to Sharath Sai at Sharath@ustechsolutionsinc.com.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+AWS Cloud Developer Senior,US Tech Solutions,"New York, NY","Duration: 6 months contract
+Job Description/Responsibilities:
+The ideal candidate is experienced in cloud-based tech, with a firm grasp of emerging technologies, platforms, and applications, and ability to customize them to help our business become more secure and efficient. Extensive knowledge of cloud maintenance, experience managing staff, and advanced industry knowledge is key to keeping us on the cutting edge. From day one, you’ll have an immediate impact on the day-to-day efficiency of our IT operations, and an ongoing impact on our overall growth.
+· Develop and implement technical efforts to design, build, and deploy AWS Infrastructure (IaC) at the direction of lead architects, including large-scale data processing, computationally intensive statistical modeling, and advanced analytics.
+· Participate in all aspects of the software development life cycle for AWS solutions, including planning, requirements, development, testing, and quality assurance
+· Troubleshoot incidents, identify root cause, fix and document problems, and implement preventive measures
+· Educate teams on the implementation of new cloud-based initiatives, providing associated training as required
+· Employ exceptional problem-solving skills, with the ability to see and solve issues before they affect business productivity.
+Experience:
+· Work in tandem with our engineering team to identify and implement the most optimal cloud-based solutions for the company.
+· Define and document best practices and strategies regarding application deployment and infrastructure maintenance
+· Provide guidance, thought leadership, and mentorship to development teams to build cloud competencies
+· Ensure application performance, uptime, and scale, maintaining high standards of code quality and thoughtful design
+· Managing cloud environments in accordance with company security guidelines.
+Skills:
+· Hands on experience with AWS Services and other API related technology - specifically, with IAM, EC2, Lambda, API Gateway, and DataSync
+· Hands on experience with Python, NodeJS, CloudFormation or equivalent technologies.
+· Hands on experience in an Agile environment.
+· Hands on experience supporting a DevOps model.
+Education:
+· Bachelor’s degree in Computer Science or Engineering or equivalent working experience.
+About US Tech Solutions:
+US Tech Solutions is a global staff augmentation firm providing a wide range of talent on-demand and total workforce solutions. To know more about US Tech Solutions, please visit www.ustechsolutions.com.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Application Specialist,"Ametek, Inc.","Horsham, PA","Ametek, Inc.
+Job description:
+Your Impact:
+The Applications Specialist works with internal and external customers as key technical advisor for Level Measurement Systems, including Drexelbrook and Magnetrol products. This role is critical in driving business goals through their ability to generate new business and build the relationships that grow existing accounts for our products.
+Key Responsibilities:
+Provide expert level support in LMS core competency product line(s), including troubleshooting and product specification.
+Provide pre- or post-sale field support as needed, including application walk down, specification review, high level troubleshooting, root cause evaluation, etc.
+Receive and respond to emails and phone calls within 24 hours of receipt.
+Provide expert applications and technical support to representatives/distributors.
+Apply expert technical experience to new product development and existing product challenges.
+Assist Operations with NPD and assembly improvements, training.
+Promote ease of doing business by understanding competitor products and capabilities to supplement product crossover efforts.
+Identify quotable portions of incoming RFQs; support Applications Engineering portion of large project checklist.
+Review bid package for commercial requirements (Ex. Drawings, testing) and pass to Customer Service Representative as needed.
+Coordinate equipment and documentation responses and create formal quotation. Submit to Territory Manager or customer directly.
+Create KPIs to track, analyze, and report on systemic issues.
+Develop cross-functional quality strategies by conducting needs assessments and cost/benefit analysis.
+Create systems, processes, and tools to support the size of the organization, while providing a seamless, effortless customer support experience.
+Measure and report on the effectiveness of the action plans.
+Determine training strategies by conducting needs assessments.
+Standardize training routines globally.
+Conduct training and train-the-trainer events as needed.
+Create and maintain internal and external selling tools and tech notes.
+Position Requirements:
+High school diploma required; Associate or Bachelor’s degree from college or technical school preferred.
+3+ years’ hands-on technical sales and customer service experience required; experience with a manufacturer or manufacturer’s representative preferred.
+Demonstrated experience with level measurement principles, applications, equipment manufacturing.
+Excellent written and verbal communication skills.
+Strong user of MS Office (Word, Excel, Teams).
+Self-motivated, able to work with little supervision.
+Familiarity with technical drawings. Previous manufacturing or field service experience preferred.
+Previous experience with ERP software (Oracle preferred); CRM software (Salesforce preferred).",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+SAS Programmer Analyst,Entellimetrix LLC,"Columbia, SC","We are an Atlanta GA based Data Analytics consulting company and a SAS Alliance Partner. We are currently seeking an experienced SAS Programmer Analyst for a 6-9 Months long contract with a public sector client in Columbia SC.
+
+ROLE: SAS Programmer Analyst
+
+A minimum of Bachelor’s degree in Mathematics, Computer Science, Business Administration, or a related field is required and equivalent work experience required
+Minimum of 6+ years’ experience of SAS\SQL programming experience.
+Analytical Programming experience in SAS as well as experience with SAS Studio, SAS Enterprise Guide and SAS Visual analytics
+Relevant experience in the Healthcare industry preferred (commercial or govt).
+Lead and/or actively participate in SAS knowledge-sharing activities.
+Be proficient in Base SAS programming (DATA step), SQL programming (i.e., use of SQL pass-through or PROC SQL), as well as the SAS Macro language for use in making code more efficient
+Good written and spoken communications skills in English and thought-leadership skills.
+SAS Product Knowledge:
+SAS Enterprise Guide
+SAS Studio
+SAS Visual Analytics (VA)",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Senior Reliability Engineer,INSPYR Solutions,"Mountain View, CA","Title: Senior Reliability Engineer
+Location: Mountain View, CA
+Duration: 1 Year
+Work Requirements: US Citizen, GC Holder or Authorized to Work in the US.
+
+Job Description:
+
+We are seeking an experienced Senior Reliability Engineer to lead our efforts in ensuring the reliability and durability of our products. The ideal candidate will have at least 10 years of experience in reliability engineering, including experience with automotive standards including AECQ, making component reliability estimates, component lifetime estimates, experience with JEDEC and ISO standards, lifetime behavior modeling, experience qualifying semiconductors including ASIC, failure analysis, DFMEA, and PFMEA.
+Skillset / Experience: Senior Reliability Engineer
+
+Bachelor's or Master's degree in Electrical Engineering, Mechanical Engineering, or related field.
+At least 10 years of experience in reliability engineering, including experience with automotive standards including AECQ, making component reliability estimates, component lifetime estimates, experience with JEDEC and ISO standards, lifetime behavior modeling, experience qualifying semiconductors including ASIC, failure analysis, DFMEA, and PFMEA.
+Strong understanding of industry standards and regulations related to reliability testing and analysis.
+Excellent problem-solving and analytical skills.
+Strong communication skills and the ability to work effectively in a cross-functional team environment.
+Experience with reliability software tools, such as Weibull++ and ALTA, is preferred.
+Certification as a Reliability Engineer (CRE) or equivalent is a plus.
+Responsibilities:
+
+Develop and implement reliability test plans and procedures in accordance with industry standards and customer requirements.
+Conduct reliability analysis and modeling, including component lifetime estimates and lifetime behavior modeling.
+Participate in product design reviews and provide feedback on design and process changes that may impact product reliability.
+Work closely with cross-functional teams, including design, manufacturing, and quality, to ensure product reliability and customer satisfaction.
+Conduct failure analysis and root cause investigations to determine the cause of failures and develop corrective actions.
+Develop and maintain reliability test equipment and facilities.
+Participate in the development of Design Failure Mode and Effects Analysis (DFMEA) and Process Failure Mode and Effects Analysis (PFMEA) documents.
+Lead the qualification of new products, including ASICs, in accordance with industry standards and customer requirements.
+Communicate reliability performance to customers and internal stakeholders.
+Provide guidance and mentorship to junior engineers.
+Our benefits package includes:
+
+Comprehensive medical benefits
+Competitive pay, 401(k)
+Retirement plan
+and much more!
+About INSPYR Solutions:
+
+
+
+As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly-skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+
+INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Sr. Full Stack Engineer,INSPYR Solutions,"Woodland Hills, CA","Title: Sr. Full Stack Engineer
+Location: Woodland Hills, CA REMOTE
+Duration: 10 Month CONTRACT
+Compensation: $90-95/hr W2
+Work Requirements: US Citizen, GC Holders or Authorized to Work in the US on a W2 basis
+ If interested, please send your updated resume to Cindy Tran at cptran@inspyrsolutions.com
+ Job Description:
+We have an entertainment client seeking a senior full stack engineer who will be developing responsive web/mobile applications,  both front and back end functionality and architecture.
+Launch and Develop advanced features, including intradepartmental privacy, live streaming, file-sharing, custom touring/events calendar, and custom email services.
+Collaborate with internal stakeholders, other developers and designers to produce high fidelity wireframes, designs/mock-ups/prototypes for review/iteration/approval.
+Contribute, evolve and maintain development standards and release notes.
+Write technical user stories and convert user stories into elegant, performant and highly usable interfaces.
+Provide estimates to the required level of accuracy for stories and tasks and provide regular status updates.
+Test deliverables against a user story's acceptance tests.
+Create and contribute to updates towards technical documentation
+ Qualifications/requirements:
+7-10 yrs of experience as a software engineer
+Must have: ReactJS, NodeJS, and AWS Lambda
+Bachelor's in Computer Science, related field, or equivalent demonstrable experience
+Minimum 5-7 years web development experience (experience in media/entertainment industry is a plus)
+Minimum 3 years in an agile environment (Scrum and/or Kanban)
+APPLICATION DEVELOPMENT
+API
+JAVASCRIPT
+DESIGN PATTERNS
+ENGINEER
+ Additional Skills:
+KANBAN
+LIVE STREAMING
+MOCK-UPS
+PROTOTYPES
+TECHNICAL DOCUMENTATION
+UNIT TESTS
+USER STORIES
+WIREFRAMES
+ARCHITECTURE
+BACK END
+PROTOTYPE
+WIREFRAME
+ Our benefits package includes:
+Comprehensive medical benefits
+Competitive pay, 401(k)
+Retirement plan
+…and much more!
+ About INSPYR Solutions:
+ As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly-skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+ INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Salesforce Developer,Genesis10,"Eden Prairie, MN","Genesis10 is seeking a Salesforce Developer for a contract with our client in Eden Prairie, MN.  100% Remote.
+
+Job Description:
+Working to fill out a scrum team
+Salesforce development skills required
+Supporting Program Benefits Widget ACET integration
+Call center solution integrating an API within ACET dashboard
+
+Compensation:
+Hourly W2 pay rate $50.00 - $58.00
+We have access to additional contract, contract-to-hire, and direct hire positions with various rate ranges. 
+
+If you have the described qualifications and are interested in this exciting opportunity, apply today!
+
+Ranked a Top Staffing Firm in the U.S. by Staffing Industry Analysts for six consecutive years, Genesis10 puts thousands
+of consultants and employees to work across the United States every year in contract, contract-for-hire, and permanent
+placement roles. With more than 300 active clients, Genesis10 provides access to many of the Fortune 100 firms and a
+variety of mid-market organizations across the full spectrum of industry verticals.
+
+For contract roles, Genesis10 offers the benefits listed below. If this is a perm-placement opportunity, our recruiter can talk
+you through the unique benefits offered for that particular client.
+
+Benefits of Working with Genesis10:
+Access to hundreds of clients, most who have been working with Genesis10 for 5-20+ years.
+The opportunity to have a career-home in Genesis10; many of our consultants have been working exclusively with Genesis10 for years.
+Access to an experienced, caring recruiting team (more than 7 years of experience, on average.)
+Behavioral Health Platform
+Medical, Dental, Vision
+Health Savings Account
+Voluntary Hospital Indemnity (Critical Illness & Accident)
+Voluntary Term Life Insurance
+401K
+Sick Pay (for applicable states/municipalities)
+Commuter Benefits (Dallas, NYC, SF)
+Remote opportunities available
+
+For multiple years running, Genesis10 has been recognized as a Top Staffing Firm in the U.S., as a Best Company for
+Work-Life Balance, as a Best Company for Career Growth, for Diversity, and for Leadership, amongst others. To learn
+more and to view all our available career opportunities, please visit us at our website.
+
+Genesis10 is an Equal Opportunity Employer. Candidates will receive consideration without regard to their race, color,
+religion, sex, sexual orientation, gender identity, national origin, disability, or status as a protected veteran.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Informatica Developer -(Mule soft/API technologies),"ICONMA, LLC","Jersey City, NJ"," Individual should be able to demonstrate technical and analytical skill in developing complex ETL workflows using Informatica Power center.
+Create data mapping to ingest data from disparate data sources ranging from flat files to RDMS, Hive or REST APIs.
+Responsible for developing Unix scripting.
+Must be able to work independently with minimum supervision.
+Responsible for developing test cases and performing unit testing.
+Responsible for providing regular task status update to the management.
+ Requirements
+Technically strong in Informatica Power center.
+Proficiency in MuleSoft tools desired.
+Must be able to interact and co-ordinate with a distributed team.
+Must have good communication skills.
+Technically strong in performance tuning of targets, sources, mappings, and SQL queries.
+Conceptually good in PL/SQL, Functions, and writing complex SQLs, and creating and exposing views/materialized views.
+Strong in UNIX commands and Scripting. Good in MuleSoft Integration.
+ Desired skills:
+Source control repository - SVN/BitBucket, Continuous Build & integration tools (IBM UBuild/Jenkins, IBM UDeploy/Ansible).
+ As an equal opportunity employer, ICONMA prides itself on creating an employment environment that supports and encourages the abilities of all persons regardless of race, color, gender, age, sexual orientation, citizenship, or disability.
+
+
+Narendra Patnam
+Phone: (248) 737-4451 
+ ",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Java Developer,Enterprise,"Charlotte, NC","Position Details:
+Industry:                Banking And Financial Services 
+Title:                       FullStack Java ",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Systems Engineer 3,US Tech Solutions,(REMOTE),"Duration: 9 Months contract (with the possibility of extension or conversion to FTE)
+ Job Description:
+Top Must-Have Skills / Candidate Requirements:
+•             Integrations- APIs or other internal integration
+•             Architecture
+•             Linux
+•             Windows
+•             Visio designs, but changing to Aris design tool – Aris experience a plus
+•             Database Technologies: (Oracle, MSQL, MySQL, Mongo)
+•             Web/Application Technologies (WebSphere, Tomcat, Micro Services)
+•             Integration technologies: (API’s, IBM ACE, ETL/Batch, File transfer)
+•             Or more general - Web/Application technologies, Database Technologies, and integration technologies, real time and batch
+ Responsibilities:
+Day to Day:
+•             Proficiency with Microsoft Visio for design documentation; changing to Software AG ARIS (ARIS experience a plus)
+•             Desire to quickly learn and understand new concepts and apply them to Service Design tasks
+•             Understanding of application integration mechanisms and associated technologies (API’s, IBM ACE, ETL/Batch, File transfer)
+•             Knowledge of enterprise technologies: Operating Systems (Windows, Linux), Database Technologies: (Oracle, MSQL, MySQL, Mongo), Web/Application Technologies (WebSphere, Tomcat, Micro Services)
+•             Knowledge of Microsoft desktop tools, and products - Outlook, Teams meetings etc. and the ability to manage their time, tracking tasks with deadlines, and organizational skills to keep track of multiple projects/tasks, documentation etc.
+ Experience:
+Minimum of 5 years' experience
+
+About US Tech Solutions:
+Your talent, our opportunities - This is the premise behind US Tech Solutions.
+You have the skill we have the opportunity. As a team, we work passionately for you to get the right career opportunity across industry verticals and functions.
+ ",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Entry Level Java Developer,Softworld Inc,"Lakewood, OH","Job Description
+Career opportunities are available for recent grads with BS in Computer Engineering, Computer Science, Systems Engineering or related technical field. Candidate will work on a fast-paced, integrated product development team.
+Duties and Responsibilities:
+Be a member of a development team responsible for designing, developing, refactoring, testing and maintaining new features and improve existing code base
+Develop web based and mobile software applications in support of Progeny's innovative, high quality engineering solutions in an agile environment.
+Participate in all phases of the Agile Software Development Life Cycle (SDLC) including requirements analysis, design, implementation, and testing.
+Knowledge, Skills and Abilities
+Familiarity with software engineering disciplines from requirements development to validation.
+Strong skills in use of JAVA and JAVA EE development tools.
+Strong organizational and analytical skills as well as practical problem-solving and decision skills.
+Experience in the design and development of software applications using multiple technologies including, but not limited to Java, .NET, SQL, Web Services, JavaScript and XML languages.
+Experience with relational databases is desired.
+Experience with containerization technologies, e.g. Docker or Kubernetes is desired.
+Experience with Agile development process is desired.
+Education/Experience:
+B.S. degree in Computer Engineering, Computer Science, Systems Engineering or a related technical field (or an equivalent combination of education and experience.)
+0-3 years' experience",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Shopify App Developer - Long Term Project - Remote (US/PST),INSPYR Solutions,CA,"Shopify App Developer - Long Term Project - Remote (US/PST)
+Title: Shopify Application Developer
+Location: Remote (US/PST)
+Duration: Long Term project 9+ months
+Compensation: $70-80/hr W2
+Work Requirements: US Citizen, GC Holders or Authorized to Work in the USQualified candidates may send a copy of their resume (Word Format) to tsanchez@ inspyrsolutions.com.
+Duties: Looking for a Shopify App Developer and integrator to build new feature sets and interfaces and to resolve bugs on our Shopify eCommerce stack. The developer will be responsible for developing custom modules/apps and interfaces for our eCommerce stack, standardizing and templatizing where possible and troubleshooting code related issues. This position requires experience in multiple areas and facets of the eCommerce space to design and develop for vastly different client problems/goals while using a single underlying theming code.
+ 
+Job Functions:
+Build and deploy cutting-edge features for our Shopify storefronts.
+Develop components for UK Shopify ecosystem by modifying existing Shopify apps and interfaces with critical eComm systems or developing new Shopify apps and interfaces as needed.
+Build systems integrations with various consumer marketing platforms (CRM, AdTech, MarTech, Customer Service Tech).
+Write technical user stories and convert user stories into deliverables.
+Provide estimates to the required level of accuracy for stories and tasks.
+Test deliverables against a user story's acceptance tests.
+Create technical documentation.
+Skills/Abilities:
+Solid understanding of Shopify and general eCommerce and consumer marketing technologies
+Strong proficiency in modern design patterns and development languages including JavaScript, Typescript, Python, HTML5, CSS3, and Ruby
+Proficiency in responsive design principles
+Knowledge of APIs, webhooks, and general data transfer approaches
+Ability to identify areas that can be streamlined or automated
+Ability to write unit tests when implementing user stories and design and develop code for testability
+Solid grounding with common design patterns and development best practices
+Ability to multi-task, problem solve, and execute tasks with accuracy in a high-pressure, fast-paced agile environment
+Customer-first mentality with ability to empathize and create customer loyalty
+Strong drive to continue improving skills and to stay on the cutting edge of web technology
+Capable of learning new technologies and platforms quickly and able to apply them to solve complex problems
+Experience:
+Minimum 5 years of experience working on the Shopify platform
+Knowledge of ecommerce technology landscape and associated stacks (shopping cart, API integrations, OMS, IMS, WMS, credit card processing, tax engine, digital distribution etc.)
+Experienced in:
+5+ years Shopify frontend and backend development – Shopify Plus experience a plus, one or more provable Shopify certifications preferred
+Front end frameworks React, Shopify's Polaris, and jQuery
+NodeJS, JavaScript (ES2019+), ESLint and coding standards, Typescript
+Experience with task runners, build tools, and bundlers like Gulp, Grunt, Webpack, etc.
+Comfort with multiple Linux distributions
+Experience integrating with web services (REST, and GraphQL) and third-party libraries
+Data applications using Fetch/AJAX/JSONP with JSON/XML/HTML content
+Authentication and authorization technologies a plus: SAML, OAuth, OpenID
+Experience with version control systems (Bitbucket/GitHub)
+Experience working within an agile team
+Experience with deployment (CI/CD) tools like Jenkins, Github, and BitBucket
+Education: Bachelor's in Computer Science, related field, or equivalent demonstrable experience Skills and Experience:",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Senior Systems Engineer,"ICONMA, LLC","Detroit, MI"," Must work in a team environment to take our customer's vision and turn it into products using validated industry system engineering tools and processes.
+Responsible for cascading of specifications from system to components and delivery of product designs.
+Advises and collaborates with other team members to develop the concepts, package 3D models, detailed design, simulation, DFMEA, and DVP.
+Lead the design of new parts in CAD and review FEA results to make design judgements on all structural components.
+Perform engineering calculations: bolted joints, press fits, required machined stock, hand calculations.
+Provide direction on structural rib design for strength and stiffness, housing thickness for casting, housing acoustics.
+Responsible for all structural components in the eAxle, including housings, ERW or DOM axle tubing, stamped suspensions brackets, etc.
+ Requirements
+Bachelor’s degree in Mechanical Engineering required.
+4+ years of experience within axle drives or transmissions focused on housing structures and castings.
+Electric axle experience strongly preferred.
+Strong organizational/communication skills to effectively work within Departments.
+Strong oral and written technical communication skills required.
+Must have excellent understanding of structural & fatigue analysis associated with beam axle loading.
+External and internal contacts with high degree of diplomacy, judgment and possess ability to deal with and effectively influence persons in all types of positions.
+High level of analytical ability, understanding of engineering theory, and principles of design.
+ As an equal opportunity employer, ICONMA prides itself on creating an employment environment that supports and encourages the abilities of all persons regardless of race, color, gender, age, sexual orientation, citizenship, or disability.
+
+
+Razzak Sharfi
+Phone: (732) 605-4277
+ ",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Developer,US Tech Solutions,"Dallas, TX","Duration: 6+ month contract position
+Description: Job Responsibilities
+Expertise in developing applications and services using languages such as Java including coding, debugging, and using Java related technologies Experience using software and computer systems' architectural principles to integrate enterprise computer applications Skilled in use of AWS technologies for building, deploying applications and operating applications Proficiency with Continuous Integration/Continuous Delivery (Jenkins, Go) Experience with build tools (Gradle, Maven, Nexus, etc.) Ability to leverage Fannie Mae DevOps tool stack to build, inspect, deploy, test and promote new or updated features. Experience working in Agile methodology and lead the design and provide solutions for complex business problems Skilled in establishing and maintaining consistency of a product's performance and functional attributes with its requirements, design, and operational information Working with people with different functional expertise respectfully and cooperatively to work toward a common goal Skilled in Influencing others within and across teams, including negotiating, persuading others, facilitating meetings, and resolving conflict Expert proficiency in application of analysis/design engineering functions Expert proficiency in application of non-functional software qualities such as resiliency, maintainability, etc. Experience in advanced behavior-driven testing techniques Provide expertise for teams in all matters related to deployment, building and release process Experience in coaching and guiding others in the team to drive engineering culture.
+Work experience
+4 or more years’ experience.
+Education
+High School or GED
+About US Tech Solutions:
+Your talent, our opportunities - This is the premise behind US Tech Solutions.
+You have the skill we have the opportunity. As a team, we work passionately for you to get the right career opportunity across industry verticals and functions. For past sixteen years, leading Global
+Companies and Fortune 500 come to us to get the right talent. Whether you want to work as full-time, contractor or part-time, technical or non-technical our talent consultants will connect with the right career opportunity globally.
+Connect with our talent team today.
+USTECH was founded in 2000 by Manoj Agarwal. Today, we are a global firm offering talent solutions to 150 customers including 20% of Fortune 500 across Financial Services, Healthcare, Life Sciences, Aerospace, Energy, Retail, Telecom, Technology, Manufacturing, and Engineering. We are headquartered in New Jersey with 40 global locations across the USA, Canada, Europe, and India. Deloitte has recognized USTECH as one of the fastest growing private businesses for the past five consecutive years and INC 500 for the past three. We have also been rated “The Top Business in the US"" by Diversity Business since 2011. To learn more about how US Tech Solutions visit our website: www.ustechsolutions.com.
+“US Tech is an Equal Opportunity Employer"" and “US Citizens & all other parties authorized to work in the US are encouraged to apply.""
+Apply: Interested candidates are requested to send their resume to Manjot Kaur at Manjot@ustechsolutionsinc.com",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+DevOps Engineer (AWS / CI CD),INSPYR Solutions,"Juno Beach, FL","Title: DevOps Engineer
+Location: Juno Beach, FL
+Duration: 12 Months
+Work Requirements: US Citizen, GC Holder or Authorized to Work in the US.
+
+Job Description:
+
+Understand the current application infrastructure and suggest changes to it and oversee CI/CD pipelines to maximize productivity.
+Experienced AWS DevOps responsible for making apps more scalable and reliable.
+Define and document best practices and strategies regarding application deployment and infrastructure maintenance.
+Design, implement, maintain, and support platform services associated with the CI/CD pipelines
+Configure monitoring and alerting systems for applications and platform services.
+Work with leadership and be accountable for aligning the team to architectural, technical, functional, and performance guidelines related to CI/CD pipelines
+Define service capacity planning strategies.
+Implement the application's CI/CD pipeline using the Jenkins, GitHub Actions or AWS CI/CD stack.
+Write infrastructure as code using CloudFormation, CDK or similar.
+Skillset / Experience:
+
+DevOps Engineer
+
+Experience with the core AWS services, plus the specifics mentioned in this job description.
+Good background in Linux/Unix administration.
+Experience with Docker and Kubernetes. Having used ECS or EKS.
+Proficiency in at least one language from our stack: C#. TypeScript
+Strong notions of security best practices (e.g. using IAM Roles, KMS, etc.).
+Experience with monitoring solutions such as CloudWatch, Prometheus, and the ELK stack.
+Previous exposure to large-scale systems design.
+Ability to troubleshoot distributed systems.
+Knowledge of writing infrastructure as code (IaC) using CloudFormation or Terraform.
+Experience with building or maintaining cloud-native applications.
+Understanding of Software Development Life Cycle and Agile methodologies.
+Experience with the serverless approaches using AWS Lambda is a plus. For example, the Serverless Application Model (AWS SAM).
+Exposure to Agile practices/Methodologies.
+Our benefits package includes:
+
+Comprehensive medical benefits
+Competitive pay, 401(k)
+Retirement plan
+…and much more!
+About INSPYR Solutions:
+
+
+
+TekPartners and Genuent are becoming INSPYR Solutions. As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+
+INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Senior .Net Developer (Azure DevOps),INSPYR Solutions,"Deerfield Beach, FL","Title: Senior .Net Developer (Azure DevOps)
+Location: Remote
+Compensation: $80.00 - $100.00 Hourly
+Work Requirements: US Citizen, GC Holders or Authorized to Work in the US
+
+Qualifications:
+5+ years of hands on .net development experience.
+2+ years PaaS implementation experience in Azure
+2+ years Web Apps, API Management, Logic App, Function, Service Bus experience
+5+ years of hands-on-experience delivering solutions related to enterprise integration, APIs, service-oriented architecture
+5+ years of in-depth development experience with C#/.NET
+3+ years PowerShell experience (JSON, XML, other scripting an asset)
+3+ years Visual Studio with Continuous Integration
+3+ years performing object-oriented design and building backend applications with REST API services
+2+ years of UI development experience working with UI/UX Designers
+Hands on experience with .Net core, Azure services, Azure Functions, Azure SQL, Storage etc.
+Demonstrable understanding of Web Services (SOAP, REST), XML and JSON formats document schemas, HTTP protocol, and underlying internetworking concepts
+Experience orchestrating complex use cases involving multiple systems, incorporating error handling and logging
+Excellent troubleshooting skills with the ability to analyze and resolve complex technical issues and defects
+Excellent Written and Oral communication skills
+3+ years working as part of an Agile/Scrum team.
+
+Responsibilities:
+Design, develop, and maintain .net applications / API's based upon requirements, high level design, guiding principles and patterns.
+Implement and manage continuous integration and continuous delivery (CI/CD) systems and methodologies
+Assist with the creation of automation scripts for provisioning cloud resources, rolling out tools and new features
+Help with monitoring systems and providing support
+Collaborate with engineering team members to detect & resolve infrastructure problems
+Manage hosted environment, respond to outages and defects, and interactively improve the system.
+This is a hands-on role that is expected to develop, teach, guide, and perform code review.
+
+Our benefits package includes: (EXCLUDE on perm placements)
+Comprehensive medical benefits
+Competitive pay, 401(k)
+Retirement plan
+…and much more!
+
+About INSPYR Solutions:
+
+TekPartners and Genuent are becoming INSPYR Solutions. As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly-skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+
+INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Senior App Developer,INSPYR Solutions,"Germantown, MD","Title: Power Apps Developer
+Location: Germantown, MD possible remote, but must be in the United States.
+Duration: 6 month possible contract to hire
+Compensation: $60 W2 No third party candidates please.
+Work Requirements: US Citizen, GC Holders 
+ 
+Qualified candidates may send a copy of their resume (Word Format) to Harold Miller at
+hmiller@inspyrsolutions.com
+ 
+
+Skillset / Experience:
+Must have
+Worked on JavaScript, Web Resources
+Worked on Power Automate at least in one project and have ability to create and troubleshoot Flows, Connectors, BPFs.
+Hands on PCF expertise added advantage
+Minimum 2 years of Canvas expertise is must
+Knowledge and experience on Power Pages
+Experience in developing applications in Power Apps using Dataverse
+Experience with integration to Dynamics CRM
+
+Desired Characteristics
+Knowledge of architecture and design patterns
+Proven analytical and problem resolution skills
+Good debugging skills with knowledge on debug tools, relevant browser plugins etc.
+Strong oral and written Communication skills
+Aware of methods and practices such as Lean/Agile, etc.
+ 
+Our benefits package includes: 
+Comprehensive medical benefits
+Competitive pay, 401(k)
+Retirement plan
+…and much more!
+ 
+About INSPYR Solutions:
+
+
+As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly-skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+ 
+INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.
+
+#LI-HM1
+#IND-DEV
+ ",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract
+Sr. Genesys Cloud Engineer,INSPYR Solutions,"New York, TX","Title: Sr. Genesys Cloud Engineer
+Location: NY (Tri State area 90+% remote)
+Duration: Contract
+Work Requirements: US Citizen, GC Holders or Authorized to Work in the US
+ 
+Qualified candidates may send a copy of their resume (Word Format) to Johna Rogers at
+Kjones@inspyrsolutions.com
+rogers@inspyrsolutions.com. 
+
+
+A Genesys Cloud Engineer is responsible for the development, deployment, and maintenance of the Genesys Cloud platform to ensure seamless communication between customers and businesses. This role requires technical expertise in cloud-based telephony, contact center solutions, and experience in implementing and integrating Genesys Cloud with third-party systems.
+Key responsibilities of a Genesys Cloud Engineer may include:
+Design and configure Genesys Cloud platform: The Genesys Cloud Engineer must have a deep understanding of the Genesys Cloud platform and its features to design and configure a solution that meets the requirements of the organization.
+Integration with third-party systems: The Genesys Cloud Engineer should be able to integrate Genesys Cloud with other systems such as CRM, ERP, and other databases.
+Troubleshoot issues: The Genesys Cloud Engineer should be able to troubleshoot issues that arise within the Genesys Cloud platform and provide timely solutions to ensure minimal downtime.
+Manage Security: The Genesys Cloud Engineer must ensure that the security of the platform is maintained, and data is kept confidential.
+Documentation: The Genesys Cloud Engineer should create detailed documentation of the solution design and configuration and make sure that all changes made to the system are appropriately documented.
+Stay up-to-date with technology trends: The Genesys Cloud Engineer should stay up-to-date with technology trends and innovations in the industry and incorporate them into the system design where applicable.
+Requirements for a Genesys Cloud Engineer may include:
+Experience in the design, deployment, and configuration of Genesys Cloud platform
+Familiarity with cloud-based telephony systems and contact center solutions
+Experience with integrating Genesys Cloud with third-party systems
+Strong troubleshooting skills and ability to resolve complex issues
+Excellent communication skills to collaborate with stakeholders across the organization
+Preferred Experience would be a huge plus-
+Nuance Cloud - Voice BIO
+Carjito
+Verint WFM
+Trust ID
+About INSPYR Solutions:
+
+As a leading information technology partner, we connect top IT talent with our clients to provide innovative business solutions through our IT Staffing, Professional Services, and Infrastructure Solutions divisions. We understand and value the unique needs of highly-skilled information technology professionals in the industry and always strive to stay above the curve. Our company was founded on the following core values: Be the Best, Understand the Urgency, Never Ever Give Up, Have the Courage to Excel, and Make a Contribution. We take pride in our business model and strive to create a positive workplace environment through an exemplary culture.
+ 
+INSPYR Solutions provides Equal Employment Opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability, or genetics. In addition to federal law requirements, INSPYR complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities.
+
+#IND-OTHER
+#LI-JR1",https://www.monster.com/job-openings/software-engineer-senior-dearborn-mi--4e83f1b7-a660-452a-ad5e-5b63c43ff35a?sid=38e494a7-f01f-404e-af24-e367c5f4ff90&jvo=m.k.sc.1&so=m.s.sh&hidesmr=1&promoted=KEVEL,Today,Monster,Contract

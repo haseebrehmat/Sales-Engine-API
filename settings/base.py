@@ -24,7 +24,8 @@ INSTALLED_APPS = [
 CUSTOM_APPS = [
     'authentication',
     'job_portal',
-    'dashboard'
+    'dashboard',
+    'job_scraper'
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
