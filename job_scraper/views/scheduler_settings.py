@@ -8,7 +8,6 @@ from job_scraper.models import SchedulerSettings
 from job_scraper.schedulers.job_upload_scheduler import scheduler_settings
 from job_scraper.serializers.scheduler_settings import SchedulerSerializer
 from settings.utils.helpers import serializer_errors
-from django.http import QueryDict
 
 
 class SchedulerView(ListAPIView):

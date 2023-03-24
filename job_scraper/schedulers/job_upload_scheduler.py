@@ -1,12 +1,6 @@
 import datetime
 import os
-from threading import Thread
-
-import pandas as pd
-import requests
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
-
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail
@@ -80,16 +74,13 @@ def upload_file(job_parser):
 
 @start_new_thread
 def load_job_scrappers():
-    print("oK")
-    queryset = SchedulerSync.objects.filter(running=True).first()
-
-    for x in scraper_functions:
+    for function in scraper_functions:
         try:
-            print("ok")
-            x()
+            function()
         except Exception as e:
             print(e)
     upload_jobs()
+    queryset = SchedulerSync.objects.filter(running=True).first()
     queryset.running = False
     queryset.save()
 
