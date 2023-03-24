@@ -1,3 +1,4 @@
+import datetime
 import os
 from threading import Thread
 
@@ -19,6 +20,7 @@ from job_scraper.jobs.linkedin_scraping import linkedin
 from job_scraper.jobs.monster_scraping import monster
 from job_scraper.models import SchedulerSettings
 from job_scraper.models.scheduler import SchedulerSync
+from job_scraper.utils.helpers import convert_time_into_minutes
 from job_scraper.utils.thread import start_new_thread
 
 scraper_functions = [
@@ -63,6 +65,7 @@ def upload_file(job_parser):
             job_title=job_item.job_title,
             company_name=job_item.company_name,
             job_source=job_item.job_source,
+
             job_type=job_item.job_type,
             address=job_item.address,
             job_description=job_item.job_description,
@@ -78,9 +81,8 @@ def upload_file(job_parser):
 @start_new_thread
 def load_job_scrappers():
     print("oK")
-    queryset = SchedulerSync.objects.first()
-    queryset.running = True
-    queryset.save()
+    queryset = SchedulerSync.objects.filter(running=True).first()
+
     for x in scraper_functions:
         try:
             print("ok")
@@ -92,19 +94,39 @@ def load_job_scrappers():
     queryset.save()
 
 
-def start_job_sync():
-    job_time_scheduler.pause()
+def run_scheduler(job_source):
+    if job_source == "linkedin":
+        linkedin()
+        linkedin_job_create()
+    elif job_source == "indeed":
+        indeed()
+        indeed_job_create()
+    elif job_source == "dice":
+        dice()
+        dice_job_create()
+    elif job_source == "career_builder":
+        career_builder()
+        career_builder_job_create()
+    elif job_source == "glassdoor":
+        glassdoor()
+        glassdoor_job_create()
+    elif job_source == "monster":
+        monster()
+        monster_job_create()
+    upload_jobs()
+
+
+def start_job_sync(job_source):
     print("Interval Scheduler Started!")
-    load_job_scrappers()
+    run_scheduler(job_source)
     print("Interval Scheduler Terminated!")
     job_interval_scheduler.pause()
 
 
-def start_background_job():
-    job_interval_scheduler.pause()
+def start_background_job(job_source):
     print("Specific Time Scheduler Started")
-    load_job_scrappers()
-    print("Scheduler Termintated")
+    run_scheduler(job_source)
+    print("Scheduler Terminated")
     job_time_scheduler.pause()
 
 
@@ -112,14 +134,65 @@ all_jobs_scheduler = BackgroundScheduler()
 job_interval_scheduler = BackgroundScheduler()
 job_time_scheduler = BackgroundScheduler()
 
-schedulers = SchedulerSettings.objects.all()
-print("Schedulers", schedulers)
+linkedin_scheduler = BackgroundScheduler()
+indeed_scheduler = BackgroundScheduler()
+dice_scheduler = BackgroundScheduler()
+career_builder_scheduler = BackgroundScheduler()
+glassdoor_scheduler = BackgroundScheduler()
+monster_scheduler = BackgroundScheduler()
 
-for scheduler in schedulers:
-    if scheduler.interval:
-        time_format = scheduler.interval_based
-        interval = scheduler.interval
 
-        job_interval_scheduler.add_job(start_job_sync, 'interval', minutes=scheduler.interval)
-    elif scheduler.type == "time":
-        job_time_scheduler.add_job(start_background_job, trigger=CronTrigger(start_date=scheduler.scheduler_time))
+def scheduler_settings():
+    schedulers = SchedulerSettings.objects.all()
+    for scheduler in schedulers:
+        if scheduler.interval_based:
+            interval = convert_time_into_minutes(scheduler.interval, scheduler.interval_type)
+
+            if scheduler.job_source.lower() == "linkedin":
+                linkedin_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["linkedin"])
+
+            elif scheduler.job_source.lower() == "indeed":
+                indeed_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["indeed"])
+
+            elif scheduler.job_source.lower() == "dice":
+                dice_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["dice"])
+
+            elif scheduler.job_source.lower() == "career_builder":
+                career_builder_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["career_builder"])
+
+            elif scheduler.job_source.lower() == "glassdoor":
+                glassdoor_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["glassdoor"])
+
+            elif scheduler.job_source.lower() == "monster":
+                monster_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["monster"])
+
+        elif scheduler.time_based:
+            now = datetime.datetime.now()
+            dat = str(now).split(' ')
+            start_time = dat[0] + " " + str(scheduler.time)
+            if scheduler.job_source.lower() == "linkedin":
+                linkedin_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                           args=["linkedin"])
+
+            elif scheduler.job_source.lower() == "indeed":
+                indeed_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["indeed"])
+
+            elif scheduler.job_source.lower() == "dice":
+                dice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                       args=["dice"])
+
+            elif scheduler.job_source.lower() == "career_builder":
+                career_builder_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                                 args=["career_builder"])
+
+            elif scheduler.job_source.lower() == "glassdoor":
+                glassdoor_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                            args=["glassdoor"])
+
+            elif scheduler.job_source.lower() == "monster":
+                monster_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["monster"])
+
+
+scheduler_settings()

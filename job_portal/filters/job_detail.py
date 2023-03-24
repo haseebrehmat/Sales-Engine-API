@@ -11,7 +11,8 @@ class CustomJobFilter(FilterSet):
     from_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='gte')
     to_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='lte')
     job_type = CharFilter(field_name='job_type', lookup_expr='iexact')
-    job_source = CharFilter(field_name='job_source', lookup_expr='iexact')
+    # job_source = CharFilter(field_name='job_source', lookup_expr='iexact')
+    job_source = CharFilter(method='job_sources_field', field_name='job_source', lookup_expr='iexact')
     # tech_keywords = CharFilter(field_name='tech_keywords',lookup_expr='iexact')
     tech_keywords = CharFilter(method='tech_keywords_field', field_name='tech_keywords', lookup_expr='iexact')
     job_visibility = CharFilter(method='filter_company', field_name='job_visibility')
@@ -27,13 +28,24 @@ class CustomJobFilter(FilterSet):
             return queryset.filter(tech_keywords__in=keyword_list)
         return queryset
 
+    def job_sources_field(self, queryset, field_name, value):
+        if value and value != "":
+            keyword_list = value.split(",")
+            return queryset.filter(job_source__in=keyword_list)
+        return queryset
+
     def filter_company(self, queryset, field_name, value):
         # all
         # recruiter
         # non-recruiter
+
         value = value.lower()
-        company_id = self.request.user.profile.company.id
-        blacklist_company = [i.company_name.lower() for i in BlacklistJobs.objects.filter(company_id=company_id)]
+        try:
+            company_id = self.request.user.profile.company.id
+            blacklist_company = [i.company_name.lower() for i in BlacklistJobs.objects.filter(company_id=company_id)]
+        except:
+            blacklist_company = []
+
         if value == 'recruiter':
             if len(blacklist_company) == 0:
                 return JobDetail.objects.none()

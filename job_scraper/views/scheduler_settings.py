@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from authentication.exceptions import InvalidUserException
 from job_scraper.models import SchedulerSettings
+from job_scraper.schedulers.job_upload_scheduler import scheduler_settings
 from job_scraper.serializers.scheduler_settings import SchedulerSerializer
 from settings.utils.helpers import serializer_errors
 from django.http import QueryDict
@@ -41,6 +42,7 @@ class SchedulerView(ListAPIView):
         if serializer.is_valid():
             serializer.create(serializer.validated_data)
             data = "Scheduler created successfully"
+            scheduler_settings()  # This will update current schedulers
             status_code = status.HTTP_201_CREATED
 
             return Response({"detail": data}, status_code)
@@ -94,6 +96,7 @@ class SchedulerDetailView(APIView):
         if serializer.is_valid():
             serializer.save()
             status_code = status.HTTP_200_OK
+            scheduler_settings()    # This will update current schedulers
             message = {"detail": "Scheduler updated successfully"}
             return Response(message, status=status_code)
 
