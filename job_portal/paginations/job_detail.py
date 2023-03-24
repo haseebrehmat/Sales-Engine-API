@@ -89,8 +89,8 @@ class CustomPagination(pagination.PageNumberPagination):
             queryset = queryset.filter(job_posted_date__gte=self.request.GET.get("from_date"))
         if self.request.GET.get("to_date", "") != "":
             queryset = queryset.filter(job_posted_date__lte=self.request.GET.get("to_date"))
-        if self.request.GET.get("job_source", "") != "":
-            queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
+        # if self.request.GET.get("job_source", "") != "":
+        #     queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
         if self.request.GET.get("job_type", "") != "":
             queryset = queryset.filter(job_type__iexact=self.request.GET.get("job_type"))
         # if self.request.GET.get("job_visibility", "all") != "all":
