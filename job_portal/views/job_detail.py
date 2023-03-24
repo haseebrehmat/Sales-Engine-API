@@ -22,7 +22,7 @@ class JobDetailsView(ModelViewSet):
     pagination_class = CustomPagination
     filterset_class = CustomJobFilter
     ordering = ('-job_posted_date')
-    search_fields = ['$job_title']
+    search_fields = ['job_title']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
     permission_classes = (JobDetailPermission,)
