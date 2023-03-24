@@ -11,7 +11,7 @@ class SyncScheduler(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request):
-        queryset = SchedulerSync.objects.first()
+        queryset = SchedulerSync.objects.filter(running=True).first()
 
         if queryset is not None and queryset.running:
             message = "Sync in progress, Process is already running in the background"

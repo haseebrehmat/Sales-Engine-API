@@ -32,10 +32,6 @@ class JobDetailsView(ModelViewSet):
     def list(self, request, *args, **kwargs):
         current_user = request.user
 
-        if request.user.profile.company is None:  # in case if no company is assigned
-            return Response({"detail": "No company has been assigned to this user"},
-                            status=status.HTTP_406_NOT_ACCEPTABLE)
-
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
         if len(current_user_jobs_list) > 0:
             queryset = self.get_queryset().exclude(id__in=current_user_jobs_list.values_list('job_id', flat=True))
