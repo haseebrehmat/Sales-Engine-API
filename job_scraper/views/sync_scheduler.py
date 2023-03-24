@@ -18,7 +18,7 @@ class SyncScheduler(APIView):
 
         else:
             message = "Sync in progress, It will take a while"
-            if queryset is None:
+            if queryset is None or len(queryset) == 0:
                 SchedulerSync.objects.create(running=True)
             load_job_scrappers()
 
