@@ -42,7 +42,7 @@ class GlassdoorScraping:
         data.append(str(field).strip("+"))
 
     # find's job name
-    def find_jobs(driver, scrapped_data, job_type):
+    def find_jobs(driver, scrapped_data):
         count = 0
         time.sleep(3)
         jobs = driver.find_elements(By.CLASS_NAME, "react-job-listing")
@@ -66,16 +66,13 @@ class GlassdoorScraping:
                 GlassdoorScraping.append_data(data, url[count].get_attribute('href'))
                 job_posted_date = driver.find_elements(By.CLASS_NAME, "css-1vfumx3")
                 GlassdoorScraping.append_data(data, job_posted_date[count].text)
-                GlassdoorScraping.append_data(data, "Glassdoor")
-                GlassdoorScraping.append_data(data, job_type)
 
             scrapped_data.append(data)
             count += 1
 
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "job_source", "job_type"]
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(GLASSDOOR_CSV, index=False)
+        df.to_csv(GLASSDOOR_CSV)
 
         if not GlassdoorScraping.data_exists(driver):
             return False
@@ -95,17 +92,12 @@ class GlassdoorScraping:
 # code starts from here
 def glassdoor():
     scrapped_data = []
-    count = 0
     scrap = GlassdoorScraping
     driver = scrap.driver()
     scrap.request_url(driver, GLASSDOOR_LOGIN_URL)
     logged_in = scrap.login(driver)
-    types = [GLASSDOOR_CONTRACT_RESULTS, GLASSDOOR_FULL_RESULTS, GLASSDOOR_REMOTE_RESULTS]
-    job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
     if logged_in:
-        for url in types:
-            scrap.request_url(driver, url)
-            while scrap.find_jobs(driver, scrapped_data, job_type[count]):
-                print("Fetching...")
-            count = count + 1
-            print(SCRAPING_ENDED)
+        scrap.request_url(driver, GLASSDOOR_CONTRACT_RESULTS)
+        while scrap.find_jobs(driver, scrapped_data):
+            print("Fetching...")
+        print(SCRAPING_ENDED)

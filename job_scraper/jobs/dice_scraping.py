@@ -23,7 +23,7 @@ class DiceScraping:
         data.append(str(field).strip("+"))
 
     # find's job name
-    def find_jobs(driver, scrapped_data, job_type):
+    def find_jobs(driver, scrapped_data):
         count = 0
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.CLASS_NAME, "card-title-link"))
@@ -46,21 +46,18 @@ class DiceScraping:
             DiceScraping.append_data(data, driver.current_url)
             job_posted_date = driver.find_elements(By.CLASS_NAME, "posted-date")
             DiceScraping.append_data(data, job_posted_date[count].text)
-            DiceScraping.append_data(data, "Dice")
-            DiceScraping.append_data(data, job_type)
 
             count += 1
             scrapped_data.append(data)
-
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "job_source", "job_type"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(DICE_CSV, index=False)
 
         finished = "disabled"
         pagination = driver.find_elements(By.CLASS_NAME, "pagination-next")
         next_page = pagination[0].get_attribute('class')
         if finished in next_page:
+            columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url',
+                            "job_posted_date"]
+            df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+            df.to_csv("dice_results.csv")
             return False
         else:
             pagination[0].click()
@@ -71,16 +68,12 @@ class DiceScraping:
 
 # code starts from here
 def dice():
-    count = 0
     scrapped_data = []
     scrap = DiceScraping
     driver = scrap.driver()
-    types = [DICE_CONTRACT_RESULTS, DICE_FULL_RESULTS, DICE_REMOTE_RESULTS]
-    job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
-    for url in types:
-        scrap.request_url(driver, url)
-        while scrap.find_jobs(driver, scrapped_data, job_type[count]):
-            print("Fetching...")
-        count = count + 1
-        print(SCRAPING_ENDED)
-
+    scrap.request_url(driver, DICE_RESULTS)
+    while scrap.find_jobs(driver, scrapped_data):
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date"]
+        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+        df.to_csv(DICE_CSV)
+    print(SCRAPING_ENDED)

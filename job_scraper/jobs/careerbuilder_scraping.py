@@ -15,11 +15,6 @@ class CareerBuilderScraping:
     def request_url(driver, url):
         driver.get(url)
 
-    # driver wait after login to complete it's verification process
-    def driver_wait():
-        time.sleep(3)
-        time.sleep(3)
-
     # append data for csv file
     def append_data(data, field):
         data.append(str(field).strip("+"))
@@ -31,7 +26,7 @@ class CareerBuilderScraping:
         display = page_exists.get_attribute('style')
         return False if finished in display else True
 
-    def find_jobs(driver, scrapped_data, job_type):
+    def find_jobs(driver, scrapped_data):
         count = 0
         jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
 
@@ -53,16 +48,9 @@ class CareerBuilderScraping:
             CareerBuilderScraping.append_data(data, driver.current_url)
             job_posted_date = driver.find_elements(By.CLASS_NAME, "data-results-publish-time")
             CareerBuilderScraping.append_data(data, job_posted_date[count].text)
-            CareerBuilderScraping.append_data(data, "Careerbuilder")
-            CareerBuilderScraping.append_data(data, job_type)
 
             scrapped_data.append(data)
             count += 1
-
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "job_source", "job_type"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(CAREER_BUILDER_CSV, index=False)
 
     # find's job name
     def load_jobs(driver):
@@ -78,20 +66,18 @@ class CareerBuilderScraping:
         return True
 
 
+# code starts from here
 def career_builder():
-    count = 0
     scrapped_data = []
     scrap = CareerBuilderScraping
     driver = scrap.driver()
     driver.maximize_window()
-    types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
-    job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
-    for url in types:
-        scrap.request_url(driver, url)
-        while (scrap.load_jobs(driver)):
-            print("Loading...")
-        scrap.find_jobs(driver, scrapped_data, job_type[count])
-        count = count + 1
+    scrap.request_url(driver, CAREERBUILDER_CONTRACT_RESULTS)
+    while scrap.load_jobs(driver):
+        print("Fetching...")
 
-    print(SCRAPING_ENDED)
+    scrap.find_jobs(driver, scrapped_data)
 
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date"]
+    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+    df.to_csv(CAREER_BUILDER_CSV)

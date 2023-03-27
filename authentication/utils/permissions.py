@@ -101,6 +101,16 @@ permissions = [
     },
     {
         "module": "Jobs",
+        "codename": "view_cover_letter",
+        "name": "View Cover Letter"
+    },
+    {
+        "module": "Jobs",
+        "codename": "create_cover_letter",
+        "name": "Create Cover Letter"
+    },
+    {
+        "module": "Jobs",
         "codename": "view_applied_job",
         "name": "View Applied Jobs"
     },

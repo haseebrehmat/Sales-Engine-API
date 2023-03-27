@@ -50,7 +50,7 @@ class CustomPagination(pagination.PageNumberPagination):
             return timezone.datetime.now()
 
     def keyword_count(self):
-        queryset = JobDetail.objects.all()
+        queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
         queryset = self.filter_query(queryset)
 
         unique_keyword_object = queryset.extra(select={'name': 'tech_keywords'}).values('name').annotate(
@@ -63,11 +63,11 @@ class CustomPagination(pagination.PageNumberPagination):
         return keywords
 
     def total_job_count(self):
-        job_count = JobDetail.objects.count()
+        job_count = JobDetail.objects.filter(appliedjobstatus__applied_by=None).count()
         return job_count
 
     def unique_job_source(self):
-        queryset = JobDetail.objects.all()
+        queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
         queryset = self.filter_query(queryset)
         unique_job_source = queryset.extra(select={'name': 'job_source'}).values('name').annotate(
             value=Count('tech_keywords'))
@@ -76,7 +76,7 @@ class CustomPagination(pagination.PageNumberPagination):
         return sorted(unique_job_data, key=lambda x: x["value"], reverse=True)
 
     def unique_job_type(self):
-        queryset = JobDetail.objects.all()
+        queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
         queryset = self.filter_query(queryset)
         unique_job_type = queryset.extra(select={'name': 'job_type'}).values('name').annotate(
             value=Count('job_type'))

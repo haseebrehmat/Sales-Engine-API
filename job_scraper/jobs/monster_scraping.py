@@ -32,7 +32,7 @@ class MonsterScraping:
         return True
 
     # find's job name
-    def find_jobs(driver, scrapped_data, job_type):
+    def find_jobs(driver, scrapped_data):
         count = 0
 
         time.sleep(7)
@@ -66,30 +66,27 @@ class MonsterScraping:
             job_posted_date = driver.find_element(By.CLASS_NAME,
                                                   "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
             MonsterScraping.append_data(data, job_posted_date.text)
-            MonsterScraping.append_data(data, "Monster")
-            MonsterScraping.append_data(data, job_type)
 
             scrapped_data.append(data)
         count += 1
 
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "job_source", "job_type"]
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(MONSTER_CSV, index=False)
+        df.to_csv(MONSTER_CSV)
+
+    # check if there is more jobs available or not
+    def data_exists(driver):
+        pagination = driver.find_element(By.CLASS_NAME, "nextButton")
+        next_page = pagination.get_attribute('disabled')
+        return False if next_page else True
 
 
 # code starts from here
 def monster():
     scrapped_data = []
-    count = 0
     scrap = MonsterScraping
     driver = scrap.driver()
     driver.maximize_window()
-    types = [MONSTER_CONTRACT_RESULTS, MONSTER_FULL_RESULTS, MONSTER_REMOTE_RESULTS]
-    job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
-    for url in types:
-        scrap.request_url(driver, url)
-        scrap.find_jobs(driver, scrapped_data, job_type[count])
-        count = count + 1
+    scrap.request_url(driver, MONSTER_REMOTE_RESULTS)
+    scrap.find_jobs(driver, scrapped_data)
     print(SCRAPING_ENDED)
-

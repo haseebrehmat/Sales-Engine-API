@@ -14,14 +14,14 @@ from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDeta
 
 
 class JobDetailsView(ModelViewSet):
-    queryset = JobDetail.objects.all()
+    queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
     serializer_class = JobDetailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     model = JobDetail
     parser_classes = (MultiPartParser, JSONParser)
     pagination_class = CustomPagination
     filterset_class = CustomJobFilter
-    ordering = ('-job_posted_date')
+    ordering = ('-job_posted_date',)
     search_fields = ['job_title']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']

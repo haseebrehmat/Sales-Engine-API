@@ -52,7 +52,9 @@ class JobDataUploadView(CreateAPIView):
                 tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
                 job_posted_date=job_item.job_posted_date,
                 job_source_url=job_item.job_source_url,
-            ) for job_item in classify_data.data_frame.itertuples()]
+            ) for job_item in classify_data.data_frame.itertuples()
+            if job_item.job_source_url != "" and job_item.job_source_url.lower() != "nan"
+        ]
 
         JobDetail.objects.bulk_create(
             model_instances, ignore_conflicts=True, batch_size=1000)
