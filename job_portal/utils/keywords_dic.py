@@ -1019,7 +1019,9 @@ languages = {
         "CICD Technical Lead",
         "Apache",
         "Nginx",
-        "Gunicorn"
+        "Gunicorn",
+        "System Engineer",
+        "Senior System Engineer",
     ],
     "Ruby on Rails": [
         "Ruby on Rail",
@@ -1153,7 +1155,7 @@ languages = {
         "cocoa touch",
         "xcode",
         "arkit",
-        "objective c"
+        "objective c",
     ],
     "Android": [
         "android",
@@ -1345,6 +1347,10 @@ regular_expressions = [
     {
         'tech_stack': 'C/C++',
         'exp': '(?i)(^|\W)(c developer|c programmer|c engineer|c programming|c program|c development)(\W|$)'
+    },
+    {
+        'tech_stack': 'qa',
+        'exp': '(?i)(^|\W)(qa|qe|sqa|)(\W|$)'
     }
 ]
 
@@ -1514,5 +1520,27 @@ developer = [
     "web-developer",
     "web-development instructor",
     "web-programmer",
-    "web-programming"
+    "web-programming",
+    "senior site reliability engineer",
+    "Senior Back End Engineer",
+    "Back End",
+    "Senior Engineer",
+    "junior Engineer",
+    "Senior Hadoop Engineer",
+    "Senior Mobile QE Automation Engineer",
+    "reliability engineer",
+    "Game Engineer",
+    "firmware Engineer",
+    "Automation Engineer",
+    "Backup / Implementation / Localization / Data Automation Engineer",
+    "Data Automation Engineer",
+    "robotic process automation engineer",
+    "iot (internet of things) engineer",
+    "internet of things",
+    "iot-internet of things",
+    "Embedded Engineer",
+    "datalake engineer",
+    "mainframe engineer",
+    "lead engineer",
+    "associate engineer",
 ]
