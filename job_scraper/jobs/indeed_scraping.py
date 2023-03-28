@@ -1,3 +1,4 @@
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from job_scraper.constants.const import *
 from selenium import webdriver
@@ -10,18 +11,25 @@ class IndeedScraping:
 
     # returns driver
     def driver():
-        return webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        return webdriver.Chrome(chrome_options=chrome_options)
 
     # calls url
     def request_url(driver, url):
         driver.get(url)
+
+    # driver wait after login to complete it's verification process
+    def driver_wait():
+        time.sleep(3)
+        time.sleep(3)
 
     # append data for csv file
     def append_data(data, field):
         data.append(str(field).strip("+"))
 
     # find's job name
-    def find_jobs(driver, scrapped_data):
+    def find_jobs(driver, scrapped_data, job_type):
         time.sleep(3)
         jobs = driver.find_elements(By.CLASS_NAME, "slider_container")
 
@@ -29,7 +37,7 @@ class IndeedScraping:
             data = []
             time.sleep(1)
             job.click()
-            time.sleep(2)
+            time.sleep(3)
 
             job_title = driver.find_element(By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
             IndeedScraping.append_data(data, job_title.text.replace('- job post', ''))
@@ -42,11 +50,17 @@ class IndeedScraping:
             job_description = driver.find_element(By.CLASS_NAME, "jobsearch-jobDescriptionText")
             IndeedScraping.append_data(data, job_description.text)
             IndeedScraping.append_data(data, driver.current_url)
-            posted_date = driver.find_element(By.CLASS_NAME, "css-5vsc1i")
-            job_posted_date = posted_date.find_elements(By.TAG_NAME, "span")
-            IndeedScraping.append_data(data, job_posted_date[1].text)
+            job_posted_date = driver.find_elements(By.CLASS_NAME, "css-5vsc1i")
+            IndeedScraping.append_data(data, job_posted_date[0].text)
+            IndeedScraping.append_data(data, "Indeed")
+            IndeedScraping.append_data(data, job_type)
 
             scrapped_data.append(data)
+
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                        "job_source", "job_type"]
+        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+        df.to_csv(INDEED_CSV)
 
         if not IndeedScraping.data_exists(driver):
             return False
@@ -64,12 +78,16 @@ class IndeedScraping:
 
 # code starts from here
 def indeed():
-    scrapped_data = []
+    count = 0
     scrap = IndeedScraping
     driver = scrap.driver()
-    scrap.request_url(driver, INDEED_CONTRACT_RESULTS)
-    while scrap.find_jobs(driver, scrapped_data):
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(INDEED_CSV)
+    driver.maximize_window()
+    types = [INDEED_CONTRACT_RESULTS, INDEED_FULL_RESULTS, INDEED_REMOTE_RESULTS]
+    job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+    for url in types:
+        scrapped_data = []
+        scrap.request_url(driver, url)
+        while scrap.find_jobs(driver, scrapped_data, job_type[count]):
+            print("Fetching...")
+        count = count + 1
     print(SCRAPING_ENDED)

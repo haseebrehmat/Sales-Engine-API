@@ -7,7 +7,7 @@ from math import ceil
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
-from scraping.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, ADZUNA_PAGE_CAP
+from job_scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, ADZUNA_PAGE_CAP
 
 from job_scraper.constants.const import ADZUNA_CSV
 

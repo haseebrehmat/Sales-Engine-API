@@ -1,159 +1,1270 @@
 ,job_title,company_name,address,job_description,job_source_url,job_posted_date
-0,.Net Developer,ITResonance,"Chicago, IL","Job Details
-ID: ITRES_3917
-Location: United States, Illinois, Chicago
-Type: Contract , Remote , W2
-Duration: 3+months
-Posted on July 18, 2022
+0,Full Stack Developer,Atlantech InfoSystems,"Roswell, GA","Job Qualifications
+6+ years of experience in related development fields
+6+ years of development experience in JavaScript front-end frameworks, including Angular 13+
+6+ years of development experience in .Net Core, C#, ASP.NET Web API, AWS, or other Serverless technologies
+Experience building Progressive Web Applications (PWA) but not required.
+Ability to write high-quality, well-tested code.
+Ability to take ownership or develop large parts of an application. Design, build, and deliver complex features independently.",https://www.glassdoor.com/partner/jobListing.htm?pos=101&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ac2f90d9&cb=1679985060025&jobListingId=1008553081104&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-9f8dda9483bde3fd-,24h
+1,Frontend Developer (Angular/React),"Infinity Consulting Solutions, Inc.","Dallas, TX","FRONT END DEVELOPER (Angular/React)
+Dallas, TX
+$50/hr to $70/hr
+
+ICS, a Korn Ferry Company, is hiring a Front End Developer with modern Javascript framework experience (Angular and/or React).
+
+What You'll Do:
+Design and develop high performance applications using latest technologies (Angular/React, Java)
+Meet with the application users to elicit/understand software requirements, assess feasibility of proposed changes, and compile measures/deliverables.
+
+
+At Infinity Consulting Solutions our mission is to cultivate successful long term relationships with candidates and clients matching the right candidate with the right client. We believe technology cannot replace the real personal relationships we cultivate. We reject the notion that technology alone is the answer to staffing which is why we our successful partnerships rely on collaboration NOT automation. ICS has been providing flexible staffing solutions for over 20 years in Information Technology, Compliance, Accounting / Finance and Corporate Support. Our staffing solutions include Contract, Temp to Perm and Permanent Placement.
+
+ICS is an Equal Opportunity Employer.",https://www.glassdoor.com/partner/jobListing.htm?pos=102&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_7990e214&cb=1679985060024&jobListingId=1008552874097&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-9ace3584ce17ede2-,24h
+2,Software Developer,YSI,"Huntsville, AL","Position Title: Lead Developer (.Net)
+Location: Huntsville, AL
+Yakshna Solutions, Inc., (YSI) is a CMMI Level 3 assessed, ISO 9001, 20000:1, 27001 certified, woman-owned small business enterprises, headquartered in Herndon, Virginia, USA. YSI provides professional IT solutions and services to business corporations and government organizations. YSI is committed to serve its business communities as a leading IT vendor providing innovative, quality and cost-effective IT business solutions and services.
+Our benefits are very competitive that include 401(k), health, dental, and vision insurance, Life insurance, short-term and long-term disability insurance, paid time off, training and professional development assistance.",https://www.glassdoor.com/partner/jobListing.htm?pos=103&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f3c73075&cb=1679985060025&jobListingId=1008552710848&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-b407401e3ac7d06b-,24h
+3,Rust Developer,Accolite Digital,"Englewood, CO","Join a team of the top 1%.
+
+We believe in attracting and retaining the brightest technical minds from diverse backgrounds and nationalities to come together and create an enriched pool of global talent. Recognized as one of North America's fastest-growing companies, we aim to attract people who are passionate about technology and creating a real impact while working in collaborative environment with the latest technologies.
+
+Our mission is to solve our client's most complex digital challenges by engaging the brightest of technical minds. We are looking for candidates who thrive in an innovative and collaborative environment who love solving problems and having fun while doing it.",https://www.glassdoor.com/partner/jobListing.htm?pos=104&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_62d4bc72&cb=1679985060025&jobListingId=1008552713392&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-859b4c7334e4b0ed-,24h
+4,Full stack developer Node and React,omega solutions inc,"Bellevue, WA","Full Stack Developer Node and React
+Bellevue, WA and Chicago, IL
+6 months +
+Node Heavy + React
 Job Description
-Remote
-3+ months",https://www.glassdoor.com/partner/jobListing.htm?pos=101&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_c652a676&cb=1679917021025&jobListingId=1008551370370&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-858fb7797bc26059-,24h
-1,Java Developer,ITResonance,"Troy, MI","Job Details
-ID: ITRES_10210
-Location: United States, Michigan, Troy
-Type: Contract , W2
-Duration: 6 Months
-Travel: No Travel
-Posted on July 17, 2022
-Job Description
-Java developer",https://www.glassdoor.com/partner/jobListing.htm?pos=102&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_42333fbd&cb=1679917021025&jobListingId=1008551371141&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-bf0e9a3370001f51-,24h
-2,Sr. Python Developer,Hire Force Global,Remote,"We are looking for Python Developers with Min 6-8 years of experience.
-Job Mode: Remote
-Job Type: W2
-Visa Status: GC or H4-EAD
-If interested share your resume with hr@hireforceglobal.com
-Skills Required:
-Python Development
-AWS",https://www.glassdoor.com/partner/jobListing.htm?pos=103&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_6de29be1&cb=1679917021026&jobListingId=1008550975781&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-7bcbd725d249c614-,24h
-3,Sr. SAP C4C Application Developer – CRM,ITResonance,"Calhoun, GA","Job Details
-ID: 3982
-Location: United States, Georgia, Calhoun
-Type: Contract
-Duration: 12
-Posted on July 18, 2022
-Job Description
-Greetings from IT Resonance…
-IT Resonance Inc is a leading SAP Solutions & Managed Services provider in Midwest region (USA) and Asia with expertise in SAP. We offer SAP Implementation and Support services through industry-specific partnerships and global alliances. https://itresonance.com/",https://www.glassdoor.com/partner/jobListing.htm?pos=104&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_32957655&cb=1679917021025&jobListingId=1008551373461&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-7ad301b708e29ec6-,24h
-4,SAP C4C Developer/Hybris Developer,ITResonance,"Shrewsbury, NJ","Job Details
-ID: ITRES_10103
-Location: United States, New Jersey, Shrewsbury
-Type: Contract , Remote , W2
-Duration: 12 Months
-Travel: No Travel
-Posted on July 18, 2022
-Job Description
-SAP C4C Developer/Hybris Developer
-Location: Shrewsbury, NJ
-Duration: 12 months",https://www.glassdoor.com/partner/jobListing.htm?pos=105&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_98d29d29&cb=1679917021026&jobListingId=1008551370868&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-75b0dd3781099973-,24h
-5,Sr. Python Developer,Cloudious,"Charlotte, NC","Python Developer
+
+Minimum 3 yrs of experience in NodeJS
+Strong proficiency with JavaScript
+Knowledge of Node.js and frameworks and libraries such as Express, Async, Lodash, socket, etc
+Good understanding of server-side templating languages such as Jade, EJS, etc depending on your technology stack
+Basic understanding of front-end technologies, such as HTML5, and CSS3
+Familiarity with RESTful APIs
+Knowledge of modern authorization mechanisms, such as JSON Web Token
+Experience with common front-end development tools such as Webpack, NPM, etc.
+Ability to understand business requirements and translate them into technical requirements
+Familiarity with code versioning tools such as Git, SVN",https://www.glassdoor.com/partner/jobListing.htm?pos=105&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_2c00fd6e&cb=1679985060025&jobListingId=1008552969338&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-6a7e0734b192da78-,24h
+5,Salesforce Lead Developer,Capgemini,"Des Plaines, IL","Duration: 9+ months
+
 Job Description:
-Experience Required 10+ years of industry experience
-Expertise in Core Python programming Strong knowledge in Capital Market domain (Risk, financial pricing, valuations etc.)
-Working knowledge and experience using threading limitation of Python and multi-process architecture.
-Familiarity with event driven programming in Python.
-Experience in scheduling jobs or trigger events programmatically. Hands on experience with JIRA, Agile methodology, source code management - GIT, SVN etc.",https://www.glassdoor.com/partner/jobListing.htm?pos=106&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e9f39866&cb=1679917021026&jobListingId=1008551029068&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-cb420cf2a43a2d68-,24h
-6,Sr.Net Developer,Software People Inc.,"Chicago, IL","Hii,
-Please check the below role and let me know if you are interested. Share me your updated resume and expected rate on hourly basis.
-Position: Senior .NET Developer – Secure Coding Focus
-Location: Chicago, IL 60654
-Work Type: Hybrid Onsite – 1-2 day per week onsite
-Type: Contract, long term , 12+ months, Multi-year assignment
-Start: ASAP",https://www.glassdoor.com/partner/jobListing.htm?pos=107&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_4eb603ea&cb=1679917021027&jobListingId=1008551272085&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-8d3a04d9af9ee766-,24h
-7,Devops Engineer,ITResonance,"Somerville, NJ","Job Details
-ID: ITRES_3251
-Location: United States, New Jersey, Somerville
-Type: Contract
-Duration: 6 months
-Posted on July 18, 2022
+
+7+ years of experience in a Salesforce Developer role including experience with design and development of Salesforce systems, including integration to other back-end systems
+A minimum of 1-1.5 years' experience with Tableau CRM (formerly Einstein Analytics) having successfully implemented at least 1 TCRM solution
+Experience with Tableau CRM components like Data Manger, dataflows, recipes, bindings, SOQL/SOSL/SAQL, lens, visualizations, and publishing back on Lightning record page layouts",https://www.glassdoor.com/partner/jobListing.htm?pos=106&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_fefe72ac&cb=1679985060025&jobListingId=1008552736096&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-5eaa45bd9f9a6fc3-,24h
+6,Senior Software Developer,Accolite Digital,"American Fork, UT","Join a team of the top 1%.
+
+We believe in attracting and retaining the brightest technical minds from diverse backgrounds and nationalities to come together and create an enriched pool of global talent. Recognized as one of North America's fastest-growing companies, we aim to attract people who are passionate about technology and creating a real impact while working in collaborative environment with the latest technologies.
+
+Our mission is to solve our client's most complex digital challenges by engaging the brightest of technical minds. We are looking for candidates who thrive in an innovative and collaborative environment who love solving problems and having fun while doing it.
+
+Role: Software Developer",https://www.glassdoor.com/partner/jobListing.htm?pos=107&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_5c9beec6&cb=1679985060026&jobListingId=1008552713391&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-7fa31059f385759b-,24h
+7,java/j2ee developer,Randstad,"Plano, TX","summary
+$58 - $68 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002767",https://www.glassdoor.com/partner/jobListing.htm?pos=108&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_6b89a475&cb=1679985060026&jobListingId=1008552982388&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-af89a2551d7f61e1-,24h
+8,Front-End Developer,"Woongjin, Inc","Ridgefield Park, Bergen, NJ","Company Description
+
+Our Mission
+WOONGJIN INC. is a rapidly growing team who provides a range of unique, exceptional, and enhanced services to our clients. We have a strong moral code that includes the service of goodness without expectations of reward. We are motivated by the sense of responsibility and servant leadership.
+
 Job Description
-Hi,",https://www.glassdoor.com/partner/jobListing.htm?pos=108&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_3d98b466&cb=1679917021026&jobListingId=1008551366505&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-53e96d939c093ee3-,24h
-8,SAP Cloud Platform Integration (CPI) Developer,ITResonance,"Shrewsbury, NJ","Job Details
-ID: ITRES_3922
-Location: United States, New Jersey, Shrewsbury
-Type: Contract , Remote , W2
-Duration: 12 Months
-Travel: No Travel
-Posted on July 18, 2022
+
+Use Responsive Web Design (RWD) techniques in web development: review mocks, bring them to life on desktop and connected devices",https://www.glassdoor.com/partner/jobListing.htm?pos=109&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_47d189de&cb=1679985060026&jobListingId=1008553112871&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-f56f557b4870427d-,24h
+9,Digital Solutions | Senior Java Developer,TELUS,Missouri,"Basic Information
+Ref Number
+Req_00105423
+Primary Location
+MISSOURI
+Country
+United States of America
+Work Style",https://www.glassdoor.com/partner/jobListing.htm?pos=110&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_e232bd91&cb=1679985060026&jobListingId=1008552979652&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-b2c7d1a0ab426ec3-,24h
+10,Senior Go Lang Developer,Accolite Digital,"Englewood, CO","Join a team of the top 1%.
+
+We believe in attracting and retaining the brightest technical minds from diverse backgrounds and nationalities to come together and create an enriched pool of global talent. Recognized as one of North America's fastest-growing companies, we aim to attract people who are passionate about technology and creating a real impact while working in collaborative environment with the latest technologies.
+
+Our mission is to solve our client's most complex digital challenges by engaging the brightest of technical minds. We are looking for candidates who thrive in an innovative and collaborative environment who love solving problems and having fun while doing it.",https://www.glassdoor.com/partner/jobListing.htm?pos=111&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e253562e&cb=1679985060027&jobListingId=1008552713393&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-6c60fa76ccfa43e4-,24h
+11,Jr. GCP Cloud Engineer,Kaizen Technologies,"Edison, NJ","Required Skills :
+
+Jr. GCP Cloud Engineer
+
+
+Job Description :
+
+Role - Jr. GCP Cloud Engineer
+No of positions: 1
+Location : US Remote
+Bill Rates: $ 65/hr (Max to Max)
+
+JD
+Key Skills :-
+Recent 1-2 years GCP Exp required.
+Skills required - GKE, Terraform, GCP migration, VPC, IAM, GCP services.
+Need 5+ years profiles only.",https://www.glassdoor.com/partner/jobListing.htm?pos=112&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_ad86490a&cb=1679985060026&jobListingId=1008552856146&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-b3851fddbf506471-,24h
+12,Sr. Java Developer,Flygend Technologies,"Englewood Cliffs, NJ","Senior Software Engineer- Java
+Location: NY/NJ (Hybrid)_ Final IN PERSON INTERVIEW
+Long term
+JD:
+Strong server side or Full stack development experience using core Java Spring, Spring boot, Spring data and Microservices.
+Oauth 2.0/OpenID Protocol knowledge is nice to have
+JavaScript (React JS) with GraphQL experience is nice to have",https://www.glassdoor.com/partner/jobListing.htm?pos=113&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_17ddeaa0&cb=1679985060027&jobListingId=1008552888506&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-d1b7c3061a3f1a1d-,24h
+13,sitecore developer,Randstad,"Austin, TX","summary
+$60 - $75 per hour
+temp to perm
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002761",https://www.glassdoor.com/partner/jobListing.htm?pos=114&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_9536af98&cb=1679985060027&jobListingId=1008552982486&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-8dcb9389895ae661-,24h
+14,Software Quality Engineer,Aalpha Prime Tech Global,"Indianola, PA","NOTE: This is W2 Contract position
+Primary Function:
+Software Quality Management of Radiology device products to meet FDA design controls and other regulatory bodies
+Software Quality Management of GxP relevant computer systems
+POSITION SUMMARY
+This position will be responsible to perform software quality management activities of medical devices (Class-2) to deliver a high-quality product that meets or exceeds customer expectations and meets FDA design controls and other regulatory bodies.",https://www.glassdoor.com/partner/jobListing.htm?pos=115&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_357b2499&cb=1679985060027&jobListingId=1008553066987&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-c539f87c652fc70b-,24h
+15,DevOps Engineer - CI/CD Expert,Atlantech InfoSystems,"Roswell, GA","Primary Responsibilities -
+The individual will be involved in the following critical activities:
+* Automating and orchestrating workloads on AWS.
+* Hands-on experience with at least one configuration/deployment management system e.g., Chef, Puppet, Ansible, AWS Cloud Formation, Salt or other similar tools
+* Hands-on experience with at least one of the following languages: Node.js, Python, PHP, Ruby, and Java. Proficient with git and git workflows.",https://www.glassdoor.com/partner/jobListing.htm?pos=116&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_65d7dc41&cb=1679985060027&jobListingId=1008553090632&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-cb46493ed8eb2d1e-,24h
+16,Node.JS Developer - bilingual (Korean/English) preferred,"Woongjin, Inc","Ridgefield Park, Bergen, NJ","Company Description
+
+Our Mission
+WOONGJIN INC. is a rapidly growing team who provides a range of unique, exceptional, and enhanced services to our clients. We have a strong moral code that includes the service of goodness without expectations of reward. We are motivated by the sense of responsibility and servant leadership.
+
 Job Description
-SAP Cloud Platform Integration (CPI) Developer
-Location: Shrewsbury, NJ
-Duration: 12 months",https://www.glassdoor.com/partner/jobListing.htm?pos=109&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_1ed020c6&cb=1679917021026&jobListingId=1008551370899&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-2a135a1cc6960754-,24h
-9,"Automation Testing Engineer -SCADA (100% On-site) - Los Angeles, CA",IDM Groups,"Los Angeles, CA","IDM Groups is looking to hire experienced Automation Testing Engineer - SCADA for an Automated Project with strong problem solving kills who is available to work 100% on-site.
-You will communicate at all levels within our partner and customer organizations and the ability to comfortably participate in both business and technical discussions is essential.
-Qualifications & Responsibilities:
-Communicate to customers and team members in a timely and professional manner
-Skill sets and Qualifications",https://www.glassdoor.com/partner/jobListing.htm?pos=110&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_55c90a0b&cb=1679917021027&jobListingId=1008550967236&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-843b70051b7b52e6-,24h
-10,Enthusiastic JSON REST API Developer - Join Our Dynamic Team!,Tizaworld Inc.,Remote,"Are you an experienced and passionate JSON REST API developer seeking a new challenge? Our innovative company is looking for a talented individual like you to join our friendly and dynamic team! This is a fantastic opportunity to work on exciting projects, develop your skills further, and make a real impact in the industry.
+
+We are looking for an experienced Back End / Server-Side Software Engineer with excellent programming skills; the candidate will design and develop RESTful web applications via Node.js on business requirements. The candidate should be able to design and implement web-based interfaces. Responsibilities cover the entire development lifecycle, from requirements gathering and brainstorming, analysis, coding, testing and documentation. The candidate must have a solid development background across multiple technical disciplines including Node.js, MongoDB and AWS",https://www.glassdoor.com/partner/jobListing.htm?pos=117&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_c5d2eca1&cb=1679985060027&jobListingId=1008553112868&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-828dd31e01b2b989-,24h
+17,oracle sql / plsql developer,Randstad,"Charlotte, NC","summary
+$55 - $65 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002764",https://www.glassdoor.com/partner/jobListing.htm?pos=118&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_bbee5ffd&cb=1679985060027&jobListingId=1008552982493&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-2d8a8799196aa79a-,24h
+18,LM Space Associate Manager Software Engineering,LOCKHEED MARTIN CORPORATION,"Herndon, VA","Do you want to be part of a company that inspires employees to think big, perform with excellence and build incredible products?
+
+If so, then we would love to speak with you! Lockheed Martin Space is a highly dynamic and growing organization that provides mission-critical solutions for ground software satellite systems through their entire life cycle.
+
+Our amazing people are on a mission to make a difference in the world; every single day we use our ingenuity and experiences to create, design and build solutions to some of the world’s most difficult engineering problems.
+
+Whether you’re an aspiring external candidate or a LM level 3 or level 4 software engineer looking to grow your career in both people and technical leadership, this position is for you!
+
+The Bobcat program is seeking a leader who desires to lead a team of software engineers on an important classified mission while continuing to grow their technical skills. This position will give you the opportunity to enhance your leadership skills while further developing your software technical skills.
+
+The Bobcat Program received a 10-year contract extension on an important classified customer mission. In addition to meeting today’s critical mission needs, we are working on emerging and evolving future architectures. You will have an opportunity to manage the development of customer prioritized features for desktop, web application, web service and backend application solutions utilizing various frameworks available via Microsoft C# .NET with over 800 projects in the baseline. Our customer and team are focused on identifying and developing a micro-service architecture utilizing a fully integrated Microsoft development environment providing seamless solution for version control, defect management & test automation.
+
+Our employees are constantly learning and leveraging current technologies (e.g., Visual Studio Ultimate 2017, Team Foundation Server 2018, REACT, AWS, Cesium, Lync, WPF, WCF, Wix, bootstrap, Docker, DevSecOps etc.). We need the best engineers on our team to ensure mission success! Think you have the skills? Come join the Bobcat Team that builds software for the next generation of our customer’s missions.
+
+
+This position requires a government security clearance, you must be a US Citizen for consideration.
+TS/SCI w/Poly
+
+By applying to this job, you are expressing interest in this position and could be considered for other career opportunities where similar skills and requirements have been identified as a match. Should this match be identified you may be contacted for this and future openings.
+Onsite Full-time: The work associated with this position will be performed onsite at a designated Lockheed Martin facility.
+Lockheed Martin supports a variety of alternate work schedules that provide additional flexibility to our employees. Schedules range from standard 40 hours over a five day work week while others may be condensed. These condensed schedules provide employees with additional time away from the office and are in addition to our Paid Time off benefits.
+4x10 hour day, 3 days off per week
+
+Join us at Lockheed Martin, where your mission is ours. Our customers tackle the hardest missions. Those that demand extraordinary amounts of courage, resilience and precision. They’re dangerous. Critical. Sometimes they even provide an opportunity to change the world and save lives. Those are the missions we care about.
+
+As a leading technology innovation company, Lockheed Martin’s vast team works with partners around the world to bring proven performance to our customers’ toughest challenges. Lockheed Martin has employees based in many states throughout the U.S., and Internationally, with business locations in many nations and territories.
+
+job.Qualifications
+
+
+Join us at Lockheed Martin, where your mission is ours. Our customers tackle the hardest missions. Those that demand extraordinary amounts of courage, resilience and precision. They’re dangerous. Critical. Sometimes they even provide an opportunity to change the world and save lives. Those are the missions we care about.
+
+As a leading technology innovation company, Lockheed Martin’s vast team works with partners around the world to bring proven performance to our customers’ toughest challenges. Lockheed Martin has employees based in many states throughout the U.S., and Internationally, with business locations in many nations and territories.
+
+Experienced Professional",https://www.glassdoor.com/partner/jobListing.htm?pos=119&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_b4792e91&cb=1679985060027&jobListingId=1008553081798&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-5f7530f7173cbe53-,24h
+19,".net developer- az, nc",Randstad,"Phoenix, AZ","summary
+$63.69 - $65.69 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002771",https://www.glassdoor.com/partner/jobListing.htm?pos=120&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_2bf1c2c9&cb=1679985060028&jobListingId=1008552982474&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-00a6e55668fb9fd5-,24h
+20,CI DevOps Engineer,ASK Consulting,"Oakland, CA","Job Type:Contract
+Posted about 8 hours ago
+
+Expiry Date: 28 April 2023
+Referral: 224980@accuick.com
+Job Description:
+Duties:
+Providing level-1 support in triaging and debugging of CI pipelines, build failures, and other supporting services",https://www.glassdoor.com/partner/jobListing.htm?pos=121&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_05f9bbcf&cb=1679985060028&jobListingId=1008552844475&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-1b033558d9b2da68-,24h
+21,Golang Developer,"Pinnacle Group, Inc.","Austin, TX","Golang Developer
+Location: Austin, TX
+Duration: Long term
+(Candidate must be willing to relocate)
+Consider H1B Transfer
+Role/s Requested:
+Minimum 8 years' experience required as a Golang Developer
+Skill Sets - Niche Skill - Experience - Preference
+DevOps - No - At least 1 year - Is Required
+DevOps/SRE - No - At least 1 year - Is Required
+Kubernetes - No - At least 1 year - Is Required
+GoLang - No - At least 1 year - Is Required",https://www.glassdoor.com/partner/jobListing.htm?pos=122&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_23409b37&cb=1679985060028&jobListingId=1008552953587&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-c915c138a4da6efa-,24h
+22,"Software Quality Assurance Engineer (Onsite: Santa Clara, CA) W2 Only",Intuitive,"Santa Clara, CA","7Month contract opportunity - W2 (No C2C)
+Compensation: $60 - $75/hr
+Onsite: 3420 Central Expressway, Santa Clara, CA, 95051
+In cooperation with our recruitment partner Raise, are hiring. We’re a global technology leader in minimally invasive care and a pioneer of robotic-assisted surgery. Working closely with hospital teams, we’re developing integrated solutions that help enable physicians to get patients back to what matters most. Our technology has been used in nearly 10 million operations across 67 countries.
+Together, we’ve dedicated more than two decades for innovating for better care through enhanced experiences, improved efficiencies, and reduced cost of care. In this role, you will join a team committed to taking big leaps forward for a global community of healthcare professionals and their patients.",https://www.glassdoor.com/partner/jobListing.htm?pos=123&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_38bd7e4c&cb=1679985060029&jobListingId=1008552978859&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-bb14671a9acf29db-,24h
+23,java/oracle developer,Randstad,"Addison, TX","summary
+$63 - $73 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002778",https://www.glassdoor.com/partner/jobListing.htm?pos=124&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_e8ea7c1e&cb=1679985060028&jobListingId=1008552982477&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-36941844b567db50-,24h
+24,machine learning engineer,Randstad,"Plano, TX","summary
+$63 - $73 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002760",https://www.glassdoor.com/partner/jobListing.htm?pos=125&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_ab6ef696&cb=1679985060028&jobListingId=1008552982463&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-2b6de1879adc9d9c-,24h
+25,"Mac OS Software Engineer (swift, Objective C)","Pinnacle Group, Inc.","Austin, TX","Mac OS Software Engineer (Mac OS, swift, Objective C)
+Location: Austin, TX
+Duration: Long term contract
+(Candidate must be willing to relocate)
+Consider H1B Transfer
+Required: macOS development experience
+Required: Swift, Objective-C, App Kit
+Required: Austin on-site (pending office re-open)
+Development will be on Radar and Radar related features, components, etc.",https://www.glassdoor.com/partner/jobListing.htm?pos=126&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_3828b940&cb=1679985060029&jobListingId=1008552959059&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-74fcea58c81a0d18-,24h
+26,fullstack developer with java and reactjs,Randstad,"Charlotte, NC","summary
+$55 - $65 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002791",https://www.glassdoor.com/partner/jobListing.htm?pos=127&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_6c60925c&cb=1679985060028&jobListingId=1008552982363&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-8975c7b008a3d537-,24h
+27,Senior DevOps Engineer-Contract to Perm,Sia Partners,"Charlotte, NC","Company Description
+
+Sia Partners is a next-generation consulting firm focused on delivering superior value and tangible results to its clients as they navigate the digital revolution. Our global footprint and expertise in more than 40 sectors and services allow us to enhance our clients’ businesses worldwide. We guide their projects and initiatives in strategy, business transformation, IT & digital strategy, and Data Science.
+
+Job Description
+
+We are working with a client who is need of two Senior DevOps Engineers. This role’s focus will be on contributing and enhancing the DevOps environment within Issuer Solutions, where cross-functional Scrum teams are delivering solutions built on cutting-edge mobile technology and products. The DevOps Engineers will be expected to support across the wider Issuer Solutions business unit, leading DevOps practices and initiatives.",https://www.glassdoor.com/partner/jobListing.htm?pos=128&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_9e95ffd9&cb=1679985060028&jobListingId=1008553113426&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-70d2cd55a64298a8-,24h
+28,mobile ios/android developer,Randstad,"Charlotte, NC","summary
+$60 - $70 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002768",https://www.glassdoor.com/partner/jobListing.htm?pos=129&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_b9f019f6&cb=1679985060029&jobListingId=1008552982584&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-ae0759dde94babd8-,24h
+29,AWS Could DevOps Engineer,"Woongjin, Inc","Plano, TX","Company Description
+
+Our Mission
+WOONGJIN INC. is a rapidly growing team who provides a range of unique, exceptional, and enhanced services to our clients. We have a strong moral code that includes the service of goodness without expectations of reward. We are motivated by the sense of responsibility and servant leadership.
+
+Job Description
+
+This position will primarily perform day to day DevOps duties in addition to logging and tracking work in project documentation with the team.",https://www.glassdoor.com/partner/jobListing.htm?pos=130&ao=1136043&s=58&guid=0000018726e9a7caaa7e149982597654&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_9a1ccd5c&cb=1679985060029&jobListingId=1008553112922&jrtk=3-0-1gsjej9vci6jo801-1gsjeja0a2bg1000-a3f02affa33e1aaa-,24h
+30,Java Developer - Telematics - Bilingual (Korean/English),"Woongjin, Inc","Fountain Valley, CA","Company Description
+
+Our Mission
+Woongjin, Inc. is a rapidly growing team who provides a range of unique, exceptional, and enhanced services to our clients. We have a strong moral code that includes the service of goodness without expectations of reward. We are motivated by the sense of responsibility and servant leadership.
+
+Job Description
+Prepare technical design and develop telematics product features using Java/J2EE and Database related technologies",https://www.glassdoor.com/partner/jobListing.htm?pos=201&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_737cdf28&cb=1679985165768&jobListingId=1008553112858&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-f5d3b9edec9d1c4e-,24h
+31,software engineer,Randstad,"Charlotte, NC","summary
+$55 - $65 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002787",https://www.glassdoor.com/partner/jobListing.htm?pos=202&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_b829f780&cb=1679985165768&jobListingId=1008552982575&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-4da043eb2d5267dc-,24h
+32,HR Sr. Software Engineer for SuccessFactors and SAP HCM Modules,"Woongjin, Inc","Fountain Valley, CA","Company Description
+
+Our Mission
+WOONGJIN INC. is a rapidly growing team who provides a range of unique, exceptional, and enhanced services to our clients. We have a strong moral code that includes the service of goodness without expectations of reward. We are motivated by the sense of responsibility and servant leadership.
+
+Job Description
+
+Perform highly complex and demanding tasks and projects dealing with the analysis, design, development, implementation of solutions and user training serving funtional units providing necessary coordination, facilitating interactive analysis and design sessions with representatives of business line and defining scope and requirements of new developments and executes test plans and test scripts / cases to ensure system changes are aligned with business requirements",https://www.glassdoor.com/partner/jobListing.htm?pos=203&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_e60efb16&cb=1679985165768&jobListingId=1008553112864&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-c71230da4ff8c61b-,24h
+33,CI DevOps Engineer,Talent Table,Remote,"Our client, a global financial services and digital payments company is seeking a CI DevOps Engineer.
+
+This position is a remote 8-month contract. You must be in the US, no C2C, or H1B Visa status. Hourly rate $84.13, W2 + paid holidays through Talent Table.
+
+Role Responsibilities:
+Providing level-1 support in triaging and debugging of CI pipelines, build failures, and other supporting services.",https://www.glassdoor.com/partner/jobListing.htm?pos=204&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_8ae6fdd2&cb=1679985165768&jobListingId=1008552416277&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-2e4bcca0b236d273-,24h
+34,SOFTWARE DEVELOPER,Capgemini,"New York, NY","Duration: 8+ months
+
+Job Description:
+
+Candidate must have strong hands on expertise in design and development of Front end applications using modern technology, including Angular 9, ReactJS, rxjs, typescript, Ajax, HTML, Javascript etc.
+Engagement with senior technology and busines stakeholders for understanding the requirements, software design and implementation of customized UI components using front end technologies causing direct impact to clients.",https://www.glassdoor.com/partner/jobListing.htm?pos=205&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_84cb776a&cb=1679985165768&jobListingId=1008552223553&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-79005406538af547-,24h
+35,Python AWS Developer,Codeignitors inc,"Westlake, TX","Title: Python AWS Developer (only w2)No c2c
+Location: Merrimack, NH/ Durham, NC/ Westlake, TX
+Duration: Long Term Contract
+experience :6-7 years(only w2) No c2c
+Hands-on experience in 1 or more languages (Python, Java, Go etc.).
+Hands-on experience designing and building scalable and resilient applications in the cloud.
+Serverless hands-on development and architecture experience implementing Lambda, API Gateway, Step Functions, etc",https://www.glassdoor.com/partner/jobListing.htm?pos=206&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_43518313&cb=1679985165769&jobListingId=1008552281541&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-06b0e910ae67e328-,24h
+36,Technical Software Engineer,Branex - Group,Remote,"Summary:
+The main function of a Software Engineer is to design, develop, implement, test, and maintain business and computer applications software or specialized utility programs including mainframe and client/server applications, and major enhancement of existing systems
+Job Responsibilities:
+Fine-tune and improve a variety of sophisticated software implementation projects
+Gather and analyze system requirements, document specifications, and develop software solutions to meet client needs and data",https://www.glassdoor.com/partner/jobListing.htm?pos=207&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_4cee540a&cb=1679985165769&jobListingId=1008552303567&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-b33f69d7e4dd0d66-,24h
+37,Technical Software Engineer,BranexGroup,Remote,"Summary:
+The main function of a Software Engineer is to design, develop, implement, test, and maintain business and computer applications software or specialized utility programs including mainframe and client/server applications, and major enhancement of existing systems
+Job Responsibilities:
+Fine-tune and improve a variety of sophisticated software implementation projects
+Gather and analyze system requirements, document specifications, and develop software solutions to meet client needs and data",https://www.glassdoor.com/partner/jobListing.htm?pos=208&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_71e79d52&cb=1679985165769&jobListingId=1008552308615&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-3d254cf4faf85d83-,24h
+38,Sr. Python Developer,Arthur Grand Technologies Inc,"Jersey City, NJ","Role: Python Developer
+Location: Jersey City. NJ, Pittsburgh. PA [Onsite]
+Duration: Long term
+Job Description:
+Work experience as a Python Developer
+Experience in Pyspark & Airflow
+Expertise in at least one popular Python framework (like Django, Flask or Pyramid)
+Familiarity with front-end technologies (like JavaScript and HTML5)",https://www.glassdoor.com/partner/jobListing.htm?pos=209&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_aec637cf&cb=1679985165770&jobListingId=1008552375075&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-81ddeac63e8263b0-,24h
+39,Python Developer,Global Healthcare IT,Remote,"Skills
+Proficiency in Python programming: Python developers must have a deep understanding of the Python language and be able to write clean, maintainable, and efficient code.
+Knowledge of Python frameworks: Many Python developers use popular frameworks such as Django, Flask, or Pyramid. Experience with one or more of these frameworks is often required.
+Familiarity with databases: Most web applications require interaction with databases, so Python developers should have experience working with relational databases like MySQL, PostgreSQL, or AWS RDS.",https://www.glassdoor.com/partner/jobListing.htm?pos=210&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a0abad69&cb=1679985165770&jobListingId=1008552337465&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-7c5cb32f8fe94af8-,24h
+40,Application Development Analyst,Kash Tech LLC,Remote,"Location: Remote
+PURPOSE: This scope of work (SOW) is for contractual services to coordinate and respond to problems and services made by the end users of the COVID-19 for system support. Contractor will provide these services to the Florida Department of Health (Department).
+Term:
+Ends 6/30/2024
+Education: Bachelor’s Degree in Computer Science, Information Systems or other Information Technology major, or equivalent work experience.",https://www.glassdoor.com/partner/jobListing.htm?pos=211&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_388a8e4d&cb=1679985165771&jobListingId=1008552341137&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-9aeaf1a4e3db90ca-,24h
+41,Node.js Developer,karwelltech,"Seattle, WA","Core Responsibilities
+Translation of complex requirements into detailed design
+Developing and delivering quality services and solutions using Node.JS, HTTP, REST, RDBMS, No SQL and other web technologies.
+Maintaining current technical knowledge to support rapidly changing technology.
+Candidate must be able to work with a minimum of technical supervision and supplemental engineering support
+Provide technical leadership by providing architectural guidance and establishing best practices.",https://www.glassdoor.com/partner/jobListing.htm?pos=212&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_9b6dc522&cb=1679985165771&jobListingId=1008552266449&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-370fed6c945cb596-,24h
+42,UI Developer,Volto USA,"Houston, TX","Job Description
+Job Title :UI Developer
+Location :Houston ,TX
+Hybrid Production: On average 1-2 days per month on-site
+Translate concepts and business requirements into an end-to-end user experience in the form of low-fidelity wireframes or high-fidelity visual comps.
+Build interactive prototypes to test and validate ideas and user flows with end users.
+Perform iterative UI/UX testing to test different UI concepts.",https://www.glassdoor.com/partner/jobListing.htm?pos=213&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_dc3cb3a7&cb=1679985165772&jobListingId=1008552312821&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-4192b0258e38568c-,24h
+43,UI Developer,Volto IT,"Houston, TX","Job Description
+Job Title :UI Developer
+Location :Houston ,TX
+Hybrid Production: On average 1-2 days per month on-site
+Translate concepts and business requirements into an end-to-end user experience in the form of low-fidelity wireframes or high-fidelity visual comps.
+Build interactive prototypes to test and validate ideas and user flows with end users.
+Perform iterative UI/UX testing to test different UI concepts.",https://www.glassdoor.com/partner/jobListing.htm?pos=214&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a46f20e9&cb=1679985165772&jobListingId=1008552319684&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-7d8579d9c9db7bc7-,24h
+44,Site Reliability Engineer/.NET Developer – FULLY REMOTE WORK 41687,"PRIMUS Global Services, Inc",United States,"We have an immediate long-term contract opportunity with one of our key clients for a position of Site Reliability Engineer/.NET Developer, to work on a remote basis.
+In addition to supporting .NET apps, the selected candidate will spend 50% of their time programming directly in C#/.NET. The other 50% of their time will be spent managing other high-level problems within production support and keeping an eye on the production environment.
+The ideal applicant should have programming skills in C#/.NET as well as solid site reliability engineering experience.
+For immediate consideration, please contact:",https://www.glassdoor.com/partner/jobListing.htm?pos=215&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a47320e2&cb=1679985165772&jobListingId=1008552427815&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-5c003cd6722437b4-,24h
+45,Java Lead Developer,Merican Inc,Remote,"Merican Inc. is a staffing firm that offers recruitment solutions to large clients across the United States.
+Job Role: Java Lead
+Location: Remote
+Type: Remote
+Job Description: Looking for a Java Fullstack Developer with good healthcare domain experience or e-commerce cloud experience with the following skillsets.
+Java",https://www.glassdoor.com/partner/jobListing.htm?pos=216&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_8ce24700&cb=1679985165773&jobListingId=1008552443589&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-a196c2418be0b498-,24h
+46,Jr. Java Developer(W2only),PALADIN INC,Remote,"Lakarya is seeking a technical, self-motivated Software Developer to join our team to support an essential modernization program. As a member of our Agile development team, you will support several complex and high-volume customer systems. The ideal candidate would have experience developing in Java and building Representation State Transfer (REST) Application Programming Interface (API) solutions.
 Responsibilities:
-Develop and maintain JSON REST APIs for our cutting-edge products and services
-Collaborate closely with cross-functional teams to understand project requirements and implement efficient, scalable solutions
-Optimize API performance, ensuring fast and reliable data access for our clients",https://www.glassdoor.com/partner/jobListing.htm?pos=111&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ce5323b4&cb=1679917021027&jobListingId=1008550695529&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-54763f3b9f7d16fc-,24h
-11,Dot Net Developer,Aalpha Prime Tech Global,"Lansing, MI","NOTE: This is W2 contract Position for Dot net Programmer Analyst
-Requirements:
-•10 years of experience developing large scale software systems, using Object Oriented programming language such as .net framework, asp.net, .NET Core, Visual Studio, Internet Information Services, CSS, MVC, C++, C#.net and JavaScript is highly preferred.
-•5 years in .NET core experience.
-•10 years of experience developing technical designs in consultation with application/solution architects to set direction of design and development for large application development projects. Review technical design and specification for completeness and conformance to quality standards, especially as a mentor to less experienced programmer analysts.",https://www.glassdoor.com/partner/jobListing.htm?pos=112&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a23b9757&cb=1679917021028&jobListingId=1008550926116&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-5e1242e5e0e969ef-,24h
-12,Java lead,"Nitya Software Solutions, Inc","Dallas, TX","Title – Java lead
-Location - DallasTX, Tampa, NJ and NY
-(Hybrid onsite)
-Contract – 12 + Months
-Description –
-Should have prior domain (Margin lending, Loan processing, documentation, Underwriting) experience ******MANDATORY
-Min 8+ years of hands on development in Java Technology stack (Java 8 & Java 11)",https://www.glassdoor.com/partner/jobListing.htm?pos=113&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_0445e86b&cb=1679917021028&jobListingId=1008550767321&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-1ec18a1cfbf3c9a7-,24h
-13,MFA Deployment Engineer (REMOTE / Contract),Glow Networks,Remote,"Role: MFA Deployment Engineer
-Location: REMOTE (PST hours)
-Duration: 6 months + Extension
-Scheduling Immediate Interviews
-MFA Deployment Engineer
-DUO and YubiKey Multi-Factor Design and Deployment
-Deployment to multiple machines – laptops, servers, Virtual Machines",https://www.glassdoor.com/partner/jobListing.htm?pos=114&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_c4f560f9&cb=1679917021028&jobListingId=1008550823830&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-122f56b4939daef9-,24h
-14,BHJOB15656_18653 - SDET (QA Automation Engineer),Myticas Consulting,United States,"Myticas's direct client based out of Madison, WI is currently seeking a SDET (QA Automation Engineer) for a 100% remote contract position.
-NOTE: They will be requested to come onsite eventually for work or meetings.
-Must have prior experience working with an Object Oriented Programming language such as C#, or Java.
-Must have prior experience working with Relational Databases such as MS-SQL
-Must have a working knowledge of Object Oriented Programming Principles
-Must have a working knowledge of the software development process, including analysis and design, development tools and technologies, and version control",https://www.glassdoor.com/partner/jobListing.htm?pos=115&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_463cc9f6&cb=1679917021027&jobListingId=1008550480689&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-1e20f17640468e9c-,24h
-15,BHJOB15656_18647 - Senior Full-Stack Java Developer,Myticas Consulting,"Chicago, IL","The recruitment team at Myticas Consulting is looking to hire a Senior Full Stack Java Engineer to join our team on a contract-to-hire basis.
-We are looking for someone with the following skills and requirements:
-4+ years of software development experience in Java
-3+ years of software development experience in ReactJS or Vue JS
-Development experience with React native and/or Flutter and/or Kotlin native app are pluses.
-Any experience with RPA tools is a great plus.
-Any CSS framework experience: Bootstrap or Materialize or Tailwind",https://www.glassdoor.com/partner/jobListing.htm?pos=116&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_44b49a5b&cb=1679917021027&jobListingId=1008550480704&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-d2e8b4f7d1a13a49-,24h
-16,BHJOB15656_18656 - Lead Enterprise Software Engineer (W-8369),Myticas Consulting,United States,"Myticas's direct client based out of Wichita, KS is currently seeking a Lead Enterprise Software Engineer for a 100% remote contract position.
+Creating maintainable, adaptable, scalable, defect-free code using software development best practices and coding standards (i.e., software reuse, refactoring, continuous integration, test automation, secure development, and test-driven development).",https://www.glassdoor.com/partner/jobListing.htm?pos=217&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_1ded63f6&cb=1679985165773&jobListingId=1008552348755&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-e9162571fda62cb5-,24h
+47,Lead UI Developer,Synapseb systems,"Atlanta, GA","Lead UI Developer position
+Location: Atlanta, GA(Day 1 Onsite) (Prefer local candidate)
+Position: C2C
+Client: Virtusa/JPMC
+Need 12+ years candidate (Prefer H1B candidate)
+Passport number is mandatory.
+Job Description :
+6+ years of web development experience of which 2+ years’ experience are in REACT.",https://www.glassdoor.com/partner/jobListing.htm?pos=218&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_6d89a831&cb=1679985165773&jobListingId=1008552388284&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-b2b4f55431470f1b-,24h
+48,"Java Spark Developer – AWS, Java, Spark, Splunk – Multiple locations 41670","PRIMUS Global Services, Inc","Chicago, IL","We have an immediate long-term opportunity with one of our major clients for a position of Java Spark Developer, to work in the following locations:
+Chicago, IL, Jersey City, NJ, Wilmington, DE, Columbus, OH.
+
+The ideal applicant should be well-versed in Java, Spark along with ETL or Hadoop ecosystem, Splunk and AWS.
+
+For immediate consideration, please contact:
+
+Tanmay Patel
+PRIMUS Global Services
+Direct.9724301374
+Desk.9727536500 Ext.256
+Email.jobs@primusglobal.com",https://www.glassdoor.com/partner/jobListing.htm?pos=219&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_d75c3be5&cb=1679985165773&jobListingId=1008552427806&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-5fbc0a3077ccbd93-,24h
+49,Automation Engineer,Mastech Digital,Remote,"Title: Automation Engineer/ SDET
+Location: Remote
+Duration: 12+ months with possible extension (on W2)
+Client: Southwest Airlines
 Job Description:
-Looking for a hands-on Lead Enterprise Software Engineer in our Infrastructure Portfolio Management (IPM) Team supporting the Tax and Accounting (TAA) Division to design, build, and integrate our next generation of enterprise cloud capabilities. Working within our Service Delivery team and collaborating closely with our Engineering team, Security, Compliance, and other key stakeholders, the lead engineer will be responsible for driving key projects and initiatives in support of TAA's critical applications in the Professional Market.",https://www.glassdoor.com/partner/jobListing.htm?pos=117&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_56a78426&cb=1679917021027&jobListingId=1008550480671&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-bf619f0cb759c13a-,24h
-17,"Unity3d Game Developer / C# coder, programmer",Catiger Studio Ltd,Remote,"We're looking for an individual with experience using Unity engine and creating prototypes in C#. This is an exciting opportunity to join a young team with big ambitions and grow alongside the company.
-What you'll do:
-Work remotely in your comfortable time schedule for total 40 hours per week as long as working hours are distributed between 7 AM (GMT-5) and 10 PM (GMT-5)
-Participate in full video game development lifecycle, including designing, coding, debugging, and documenting.
-Work closely with other teams, and managers to breakdown various software/platform system requirements. Help forecast individual tasks as well as collaborate with other developers on long term initiatives.",https://www.glassdoor.com/partner/jobListing.htm?pos=118&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_03da810c&cb=1679917021028&jobListingId=1008550093161&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-eac3372c8507ddc3-,24h
-18,Sr. Front End Web Developer,Dutech Systems,"Austin, TX","CPA will require the Worker to work on the following initiatives and will perform advanced analysis/programming tasks such as:
-· Participating in all phases of SDLC, including design, software development and code review.
-· Performing extensive code reviews and analysis.
-· Writing reports on code analysis to determine if industry standards and best practices are being followed; provide analysis to address found short-comings.
-· Providing guidance and knowledge sharing to existing development staff.",https://www.glassdoor.com/partner/jobListing.htm?pos=119&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_fb378729&cb=1679917021028&jobListingId=1008550088574&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-b58c26e1c02ba765-,24h
-19,Firmware Engineer Software Engineer - Design Wifi Switch and App,AUTISM ADVOCACY AND INTERVENTION LLC,Remote,"As the proprietor of Autism, Advocacy, and Intervention, my agency offers remote services to individuals with autism. I am currently seeking to create a novel tool that could significantly enhance our service delivery and benefit rural communities where access to services is limited.
-My budget for this project is limited and I am uncertain about the amount of work involved. However, if you find this project interesting, I would be delighted to discuss it further and explore how we might meet each other's needs. Please note that a nondisclosure agreement will be necessary.
-Requirements:
-Experience in designing WiFi and Bluetooth remote switches and developing apps to control them.",https://www.glassdoor.com/partner/jobListing.htm?pos=120&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_26478617&cb=1679917021028&jobListingId=1008550088525&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-dc61cc218dee2933-,24h
-20,Full Stack Mobile Developer,Obaki,United States,"Obaki
-United States of America, Thailand, India, Vietnam, Hong Kong, Ukraine, Moldova, Russia, France
-Salary (USD) 1.3K - 3.5K
-SKILLS REQUIRED
-IOS, Android, Full Stack, location-based map system, Frontend, UX, UI Backend,
-ABOUT COMPANY
-Obaki is a peer-to-peer chef app that allows anyone to become a cook. Customers can book cooks straight to their homes and also book entertainers and rooms all in one platform",https://www.glassdoor.com/partner/jobListing.htm?pos=121&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_1818416e&cb=1679917021028&jobListingId=1008549939412&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-8ba6f863ce69fc5b-,24h
-21,System Engineer Visual Vault SaaS product -Remote,Riya Interactive Inc,Remote,"2.1 Primary Job Duties and Tasks
-The activities these candidates will be tasked with include, but are not limited to the following:
-1. Analyzing defined business rules and functional requirements
-2. Updating system documentation to ensure it reflects the current system version
-3. Evaluating enhancement requests and providing estimates
-4. Designing, coding, testing, and implementing technical solutions using the Visual Vault SaaS product",https://www.glassdoor.com/partner/jobListing.htm?pos=122&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f81c0b93&cb=1679917021029&jobListingId=1008549968256&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-36cb42f9cd39701f-,24h
-22,Senior Full Stack Engineer,Upstart,Remote,"Senior Fullstack / Frontend Engineer - Hybrid / Fully Remote within the US
-Competitive salary based on experience (up to $220K).
-Candidates must be physically present and legally authorized to work in the US.
-Benefits:
-Equity
-Medical, Dental, Life and Disability Insurance
-Matching 401(k)",https://www.glassdoor.com/partner/jobListing.htm?pos=123&ao=1136043&s=58&guid=0000018722db769eaf6d48923240570e&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_c6fe0480&cb=1679917021028&jobListingId=1008549894203&jrtk=3-0-1gshdmtltim90801-1gshdmtmvj476800-874829d9c90384d9-,24h
+Important
+· 6 plus years of software QA experience
+· Appium framework and JAVA experience required.",https://www.glassdoor.com/partner/jobListing.htm?pos=220&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_fe00d8c6&cb=1679985165773&jobListingId=1008552654780&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-9ac1a2f16fe6a276-,24h
+50,PYTHON DEVELOPER,Diverse team LLC,"Dallas, TX","Job Post : PYTHON DEVELOPER
+Client: Bank Of America
+Visa: No-H1B.
+Location: Charlotte NC, Dallas TX, New Jersey.- NEED LOCAL .
+Bachelor’s degree or foreign equivalent required from an accredited institution.
+5+ yrs exp Python, Django, Flask Python libraries experience SQL, NoSQL
+Experience in Data modelling, Advanced SQL. Map-Reduce, HTML/CSS",https://www.glassdoor.com/partner/jobListing.htm?pos=221&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_be59ed00&cb=1679985165773&jobListingId=1008552289828&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-1d5c8ad364c618da-,24h
+51,Python Developer (W2),Phasorsoft LLC,"Seattle, WA","NOTE
+NOT FOR C2C
+We are looking for the candidates who can work on W2 (pay roll)
+Description
+Experience building automation/configuration management infrastructure such as Ansible, Terraform, Chef, and/or Puppet Experience leveraging Docker within a local development workflow Experience with deployment of production code leveraging Docker containers Strong background in Linux administration and network administration",https://www.glassdoor.com/partner/jobListing.htm?pos=222&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_2628dd94&cb=1679985165773&jobListingId=1008552176583&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-540b457ba9843f66-,24h
+52,Android Developer,"PEN Software, Inc.",Remote,"PEN Software is hiring Android Developers for a contract position with our direct end client.
+Work Location : Remote in USA - East Coast Time zone
+(Would require travel to Vegas on need basis)
+Employment : Open for direct W2(Hourly) / 1099 / Corp to Corp
+Contract term: 6 months ( + extension possible)
+Position: Android Developer
+Relevant Experience in Android and related technology stack: 4 + years",https://www.glassdoor.com/partner/jobListing.htm?pos=223&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_16a5da4b&cb=1679985165774&jobListingId=1008552257252&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-0bac2caef9792598-,24h
+53,C++ Developer,TechWish,"Virginia, NE","Looking for Code, test, review Client software using technologies including C++, STL, Boost, Multithreading, Unix, Perl, Python and
+XML.
+Requirement analysis and Design of new features and enhancements to existing components.
+Produce / Update solution paper, design documents
+Support set-up of test environment, write unit test driver, functional drivers
+Provide support to test environment, QA and production as necessary",https://www.glassdoor.com/partner/jobListing.htm?pos=224&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e21431ea&cb=1679985165774&jobListingId=1008552154210&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-cda70d78a4f1ba94-,24h
+54,GIS Developer/ Lead,SQA Group,Remote,"**This is a Contract Role***
+SQA Group is a tech and advisory services firm helping companies maximize two business differentiators — quality and data. We help both tech and business leaders see around corners, stand-up new capabilities, and elevate software quality and data as competitive advantages that help drive towards next.
+SQA Group is partnering with our Insurance client to support their GIS development projects. We are seeking a GIS Developer/Lead who is a senior software engineer with a strong background in geographic information systems looking to enhance their technical skills and grow as a technical leader.",https://www.glassdoor.com/partner/jobListing.htm?pos=225&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_d6209062&cb=1679985165773&jobListingId=1008552228336&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-d11ec6223c665344-,24h
+55,Golang Developer,Digitive LLC,Remote,"Required skills:
+Overall experience should be 9+ years.
+5+ years’ relevant experience working with Golang – go routines and reflect packages
+Develop GO packages and programs that are scalable, well documented, reliable and maintainable.
+2+ years building XML Files
+Assist with messaging streams, utilizing core Kafka functions
+Developing and coding Microservices to connect applications with backend systems",https://www.glassdoor.com/partner/jobListing.htm?pos=226&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_6b06036e&cb=1679985165774&jobListingId=1008552420220&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-3f7fbf9bf5b82b0a-,24h
+56,Senior React Developer,Vision,"Baltimore, MD","Senior React Developer
+The ideal candidate is someone who combines ambition with humility and is happy to let their performance do the talking. This is a hands-on, fully development lifecycle role that provides an opportunity to solve complex business, logic, and technical challenges. As a key contributor throughout the entire development cycle, you will be required to think outside the box and bring cutting-edge technology in-house.
+Core Capabilities & Attributes:
+Craftsman-like approach to building software; takes pride in engineering excellence and instills these values within the team and others • A proponent of strong collaborative software engineering techniques and methods: agile development, continuous integration, code review or pairing, unit testing, refactoring, and related approaches.",https://www.glassdoor.com/partner/jobListing.htm?pos=227&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_822100b7&cb=1679985165774&jobListingId=1008552237846&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-dcd9e8135b06b675-,24h
+57,SQL Programmer Analyst,nLeague Services Inc.,"Indianapolis, IN","Programmer Analyst
+Location: Remote, 500 N. Meridian Street, Indianapolis, IN 46204.
+Duration: 06+ Months
+Client: IN-DCS
+Job Id: 705566
+Job Description:
+******Note: Only candidates CURRENTLY living in Indiana will be considered*******",https://www.glassdoor.com/partner/jobListing.htm?pos=228&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_133764c5&cb=1679985165774&jobListingId=1008552230278&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-d02266a6cf87f8ae-,24h
+58,Sr. Node JS Developer,Geopaq Logic,"Ridgefield Park, Bergen, NJ","Job Title: Node.JS Developer
+Location: Ridgefield Park, NJ
+Contract Period : 1 Year
+JOB DESCRIPTION:
+We are looking for an experienced Back End / Server-Side Software Engineer with excellent programming skills; the candidate will design and develop RESTful web applications via Node.js on business requirements.
+The candidate should be able to design and implement web-based interfaces.",https://www.glassdoor.com/partner/jobListing.htm?pos=229&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f23e9efc&cb=1679985165774&jobListingId=1008552359823&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-6092414f238531a9-,24h
+59,Application Developer,YSI,"Montgomery, AL","Yakshna Solutions, Inc., (YSI) is a CMMI Level 3 assessed, ISO 9001, 20000:1, 27001 certified, woman-owned small business enterprises, headquartered in Herndon, Virginia, USA. YSI provides professional IT solutions and services to business corporations and government organizations. YSI is committed to serve its business communities as a leading IT vendor providing innovative, quality, and cost-effective IT business solutions and services.
+YSI offers a competitive benefits package thatincludes the following: 401(k), health, dental, and vision insurance, Life insurance, short-term and long-term disability insurance, paid time off, training, and professional development assistance.
+is seeking a highly qualified The selected candidate will be able to communicate effectively (written/verbal), possess strong interpersonal skills, be self-motivated, and be innovative in a fast-paced environment.",https://www.glassdoor.com/partner/jobListing.htm?pos=230&ao=1136043&s=58&guid=0000018726eb44e298972915ad066dbe&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_380f0a3c&cb=1679985165774&jobListingId=1008552693674&jrtk=3-0-1gsjemh7ugaic801-1gsjemh96gfrj800-1cc6710bf7f1b23a-,24h
+60,software engineer,Randstad,"Charlotte, NC","summary
+$55 - $65 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002787",https://www.glassdoor.com/partner/jobListing.htm?pos=301&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_2d550c0d&cb=1679985264226&jobListingId=1008552982575&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-4da043eb2d5267dc-,24h
+61,"Java Spark Developer – AWS, Java, Spark, Splunk – Multiple locations 41670","PRIMUS Global Services, Inc","Chicago, IL","We have an immediate long-term opportunity with one of our major clients for a position of Java Spark Developer, to work in the following locations:
+Chicago, IL, Jersey City, NJ, Wilmington, DE, Columbus, OH.
+
+The ideal applicant should be well-versed in Java, Spark along with ETL or Hadoop ecosystem, Splunk and AWS.
+
+For immediate consideration, please contact:
+
+Tanmay Patel
+PRIMUS Global Services
+Direct.9724301374
+Desk.9727536500 Ext.256
+Email.jobs@primusglobal.com",https://www.glassdoor.com/partner/jobListing.htm?pos=302&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_d5d551cd&cb=1679985264227&jobListingId=1008552427806&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-5fbc0a3077ccbd93-,24h
+62,Site Reliability Engineer/.NET Developer – FULLY REMOTE WORK 41687,"PRIMUS Global Services, Inc",United States,"We have an immediate long-term contract opportunity with one of our key clients for a position of Site Reliability Engineer/.NET Developer, to work on a remote basis.
+In addition to supporting .NET apps, the selected candidate will spend 50% of their time programming directly in C#/.NET. The other 50% of their time will be spent managing other high-level problems within production support and keeping an eye on the production environment.
+The ideal applicant should have programming skills in C#/.NET as well as solid site reliability engineering experience.
+For immediate consideration, please contact:",https://www.glassdoor.com/partner/jobListing.htm?pos=303&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_be28f196&cb=1679985264227&jobListingId=1008552427815&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-5c003cd6722437b4-,24h
+63,Technical Software Engineer,Branex - Group,Remote,"Summary:
+The main function of a Software Engineer is to design, develop, implement, test, and maintain business and computer applications software or specialized utility programs including mainframe and client/server applications, and major enhancement of existing systems
+Job Responsibilities:
+Fine-tune and improve a variety of sophisticated software implementation projects
+Gather and analyze system requirements, document specifications, and develop software solutions to meet client needs and data",https://www.glassdoor.com/partner/jobListing.htm?pos=304&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_306085a2&cb=1679985264227&jobListingId=1008552303567&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-b33f69d7e4dd0d66-,24h
+64,CI DevOps Engineer,Talent Table,Remote,"Our client, a global financial services and digital payments company is seeking a CI DevOps Engineer.
+
+This position is a remote 8-month contract. You must be in the US, no C2C, or H1B Visa status. Hourly rate $84.13, W2 + paid holidays through Talent Table.
+
+Role Responsibilities:
+Providing level-1 support in triaging and debugging of CI pipelines, build failures, and other supporting services.",https://www.glassdoor.com/partner/jobListing.htm?pos=305&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_2f3e71e6&cb=1679985264226&jobListingId=1008552416277&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-2e4bcca0b236d273-,24h
+65,Sr. Python Developer,Arthur Grand Technologies Inc,"Jersey City, NJ","Role: Python Developer
+Location: Jersey City. NJ, Pittsburgh. PA [Onsite]
+Duration: Long term
+Job Description:
+Work experience as a Python Developer
+Experience in Pyspark & Airflow
+Expertise in at least one popular Python framework (like Django, Flask or Pyramid)
+Familiarity with front-end technologies (like JavaScript and HTML5)",https://www.glassdoor.com/partner/jobListing.htm?pos=306&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_c81107a1&cb=1679985264227&jobListingId=1008552375075&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-81ddeac63e8263b0-,24h
+66,Automation Engineer,Mastech Digital,Remote,"Title: Automation Engineer/ SDET
+Location: Remote
+Duration: 12+ months with possible extension (on W2)
+Client: Southwest Airlines
+Job Description:
+Important
+· 6 plus years of software QA experience
+· Appium framework and JAVA experience required.",https://www.glassdoor.com/partner/jobListing.htm?pos=307&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_cc2dc557&cb=1679985264227&jobListingId=1008552654780&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-9ac1a2f16fe6a276-,24h
+67,Application Development Analyst,Kash Tech LLC,Remote,"Location: Remote
+PURPOSE: This scope of work (SOW) is for contractual services to coordinate and respond to problems and services made by the end users of the COVID-19 for system support. Contractor will provide these services to the Florida Department of Health (Department).
+Term:
+Ends 6/30/2024
+Education: Bachelor’s Degree in Computer Science, Information Systems or other Information Technology major, or equivalent work experience.",https://www.glassdoor.com/partner/jobListing.htm?pos=308&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_adf675c0&cb=1679985264228&jobListingId=1008552341137&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-9aeaf1a4e3db90ca-,24h
+68,Java Lead Developer,Merican Inc,Remote,"Merican Inc. is a staffing firm that offers recruitment solutions to large clients across the United States.
+Job Role: Java Lead
+Location: Remote
+Type: Remote
+Job Description: Looking for a Java Fullstack Developer with good healthcare domain experience or e-commerce cloud experience with the following skillsets.
+Java",https://www.glassdoor.com/partner/jobListing.htm?pos=309&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_6799070d&cb=1679985264228&jobListingId=1008552443589&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-a196c2418be0b498-,24h
+69,Technical Software Engineer,BranexGroup,Remote,"Summary:
+The main function of a Software Engineer is to design, develop, implement, test, and maintain business and computer applications software or specialized utility programs including mainframe and client/server applications, and major enhancement of existing systems
+Job Responsibilities:
+Fine-tune and improve a variety of sophisticated software implementation projects
+Gather and analyze system requirements, document specifications, and develop software solutions to meet client needs and data",https://www.glassdoor.com/partner/jobListing.htm?pos=310&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a8b3f07c&cb=1679985264228&jobListingId=1008552308615&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-3d254cf4faf85d83-,24h
+70,React JS Lead and Senior developers,Arthur Grand Technologies Inc,"Columbus, OH","Role: React JS Lead and Senior developers
+Location: Columbus, OH/ Wilmington, DE
+Duration: Contract
+Job description :
+Responsibilities
+Developing new user-facing features using React.js
+Building reusable components and front-end libraries for future use
+Translating designs and wireframes into high quality code",https://www.glassdoor.com/partner/jobListing.htm?pos=311&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_7ec5acb5&cb=1679985264228&jobListingId=1008552389817&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-84d7e40aa51bc7c1-,24h
+71,Python Developer (W2),Phasorsoft LLC,"Seattle, WA","NOTE
+NOT FOR C2C
+We are looking for the candidates who can work on W2 (pay roll)
+Description
+Experience building automation/configuration management infrastructure such as Ansible, Terraform, Chef, and/or Puppet Experience leveraging Docker within a local development workflow Experience with deployment of production code leveraging Docker containers Strong background in Linux administration and network administration",https://www.glassdoor.com/partner/jobListing.htm?pos=312&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ff7cb0ba&cb=1679985264228&jobListingId=1008552176583&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-540b457ba9843f66-,24h
+72,Lead java With AWS developer,Synapseb systems,"Plano, TX","Title : JAVA AWS Developer/ Lead
+Location: Plano, TX(Day1 onsite)(Hybrid)
+Duration: Long Term
+Client: Virtusa/ JPMC
+Need 12+ years candidate.
+Passport number is mandatory
+Mandatory skills
+• Front end: Angular 12 & above/ React js",https://www.glassdoor.com/partner/jobListing.htm?pos=313&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_0e4e9d08&cb=1679985264229&jobListingId=1008552375952&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-1b609c76cc37d68b-,24h
+73,Sr. Node JS Developer,Geopaq Logic,"Ridgefield Park, Bergen, NJ","Job Title: Node.JS Developer
+Location: Ridgefield Park, NJ
+Contract Period : 1 Year
+JOB DESCRIPTION:
+We are looking for an experienced Back End / Server-Side Software Engineer with excellent programming skills; the candidate will design and develop RESTful web applications via Node.js on business requirements.
+The candidate should be able to design and implement web-based interfaces.",https://www.glassdoor.com/partner/jobListing.htm?pos=314&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_12f6d627&cb=1679985264229&jobListingId=1008552359823&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-6092414f238531a9-,24h
+74,GIS Developer/ Lead,SQA Group,Remote,"**This is a Contract Role***
+SQA Group is a tech and advisory services firm helping companies maximize two business differentiators — quality and data. We help both tech and business leaders see around corners, stand-up new capabilities, and elevate software quality and data as competitive advantages that help drive towards next.
+SQA Group is partnering with our Insurance client to support their GIS development projects. We are seeking a GIS Developer/Lead who is a senior software engineer with a strong background in geographic information systems looking to enhance their technical skills and grow as a technical leader.",https://www.glassdoor.com/partner/jobListing.htm?pos=315&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_896b85f9&cb=1679985264228&jobListingId=1008552228336&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-d11ec6223c665344-,24h
+75,Embedded Software Developer,HSK IT Solutions India Pvt. Ltd.,"Hagerstown, MD","Role : Embedded Software Development (Only for USC & GC Holders)
+Location : Hagerstown, MD (Onsite)
+Duration : Full Time / Contract
+Note : Please Apply only for Automotive like Aerospace or Aircraft Candidates
+1. 10 years’ experience in embedded software development
+2. 5 years’ experience in embedded software architecture design",https://www.glassdoor.com/partner/jobListing.htm?pos=316&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_27ff4955&cb=1679985264229&jobListingId=1008552352135&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-d0daab353f3e14a0-,24h
+76,Senior Java Developer (Capital Markets) - Mostly Remote,"Snakorpio Group, Inc.","New York, NY","An investment bank with offices in Midtown Manhattan is hiring a hands-on Senior Java Developer. The role is mostly remote and candidate may be required to come in the work once a quarter.
+JOB DESCRIPTION
+Duties
+With over 6 years of enterprise development experience.
+As a senior developer on the project, the consultant will be responsible to maintenance of Derivative Trading Applications and communicate with Traders, Operations and Strats.",https://www.glassdoor.com/partner/jobListing.htm?pos=317&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_21a54ed7&cb=1679985264229&jobListingId=1008552673432&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-5f58f2078581ad02-,24h
+77,ASP.NET C# Developer,SQA Group,Remote,"**This is a Contract Role**
+SQA Group is a tech and advisory services firm helping companies maximize two business differentiators — quality and data. We help both tech and business leaders see around corners, stand-up new capabilities, and elevate software quality and data as competitive advantages that help drive towards next.
+SQA Group is seeking a C# Developer/Software Engineer with hands on, advanced, C# coding experience to help support upcoming initiatives.
+What You Bring",https://www.glassdoor.com/partner/jobListing.htm?pos=318&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_a3815c62&cb=1679985264229&jobListingId=1008552193631&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-fbeca9602867243f-,24h
+78,Java Full Stack Developer,Acunor,"New York, NY","Acunor is hiring Java Full Stack Developer for one of its premier clients. This is Local to NY/NJ, W2 Contract, Onsite opportunity. Interested candidates are encouraged to apply with the most recent resume.
+Job Title : Full Stack Java Developer
+Location : Local to NY/NJ, Onsite
+Experience : 8+ Years
+W2 Opportunity
+Job Description:",https://www.glassdoor.com/partner/jobListing.htm?pos=319&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_584412c1&cb=1679985264229&jobListingId=1008552311906&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-44a25cfcf176007a-,24h
+79,"Software Developer, Web Development",WorldLink,Remote,"Contract to hire position.
+WorldLink is a rapidly growing information technology company at the forefront of technical revolution. From custom software development to cloud hosting, from big data to cognitive computing, we help companies harness and leverage today’s most cutting-edge digital technologies to create value and grow.
+Collaborative. Respectful. Work hard Play hard. A place to dream and do. These are just a few words that describe what life is like at WorldLink. We embrace a culture of experimentation and constantly strive for improvement and learning.
+We take pride in our employees and their future with continued growth and career advancement. We put TEAM first. We are a competitive group that like to win. We're grounded by humility and driven by ambition. we're passionate, and we love tough problems and new challenges. You don't hear a lot of ""I don't know how"" or ""I can't"" at WorldLink. If you are passionate about what you do and having fun while doing it; tired of rigid and strict work environments and would like to work in a non-bureaucratic startup cultural environment, WorldLink may be the place for you.",https://www.glassdoor.com/partner/jobListing.htm?pos=320&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_7b30c4c0&cb=1679985264230&jobListingId=1008552235368&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-acec90a2768d0a7e-,24h
+80,Senior UI Developer,Impact Health,"Englewood, CO","Responsibilities:
+Supporting the UI and Front-End development of many product lines
+Work with designers and developers to develop modern, intuitive user interfaces for Software IDE.
+Work on design, look, and feel of Software IDE.
+Continuously improve the user experience.
+Improve JS and CSS quality by conducting code analysis, and recommending changes in policies and procedures.
+Self-driven, motivated, results oriented individual with superior academic achievements.",https://www.glassdoor.com/partner/jobListing.htm?pos=321&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_db0ec3b9&cb=1679985264229&jobListingId=1008552421421&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-547faa4cd6979298-,24h
+81,Senior Programmer – Visualization,SimulStat,Remote,"Apply Now
+
+– Long-term, remote, FSP support role:
+The Senior Programmer position specializing in data visualization will be responsible for developing utilities, applications and reports using R and R Shiny to enable analysts to explore real world healthcare data assets. The programmer will interface with non-technical and technical people to gather requirements, present iterations of development, and write documentation. Candidates must have previous experience as an R Shiny developer, with R, SAS, SQL, and/or Python skills desired. Candidates must be comfortable with creating complex analysis data sets derived from various data sources with a careful eye for outliers and errors. Prior experience with large databases and observational research methods such as epidemiology and statistical methods is strongly desired. Experience in designing user interfaces, standard reporting packages, and analysis tools also highly desired.
+
+Strong communication, time management, enthusiasm and documentation skills are essential in this home-based position.
+
+Basic Qualifications
+
+Preferred Qualifications
+
+Apply Now",https://www.glassdoor.com/partner/jobListing.htm?pos=322&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_c95c24d3&cb=1679985264229&jobListingId=1008552644982&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-5aad24b013c648e7-,24h
+82,SQL Programmer Analyst,nLeague Services Inc.,"Indianapolis, IN","Programmer Analyst
+Location: Remote, 500 N. Meridian Street, Indianapolis, IN 46204.
+Duration: 06+ Months
+Client: IN-DCS
+Job Id: 705566
+Job Description:
+******Note: Only candidates CURRENTLY living in Indiana will be considered*******",https://www.glassdoor.com/partner/jobListing.htm?pos=323&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_bec6adaf&cb=1679985264230&jobListingId=1008552230278&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-d02266a6cf87f8ae-,24h
+83,Sr.NET Web Developer (W2 Only),Silverxis,"Richmond, VA","Sr .NET Web Developer (W2/1099 ONLY)
+Visa- USC / GC Only
+720 E Broad St, Richmond, VA 23219
+Hybrid( 2 days onsite in a week. 3 Days remote)
+Depending upon the candidate we may offer direct hire or contract to hire.
+ON W2 Tax terms.
+Exp required: 7+ Years",https://www.glassdoor.com/partner/jobListing.htm?pos=324&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e6fd9aec&cb=1679985264230&jobListingId=1008552161260&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-504ff1583d8c4312-,24h
+84,Java Alfresco Developer,Wisdom Soft Inc,"Chicago, IL","Job Title: Java Alfresco Developer
+Location: Chicago, IL. No remote
+Duration: 12+ months (Possible Extension)
+Job Description::
+Required skills :
+7+ years of relevant experience in Java/J2EE with more than 3 years of experience in Alfresco implementations.
+Proficiency in architecting and designing a solution using Alfresco product suite and review the detailed designs.",https://www.glassdoor.com/partner/jobListing.htm?pos=325&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ee980ec4&cb=1679985264230&jobListingId=1008552627618&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-5bc8c177eebe1176-,24h
+85,DevOps Engineer (W2),Phasorsoft LLC,"New York, NY","Not For - C2C Not For - C2C - Not For C2C - Not For C2C
+Note : We are looking for Candidates Who can work on Our W2 (Payroll)
+Skills & Requirements
+4+ years of experience in application, programming/development in .Net, MS SQL
+Strong foundation of project management
+Basic networking knowledge and datacenter infrastructure
+Excellent spoken/written communication and technical skills.",https://www.glassdoor.com/partner/jobListing.htm?pos=326&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_95abeaae&cb=1679985264230&jobListingId=1008552271707&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-9c6357fae61da810-,24h
+86,Sr. iOS Developer,Talent Group,"Fremont, CA","Role: Sr. iOS Developer
+Location: Fremont, CA
+Duration: Full Rime / Contract
+Job Description:
+· Around 10 years of experience in Android based mobile app development
+· Hands-on experience in the below tech stack
+o Swift
+o SwiftUI",https://www.glassdoor.com/partner/jobListing.htm?pos=327&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_1c8f32a3&cb=1679985264230&jobListingId=1008552367814&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-1c2b1c2c1d2b5e97-,24h
+87,Database Developer with AWS,Purple Drive Technologies,"Plano, TX","Position: Database Developer with AWS
+Location: Plano, TX or Wilmington, DE (Day one onsite)
+Duration: Contract
+Job Qualifications / Requirements:
+Exposure to Cassandra and Oracle DB
+8-10 years of experience as a DB Developer
+Bachelor’s degree required
+Graduate in any technical discipline",https://www.glassdoor.com/partner/jobListing.htm?pos=328&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_fb4c539e&cb=1679985264230&jobListingId=1008552543101&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-82b1f8eb348c46ab-,24h
+88,Mobile Developer iOS (Lead) ONLY LOCALS PREFERRED,EGrove Systems Corporation,"Fremont, CA","Title: Mobile Developer (iOS) (Sr/lead)
+Location : Fremont CA (only LOCALS preferred)
+Long-Term Contract
+Required Experience : 8 Years
+Position Overview
+The client is looking for a passionate iOS Developer(Lead / Senior) in the Digital Technology and Innovation group which supports evolving digital platforms and enhances the integration of the innovation pipeline into their customer-facing iOS version of the product.",https://www.glassdoor.com/partner/jobListing.htm?pos=329&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_887bba23&cb=1679985264230&jobListingId=1008552374918&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-e6eca396a4ba7560-,24h
+89,.NET Developer with MongoDB exp. _ W2 only,ANB Sourcing LLC,Remote,".NET Developer with Mongo DB exp.
+REMOTE job.
+Long Tern.
+Note: Need only visa independent consultant..
+Job Description:
+5+ years of C#/.NET Development Experience in Agile environment
+Strong database skills - Oracle, SQL Server and/or No SQL databases (NoSQL - MongoDB preferred)",https://www.glassdoor.com/partner/jobListing.htm?pos=330&ao=1136043&s=58&guid=0000018726ecc57da68343b892e8e0db&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ff919e9a&cb=1679985264230&jobListingId=1008552242566&jrtk=3-0-1gsjephctkujq801-1gsjephdogsq6800-f65699d26a51ee6c-,24h
+90,software engineer,Randstad,"Charlotte, NC","summary
+$55 - $65 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002787",https://www.glassdoor.com/partner/jobListing.htm?pos=401&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_951b1d5f&cb=1679985362730&jobListingId=1008552982575&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-4da043eb2d5267dc-,24h
+91,Senior Programmer – Visualization,SimulStat,Remote,"Apply Now
+
+– Long-term, remote, FSP support role:
+The Senior Programmer position specializing in data visualization will be responsible for developing utilities, applications and reports using R and R Shiny to enable analysts to explore real world healthcare data assets. The programmer will interface with non-technical and technical people to gather requirements, present iterations of development, and write documentation. Candidates must have previous experience as an R Shiny developer, with R, SAS, SQL, and/or Python skills desired. Candidates must be comfortable with creating complex analysis data sets derived from various data sources with a careful eye for outliers and errors. Prior experience with large databases and observational research methods such as epidemiology and statistical methods is strongly desired. Experience in designing user interfaces, standard reporting packages, and analysis tools also highly desired.
+
+Strong communication, time management, enthusiasm and documentation skills are essential in this home-based position.
+
+Basic Qualifications
+
+Preferred Qualifications
+
+Apply Now",https://www.glassdoor.com/partner/jobListing.htm?pos=402&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_8123b3ea&cb=1679985362730&jobListingId=1008552644982&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-5aad24b013c648e7-,24h
+92,,,,,,
+93,Embedded Software Developer,HSK IT Solutions India Pvt. Ltd.,"Hagerstown, MD","Role : Embedded Software Development (Only for USC & GC Holders)
+Location : Hagerstown, MD (Onsite)
+Duration : Full Time / Contract
+Note : Please Apply only for Automotive like Aerospace or Aircraft Candidates
+1. 10 years’ experience in embedded software development
+2. 5 years’ experience in embedded software architecture design",https://www.glassdoor.com/partner/jobListing.htm?pos=404&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_22b95fdd&cb=1679985362731&jobListingId=1008552352135&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-d0daab353f3e14a0-,24h
+94,Lead java With AWS developer,Synapseb systems,"Plano, TX","Title : JAVA AWS Developer/ Lead
+Location: Plano, TX(Day1 onsite)(Hybrid)
+Duration: Long Term
+Client: Virtusa/ JPMC
+Need 12+ years candidate.
+Passport number is mandatory
+Mandatory skills
+• Front end: Angular 12 & above/ React js",https://www.glassdoor.com/partner/jobListing.htm?pos=405&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f8a34063&cb=1679985362731&jobListingId=1008552375952&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-1b609c76cc37d68b-,24h
+95,React JS Lead and Senior developers,Arthur Grand Technologies Inc,"Columbus, OH","Role: React JS Lead and Senior developers
+Location: Columbus, OH/ Wilmington, DE
+Duration: Contract
+Job description :
+Responsibilities
+Developing new user-facing features using React.js
+Building reusable components and front-end libraries for future use
+Translating designs and wireframes into high quality code",https://www.glassdoor.com/partner/jobListing.htm?pos=406&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_90faca82&cb=1679985362731&jobListingId=1008552389817&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-84d7e40aa51bc7c1-,24h
+96,DevOps Engineer (W2),Phasorsoft LLC,"New York, NY","Not For - C2C Not For - C2C - Not For C2C - Not For C2C
+Note : We are looking for Candidates Who can work on Our W2 (Payroll)
+Skills & Requirements
+4+ years of experience in application, programming/development in .Net, MS SQL
+Strong foundation of project management
+Basic networking knowledge and datacenter infrastructure
+Excellent spoken/written communication and technical skills.",https://www.glassdoor.com/partner/jobListing.htm?pos=407&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_91fceb34&cb=1679985362731&jobListingId=1008552271707&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-9c6357fae61da810-,24h
+97,Site Reliability Engineering(AWS),Acunor,Remote,"Job Title: Site Reliability Engineering(AWS)
+Location : Remote
+Duration : Long Term
+JD:
+Biggest Must Haves:
+Cloud (AWS)
+Previous experience with cloud migration
+Debuggin Gitlab Pipelines",https://www.glassdoor.com/partner/jobListing.htm?pos=408&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_39685818&cb=1679985362732&jobListingId=1008552389747&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-bcdf00b3d02eac36-,24h
+98,.NET Developer with MongoDB exp. _ W2 only,ANB Sourcing LLC,Remote,".NET Developer with Mongo DB exp.
+REMOTE job.
+Long Tern.
+Note: Need only visa independent consultant..
+Job Description:
+5+ years of C#/.NET Development Experience in Agile environment
+Strong database skills - Oracle, SQL Server and/or No SQL databases (NoSQL - MongoDB preferred)",https://www.glassdoor.com/partner/jobListing.htm?pos=409&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_2290c29c&cb=1679985362731&jobListingId=1008552242566&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-f65699d26a51ee6c-,24h
+99,Mobile Developer iOS (Lead) ONLY LOCALS PREFERRED,EGrove Systems Corporation,"Fremont, CA","Title: Mobile Developer (iOS) (Sr/lead)
+Location : Fremont CA (only LOCALS preferred)
+Long-Term Contract
+Required Experience : 8 Years
+Position Overview
+The client is looking for a passionate iOS Developer(Lead / Senior) in the Digital Technology and Innovation group which supports evolving digital platforms and enhances the integration of the innovation pipeline into their customer-facing iOS version of the product.",https://www.glassdoor.com/partner/jobListing.htm?pos=410&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_557ae625&cb=1679985362732&jobListingId=1008552374918&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-e6eca396a4ba7560-,24h
+100,.NET Web Developer (W2),Phasorsoft LLC,"Madison, WI","Not for C2C - Not For C2C - Not For C2C - Not For C2C
+Note : We are Looking For Candidates Who Can Work On W2 (payroll)
+The projects are underway and include .NET MVC web applications with heavy use of JavaScript, jQuery, C#, Entity Framework and Kendo UI components, and the candidate will be joining an existing team. The project involves web applications using JavaScript UI, ASP.NET MVC with C#, WebAPI, n-tier architecture and SQL Server. This developer will work on other projects as needed.
+The person in this position will work closely with the team in designing and developing the front end and server side of the web application. Project duties include requirements analysis, design, front-end and back-end web application development, testing, participation in interactive code reviews, and development using JavaScript, JQuery, ASP.NET MVC with C#, and SQL Server. Expectations for this position are development of quality code, participation in active code reviews, sharing expertise, respectful communication, transparency, technical documentation and the ability to perform production support.",https://www.glassdoor.com/partner/jobListing.htm?pos=411&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_bd2de950&cb=1679985362732&jobListingId=1008552169512&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-fe5ce21eac94d9fd-,24h
+101,Sr.NET Web Developer (W2 Only),Silverxis,"Richmond, VA","Sr .NET Web Developer (W2/1099 ONLY)
+Visa- USC / GC Only
+720 E Broad St, Richmond, VA 23219
+Hybrid( 2 days onsite in a week. 3 Days remote)
+Depending upon the candidate we may offer direct hire or contract to hire.
+ON W2 Tax terms.
+Exp required: 7+ Years",https://www.glassdoor.com/partner/jobListing.htm?pos=412&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_09d3ebc9&cb=1679985362733&jobListingId=1008552161260&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-504ff1583d8c4312-,24h
+102,AWS DevOps Engineer,Arthur Grand Technologies Inc,"Jersey City, NJ","Job Title: AWS DevOps Engineer-AWS DevOps
+Location: Jersey City, NJ / Plano, TX (onsite)
+Duration: Contract
+Visa: H4 EAD, L2S, GC EAD, GC, USC.
+Job Description:
+Primary Technologies: Jenkins, Rundeck, Groovy,(GIT)Bitbucket, Kubernetes, AWS, Python, Spinnaker
+Secondary Technologies (Nice to Have): Terraform, Mongo DB, Powershell, Bash, Ansible, Testing Tools like JUnit, Selenium, Cucumber, JMeter",https://www.glassdoor.com/partner/jobListing.htm?pos=413&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e61a2df0&cb=1679985362733&jobListingId=1008552387742&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-375af787af287e79-,24h
+103,Sr. ServiceNow Developer,TechProjects,"New York, NY","Title: ServiceNow Developer
+Location: Brooklyn, NY (On-site)
+Employment type: 12+ months contract
+Responsibilities:
+Responsible for all aspects of the lifecycle of the ServiceNow platform, including design, development, planning, implementation, configuration, and ongoing support.
+Perform ServiceNow implementation tasks including but not limited to: Development, configuration, integration and testing.",https://www.glassdoor.com/partner/jobListing.htm?pos=414&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_2bc1b5cb&cb=1679985362733&jobListingId=1008552361884&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-df4a84d560fa8450-,24h
+104,Java AWS Developer (W2),Phasorsoft LLC,"Malvern, PA","Not For - C2C Not For - C2C - Not For C2C - Not For C2C
+Note : We are looking for Candidates Who can work on Our W2 (Payroll)
+Skillset/Experience with the following:
+TypeScript (for Angular 2+)
+Java 8 (for Spring Boot)
+NodeJs
+AWS experience (for DynamoDB, RDS)",https://www.glassdoor.com/partner/jobListing.htm?pos=415&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_11fa7749&cb=1679985362733&jobListingId=1008552174520&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-6074a3ffa59660f3-,24h
+105,Sr. Java Developer/Lead,Devcare Solutions,"Columbus, OH","Role: Programmer/Analyst: III (Senior) [Java Developer]
+Location: Columbus, OH
+Type: CTC
+JOB DESCRIPTION
+Description:
+We are looking for a senior Java developer to lead a development team that builds and supports REST APIs for various payment products like Real Time Payments and Commercial Loan payments. The application is highly available and handles high volume payment origination, processing, and settlement capabilities for customer and colleague facing applications.",https://www.glassdoor.com/partner/jobListing.htm?pos=416&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_7b7f071b&cb=1679985362733&jobListingId=1008552546050&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-fba32a8c491cbf3e-,24h
+106,Lead Java Developer (W2only),PALADIN INC,Remote,"Lakarya is seeking a technical, self-motivated Software Developer Lead to join our team to support an essential modernization program for the U.S. Department of Education, Office of Federal Student Aid. As a member of our Agile development team, you will support several complex and high-volume customer systems. The ideal candidate would have experience developing in Java and building Representation State Transfer (REST) Application Programming Interface (API) solutions.
+Responsibilities:
+Work as a member of multiple scrum teams to develop, integrate, and deploy high quality reusable, testable, and efficient code including Microservices with Java, Spring Boot, and REST API’s",https://www.glassdoor.com/partner/jobListing.htm?pos=417&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_030c757b&cb=1679985362733&jobListingId=1008552345057&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-411b323607d9f14d-,24h
+107,Software Engineer,Gridiron IT,"Quantico, VA","GridironIT is seeking a Software Engineer, Mid local to the Quantico, VA area.
+Top Secret clearance is required.
+The Challenge:
+Are you passionate about crafting an amazing user experience? The right interface can make a web platform easy to use, encourage early adoption, and save time and resources. We’re looking for you, a front-end developer who will use equal parts skill and vision to build an experience that delivers functionality and efficiency.
+We need an experienced front end developer who will use their passion to guide a development team to learn new tools and techniques, identify and implement system improvements, and mentor teammates. This is an opportunity to solve problems in intelligence, national security, and law enforcement operations by collaborating with a development team to build middle- and front-end web solutions with user centric design. You’ll coordinate UI/UX designers and back-end developers to create a seamless user experience using Agile life cycle development and current web development frameworks. Your team will ensure accessibility for all users by developing a front end that functions across browsers, platforms, and devices while meeting accessibility and security requirements. With mentoring, positive code reviews, and opportunities to learn new tools and skills, we focus on growing as a team to make the best solutions for our customers. Join us as we build systems to change law enforcement for the better.",https://www.glassdoor.com/partner/jobListing.htm?pos=418&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_94f68be2&cb=1679985362733&jobListingId=1008552164990&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-8a9ba43938af1811-,24h
+108,C++ Developer Embedded Systems (Only Locals Preferred),EGrove Systems Corporation,"Topeka, KS","Position: C++ Developer with Embedded systems
+Location: Topeka, KS ON HYBRID ( Only Locals preferred)
+Client: HCL/ BNSF Railway
+Brief Project Description:
+We are seeking an experienced C++ developer(8+ Years) to assist in the development and implementation of solutions aimed at improving the safety and efficiency of our 24/7 railroad network. Our company is looking to integrate the latest sensors and embedded edge processing techniques to produce reliable, high-precision track assessment systems.",https://www.glassdoor.com/partner/jobListing.htm?pos=419&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_4e806fd9&cb=1679985362734&jobListingId=1008552355083&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-94cb134a7b218db8-,24h
+109,Software Engineer (#2302),apLumina For Disney,Remote,"This role is with our Client, a Global Media/Entertainment Enterprise.
+Description:
+Content Management Platform team is seeking a motivated Senior Software Engineer to help build the content backbone of the Disney Streaming Services. The team is responsible for the end-to-end tooling used to ingest content from over 500 partners and deliver the highest quality video to tens of millions of users.
+As a part of this team, you will use technologies like Golang, GraphQL, PostgreSQL, Kafka, Elastic Search, Terraform, Docker and native AWS resources such as Lambda, Kinesis, SQS/SNS and DynamoDB.
+Basic Qualifications:",https://www.glassdoor.com/partner/jobListing.htm?pos=420&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_0dc20b60&cb=1679985362734&jobListingId=1008552272490&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-6b2ef1ed60655252-,24h
+110,Java Microservices Developer - W2 Contract,VEAH Consulting Services,"Jersey City, NJ","Role: Java Microservices Developer
+Client Location: Westlake, TX, Durham NC, Boston MA, Jersey City NJ, Salt Lake City Utah, Denver Colorado, Merrimack NH, Smithfield RI, and Covington KY
+Duration: 12+ months
+Job Description:
+Looking for Java Microservices Developer with 12+ years of experience, this is a W2 CONTRACT
+Working experience on spring/spring boot/spring cloud micro-services.",https://www.glassdoor.com/partner/jobListing.htm?pos=421&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_cccf1067&cb=1679985362734&jobListingId=1008552650120&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-7f9c9a273a734dea-,24h
+111,PHP Full stack Developer,princeton it services,"Boston, MA","Position Title: PHP Full stack Developer
+Location: Boston, MA onsite
+Job Length: Long term
+Position Type: W2
+Summary:
+A full–stack PHP developer is a PHP programmer that can work with the full–stack of technologies that are used to create complete web applications. The full–stack PHP developer has the skills and ability to create, modify, and troubleshoot HTML, CSS, JavaScript, PHP, MySql, and Linux Web Hosting.",https://www.glassdoor.com/partner/jobListing.htm?pos=422&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_79d98c98&cb=1679985362734&jobListingId=1008552316248&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-02b2df2ba21046e2-,24h
+112,Developer with progressive 4GL experience( GUI 3Years experience) W2 only.,TAJ Health Staffing,Remote,"About Us: TAJ Technologies provides IT project and staffing solutions to government and corporate clients. Since 1987, we have delivered innovative technology solutions and staffing services to clients across a broad spectrum of industries and challenges.\
+This position is Contract to Hire and Open to Remote
+MANAGER'S NOTES: Please focus on this skills
+Progress 4 GL (V10 or above) GUI 3 years minimum experience must with five years overall development experience.
+Working knowledge of SOAP and REST services.",https://www.glassdoor.com/partner/jobListing.htm?pos=423&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_3910e5c5&cb=1679985362734&jobListingId=1008552154887&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-54a9897a2d2157b9-,24h
+113,C++ Developer with Embedded systems,Softsnippets Inc,"Topeka, KS","Position: C++ Developer with Embedded systems
+Location: Topeka, KS(Hybrid)
+Implementation: HCL
+Client: BNSF Railway
+Brief Project Description:
+We are seeking an experienced C++ developer(8+ Years) to assist in the development and implementation of solutions aimed at improving the safety and efficiency of our 24/7 railroad network. Our company is looking to integrate the latest sensors and embedded edge processing techniques to produce reliable, high-precision track assessment systems.",https://www.glassdoor.com/partner/jobListing.htm?pos=424&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_7cfbd59c&cb=1679985362734&jobListingId=1008552190871&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-b6fdbe63086ed2e7-,24h
+114,Senior Full-Stack Software Engineer,SQA Group,Remote,"**This is a Contract Role**
+SQA Group is a tech and advisory services firm helping companies maximize two business differentiators — quality and data. We help both tech and business leaders see around corners, stand-up new capabilities, and elevate software quality and data as competitive advantages that help drive towards next.
+SQA is partnering with a leading insurer in Providence, RI to help support their development of technology solutions. We are looking for a Senior Software Engineer with GIS experience to work on our cross-platform software libraries. The ideal candidate will have strong experience in writing Python code, with prior exposure to C# code and Javascript for a variety of platforms. They will also have prior knowledge of software library encapsulation and construction. Previous experience with the Agile SDLC methodology is preferred.",https://www.glassdoor.com/partner/jobListing.htm?pos=425&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_5f3da6cf&cb=1679985362733&jobListingId=1008552205004&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-93d76ae3877ca8b4-,24h
+115,Application Developer - Senior,Pinnacle Technical Resources,"Dallas, TX","Job Code - Senior Application Developer
+Work Locations - Dallas TX 75202 or Atlanta GA 30308
+Positions Requested - 1
+Hours per Day - 8
+Hours per Week - 40
+Total Hours – 1 year contract initially
+
+Project Name: ServiceNow projects
+
+Skills / Description
+Expert level Architecting, design and development of applications using ServiceNow
+A strong background of ServiceNow development using Service Portal, Client & Server scripting, Flow Designer, HTML and CSS.
+
+: Both Dallas and Atlanta location: Prefer resource 100% on site to begin with and later we can go with hybrid once resource proven their skills. Candidate required to be a U.S. Citizen or U.S. National",https://www.glassdoor.com/partner/jobListing.htm?pos=426&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_c9bd2904&cb=1679985362734&jobListingId=1008552292171&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-14bcd8e8ad9d9f8d-,24h
+116,Full Stack Engineer (W2),Phasorsoft LLC,"Durham, NC","Not For - C2C Not For - C2C - Not For C2C - Not For C2C
+Note : We are looking for Candidates Who can work on Our W2 (Payroll)
+Must Have:
+Java , Spring, Spring Batch As an engineer on the team, you will be primarily responsible for developing new APIs and working with the existing team on updating the legacy platform.
+Strong Java/J2EE (Version 11+) development working on enterprise level applications utilizing frameworks like Spring Boot and Hibernate JPA Strong knowledge of API and REST WebServices development",https://www.glassdoor.com/partner/jobListing.htm?pos=427&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_70903605&cb=1679985362734&jobListingId=1008552169416&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-69b594eedae69634-,24h
+117,Sr. Software Developer (MATLAB &C#),ATLANTISITGROUP,"Conroe, TX","Education: B.E/B.Tech/M.E./M.Tech (Electrical/Mechanical/Mechatronics)
+Required Skills:
+1. Strong programming skills in C# and MATLAB
+2. Experience in statistical analysis, data processing, and algorithm development
+3. Experience in development of desktop GUI applications using WPF and WinForms
+4. Experience working with SQL databases, specifically Microsoft SQL Server, and REST-based web APIs",https://www.glassdoor.com/partner/jobListing.htm?pos=428&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a8e04aec&cb=1679985362734&jobListingId=1008552411715&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-1ca954c61e810709-,24h
+118,Python Software Developer,Vision,"Baltimore, MD","Software Developer (Python)
+The Fixed Income Technology team is looking for an experienced software engineer to join our team in building a suite of next-generation n-tier, native cloud-enabled applications. In this role, you will help engineers and develop new capabilities using modern web/cloud technologies used by our Portfolio Managers and Quantitative Analysts.
+The ideal candidate is someone who combines ambition with humility and is happy to let their performance do the talking. This is a hands-on, fully development lifecycle role that provides an opportunity to solve complex business, logic, and technical challenges. As a key contributor throughout the entire development cycle, you will be required to think outside the box and bring cutting-edge technology in-house",https://www.glassdoor.com/partner/jobListing.htm?pos=429&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f7203765&cb=1679985362734&jobListingId=1008552227235&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-8617facd57b650e5-,24h
+119,Software Quality Engineer (W2 and onsite ),Aalpha Tech Global,"Indianola, PA","Skill & Competency Requirements:
+Bachelors degree in Computer Engineering, Electronics, or Electrical Engineering
+Minimum of 7 years of relevant work experience in software engineering or quality engineering in medical device development
+Minimum of 2 years of relevant work experience in software quality management of Class 2 or Class 3 medical devices including Software in Medical Device (SiMD) or Software as Medical Device (SaMD)
+Minimum of 2 years or more of experience in interpreting industry standards for medical device development and updating processes and procedures",https://www.glassdoor.com/partner/jobListing.htm?pos=430&ao=1136043&s=58&guid=0000018726ee46368dac4b2b063ead0a&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ba7082d6&cb=1679985362734&jobListingId=1008552494283&jrtk=3-0-1gsjeshihncco801-1gsjeshjdirmn800-34ae108b244577df-,24h
+120,software engineer,Randstad,"Charlotte, NC","summary
+$55 - $65 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002787",https://www.glassdoor.com/partner/jobListing.htm?pos=501&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_146a227f&cb=1679985461607&jobListingId=1008552982575&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-4da043eb2d5267dc-,24h
+121,Software Engineer,Gridiron IT,"Quantico, VA","GridironIT is seeking a Software Engineer, Mid local to the Quantico, VA area.
+Top Secret clearance is required.
+The Challenge:
+Are you passionate about crafting an amazing user experience? The right interface can make a web platform easy to use, encourage early adoption, and save time and resources. We’re looking for you, a front-end developer who will use equal parts skill and vision to build an experience that delivers functionality and efficiency.
+We need an experienced front end developer who will use their passion to guide a development team to learn new tools and techniques, identify and implement system improvements, and mentor teammates. This is an opportunity to solve problems in intelligence, national security, and law enforcement operations by collaborating with a development team to build middle- and front-end web solutions with user centric design. You’ll coordinate UI/UX designers and back-end developers to create a seamless user experience using Agile life cycle development and current web development frameworks. Your team will ensure accessibility for all users by developing a front end that functions across browsers, platforms, and devices while meeting accessibility and security requirements. With mentoring, positive code reviews, and opportunities to learn new tools and skills, we focus on growing as a team to make the best solutions for our customers. Join us as we build systems to change law enforcement for the better.",https://www.glassdoor.com/partner/jobListing.htm?pos=502&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_c762e188&cb=1679985461608&jobListingId=1008552164990&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-8a9ba43938af1811-,24h
+122,DevOps Engineer (W2),Phasorsoft LLC,"New York, NY","Not For - C2C Not For - C2C - Not For C2C - Not For C2C
+Note : We are looking for Candidates Who can work on Our W2 (Payroll)
+Skills & Requirements
+4+ years of experience in application, programming/development in .Net, MS SQL
+Strong foundation of project management
+Basic networking knowledge and datacenter infrastructure
+Excellent spoken/written communication and technical skills.",https://www.glassdoor.com/partner/jobListing.htm?pos=503&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e3261ff7&cb=1679985461608&jobListingId=1008552271707&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-9c6357fae61da810-,24h
+123,Lead Software Engineer (contract),Wells Fargo,"Charlotte, NC","Title: ServiceNow Developer
+Location:
+Charlotte, NC
+Irving, TX
+Duration: 12 months
+Benefits on offer for this contract position: Health Insurance, Life insurance, 401K and Voluntary Benefits",https://www.glassdoor.com/partner/jobListing.htm?pos=504&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_93d4c869&cb=1679985461608&jobListingId=1008552257999&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-7b7eef921d7849d0-,24h
+124,Senior Full-Stack Software Engineer,SQA Group,Remote,"**This is a Contract Role**
+SQA Group is a tech and advisory services firm helping companies maximize two business differentiators — quality and data. We help both tech and business leaders see around corners, stand-up new capabilities, and elevate software quality and data as competitive advantages that help drive towards next.
+SQA is partnering with a leading insurer in Providence, RI to help support their development of technology solutions. We are looking for a Senior Software Engineer with GIS experience to work on our cross-platform software libraries. The ideal candidate will have strong experience in writing Python code, with prior exposure to C# code and Javascript for a variety of platforms. They will also have prior knowledge of software library encapsulation and construction. Previous experience with the Agile SDLC methodology is preferred.",https://www.glassdoor.com/partner/jobListing.htm?pos=505&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_ff020746&cb=1679985461608&jobListingId=1008552205004&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-93d76ae3877ca8b4-,24h
+125,GCP/Python/Terraform/Golang Engineer,ABN Tech Corp,Remote,"Description:
+Devops/SRE
+GCP
+PYTHON
+TERRAFORM
+GOLANG
+Thanks
+Job Type: Contract",https://www.glassdoor.com/partner/jobListing.htm?pos=506&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_2de90e43&cb=1679985461609&jobListingId=1008552675269&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-11055f074c0f694d-,24h
+126,Software Quality Engineer (W2 and onsite ),Aalpha Tech Global,"Indianola, PA","Skill & Competency Requirements:
+Bachelors degree in Computer Engineering, Electronics, or Electrical Engineering
+Minimum of 7 years of relevant work experience in software engineering or quality engineering in medical device development
+Minimum of 2 years of relevant work experience in software quality management of Class 2 or Class 3 medical devices including Software in Medical Device (SiMD) or Software as Medical Device (SaMD)
+Minimum of 2 years or more of experience in interpreting industry standards for medical device development and updating processes and procedures",https://www.glassdoor.com/partner/jobListing.htm?pos=507&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a5cc7e1f&cb=1679985461609&jobListingId=1008552494283&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-34ae108b244577df-,24h
+127,Senior Software Engineer (contract),Wells Fargo,"Summit, NJ","Title: Tableau Reporting Consultant
+Location:
+Summit, NJ
+Duration: 9 months
+Benefits on offer for this contract position: Health Insurance, Life insurance, 401K and Voluntary Benefits
+
+Summary:",https://www.glassdoor.com/partner/jobListing.htm?pos=508&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_3f0381fd&cb=1679985461608&jobListingId=1008552257972&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-0bd53f1a81963fb0-,24h
+128,Senior Backend PHP Software Engineer(8.0+ and Symfony) Ruby on Rails Python,NovaTech,Remote,"Senior Backend PHP Engineer (8.0+ and Symfony) Ruby on Rails or Python
+Ensuring our backend systems provide a quality internationalization and localization experience
+by enhancing our multilingual support
+Delivering supporting data to assist our mobile engineering team on their journey to achieve
+Web Content Accessibility Guidelines (WCAG) compliance and ensuring an equitable experience
+for all of our users",https://www.glassdoor.com/partner/jobListing.htm?pos=509&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_968ed2d5&cb=1679985461609&jobListingId=1008552296800&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-b7b26d4bdf7029a3-,24h
+129,JSSA Software Engineer,PLAXONIC,"Ridgecrest, CA","· Provide software engineering/programming services to the AV-8B/T-45 JSSA Integrated Product Team (IPT) program at NAWCWD China Lake.
+· Essential Job Functions:
+· Support AV-8B/T-45 software sustainment activities for block product lines.
+· Support multiple operational flight programs (OFP).
+· Support Mission Systems Support (MSS) software development efforts.",https://www.glassdoor.com/partner/jobListing.htm?pos=510&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_564a9777&cb=1679985461609&jobListingId=1008552446898&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-8a37f9465ad718b4-,24h
+130,,,,,,
+131,.NET Lead,Plaxonic Technologies,"Indianapolis, IN","Mandatory skills:
+Excellent communication skills
+Design experience.
+.Net technologies,
+Expert in Windows Application development
+Proficiency in Web development
+Sql server
+1) Bachelor’s Degree in Computer Science or related field.",https://www.glassdoor.com/partner/jobListing.htm?pos=512&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_7ce4d2ff&cb=1679985461609&jobListingId=1008552336609&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-ff09bb2523377764-,24h
+132,Senior Solution Architect - Remote,HealthBPM,Remote,"*** Candidates from the following states are welcome to apply: Alaska, Arizona, Delaware, Florida, Hawaii, Idaho, Illinois, Indiana, Michigan, Minnesota, Mississippi, Missouri, Montana, Nebraska, New Hampshire, North Dakota, Ohio, Oklahoma, South Carolina, South Dakota, Tennessee, Texas, Utah, Vermont, Virginia, West Virginia, Wisconsin, and Wyoming.***
+Senior Solution Architect
+The Senior Solution Architect is a key role in the Enterprise Architecture (EA) practice in the IT department. As a member of the EA team, this role contributes to the development of an architected IT function for digital competency, with a focus on integration and solution design and obtaining value and insights from core systems of record. This role contributes to and applies EA practices to precisely create architecture designs and roadmaps. This position will require the architect to be both business savvy and an expert in integrations of COTS products and internal development, including various data technologies in order to frame the problem, shape proposed solutions, and champion implementation and organizational change.",https://www.glassdoor.com/partner/jobListing.htm?pos=513&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f7dc5e53&cb=1679985461610&jobListingId=1008552625336&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-a08d1df45e029087-,24h
+133,Application System Analyst Programmer,"Information Systems Consultants, Inc.","Indianapolis, IN","System functional design, technical design, and programming experience with a Statewide Automated Child Welfare Information System (SACWIS). Strong understanding of SACWIS functionality. Knowledgeable of data structures and data relationships within SACW
+Responsibilities Include:
+- Expertise with full software development life cycle including software system analysis, functional design, technical design, development, testing, code review and production system support.
+- Software design and development expertise with n-tier application system architecture including use of PostgreSQL, Microsoft SQL Server Enterprise 2008/2012, and Microsoft SQL Server Reporting Services including SSRS, SSIS, and SSAS.",https://www.glassdoor.com/partner/jobListing.htm?pos=514&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_8de5cbe4&cb=1679985461610&jobListingId=1008552246301&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-f5d5680c5d33f982-,24h
+134,Senior JavaScript Developer ( React),Blackstone Technology Group,"San Francisco, CA","San Francisco, CA 94105
+Posted: 03/27/2023
+Employment Type: 9+ Month Contract
+Job Category: Information Technology
+Job Number: 25431
+Pay Range: $75/hr-$85/hr
+Remote Friendly: No
+Job Description
+Blackstone Talent Group, an award-winning technology consulting and talent agency is seeking a Senior JavaScript Developer ( React) to join our team at our client’s site in San Francisco, CA.
+Our cutting edge Digital Streaming Client is looking for a Senior JavaScript Developer to join their awesome team for a REMOTE opportunity.",https://www.glassdoor.com/partner/jobListing.htm?pos=515&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_433f9188&cb=1679985461609&jobListingId=1008552284597&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-93de4392ca45a500-,24h
+135,Android App Developers: Record Video Software Tutorials,KnowledgeCity,Remote,"KnowledgeCity is hiring professional trainers, college-level professors, instructors, or industry experts, with exceptional software experience, to record online software tutorials. No webcam, no editing, short-term contract work.
+These are the available courses for this post:
+Mobile Development
+Android App Development: Data Management, Debugging, and Testing
+Android App Development: Android Studio
+Android App Development: Functionality",https://www.glassdoor.com/partner/jobListing.htm?pos=516&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_b8394ee5&cb=1679985461610&jobListingId=1008552421942&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-8c0b7666ce1a3bc1-,24h
+136,Process Automation Engineer (PetroChemical Engineering),IT First Source,Remote,"We are seeking a highly skilled Techno-Functional Consultant to lead the development of our new Refinery Management System and Terminal Management System for the Petroleum Industry. The ideal candidate will have a strong technical background in Refinery Process, Piping, Petrochemical product Terminal, and Automation of Refinery systems, as well as experience leading a team in the development of similar software such as Aspen, Aveva, and Taro.
+Key Responsibilities:
+Lead the development team in designing, developing, and implementing the Refinery Management System and Terminal Management System",https://www.glassdoor.com/partner/jobListing.htm?pos=517&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f8a16efe&cb=1679985461610&jobListingId=1008552228317&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-3ffc46390a656f43-,24h
+137,JAVA Lead with RETAIL exp,Resolve Tech Solutions Inc.,"Irving, TX","Role: TECH LEAD - JAVA API Developer with ECOMMERCE EXP
+Location – Irving, TX (Must work onsite from day 1 – NO REMOTE option)
+Duration – 12+ Months (Long Term)
+MUST HAVE SILLS: (Kafka , Elastic search , ETL, JAVA API)
+About the job:The API Developer is part of the Digital Technology Team. They are responsible for design, implementation and on-going enhancements of digital products and enhancing the digital experience. The developer must have a strong and continuously evolving technical mastery of RESTful API development focused on Node.js. This includes hands-on programming, participating in design sessions, code reviews, system testing during various phases of development, follow best industry practices and publish API documentations.",https://www.glassdoor.com/partner/jobListing.htm?pos=518&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_43655a40&cb=1679985461611&jobListingId=1008552279512&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-5f5f21580a321b96-,24h
+138,"Senior Manager, DM Programmer Data Management",Eikon Therapeutics,"New York, NY","Description
+Senior Manager, Data Management Programmer (Contract)
+Company Description
+Eikon Therapeutics is a new biopharmaceutical company employing revolutionary technology at the intersection of chemistry, engineering, computation, and biology to discover novel treatments for life-threatening disease. Eikon's discovery platform is built on groundbreaking innovations from its founders (Nobel Prize, 2014), culminating in the creation of microscopes which enable real time, molecular-resolution measurements of protein movement in living cells, thereby unlocking otherwise intractable classes of proteins of proteins as drug targets.",https://www.glassdoor.com/partner/jobListing.htm?pos=519&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_cb99ed57&cb=1679985461610&jobListingId=1008552686304&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-bdd10a4a15c22f40-,24h
+139,Embedded Hardware Security Engineer,Gridiron IT,"Quantico, VA","GridironIT is seeking an Embedded Hardware Security Engineer, Mid (Electrical Engineer) local to the Quantico, VA area.
+Top Secret clearance is required.
+The Opportunity:
+As an electrical engineer, you understand the workings behind complex systems. That knowledge is key when it comes to evaluating hardware security implementation in embedded electronics. We’re looking for an electrical engineer who can use their skills to support law enforcement by creating new forensic tools and investigative capabilities.
+At Gridiron, you’ll use your engineering skills to transform law enforcement. Our team builds digital forensics for investigators to recover user data from electronic devices. That’s why we need you, an electrical engineer, with an understanding of embedded system design, mobile platforms and architecture, and hardware security concepts to help us design and develop techniques for testing memory subsystems, security subsystems, and debugging interfaces on electronic devices.",https://www.glassdoor.com/partner/jobListing.htm?pos=520&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_aa75cc4f&cb=1679985461611&jobListingId=1008552245088&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-508f08e7bf5d6fd5-,24h
+140,Real Time Software Engineer,Blackstone Technology Group,"Oklahoma City, OK","Oklahoma City, OK 73150
+Posted: 03/27/2023
+Employment Type: Contract
+Job Category: Information Technology
+Job Number: 25254
+Remote Friendly: No
+Job Description
+Blackstone Talent Group, an award-winning technology consulting and talent agency is seeking a Real Time Software Engineer to join our team at our client’s site in Oklahoma City, OK.
+Responsibilities:
+Develops, documents and maintains architectures, requirements, algorithms, interfaces and designs for software systems.",https://www.glassdoor.com/partner/jobListing.htm?pos=521&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_00196556&cb=1679985461611&jobListingId=1008552285891&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-b10b494c6d0ddec7-,24h
+141,"UI Developer – UI – Alpharetta, GA 41665","PRIMUS Global Services, Inc","Alpharetta, GA","We have an immediate long-term contract opportunity with one of our major clients for a position of UI Developer, to work in Alpharetta, GA.
+The ideal candidate should have extensive experience in SDLC front end.
+
+**ALL successful candidates for this position are required to work directly for PRIMUS. No agencies please**
+
+For immediate consideration, please contact:
+
+Satish
+
+Direct.9727982662
+Desk.9727536500 Ext.204
+Email.jobs@primusglobal.com",https://www.glassdoor.com/partner/jobListing.htm?pos=522&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f9b5292d&cb=1679985461611&jobListingId=1008551993044&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-14010a2c3ea7405a-,24h
+142,MS Dynamics CRM Developer,SNVETECH LLC,Remote,"Job Title: MS Dynamics CRM Developer
+Location: Remote
+Duration: 12 Months
+Responsibilities:
+· Clients are seeking an individual who is an expert with Power Platform and Microsoft Dynamics. This individual will be responsible for re-implementation of the client
+· Customer Relationship Management System (CRM)",https://www.glassdoor.com/partner/jobListing.htm?pos=523&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_b84c9810&cb=1679985461612&jobListingId=1008551680836&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-291c7cccc01f4c53-,24h
+143,Python Developer,Enin Systems,"Virginia, NE","Job Description:
+1. Jr Embedded Eng - John Deere , Peoria,IL OR Urbandale,Iowa ( 1-3 yrs Embedded C++/Python/Embedded Linux/QT)
+2. Sr Embedded Eng- John Deere , Peoria,IL OR Urbandale,Iowa( 7-10 yrs Embedded C++/Python/Embedded Linux/QT)
+3. Embedded Soft Eng – Lutron, Coopersburg, PA – onsite – ( C/C++ & microcontrollers)
+4. Embedded Development & Test Engineer, Alameda, CA, Mode of Hire : 18+ months Embedded Software development and testing for Medical devices Develop software for real time embedded systems using Embedded C in RTOS and bare metal platforms. Develop software integration test protocols against design input docs & code for embedded handheld battery operated medical device & execute them as per process defined for Medical device SW development. Perform code level regression analysis (in C & C++) with knowledge of custom HW design to plan for integration testing Develop software verification protocols and execute them to test against the software requirements as per process.",https://www.glassdoor.com/partner/jobListing.htm?pos=524&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_bd0d1960&cb=1679985461611&jobListingId=1008551667529&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-e5f0d815bab870ea-,24h
+144,Genesys Cloud Developer,Amaze Systems Inc,Remote,"We are looking for a Genesys Developer
+Job details :
+8+ years of experience in Genesys Cloud
+Create High Level Designs, work flow creation; API Integration, IVR Call information Pop-up on Agent Screen, Integration with Salesforce
+Build and implement the new cloud based solution ;
+Design the new solution.
+Good team player/Leader",https://www.glassdoor.com/partner/jobListing.htm?pos=525&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_2ee48334&cb=1679985461612&jobListingId=1008552082229&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-99bb0591c5c56856-,24h
+145,Microsoft Power Platform Developer,Kellton,"Boston, MA","Position Title - Microsoft Power Platform Developer
+Worksite Address - Boston, MA 02108
+Tenure - 6 months with possible extension
+This contract is a hybrid position
+Qualifications
+Experience with Microsoft Power BI, Power Apps, and Power Automate
+DAX experience – part of Power BI;
+SQL Server experience – ability to write complex queries;",https://www.glassdoor.com/partner/jobListing.htm?pos=526&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_88dfec43&cb=1679985461612&jobListingId=1008551664573&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-691a0e6a9b609e9c-,24h
+146,Front End Mobile Developer,Delviom LLC,"Irving, TX","Job Title: Front End Mobile Developer
+Duration: 6 months Contract to Hire
+Location: Irving, TX
+Required Skills:
+React
+JavaScript
+other Front End Tools and Frameworks
+Job Type: Contract",https://www.glassdoor.com/partner/jobListing.htm?pos=527&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_c9252398&cb=1679985461612&jobListingId=1008552035788&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-8adbb8f388daafab-,24h
+147,"Automation Tester – Selenium, C# – FULLY REMOTE WORK 41663","PRIMUS Global Services, Inc",United States,"We have an immediate long-term contract to hire opportunity with one of our key clients for a position of Automation Tester, to work on a remote basis.
+The ideal candidate will have Selenium knowledge as well as C# experience using NUnit or Xunit.
+Experience as a QA analyst on a scrum team is advantageous, as is knowledge of X-Ray for Jira.
+For immediate consideration, please contact:
+Naveen
+PRIMUS Global Services
+Direct: 972-430 -1372
+Desk: 972-753-6500 Ext: 254
+Email: jobs@primusglobal.com",https://www.glassdoor.com/partner/jobListing.htm?pos=528&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_6220c71f&cb=1679985461612&jobListingId=1008551993035&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-2f2d6761a6ec2e7e-,24h
+148,Dot Net Developer,"Numbers Only, Inc","Plano, TX","Job description
+Developer will securely code and correct system faults, upgrade interfaces, improve system performance, provide program technical support, and installation of updates of existing software.. Daily duties may include fielding inquires, running diagnostic tests to resolve issues, and development of new programs.
+CANDIDATE SKILLS AND QUALIFICATIONS
+Minimum Requirements:
+Years Experience
+5 C# - REQUIRED",https://www.glassdoor.com/partner/jobListing.htm?pos=529&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_fc0d9c72&cb=1679985461612&jobListingId=1008551914557&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-49693a0baff54194-,24h
+149,R Programmer,AWWCOR Inc,Remote,"JOB DESCRIPTION
+In this role, you will provide technical expertise for designing, maintaining, and developing innovative production R applications used by biostatisticians and statistical programmers. We are searching for a candidate who is passionate about statistics and development and demonstrates initiative and motivation with strong problem-solving skills. Excellent verbal and written communication skills in English in a global environment are a must.
+QUALIFICATIONS FOR ESSENTIAL FUNCTIONS
+Excellent communication skills in English (written and spoken);",https://www.glassdoor.com/partner/jobListing.htm?pos=530&ao=1136043&s=58&guid=0000018726efc889bf92b52457e3ecf3&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_eea6390f&cb=1679985461612&jobListingId=1008551995100&jrtk=3-0-1gsjevi522inr001-1gsjevi6gp2l6800-6d60fcc02a30465f-,24h
+150,software engineer,Randstad,"Charlotte, NC","summary
+$55 - $65 per hour
+contract
+bachelor degree
+category
+computer and mathematical occupations
+reference
+1002787",https://www.glassdoor.com/partner/jobListing.htm?pos=601&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_462c1713&cb=1679985560832&jobListingId=1008552982575&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-4da043eb2d5267dc-,24h
+151,Microsoft Power Platform Developer,Kellton,"Boston, MA","Position Title - Microsoft Power Platform Developer
+Worksite Address - Boston, MA 02108
+Tenure - 6 months with possible extension
+This contract is a hybrid position
+Qualifications
+Experience with Microsoft Power BI, Power Apps, and Power Automate
+DAX experience – part of Power BI;
+SQL Server experience – ability to write complex queries;",https://www.glassdoor.com/partner/jobListing.htm?pos=602&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_00f434f5&cb=1679985560833&jobListingId=1008551664573&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-691a0e6a9b609e9c-,24h
+152,Front End Mobile Developer,Delviom LLC,"Irving, TX","Job Title: Front End Mobile Developer
+Duration: 6 months Contract to Hire
+Location: Irving, TX
+Required Skills:
+React
+JavaScript
+other Front End Tools and Frameworks
+Job Type: Contract",https://www.glassdoor.com/partner/jobListing.htm?pos=603&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_410efb2e&cb=1679985560833&jobListingId=1008552035788&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-8adbb8f388daafab-,24h
+153,Dot Net Developer,"Numbers Only, Inc","Plano, TX","Job description
+Developer will securely code and correct system faults, upgrade interfaces, improve system performance, provide program technical support, and installation of updates of existing software.. Daily duties may include fielding inquires, running diagnostic tests to resolve issues, and development of new programs.
+CANDIDATE SKILLS AND QUALIFICATIONS
+Minimum Requirements:
+Years Experience
+5 C# - REQUIRED",https://www.glassdoor.com/partner/jobListing.htm?pos=604&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_d1fcf842&cb=1679985560834&jobListingId=1008551914557&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-49693a0baff54194-,24h
+154,Sr. Node JS Developer,NikZune,"Austin, TX","Job Title: Node JS Developer
+Job Location: Austin, TX
+Job Type: Contract
+We are seeking a talented NodeJS Server Side Engineer. As a NodeJS Server Side Engineer, you will be responsible for developing server-side applications that power our mobile applications. You will work with a team of developers and product owners to design, develop, and deploy scalable and reliable server-side solutions.
+Requirements",https://www.glassdoor.com/partner/jobListing.htm?pos=605&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_bfb83b55&cb=1679985560833&jobListingId=1008552051167&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-07b7e947be376edc-,24h
+155,Programmer/Developer (MS Dynamics CRM Developer),Lumin Global,"Hartford, CT","Programmer/Developer (MS Dynamics CRM Developer)-Hartford, Connecticut (Hybrid)- 10+ Exp - $80 C2C-USC/GC/H1B
+Job Description:
+The Department of Administrative Services, Bureau of Information Technology Solutions (DAS/BITS), in support of the Department of Economic and Community Development (DECD), the Connecticut Technical Education and Career System (CTECS), and Department of Housing (DOH), are seeking an individual who is an expert with Power Platform and Microsoft Dynamics. This individual will be responsible for re-implementation of the DECD, Customer Relationship Management System (CRM); building a career services CRM for CTECS graduates; building a secure document repository; and creating workflows for electronic forms. The two CRM projects are the highest priority and the last two will be built as time and resources allow.",https://www.glassdoor.com/partner/jobListing.htm?pos=606&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_4a31b13c&cb=1679985560834&jobListingId=1008552007185&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-2d25b356af8047a5-,24h
+156,QA Automation Engineer,CEDENT,United States,"This position will work with the Texas Student Data System (TSDS) Testing team to
+provide the following Software Testing Services:
+1) Analyze user requirements, design documents and other documentation to develop test
+plan and detailed test cases.
+2) Execute automated functional and regression test cases, report and document all issues,
+test cases ran, test results, and testing summaries in detail
+3) Perform manual testing and data validation
+4) Perform advanced SQL queries to analyze and manipulate data
+
+5) Work with development team and customers to clearly understand the functionality
+under test to help determine test cases and clearly communicate issues found
+5) Review user requirements, procedures, and problems to automate applications or to
+improve existing systems.
+6) Collaborate with the project team for sprint/release work on tasks such as providing
+testing effort estimates, resolving defects or issues and providing status on work
+assignments or issues.
+The Texas Student Data System (TSDS) modernizes and improves the quality of data
+collection, management, and reporting in Texas education.
+
+
+Minimum Requirements:
+Candidates that do not meet or exceed the minimum stated requirements
+(skills/experience) will be displayed to customers but may not be chosen for
+this opportunity.
+Years Required/Preferred Experience
+7 Required Testing complex Web Applications
+7 Required Testing all phases of Software Development
+
+LIfe Cycle
+
+3 Required Database/ SQL Language
+2 Required XML, JSON, API Testing
+2 Required Automation Testing experience
+2 Preferred
+
+Test automation experience using open
+source technologies and/or in-house
+frameworks
+
+2 Preferred Experience with test frameworks like Junit,
+
+TestNG
+
+2 Preferred WAPT Pro or other performance testing tools
+1 Preferred Previous experience with Zypher Scale
+
+preferred
+
+1 Preferred Previous experience with Jira preferred
+1 Preferred Previous experience with Texas Student Data
+
+System (TSDS) preferred",https://www.glassdoor.com/partner/jobListing.htm?pos=607&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_033e1fe4&cb=1679985560834&jobListingId=1008552104938&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-7ac676215b790102-,24h
+157,Senior ServiceNow Developer,Digital Dhara LLC,"Atlanta, GA","Senior ServiceNow Developer
+Location: Atlanta, GA (Remote)
+12+ Months
+ServiceNow Developer Certification is Mandatory
+Skills/Experience:
+Strong ServiceNow developer with 8+ yrs. of ServiceNow development experience.
+Experience with Web Service Integrations (SOAP RESTful) in ServiceNow.",https://www.glassdoor.com/partner/jobListing.htm?pos=608&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_6dc2d991&cb=1679985560834&jobListingId=1008551918596&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-01e13ff858908bce-,24h
+158,AWS web developer,merican inc,"Atlanta, GA","Must have skills: AWS, Angular, JavaScript, TypeScript
+Job Description:
+Knowledge level - Intermediate to Expert
+C#
+IIS
+ASP.NET
+ASP.NET MVC
+JavaScript and jQuery",https://www.glassdoor.com/partner/jobListing.htm?pos=609&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_a7df9c9c&cb=1679985560834&jobListingId=1008551837604&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-3b913e84f42372fd-,24h
+159,"Automation Tester – Selenium, C# – FULLY REMOTE WORK 41663","PRIMUS Global Services, Inc",United States,"We have an immediate long-term contract to hire opportunity with one of our key clients for a position of Automation Tester, to work on a remote basis.
+The ideal candidate will have Selenium knowledge as well as C# experience using NUnit or Xunit.
+Experience as a QA analyst on a scrum team is advantageous, as is knowledge of X-Ray for Jira.
+For immediate consideration, please contact:
+Naveen
+PRIMUS Global Services
+Direct: 972-430 -1372
+Desk: 972-753-6500 Ext: 254
+Email: jobs@primusglobal.com",https://www.glassdoor.com/partner/jobListing.htm?pos=610&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_5cb010a5&cb=1679985560834&jobListingId=1008551993035&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-2f2d6761a6ec2e7e-,24h
+160,Dot Net Developer,1 Point System,"Washington, DC","Top Skills:
+ASP.Net, C#, and T-SQL; Object Oriented programming
+SharePoint and/or Salesforce Developer experience (do not want salesforce or SharePoint developers, still need .NET skills first and foremost) – someone that’s worked on underlying code with salesforce/SharePoint – automation and scripting (python or other language)
+Understanding of web app dev processes from layout/user interface > relational database structures
+Possess Excellent Diagnostic, problem-solving, and debugging skills",https://www.glassdoor.com/partner/jobListing.htm?pos=611&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e57426fa&cb=1679985560834&jobListingId=1008552116376&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-6245794c28c889ef-,24h
+161,Python Developer (Local to CA),Exarca Inc,"Irvine, CA","Role: Python Developer with Django
+Location: Irvine, CA(Onsite/Hybrid)
+Duration: 6+ Month
+Job Description
+Max rate 60
+Need Local Candidates only
+Should have experience in developing Django bases distributed systems.
+Should have worked on Django Model based Admin functionality and should be able to customize
+Should have experience in redis, celery with Django implementations
+Should have experience in writing rest apis in Django framework and should be able to optimize if required
+Should have experience in writing sql or model driven data access layer in Django to work with RDMBS system
+Should have skills write unit testable code
+Should have basic understanding of HTML, CSS, Bootstrap, JavaScript
+Should have experience in hosting the Django solutions on Linux/Unix based environments
+Should have skills to debug and troubleshoot production issues in existing Django codebase and provide fixes to it.
+Should have analytical skills to review and comment on existing implementation and should be able to improve upon it.",https://www.glassdoor.com/partner/jobListing.htm?pos=612&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_90dbcf40&cb=1679985560835&jobListingId=1008552147454&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-cdd047da69ba954b-,24h
+162,Junior .NET/Web Developer,GSK Solutions INC,"Atlanta, GA","Job Title: Junior .NET/Web Developer (Onsite)
+Location: Atlanta, GA
+Duration: 6+ Months
+Job Type: Corp-Corp / 1099 / Contract W2
+Client: State of Georgia
+Interview Type: Both Webcam And In Person
+Note: Local Candidates ONLY; GC or USC ONLY
+Job Description:",https://www.glassdoor.com/partner/jobListing.htm?pos=613&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_29d606d3&cb=1679985560835&jobListingId=1008551986089&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-b53a9cfaed73683e-,24h
+163,Senior Python Developer,Denken Solutions Inc,"Atlanta, GA","Role: Jr. Python Developer
+Location: Atlanta GA,
+Duration: Long Term
+Contract: W2 (Full Time)
+Responsibilities
+Write effective, scalable code
+Develop back-end components to improve responsiveness and overall performance
+Integrate user-facing elements into applications",https://www.glassdoor.com/partner/jobListing.htm?pos=614&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_8c70390f&cb=1679985560835&jobListingId=1008552147191&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-161528876892e1b0-,24h
+164,.NET Developer / DOT Net Developer,CentillionZ IT Solutions,"Wilmington, DE","Sr .NET Developer
+Location: Willington, DE (Hybrid) (3 days/ week onsite at least)
+Working in a team environment, you will have the opportunity to participate in the successful configuration, release, and maintenance of the system. The primary focus will be on maintenance and support, fixing defects, and adding system enhancements.
+Leveraging your strong problem-solving skills, organizational abilities, and attention to detail, you will work with the client to gather and validate requirements, validate designs, and configure/customize the solution. Specific responsibilities may include:",https://www.glassdoor.com/partner/jobListing.htm?pos=615&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_7a6d77c9&cb=1679985560835&jobListingId=1008551921615&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-b929f4428c091e34-,24h
+165,Full stack with AWS,Skill Quotient,"Atlanta, GA","Qualifications
+Bachelor of Science degree in Computer Science or equivalent
+At least 8+ years of post-degree professional experience
+4+ years development experience (current) in Agular 7+ , Nodejs and Typescript build web application in Microservices architecture.
+3+ years of experience (current and continuous) working with AWS technologies such as Lambda, Dynamo DB, API Gateway, S3 etc.
+Experience in mentoring junior team members through code reviews and recommend adherence to best practices.",https://www.glassdoor.com/partner/jobListing.htm?pos=616&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f825df22&cb=1679985560836&jobListingId=1008551968666&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-731ba604f1abae30-,24h
+166,Software Verification Engineer I - 29590 (On W2),infinite Computing Systems,"Irving, TX","Required:
+Software test engineer providing verification services
+Writing and debugging test cases
+Experience in life science field, FDA submissions.
+B.S. in Computer Science or similar engineering discipline including Software Engineering or Biomedical Engineering.
+On the job experience in Software Testing or Medical Device Testing or Life Sciences of > 4-6 years without a Bachelor’s Degree.
+0-3 years’ experience covering the entire software lifecycle (requirements definition through verification) in a team environment.",https://www.glassdoor.com/partner/jobListing.htm?pos=617&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_f9d136c1&cb=1679985560836&jobListingId=1008552065621&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-93d2779ae2a90c18-,24h
+167,Embedded Software Engineer,Enin Systems,"Alex, OK","Responsibilities
+•This person will be responsible for both the maintenance of current technologies and new feature development for one of their product lines
+•The majority of the role, about 90%, is going to be software development, working on products that have backlogs, and field bug issues that need to be addressed
+•Some of the role will also include assessing the code for cybersecurity or vulnerability issues
+•The rest of their day will consist of daily agile meetings with the embedded software development team, and doing documentation
+Job Types: Full-time, Contract",https://www.glassdoor.com/partner/jobListing.htm?pos=618&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_c34af44d&cb=1679985560836&jobListingId=1008551698555&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-6a93c798560f8d18-,24h
+168,Genesys Cloud Developer,Amaze Systems Inc,Remote,"We are looking for a Genesys Developer
+Job details :
+8+ years of experience in Genesys Cloud
+Create High Level Designs, work flow creation; API Integration, IVR Call information Pop-up on Agent Screen, Integration with Salesforce
+Build and implement the new cloud based solution ;
+Design the new solution.
+Good team player/Leader",https://www.glassdoor.com/partner/jobListing.htm?pos=619&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ad7c5354&cb=1679985560836&jobListingId=1008552082229&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-99bb0591c5c56856-,24h
+169,Senior .NET Developer,MIDSYS INC,Remote,"hands-on, focused on Backend, Senior .Net Developer to design highly scalable flexible software web applications utilizing cutting-edge technologies, .Net MVC, .Net core, WebAPIs in Azure applying Microservices Architecture.
+Position Responsibilities/Duties:
+Design, develop, document, test, and debug new and existing software systems and/or applications for market sale or large-scale proprietary software for internal use
+Participate in full development life cycle including requirements analysis and design
+Create RESTFUL services using WebAPIs with Asp.Net Core",https://www.glassdoor.com/partner/jobListing.htm?pos=620&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_e50a0d60&cb=1679985560836&jobListingId=1008551956109&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-c7727b3029d0a940-,24h
+170,Sr. Golang Developer,Snappyhires,Remote,"Job Description
+9+ years of industry experience with proven deep knowledge of Golang.- Must Have
+Programming experience in object-oriented design principles and patterns, with solid knowledge of REST and gRPC.- Must Have
+Hands-on experience implementing distributed applications in a container environment Kubernetes.- Must Have
+Strong experience working in large distributed microservice architectures.
+Experience in building tests for RESTful APIs and SOAP web services.",https://www.glassdoor.com/partner/jobListing.htm?pos=621&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_7c8ddc8b&cb=1679985560836&jobListingId=1008551992209&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-6e32f641b6ecb20b-,24h
+171,C++ Software Engineer,Arthur Grand Technologies Inc,"McLean, VA","Title: C++ Developer
+Location: McLean VA
+Duration: 12+ months
+Requirements
+8+ years of solid, software engineering experience
+Completely hands-on with 5+ years of experience in C or C++
+3+ years of experience in Perl & Shell Script on Unix/Linux platform.
+Good knowledge in relational database (Sybase/ Oracle), SQL's and store procedures.",https://www.glassdoor.com/partner/jobListing.htm?pos=622&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_6760ad42&cb=1679985560836&jobListingId=1008551778257&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-b5026b1b688bf4fa-,24h
+172,Java Developer on W2,1 Point System,"Columbus, OH","Job Role: Java Developer (Front end role)
+Location: Columbus/NY, Delaware, Chicago IL, New York
+ONLY OPEN FOR W2
+MUST HAVE;
+Overall 10+ years of experience in delivering technology solutions
+8+ years of web development experience.
+8+ years’ experience with HTML5, CSS and JavaScript.
+5+ years’ experience with Jenkins or similar CI/CD tools",https://www.glassdoor.com/partner/jobListing.htm?pos=623&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_88798bcb&cb=1679985560836&jobListingId=1008552130560&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-87b7fdb68ee3b0a6-,24h
+173,iOS Developer,Excelon Solutions,"Fremont, CA","Job Role: iOS Developer
+Location: Fremont, CA
+Type: Contract/CTH
+Experience: 7-12 Year
+Mandatory Skills: Swift UI, Combine Framework, Swift, Objective C, Foundation Framework, Combine, MVC, MVVM, XCTest, GIT, Jenkins, Jira, Confluence, Agile based development
+Job Description:",https://www.glassdoor.com/partner/jobListing.htm?pos=624&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ecaac9c8&cb=1679985560836&jobListingId=1008551680138&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-65cc53ee3adf368a-,24h
+174,Associate AWS Cloud Engineer,cloudteam,"Jacksonville, FL","Seeking a Associate AWS Cloud Engineer with AWS Config experience for a 100% Remote position.
+We are seeking AWS Governance Engineer with a strong background in AWS Config to join our growing cloud engineering team. In this role, you will be responsible for designing and implementing AWS infrastructure that adheres to our governance policies and standards. You will also play a key role in defining, implementing, and maintaining AWS Config rules and policies to ensure compliance and security of our cloud environment.
+Responsibilities
+Design, implement and maintain AWS governance policies and standards",https://www.glassdoor.com/partner/jobListing.htm?pos=625&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&cs=1_a2e557f5&cb=1679985560836&jobListingId=1008552085480&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-fc3dc54b2206fcee-,24h
+175,Senior Rust Developer,APPIC Solutions LLC,"Englewood, CO","Senior Rust Developer
+Location: Onsite in Englewood, CO from Day one (NO REMOTE OR HYBRID)
+About the Role:
+We are seeking a Senior Rust Engineer to join our Denver, Colorado based client team. This person should possess significant Software Engineering experience and have the ability to mentor junior team members. This position is within our client’s video streaming backend team. This team is responsible for ensuring a high-quality video streaming experience for all of our customers - from source ingestion to multi-bitrate compression to packaging to streaming.",https://www.glassdoor.com/partner/jobListing.htm?pos=626&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_8db95d00&cb=1679985560836&jobListingId=1008551952142&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-ce27e21ac8b49279-,24h
+176,Site Reliability Engineer,Engineering Square,Remote,"· Bachelor’s Degree 10+ years of professional experience
+· Dynatrace experience required.
+· 5+ years of production support of Elasticsearch/Redis/Kafka etc. Elasticsearch or Kafka experience is a must.
+· 5+ years of production system administration and web operations experience
+· 2+ years of experience with programming using Java, Perl, PHP, Python, Ruby or equivalent.
+· 3+ years of experience with configuration management tools like Chef, Puppet, Salt or equivalent",https://www.glassdoor.com/partner/jobListing.htm?pos=627&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_ab282d8e&cb=1679985560836&jobListingId=1008552055005&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-023ee9f6bbc49b52-,24h
+177,Android Developer,ProIT Inc.,"Fremont, CA","Position: Android Developer
+Location:Fremont, CA (Onsite from day 1)
+Duration: Long-term Contract
+Desired Years of Experience: 5+ Years
+(Note: In person client interview is required, Local candidates are preferred
+Day 1 Onsite presence required with no exceptions)
+Job Description:
+Around 10 years of experience in Android based mobile app development",https://www.glassdoor.com/partner/jobListing.htm?pos=628&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_0f16df75&cb=1679985560836&jobListingId=1008551871883&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-c600abf9c1f1c65e-,24h
+178,iOS Developer,Resourznet Consulting,Remote,"We are looking for an iOS developer responsible for the development and maintenance of applications aimed at a range of iOS devices including mobile phones and tablet computers. Your primary focus will be development of iOS applications and their integration with back-end services. You will be working alongside other engineers and developers working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and the creation of quality products is essential.
+Responsibilities
+Design and build applications for the iOS platform
+Ensure the performance, quality, and responsiveness of applications",https://www.glassdoor.com/partner/jobListing.htm?pos=629&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_62e25d04&cb=1679985560836&jobListingId=1008552078455&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-93c20d0c2cc36ab5-,24h
+179,Oracle PL/SQL Developer/Flexcube Exp,Taras Technologies INC,"Charlotte, NC","Job Title: Senior Software Engineer (Oracle/Flexcube)
+Work Locations: Charlotte, NC / Summit, NJ (Hybrid)
+Duration: 18 Months Contract
+Job Description:
+Lead moderately complex initiatives and deliverables within technical domain environments. Contribute to large-scale planning of strategies. Design, code, test, debug, and document for projects and programs associated with the technology domain, including upgrades and deployments. Review moderately complex technical challenges that require an in-depth evaluation of technologies and procedures. Resolve moderately complex issues and lead a team to meet existing client needs or potential new client's needs while leveraging a solid understanding of the function, policies, procedures, or compliance requirements. Collaborate and consult with peers, colleagues, and mid-level managers to resolve technical challenges and achieve goals. Lead projects and act as an escalation point, providing guidance and direction to less experienced staff. Required Qualifications: 4+ years of Software Engineering experience, or equivalent demonstrated through one or a combination of the following: work experience, training, military experience, or education.",https://www.glassdoor.com/partner/jobListing.htm?pos=630&ao=1136043&s=58&guid=0000018726f14b578c61d6b1ae319ef9&src=GD_JOB_AD&t=SR&vt=w&uido=1E3EAA49EFFA02826732B3BCE3A0CCC4&ea=1&cs=1_09fc3ee3&cb=1679985560837&jobListingId=1008551574111&jrtk=3-0-1gsjf2iuek26n801-1gsjf2j2lg2pn800-f898bc1de43111ab-,24h
