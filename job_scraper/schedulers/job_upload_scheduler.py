@@ -120,23 +120,23 @@ def upload_file(job_parser):
 def load_job_scrappers(job_source):
     try:
         SchedulerSync.objects.filter(job_source__iexact=job_source).update(running=True)
-        # if job_source != "all":
-        #     functions = scraper_functions[job_source]
-        # else:
-        #     scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
-        #     functions = []
-        #     for function in scrapers:
-        #         functions.extend(function)
-        #
-        # for function in functions:
-        #     try:
-        #         function()
-        #     except Exception as e:
-        #         print(e)
-        #     try:
-        #         # upload_jobs()
-        #     except Exception as e:
-        #         print("Error in uploading jobs", e)
+        if job_source != "all":
+            functions = scraper_functions[job_source]
+        else:
+            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
+            functions = []
+            for function in scrapers:
+                functions.extend(function)
+
+        for function in functions:
+            try:
+                function()
+            except Exception as e:
+                print(e)
+            try:
+                upload_jobs()
+            except Exception as e:
+                print("Error in uploading jobs", e)
 
     except Exception as e:
         print(e)
