@@ -124,6 +124,7 @@ def load_job_scrappers(job_source):
         print(e)
     SchedulerSync.objects.all().update(running=False)
 
+
     return True
 
 def run_scheduler(job_source):
