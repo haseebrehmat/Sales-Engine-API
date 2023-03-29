@@ -76,6 +76,7 @@ def upload_jobs():
         print(e)
 
 
+@start_new_thread
 def upload_file(job_parser):
     # parse, classify and upload data to database
     classify_data = JobClassifier(job_parser.data_frame)

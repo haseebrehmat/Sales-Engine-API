@@ -1,6 +1,5 @@
 from job_scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, \
     ADZUNA_PAGE_CAP
-from job_scraper.constants.const import *
 import urllib3
 from bs4 import BeautifulSoup
 import re
@@ -42,11 +41,13 @@ def fetch_results(soup):
 
 
 def transform_data(df):
-    df.rename(columns={'title': 'job_title', 'company': 'company_name', 'source_name': 'job_source',
-                       'contract_type': 'job_type', 'location_raw': 'address', 'description': 'job_description',
-                       'created': 'job_posted_date', 'numeric_id': 'job_source_url'}, inplace=True)
+    df.rename(columns={'title': 'job_title', 'company': 'company_name', 'contract_type': 'job_type',
+                       'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
+                       'numeric_id': 'job_source_url'}, inplace=True)
     df['job_source_url'] = 'https://www.adzuna.com/details/' + df['job_source_url'].astype(str)
     df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
+    df['job_source'] = 'Adzuna'
+    df['job_type'] = 'Full Time on Site'
     return df
 
 
@@ -76,20 +77,16 @@ def adzuna_scraping():
             results = fetch_results(soup)
             df = pd.DataFrame(json.loads(results)['results'])
             try:
-                df = df[['title', 'company', 'source_name', 'contract_type', 'location_raw', 'description', 'created',
-                         'numeric_id']]
+                df = df[['title', 'company', 'contract_type', 'location_raw', 'description', 'created', 'numeric_id']]
             except KeyError as e:
                 if 'None of' in e.args[0]:
                     continue
                 elif 'contract_type' in e.args[0]:
-                    df = df[['title', 'company', 'source_name', 'location_raw', 'description', 'created', 'numeric_id']]
+                    df = df[['title', 'company', 'location_raw', 'description', 'created', 'numeric_id']]
                 else:
                     raise e
             per_link_data = pd.concat([per_link_data, transform_data(df)], axis=0, ignore_index=True)
 
         all_data = pd.concat([all_data, per_link_data], axis=0, ignore_index=True)
 
-    all_data.to_csv(ADZUNA_CSV, index=False)
-
-
-# adzuna_scraping()
+    all_data.to_csv('adzuna_results.csv', index=False)

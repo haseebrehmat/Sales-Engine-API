@@ -12,12 +12,21 @@ class SyncScheduler(APIView):
 
     def get(self, request):
         job_source = request.GET.get("job_source", "all")
+        valid_job_sources = [
+            "linkedin",
+            "indeed",
+            "dice",
+            "career_builder",
+            "glassdoor",
+            "monster",
+            "simply_hired",
+            "zip_recruiter",
+            "adzuna"
+        ]
+        if job_source.lower() not in valid_job_sources:
+            return Response({"detail": f"{job_source} not a valid job source"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-        try:
-            queryset = SchedulerSync.objects.get(job_source=job_source)
-        except SchedulerSync.DoesNotExist:
-            queryset = SchedulerSync.objects.create(running=False, job_source=job_source)
-
+        queryset = SchedulerSync.objects.filter(job_source=job_source).first()
         if queryset.running:
             message = f"{job_source} sync in progress, Process is already running in the background"
         else:
