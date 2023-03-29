@@ -127,6 +127,7 @@ def load_job_scrappers(job_source):
 
     return True
 
+
 def run_scheduler(job_source):
     if job_source == "linkedin":
         linkedin()

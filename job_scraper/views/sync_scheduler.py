@@ -19,9 +19,9 @@ class SyncScheduler(APIView):
             queryset = SchedulerSync.objects.create(running=False, job_source=job_source)
 
         if queryset.running:
-            message = "Sync in progress, Process is already running in the background"
+            message = f"{job_source} sync in progress, Process is already running in the background"
         else:
-            message = "Sync in progress, It will take a while"
+            message = f"{job_source} sync in progress, It will take a while"
             load_job_scrappers(job_source)
 
         return Response({"detail": message}, status=status.HTTP_200_OK)
