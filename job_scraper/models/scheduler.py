@@ -3,4 +3,5 @@ from utils.model_fields.timestamped import TimeStamped
 
 
 class SchedulerSync(TimeStamped):
-    running = models.BooleanField(default=False, unique=True)
+    job_source = models.CharField(unique=True, max_length=200, blank=True, null=True)
+    running = models.BooleanField(default=False)

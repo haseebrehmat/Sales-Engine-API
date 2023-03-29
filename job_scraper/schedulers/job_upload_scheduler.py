@@ -21,26 +21,44 @@ from job_scraper.models.scheduler import SchedulerSync
 from job_scraper.utils.helpers import convert_time_into_minutes
 from job_scraper.utils.thread import start_new_thread
 
-scraper_functions = [
-    linkedin,  # Tested working
-    linkedin_job_create,
-    indeed,  # Tested working
-    indeed_job_create,
-    dice,  # Tested working
-    dice_job_create,
-    career_builder,  # Test working
-    career_builder_job_create,
-    glassdoor,  # Tested working
-    glassdoor_job_create,
-    monster,  # Tested working
-    monster_job_create,
-    simply_hired,  # Tested working
-    simply_hired_job_create,
-    ziprecruiter_scraping,  # not working
-    zip_recruiter_job_create,
-    adzuna_scraping,
-    adzuna_job_create
-]
+scraper_functions = {
+    "linkedin": [
+        linkedin,  # Tested working
+        linkedin_job_create,
+    ],
+    "indeed": [
+        indeed,  # Tested working
+        indeed_job_create,
+    ],
+    "dice": [
+        dice,  # Tested working
+        dice_job_create,
+    ],
+    "career_builder": [
+        career_builder,  # Test working
+        career_builder_job_create,
+    ],
+    "glassdoor": [
+        glassdoor,  # Tested working
+        glassdoor_job_create,
+    ],
+    "monster": [
+        monster,  # Tested working
+        monster_job_create,
+    ],
+    "simply_hired": [
+        simply_hired,  # Tested working
+        simply_hired_job_create,
+    ],
+    # "zip_recruiter": [
+    #     # ziprecruiter_scraping,  # not working
+    #     # zip_recruiter_job_create,
+    # ]
+    "adzuna": [
+        adzuna_scraping,
+        adzuna_job_create
+    ]
+}
 
 
 def upload_jobs():
@@ -51,8 +69,9 @@ def upload_jobs():
         job_parser = JobParser(files)
         # validate files first
         is_valid, message = job_parser.validate_file()
-        job_parser.parse_file()
-        upload_file(job_parser)
+        if is_valid:
+            job_parser.parse_file()
+            upload_file(job_parser)
     except Exception as e:
         print(e)
 
@@ -81,19 +100,31 @@ def upload_file(job_parser):
 
 
 @start_new_thread
-def load_job_scrappers():
-    queryset = SchedulerSync.objects.all().update(running=True)
-    for function in scraper_functions:
-        try:
-            function()
-        except Exception as e:
-            print(e)
-        try:
-            upload_jobs()
-        except Exception as e:
-            print("Error in uploading jobs", e)
+def load_job_scrappers(job_source):
+    try:
+        SchedulerSync.objects.filter(job_source=job_source).update(running=True)
+        if job_source != "all":
+            functions = scraper_functions[job_source]
+        else:
+            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
+            functions = []
+            for function in scrapers:
+                functions.extend(function)
+
+        for function in functions:
+            try:
+                function()
+            except Exception as e:
+                print(e)
+            try:
+                upload_jobs()
+            except Exception as e:
+                print("Error in uploading jobs", e)
+    except Exception as e:
+        print(e)
     SchedulerSync.objects.all().update(running=False)
 
+    return True
 
 def run_scheduler(job_source):
     if job_source == "linkedin":
