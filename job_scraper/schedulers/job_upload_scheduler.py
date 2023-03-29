@@ -92,7 +92,7 @@ def load_job_scrappers():
             upload_jobs()
         except Exception as e:
             print("Error in uploading jobs", e)
-    SchedulerSync.objects.all().update(running=False)
+    queryset = SchedulerSync.objects.all().update(running=False)
 
 
 def run_scheduler(job_source):
