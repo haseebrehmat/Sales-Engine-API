@@ -11,18 +11,17 @@ class SyncScheduler(APIView):
     permission_classes = (AllowAny, )
 
     def get(self, request):
-        queryset = SchedulerSync.objects.filter().first()
-        if queryset is None:
-            try:
-                SchedulerSync.objects.all().delete()    # incase if there is any entry exists
-                queryset = SchedulerSync.objects.create(running=False)
-            except Exception as e:
-                print(e)
-                load_job_scrappers()
+        job_source = request.GET.get("job_source", "all")
+
+        try:
+            queryset = SchedulerSync.objects.get(job_source=job_source)
+        except SchedulerSync.DoesNotExist:
+            queryset = SchedulerSync.objects.create(running=False, job_source=job_source)
+
         if queryset.running:
             message = "Sync in progress, Process is already running in the background"
         else:
             message = "Sync in progress, It will take a while"
-            load_job_scrappers()
+            load_job_scrappers(job_source)
 
         return Response({"detail": message}, status=status.HTTP_200_OK)

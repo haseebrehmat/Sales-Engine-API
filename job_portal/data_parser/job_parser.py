@@ -31,7 +31,7 @@ class JobParser(object):
                 print(e)
                 file_item = open(file_item, 'r')
                 file_item.seek(0)
-            if (set(self.job_desc_cols).issubset(df.columns) and len(df.columns) == len(self.job_desc_cols)) == False:
+            if not (set(self.job_desc_cols).issubset(df.columns) and len(df.columns) == len(self.job_desc_cols)):
                 unsupported_cols_list = list(set(df.columns).difference(set(self.job_desc_cols)))
                 message = {'detail': 'Unsupported columns exist in file: ' + ",".join(unsupported_cols_list)}
                 return False, message
