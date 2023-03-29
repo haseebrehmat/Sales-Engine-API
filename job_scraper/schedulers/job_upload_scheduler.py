@@ -22,22 +22,22 @@ from job_scraper.utils.helpers import convert_time_into_minutes
 from job_scraper.utils.thread import start_new_thread
 
 scraper_functions = [
-    # linkedin,  # Tested working
-    # linkedin_job_create,
-    # indeed,  # Tested working
-    # indeed_job_create,
-    # dice,  # Tested working
-    # dice_job_create,
-    # career_builder,  # Test working
-    # career_builder_job_create,
-    # glassdoor,    # Tested working
-    # glassdoor_job_create,
-    # monster, # Tested working
-    # monster_job_create,
-    # simply_hired, # Tested working
-    # simply_hired_job_create,
-    # ziprecruiter_scraping,    # not working
-    # zip_recruiter_job_create,
+    linkedin,  # Tested working
+    linkedin_job_create,
+    indeed,  # Tested working
+    indeed_job_create,
+    dice,  # Tested working
+    dice_job_create,
+    career_builder,  # Test working
+    career_builder_job_create,
+    glassdoor,  # Tested working
+    glassdoor_job_create,
+    monster,  # Tested working
+    monster_job_create,
+    simply_hired,  # Tested working
+    simply_hired_job_create,
+    ziprecruiter_scraping,  # not working
+    zip_recruiter_job_create,
     adzuna_scraping,
     adzuna_job_create
 ]
@@ -88,11 +88,11 @@ def load_job_scrappers():
             function()
         except Exception as e:
             print(e)
-    # try:
-    #     upload_jobs()
-    # except Exception as e:
-    #     print("Error in uploading jobs", e)
-    queryset = SchedulerSync.objects.all().update(running=False)
+    try:
+        upload_jobs()
+    except Exception as e:
+        print("Error in uploading jobs", e)
+    SchedulerSync.objects.all().update(running=False)
 
 
 def run_scheduler(job_source):
