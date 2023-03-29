@@ -1,5 +1,5 @@
 import datetime
-import os, shutil
+import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
@@ -34,7 +34,7 @@ scraper_functions = {
         dice,  # Tested working
         dice_job_create,
     ],
-    "career_builder": [
+    "careerbuilder": [
         career_builder,  # Test working
         career_builder_job_create,
     ],
@@ -46,11 +46,11 @@ scraper_functions = {
         monster,  # Tested working
         monster_job_create,
     ],
-    "simply_hired": [
+    "simplyhired": [
         simply_hired,  # Tested working
         simply_hired_job_create,
     ],
-    # "zip_recruiter": [
+    # "ziprecruiter": [
     #     # ziprecruiter_scraping,  # not working
     #     # zip_recruiter_job_create,
     # ]
@@ -76,23 +76,6 @@ def upload_jobs():
         print(e)
 
 
-def remove_files():
-    try:
-        folder_path = 'job_scraper/job_data'
-        files = os.listdir(folder_path)
-
-        # Loop through the files and remove each one
-        for file_name in files:
-            file_path = os.path.join(folder_path, file_name)
-            try:
-                os.remove(file_path)
-                print(f"Removed {file_path}")
-            except Exception as e:
-                print(f"Failed to remove {file_path}. Error: {str(e)}")
-    except Exception as e:
-        print(e)
-
-@start_new_thread
 def upload_file(job_parser):
     # parse, classify and upload data to database
     classify_data = JobClassifier(job_parser.data_frame)
@@ -103,7 +86,6 @@ def upload_file(job_parser):
             job_title=job_item.job_title,
             company_name=job_item.company_name,
             job_source=job_item.job_source,
-
             job_type=job_item.job_type,
             address=job_item.address,
             job_description=job_item.job_description,
@@ -119,7 +101,7 @@ def upload_file(job_parser):
 @start_new_thread
 def load_job_scrappers(job_source):
     try:
-        SchedulerSync.objects.filter(job_source__iexact=job_source).update(running=True)
+        SchedulerSync.objects.filter(job_source=job_source).update(running=True)
         if job_source != "all":
             functions = scraper_functions[job_source]
         else:
@@ -137,11 +119,10 @@ def load_job_scrappers(job_source):
                 upload_jobs()
             except Exception as e:
                 print("Error in uploading jobs", e)
-
     except Exception as e:
         print(e)
     SchedulerSync.objects.all().update(running=False)
-    remove_files()
+
 
     return True
 
