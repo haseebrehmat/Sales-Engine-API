@@ -17,11 +17,11 @@ class SyncScheduler(APIView):
             "linkedin",
             "indeed",
             "dice",
-            "career_builder",
+            "careerbuilder",
             "glassdoor",
             "monster",
-            "simply_hired",
-            "zip_recruiter",
+            "simplyhired",
+            "ziprecruiter",
             "adzuna"
         ]
         if job_source.lower() not in valid_job_sources:
