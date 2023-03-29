@@ -1,3 +1,6 @@
+from job_scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, \
+    ADZUNA_PAGE_CAP
+from job_scraper.constants.const import *
 import urllib3
 from bs4 import BeautifulSoup
 import re
@@ -7,9 +10,6 @@ from math import ceil
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
-from job_scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, ADZUNA_PAGE_CAP
-
-from job_scraper.constants.const import ADZUNA_CSV
 
 http = urllib3.PoolManager()
 
@@ -90,3 +90,6 @@ def adzuna_scraping():
         all_data = pd.concat([all_data, per_link_data], axis=0, ignore_index=True)
 
     all_data.to_csv(ADZUNA_CSV, index=False)
+
+
+# adzuna_scraping()

@@ -203,5 +203,20 @@ permissions = [
         "module": "Team Management",
         "codename": "delete_team",
         "name": "Delete Team"
+    },
+    {
+        "module": "Jobs",
+        "codename": 'create_job_source_link',
+        "name": 'Create Job Source Link'
+    },
+    {
+        "module": "Jobs",
+        "codename": 'edit_job_source_link',
+        "name": 'Edit Job Source Link'
+    },
+    {
+        "module": "Jobs",
+        "codename": 'delete_job_source_link',
+        "name": 'Delete Job Source Link'
     }
 ]

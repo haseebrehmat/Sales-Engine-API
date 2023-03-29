@@ -4,45 +4,53 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail
+from job_scraper.jobs.adzuna_scraping import adzuna_scraping
 from job_scraper.jobs.careerbuilder_scraping import career_builder
 from job_scraper.jobs.dice_scraping import dice
 from job_scraper.jobs.glassdoor_scraping import glassdoor
 from job_scraper.jobs.indeed_scraping import indeed
 from job_scraper.jobs.jobs_create import linkedin_job_create, monster_job_create, glassdoor_job_create, \
-    career_builder_job_create, dice_job_create, indeed_job_create
+    career_builder_job_create, dice_job_create, indeed_job_create, simply_hired_job_create, zip_recruiter_job_create, \
+    adzuna_job_create
 from job_scraper.jobs.linkedin_scraping import linkedin
 from job_scraper.jobs.monster_scraping import monster
+from job_scraper.jobs.simply_hired_scraping import simply_hired
+from job_scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from job_scraper.models import SchedulerSettings
 from job_scraper.models.scheduler import SchedulerSync
 from job_scraper.utils.helpers import convert_time_into_minutes
 from job_scraper.utils.thread import start_new_thread
 
 scraper_functions = [
-    linkedin,  # Tested working
-    linkedin_job_create,
-    indeed,  # Tested working
-    indeed_job_create,
-    dice,  # Tested working
-    dice_job_create,
-    career_builder,  # Tested working
-    career_builder_job_create,
-    glassdoor,  # Tested working
-    glassdoor_job_create,
-    monster,  # Tested working
-    monster_job_create
+    # linkedin,  # Tested working
+    # linkedin_job_create,
+    # indeed,  # Tested working
+    # indeed_job_create,
+    # dice,  # Tested working
+    # dice_job_create,
+    # career_builder,  # Test working
+    # career_builder_job_create,
+    # glassdoor,    # Tested working
+    # glassdoor_job_create,
+    # monster, # Tested working
+    # monster_job_create,
+    # simply_hired, # Tested working
+    # simply_hired_job_create,
+    # ziprecruiter_scraping,    # not working
+    # zip_recruiter_job_create,
+    adzuna_scraping,
+    adzuna_job_create
 ]
 
 
 def upload_jobs():
-    path = 'job_scraper/job_data/'
-    temp = os.listdir(path)
-    files = [path + file for file in temp]
-
-    job_parser = JobParser(files)
-    # validate files first
-    is_valid, message = job_parser.validate_file()
-
     try:
+        path = 'job_scraper/job_data/'
+        temp = os.listdir(path)
+        files = [path + file for file in temp]
+        job_parser = JobParser(files)
+        # validate files first
+        is_valid, message = job_parser.validate_file()
         job_parser.parse_file()
         upload_file(job_parser)
     except Exception as e:
@@ -74,15 +82,17 @@ def upload_file(job_parser):
 
 @start_new_thread
 def load_job_scrappers():
+    queryset = SchedulerSync.objects.all().update(running=True)
     for function in scraper_functions:
         try:
             function()
         except Exception as e:
             print(e)
-    upload_jobs()
-    queryset = SchedulerSync.objects.filter(running=True).first()
-    queryset.running = False
-    queryset.save()
+    # try:
+    #     upload_jobs()
+    # except Exception as e:
+    #     print("Error in uploading jobs", e)
+    queryset = SchedulerSync.objects.all().update(running=False)
 
 
 def run_scheduler(job_source):

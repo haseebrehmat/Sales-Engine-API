@@ -4,10 +4,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from job_portal.models import JobDetail
 from django.core.validators import URLValidator
+
+
 class ManualJobUploadSerializer(serializers.ModelSerializer):
     class Meta:
-         model = JobDetail
-         fields = '__all__'
+        model = JobDetail
+        fields = '__all__'
+
     def create(self, validated_data):
         job_title = validated_data.get('job_title')
         company_name = validated_data.get('company_name')

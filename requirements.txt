@@ -21,3 +21,4 @@ selenium
 apscheduler
 scipy
 beautifulsoup4
+webdriver_manager

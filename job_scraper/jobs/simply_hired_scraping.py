@@ -1,90 +1,93 @@
-from selenium.webdriver.chrome.options import Options
+from job_scraper.constants.const import *
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium import webdriver
-from job_scraper.constants.const import *
 import pandas as pd
 import time
 
 
-class SimplyHiredScraping:
+# calls url
+def request_url(driver, url):
+    driver.get(url)
 
-    # returns driver
-    def driver():
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        return webdriver.Chrome(chrome_options=chrome_options)
 
-    # calls url
-    def request_url(driver, url):
-        driver.get(url)
+# append data for csv file
+def append_data(data, field):
+    data.append(str(field).strip("+"))
 
-    # append data for csv file
-    def append_data(data, field):
-        data.append(str(field).strip("+"))
 
-    # find's job name
-    def find_jobs(driver, scrapped_data, job_type):
-        count = 0
-        time.sleep(3)
-        jobs = driver.find_elements(By.CLASS_NAME, "css-12bkbc3")
+# find's job name
+def find_jobs(driver, scrapped_data, job_type):
+    count = 0
+    time.sleep(3)
+    jobs = driver.find_elements(By.CLASS_NAME, "css-12bkbc3")
 
-        for job in jobs:
-            data = []
-            job.click()
-            time.sleep(5)
+    for job in jobs:
+        data = []
+        job.click()
+        time.sleep(5)
 
-            job_title = driver.find_element(By.CLASS_NAME, "chakra-heading")
-            SimplyHiredScraping.append_data(data, job_title.text)
-            context = driver.find_elements(By.CLASS_NAME, "css-xtodu4")
-            company_name = context[0].text.split("-")
-            SimplyHiredScraping.append_data(data, company_name[0])
-            address = context[1].text
-            SimplyHiredScraping.append_data(data, address)
-            job_description = driver.find_element(By.CLASS_NAME, "css-imewub")
-            SimplyHiredScraping.append_data(data, job_description.text)
-            SimplyHiredScraping.append_data(data, job.get_attribute('href'))
-            job_posted_date = context[4].text
-            SimplyHiredScraping.append_data(data, job_posted_date)
-            SimplyHiredScraping.append_data(data, "Simply Hired")
-            SimplyHiredScraping.append_data(data, job_type)
+        job_title = driver.find_element(By.CLASS_NAME, "chakra-heading")
+        append_data(data, job_title.text)
+        context = driver.find_elements(By.CLASS_NAME, "css-xtodu4")
+        company_name = context[0].text.split("-")
+        append_data(data, company_name[0])
+        address = context[1].text
+        append_data(data, address)
+        job_description = driver.find_element(By.CLASS_NAME, "css-imewub")
+        append_data(data, job_description.text)
+        append_data(data, job.get_attribute('href'))
+        job_posted_date = context[4].text
+        append_data(data, job_posted_date)
+        append_data(data, "Simply Hired")
+        append_data(data, job_type)
 
-            scrapped_data.append(data)
-            count += 1
+        scrapped_data.append(data)
+        count += 1
 
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "job_source", "job_type"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(SIMPLYHIREDCSV)
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                    "job_source", "job_type"]
+    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+    df.to_csv(SIMPLYHIREDCSV, index=False)
 
-        if not SimplyHiredScraping.data_exists(driver):
-            return False
+    if not data_exists(driver):
+        return False
 
-        next_page = driver.find_element(By.CLASS_NAME, "css-gxlopd")
-        next_page.click()
+    next_page = driver.find_element(By.CLASS_NAME, "css-gxlopd")
+    next_page.click()
 
-        return True
+    return True
 
-    # check if there is more jobs available or not
-    def data_exists(driver):
-        pagination = driver.find_elements(By.CLASS_NAME, "css-gxlopd")
-        return False if len(pagination) == 0 else True
+
+# check if there is more jobs available or not
+def data_exists(driver):
+    pagination = driver.find_elements(By.CLASS_NAME, "css-gxlopd")
+    return False if len(pagination) == 0 else True
 
 
 # code starts from here
 def simply_hired():
     count = 0
     scrapped_data = []
-    scrap = SimplyHiredScraping
-    driver = scrap.driver()
-    types = [SIMPLYHIREDCONTRACT, SIMPLYHIREDFULL, SIMPLYHIREDREMOTE]
-    job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
-    for url in types:
-        scrapped_data = []
-        scrap.request_url(driver, url)
-        while scrap.find_jobs(driver, scrapped_data, job_type[count]):
-            print("Fetching...")
-        count = count + 1
+    options = webdriver.ChromeOptions()  # newly added
+    options.add_argument("--headless")
+    options.add_argument("window-size=1200,1100")
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+    )
+    # options.headless = True  # newly added
+    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                          options=options) as driver:  # modified
+        types = [SIMPLYHIREDCONTRACT, SIMPLYHIREDFULL, SIMPLYHIREDREMOTE]
+        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+        for url in types:
+            scrapped_data = []
+            request_url(driver, url)
+            while find_jobs(driver, scrapped_data, job_type[count]):
+                print("Fetching...")
+            count = count + 1
     print(SCRAPING_ENDED)
 
 
-simply_hired()
+# simply_hired()
