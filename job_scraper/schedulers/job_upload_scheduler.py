@@ -88,10 +88,10 @@ def load_job_scrappers():
             function()
         except Exception as e:
             print(e)
-    try:
-        upload_jobs()
-    except Exception as e:
-        print("Error in uploading jobs", e)
+        try:
+            upload_jobs()
+        except Exception as e:
+            print("Error in uploading jobs", e)
     SchedulerSync.objects.all().update(running=False)
 
 

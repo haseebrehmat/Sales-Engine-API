@@ -218,5 +218,15 @@ permissions = [
         "module": "Jobs",
         "codename": 'delete_job_source_link',
         "name": 'Delete Job Source Link'
-    }
+    },
+    {
+        "module": "Jobs",
+        "codename": "create_manual_job",
+        "name": "Create Manual Job"
+    },
+    {
+        "module": "Jobs",
+        "codename": "view_manual_job",
+        "name": "View Manual Job"
+    },
 ]
