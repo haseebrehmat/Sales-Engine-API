@@ -103,7 +103,7 @@ def upload_file(job_parser):
 @start_new_thread
 def load_job_scrappers(job_source):
     try:
-        SchedulerSync.objects.filter(job_source=job_source).update(running=True)
+        SchedulerSync.objects.filter(job_source__iexact=job_source).update(running=True)
         if job_source != "all":
             functions = scraper_functions[job_source]
         else:
