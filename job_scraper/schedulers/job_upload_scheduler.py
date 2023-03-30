@@ -53,7 +53,7 @@ scraper_functions = {
     "ziprecruiter": [
         ziprecruiter_scraping,  # not working
         zip_recruiter_job_create,
-    ]
+    ],
     "adzuna": [
         adzuna_scraping,
         adzuna_job_create
