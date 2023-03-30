@@ -154,7 +154,7 @@ def run_scheduler(job_source):
     elif job_source == "dice":
         dice()
         dice_job_create()
-    elif job_source == "careerbuilder":
+    elif job_source == "career_builder":
         career_builder()
         career_builder_job_create()
     elif job_source == "glassdoor":
@@ -163,6 +163,16 @@ def run_scheduler(job_source):
     elif job_source == "monster":
         monster()
         monster_job_create()
+    elif job_source == "zip_recruiter":
+        ziprecruiter_scraping()
+        zip_recruiter_job_create()
+    elif job_source == "simply_hired":
+        simply_hired()
+        simply_hired_job_create()
+    elif job_source == "adzuna":
+        adzuna_scraping()
+        adzuna_job_create()
+
     upload_jobs()
 
 
@@ -182,12 +192,16 @@ all_jobs_scheduler = BackgroundScheduler()
 job_interval_scheduler = BackgroundScheduler()
 job_time_scheduler = BackgroundScheduler()
 
+
 linkedin_scheduler = BackgroundScheduler()
 indeed_scheduler = BackgroundScheduler()
 dice_scheduler = BackgroundScheduler()
 career_builder_scheduler = BackgroundScheduler()
 glassdoor_scheduler = BackgroundScheduler()
 monster_scheduler = BackgroundScheduler()
+zip_recruiter_scheduler = BackgroundScheduler()
+adzuna_scheduler = BackgroundScheduler()
+simply_hired_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -213,6 +227,15 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "monster":
                 monster_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["monster"])
+
+            elif scheduler.job_source.lower() == "zip_recruiter":
+                zip_recruiter_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["zip_recruiter"])
+
+            elif scheduler.job_source.lower() == "simply_hired":
+                simply_hired_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["simply_hired"])
+
+            elif scheduler.job_source.lower() == "adzuna":
+                adzuna_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["simply_hired"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -241,6 +264,18 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "monster":
                 monster_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["monster"])
+
+            elif scheduler.job_source.lower() == "simply_hired":
+                simply_hired_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["simply_hired"])
+
+            elif scheduler.job_source.lower() == "zip_recruiter":
+                zip_recruiter_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["zip_recruiter"])
+
+            elif scheduler.job_source.lower() == "adzuna_recruiter":
+                adzuna_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["adzuna_recruiter"])
 
 
 # scheduler_settings()

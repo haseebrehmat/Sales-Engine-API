@@ -92,7 +92,7 @@ def career_builder():
             while load_jobs(driver):
                 print("Loading...")
 
-        find_jobs(driver, scrapped_data, job_type[count])
-        count += 1
+            find_jobs(driver, scrapped_data, job_type[count])
+            count += 1
 
     print(SCRAPING_ENDED)
