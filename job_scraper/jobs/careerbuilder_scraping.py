@@ -1,3 +1,4 @@
+from datetime import datetime
 from job_scraper.constants.const import *
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -7,6 +8,7 @@ import pandas as pd
 import time
 
 
+# calls url
 def request_url(driver, url):
     driver.get(url)
 
@@ -29,32 +31,35 @@ def find_jobs(driver, scrapped_data, job_type):
     jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
 
     for job in jobs:
-        data = []
-        time.sleep(1)
-        job.click()
-        time.sleep(4)
+        try:
+            data = []
+            job.click()
+            time.sleep(3)
 
-        job_title = driver.find_element(By.CLASS_NAME, "jdp_title_header")
-        append_data(data, job_title.text)
-        c_name = driver.find_elements(By.CLASS_NAME, "data-display-header_info-content")
-        company = c_name[0].find_elements(By.TAG_NAME, "span")
-        append_data(data, company[0].text)
-        append_data(data, company[1].text)
-        job_description = driver.find_element(By.CLASS_NAME, "jdp-left-content")
-        append_data(data, job_description.text)
-        append_data(data, driver.current_url)
-        job_posted_date = driver.find_elements(By.CLASS_NAME, "data-results-publish-time")
-        append_data(data, job_posted_date[count].text)
-        append_data(data, "Careerbuilder")
-        append_data(data, job_type)
+            job_title = driver.find_element(By.CLASS_NAME, "jdp_title_header")
+            append_data(data, job_title.text)
+            c_name = driver.find_elements(By.CLASS_NAME, "data-display-header_info-content")
+            company = c_name[0].find_elements(By.TAG_NAME, "span")
+            append_data(data, company[0].text)
+            append_data(data, company[1].text)
+            job_description = driver.find_element(By.CLASS_NAME, "jdp-left-content")
+            append_data(data, job_description.text)
+            append_data(data, driver.current_url)
+            job_posted_date = driver.find_elements(By.CLASS_NAME, "data-results-publish-time")
+            append_data(data, job_posted_date[count].text)
+            append_data(data, "Careerbuilder")
+            append_data(data, job_type)
+            scrapped_data.append(data)
 
-        scrapped_data.append(data)
+        except Exception as e:
+            print(e)
         count += 1
 
+    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(CAREER_BUILDER_CSV, index=False)
+    df.to_csv(f'job_scraper/job_data/career_builder - {date_time}.csv', index=False)
 
 
 # find's job name
@@ -66,7 +71,7 @@ def load_jobs(driver):
 
     next_page = driver.find_element(By.CLASS_NAME, "btn-clear-blue")
     next_page.click()
-    time.sleep(3)
+    time.sleep(2)
 
     return True
 
@@ -93,6 +98,6 @@ def career_builder():
                 print("Loading...")
 
             find_jobs(driver, scrapped_data, job_type[count])
-            count += 1
+            count = count + 1
 
     print(SCRAPING_ENDED)

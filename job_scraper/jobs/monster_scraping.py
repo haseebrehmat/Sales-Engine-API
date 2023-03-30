@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from job_scraper.constants.const import *
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support import expected_conditions as EC
@@ -24,9 +26,9 @@ def load_jobs(driver):
         return True
     except:
         return False
-    # find's job name
 
 
+# find's job name
 def find_jobs(driver, scrapped_data, job_type):
     count = 0
     time.sleep(7)
@@ -70,10 +72,11 @@ def find_jobs(driver, scrapped_data, job_type):
         append_data(data, job_type)
         scrapped_data.append(data)
     count += 1
+    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv("job_scraper/job_data/monster.csv", index=False)
+    df.to_csv(f'job_scraper/job_data/monster - {date_time}.csv', index=False)
 
 
 # code starts from here
@@ -94,8 +97,8 @@ def monster():
         for url in types:
             driver.get(url)
             driver.maximize_window()
-            find_jobs(driver, scrapped_data, job_type[count])
-            count += 1
+        find_jobs(driver, scrapped_data, job_type[count])
+        count += 1
     print("SCRAPING_ENDED")
 
 # monster()

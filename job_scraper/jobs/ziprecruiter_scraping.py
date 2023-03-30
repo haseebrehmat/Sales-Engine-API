@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from job_scraper.constants.const import ZIP_RECRUITER_CSV
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -6,6 +8,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 from selenium.webdriver.support.wait import WebDriverWait
+from datetime import datetime
 
 links = [
     'https://www.ziprecruiter.com/candidate/search?search=Developer&location=USA&refine_by_location_type=no_remote&radius=100&days=1&refine_by_salary=&refine_by_tags=employment_type%3Afull_time&refine_by_title=&refine_by_org_name=',
@@ -17,6 +20,7 @@ job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
 
 
 def ziprecruiter_scraping():
+    date_time = str(datetime.now())
     c = 0
     options = webdriver.ChromeOptions()  # newly added
     options.add_argument("--headless")
@@ -78,9 +82,8 @@ def ziprecruiter_scraping():
                 df['job_description'] = df['job_description'].str.replace('<.*?>', '', regex=True)
                 df['job_posted_date'] = df['job_posted_date'].str.replace('Posted date: ', '')
                 df['job_type'] = df['job_type'].str.replace('Type\n', '')
-                df.to_csv('job_scraper/job_data/ziprecruiter_results.csv', index=False)
+                df.to_csv(f'job_scraper/job_data/ziprecruiter - {date_time}.csv', index=False)
 
         c += 1
     driver.close()
-    print("ZIP SCRAPING_ENDED")
-
+    print("SCRAPING_ENDED")

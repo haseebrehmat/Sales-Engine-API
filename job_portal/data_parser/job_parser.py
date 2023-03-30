@@ -43,10 +43,7 @@ class JobParser(object):
             # Check whether file is in text format or not
             df = pd.DataFrame()
             if isinstance(file, str) or file.name.endswith(".csv"):
-                if isinstance(file, str):
-                    df = pd.read_csv(file, engine='c')
-                else:
-                    df = self.read_csv(file)
+                df = pd.read_csv(file, engine='c')
             elif file.name.endswith('xlsx'):
                 df = self.read_xlsx(file)
             elif file.name.endswith(('.ods', 'odf', '.odt')):

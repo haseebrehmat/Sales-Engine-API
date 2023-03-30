@@ -8,7 +8,7 @@ from job_scraper.schedulers.job_upload_scheduler import load_job_scrappers
 
 
 class SyncScheduler(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         job_source = request.GET.get("job_source", "all")
@@ -35,3 +35,15 @@ class SyncScheduler(APIView):
             load_job_scrappers(job_source)
 
         return Response({"detail": message}, status=status.HTTP_200_OK)
+
+
+class SchedulerStatusView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        queryset = SchedulerSync.objects.all().exclude(job_source=None)
+        if len(queryset) is None:
+            data = []
+        else:
+            data = [{"job_source": x.job_source, "running": x.running} for x in queryset]
+        return Response(data, status=status.HTTP_200_OK)
