@@ -40,7 +40,7 @@ def find_jobs(driver, scrapped_data, job_type):
         append_data(data, job.get_attribute('href'))
         job_posted_date = context[4].text
         append_data(data, job_posted_date)
-        append_data(data, "Simply Hired")
+        append_data(data, "Simplyhired")
         append_data(data, job_type)
 
         scrapped_data.append(data)
@@ -88,6 +88,5 @@ def simply_hired():
                 print("Fetching...")
             count = count + 1
     print(SCRAPING_ENDED)
-
 
 # simply_hired()

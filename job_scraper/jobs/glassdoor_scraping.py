@@ -48,7 +48,7 @@ def find_jobs(driver, scrapped_data, job_type):
         job_title = driver.find_elements(By.CLASS_NAME, "css-1vg6q84")
         if job_title:
             append_data(data, job_title[0].text)
-            append_data(data, company_name[count])
+            append_data(data, company_name[count].text)
             address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
             append_data(data, address.text)
             job_description = driver.find_element(By.CLASS_NAME, "jobDescriptionContent")

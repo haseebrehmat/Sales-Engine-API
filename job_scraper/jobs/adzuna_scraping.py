@@ -2,17 +2,22 @@ from job_scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE,
     ADZUNA_PAGE_CAP
 import urllib3
 from bs4 import BeautifulSoup
-import re
 from tqdm import tqdm
 import json
 from math import ceil
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
+import re
 
+CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 http = urllib3.PoolManager()
 
 results_div_index = 3
+
+
+def cleanhtml(raw_html):
+    return re.sub(CLEANR, '', raw_html)
 
 
 def ranges_of_salaries(std, mu, results):
@@ -44,10 +49,14 @@ def transform_data(df):
     df.rename(columns={'title': 'job_title', 'company': 'company_name', 'contract_type': 'job_type',
                        'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
                        'numeric_id': 'job_source_url'}, inplace=True)
+    count = 0
+    for i in df['job_description']:
+        df['job_description'][count] = cleanhtml(i)
+        count += 1
     df['job_source_url'] = 'https://www.adzuna.com/details/' + df['job_source_url'].astype(str)
     df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
     df['job_source'] = 'Adzuna'
-    df['job_type'] = 'Full Time on Site'
+    df['job_type'] = 'Remote'
     return df
 
 
@@ -89,4 +98,4 @@ def adzuna_scraping():
 
         all_data = pd.concat([all_data, per_link_data], axis=0, ignore_index=True)
 
-    all_data.to_csv('adzuna_results.csv', index=False)
+    all_data.to_csv('job_scraper/job_data/adzuna_results.csv', index=False)
