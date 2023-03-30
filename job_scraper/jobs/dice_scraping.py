@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from job_scraper.constants.const import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -21,6 +23,7 @@ def append_data(data, field):
 
 # find's job name
 def find_jobs(driver, scrapped_data, job_type):
+    date_time = str(datetime.now())
     count = 0
     WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.CLASS_NAME, "card-title-link"))
@@ -52,7 +55,7 @@ def find_jobs(driver, scrapped_data, job_type):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(DICE_CSV, index=False)
+    df.to_csv(f"job_scraper/job_data/dice_results - {date_time}.csv", index=False)
 
     finished = "disabled"
     pagination = driver.find_elements(By.CLASS_NAME, "pagination-next")

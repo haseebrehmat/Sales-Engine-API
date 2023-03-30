@@ -53,7 +53,7 @@ class JobDataUploadView(CreateAPIView):
                 job_posted_date=job_item.job_posted_date,
                 job_source_url=job_item.job_source_url,
             ) for job_item in classify_data.data_frame.itertuples()
-            if job_item.job_source_url != "" and job_item.job_source_url.lower() != "nan"
+            if job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)
         ]
 
         JobDetail.objects.bulk_create(

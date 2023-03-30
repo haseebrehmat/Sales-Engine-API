@@ -76,19 +76,20 @@ def upload_jobs():
         print(e)
 
 
-def remove_files():
+def remove_files(job_source="all"):
     try:
         folder_path = 'job_scraper/job_data'
         files = os.listdir(folder_path)
 
         # Loop through the files and remove each one
         for file_name in files:
-            file_path = os.path.join(folder_path, file_name)
-            try:
-                os.remove(file_path)
-                print(f"Removed {file_path}")
-            except Exception as e:
-                print(f"Failed to remove {file_path}. Error: {str(e)}")
+            if job_source in file_name or job_source == "all":
+                file_path = os.path.join(folder_path, file_name)
+                try:
+                    os.remove(file_path)
+                    print(f"Removed {file_path}")
+                except Exception as e:
+                    print(f"Failed to remove {file_path}. Error: {str(e)}")
     except Exception as e:
         print(e)
 
@@ -136,7 +137,7 @@ def load_job_scrappers(job_source):
                 upload_jobs()
             except Exception as e:
                 print("Error in uploading jobs", e)
-            remove_files()
+            remove_files(job_source)
     except Exception as e:
         print(e)
     SchedulerSync.objects.all().update(running=False)
@@ -174,6 +175,7 @@ def run_scheduler(job_source):
         adzuna_job_create()
 
     upload_jobs()
+    remove_files(job_source=job_source)
 
 
 def start_job_sync(job_source):

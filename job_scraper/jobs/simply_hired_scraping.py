@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from job_scraper.constants.const import *
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -25,31 +27,39 @@ def find_jobs(driver, scrapped_data, job_type):
 
     for job in jobs:
         data = []
-        job.click()
-        time.sleep(5)
+        try:
+            job.click()
+            time.sleep(5)
 
-        job_title = driver.find_element(By.CLASS_NAME, "chakra-heading")
-        append_data(data, job_title.text)
-        context = driver.find_elements(By.CLASS_NAME, "css-xtodu4")
-        company_name = context[0].text.split("-")
-        append_data(data, company_name[0])
-        address = context[1].text
-        append_data(data, address)
-        job_description = driver.find_element(By.CLASS_NAME, "css-imewub")
-        append_data(data, job_description.text)
-        append_data(data, job.get_attribute('href'))
-        job_posted_date = context[4].text
-        append_data(data, job_posted_date)
-        append_data(data, "Simplyhired")
-        append_data(data, job_type)
+            job_title = driver.find_element(By.CLASS_NAME, "chakra-heading")
+            append_data(data, job_title.text)
+            context = driver.find_elements(By.CLASS_NAME, "css-xtodu4")
+            company_name = context[0].text.split("-")
+            append_data(data, company_name[0])
+            address = context[1].text
+            append_data(data, address)
+            job_description = driver.find_element(By.CLASS_NAME, "css-imewub")
+            append_data(data, job_description.text)
+            append_data(data, job.get_attribute('href'))
+            if context[4].text:
+                job_posted_date = context[4].text
+            else:
+                job_posted_date = 'Today'
+            append_data(data, job_posted_date)
+            append_data(data, "Simplyhired")
+            append_data(data, job_type)
 
-        scrapped_data.append(data)
-        count += 1
+            scrapped_data.append(data)
+            count += 1
 
+        except Exception as e:
+            print(e)
+
+    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(SIMPLYHIREDCSV, index=False)
+    df.to_csv(f'job_scraper/job_data/simplyhired - {date_time}.csv', index=False)
 
     if not data_exists(driver):
         return False
@@ -88,5 +98,4 @@ def simply_hired():
                 print("Fetching...")
             count = count + 1
     print(SCRAPING_ENDED)
-
 # simply_hired()

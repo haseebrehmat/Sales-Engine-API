@@ -1,3 +1,4 @@
+import datetime
 from job_scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, \
     ADZUNA_PAGE_CAP
 import urllib3
@@ -97,5 +98,5 @@ def adzuna_scraping():
             per_link_data = pd.concat([per_link_data, transform_data(df)], axis=0, ignore_index=True)
 
         all_data = pd.concat([all_data, per_link_data], axis=0, ignore_index=True)
-
-    all_data.to_csv('job_scraper/job_data/adzuna_results.csv', index=False)
+    date_time = str(datetime.now())
+    all_data.to_csv(f'job_scraper/job_data/adzuna_results - {date_time}.csv', index=False)
