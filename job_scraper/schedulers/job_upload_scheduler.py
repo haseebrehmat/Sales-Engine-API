@@ -50,10 +50,10 @@ scraper_functions = {
         simply_hired,  # Tested working
         simply_hired_job_create,
     ],
-    # "ziprecruiter": [
-    #     # ziprecruiter_scraping,  # not working
-    #     # zip_recruiter_job_create,
-    # ]
+    "ziprecruiter": [
+        ziprecruiter_scraping,  # not working
+        zip_recruiter_job_create,
+    ]
     "adzuna": [
         adzuna_scraping,
         adzuna_job_create
@@ -72,6 +72,23 @@ def upload_jobs():
         if is_valid:
             job_parser.parse_file()
             upload_file(job_parser)
+    except Exception as e:
+        print(e)
+
+
+def remove_files():
+    try:
+        folder_path = 'job_scraper/job_data'
+        files = os.listdir(folder_path)
+
+        # Loop through the files and remove each one
+        for file_name in files:
+            file_path = os.path.join(folder_path, file_name)
+            try:
+                os.remove(file_path)
+                print(f"Removed {file_path}")
+            except Exception as e:
+                print(f"Failed to remove {file_path}. Error: {str(e)}")
     except Exception as e:
         print(e)
 
@@ -119,10 +136,10 @@ def load_job_scrappers(job_source):
                 upload_jobs()
             except Exception as e:
                 print("Error in uploading jobs", e)
+            remove_files()
     except Exception as e:
         print(e)
     SchedulerSync.objects.all().update(running=False)
-
 
     return True
 
@@ -137,7 +154,7 @@ def run_scheduler(job_source):
     elif job_source == "dice":
         dice()
         dice_job_create()
-    elif job_source == "career_builder":
+    elif job_source == "careerbuilder":
         career_builder()
         career_builder_job_create()
     elif job_source == "glassdoor":
@@ -153,14 +170,12 @@ def start_job_sync(job_source):
     print("Interval Scheduler Started!")
     run_scheduler(job_source)
     print("Interval Scheduler Terminated!")
-    job_interval_scheduler.pause()
 
 
 def start_background_job(job_source):
     print("Specific Time Scheduler Started")
     run_scheduler(job_source)
     print("Scheduler Terminated")
-    job_time_scheduler.pause()
 
 
 all_jobs_scheduler = BackgroundScheduler()
@@ -190,7 +205,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "dice":
                 dice_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["dice"])
 
-            elif scheduler.job_source.lower() == "career_builder":
+            elif scheduler.job_source.lower().replace("_", "") == "careerbuilder":
                 career_builder_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["career_builder"])
 
             elif scheduler.job_source.lower() == "glassdoor":
@@ -228,4 +243,4 @@ def scheduler_settings():
                                           args=["monster"])
 
 
-scheduler_settings()
+# scheduler_settings()

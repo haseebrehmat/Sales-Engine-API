@@ -30,6 +30,9 @@ class JobDetailsView(ModelViewSet):
     # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
     def list(self, request, *args, **kwargs):
+        if self.queryset.count() == 0:
+            return Response([], status=200)
+
         current_user = request.user
 
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
