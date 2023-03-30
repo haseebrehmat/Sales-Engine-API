@@ -53,7 +53,7 @@ class JobDataUploadView(CreateAPIView):
                 job_posted_date=job_item.job_posted_date,
                 job_source_url=job_item.job_source_url,
             ) for job_item in classify_data.data_frame.itertuples()
-            if job_item.job_source_url != "" and job_item.job_source_url.lower() != "nan"
+            if job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)
         ]
 
         JobDetail.objects.bulk_create(
@@ -74,7 +74,7 @@ class JobCleanerView(APIView):
 
     def update_data(self, job_data):
         user_bulk_update_list = []
-        data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords')))
+        data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'job_description')))
         classify_data = JobClassifier(data)
         classify_data.update_tech_stack()
         update_count = 0
@@ -90,7 +90,6 @@ class JobCleanerView(APIView):
         # update scores of all users in one operation
         JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
         return update_count
-
 
 class JobTypeCleanerView(APIView):
     permission_classes = (IsAuthenticated,)
