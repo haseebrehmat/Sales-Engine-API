@@ -1350,7 +1350,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'qa',
-        'exp': '(?i)(^|\W)(qa|qe|sqa|)(\W|$)'
+        'exp': '(?i)(^|\W)(qa|qe|sqa)(\W|$)'
     }
 ]
 
