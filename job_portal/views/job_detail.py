@@ -14,15 +14,15 @@ from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDeta
 
 
 class JobDetailsView(ModelViewSet):
-    queryset = JobDetail.objects.all()
+    queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
     serializer_class = JobDetailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     model = JobDetail
     parser_classes = (MultiPartParser, JSONParser)
     pagination_class = CustomPagination
     filterset_class = CustomJobFilter
-    ordering = ('-job_posted_date')
-    search_fields = ['$job_title']
+    ordering = ('-job_posted_date',)
+    search_fields = ['job_title']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
     permission_classes = (JobDetailPermission,)
@@ -30,11 +30,10 @@ class JobDetailsView(ModelViewSet):
     # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
     def list(self, request, *args, **kwargs):
-        current_user = request.user
+        if self.queryset.count() == 0:
+            return Response([], status=200)
 
-        if request.user.profile.company is None:  # in case if no company is assigned
-            return Response({"detail": "No company has been assigned to this user"},
-                            status=status.HTTP_406_NOT_ACCEPTABLE)
+        current_user = request.user
 
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
         if len(current_user_jobs_list) > 0:

@@ -52,7 +52,9 @@ class JobDataUploadView(CreateAPIView):
                 tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
                 job_posted_date=job_item.job_posted_date,
                 job_source_url=job_item.job_source_url,
-            ) for job_item in classify_data.data_frame.itertuples()]
+            ) for job_item in classify_data.data_frame.itertuples()
+            if job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)
+        ]
 
         JobDetail.objects.bulk_create(
             model_instances, ignore_conflicts=True, batch_size=1000)
@@ -63,7 +65,7 @@ class JobCleanerView(APIView):
 
     def put(self, request):
         try:
-            job_data = JobDetail.objects.all()
+            job_data = JobDetail.objects.all().select_related()
             thread = Thread(target=self.update_data, args=(job_data,), )
             thread.start()
             return Response({'detail': f'jobs updated successfully with new tech keywords!'}, status=204)
@@ -72,7 +74,7 @@ class JobCleanerView(APIView):
 
     def update_data(self, job_data):
         user_bulk_update_list = []
-        data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords')))
+        data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'job_description')))
         classify_data = JobClassifier(data)
         classify_data.update_tech_stack()
         update_count = 0
@@ -88,7 +90,6 @@ class JobCleanerView(APIView):
         # update scores of all users in one operation
         JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
         return update_count
-
 
 class JobTypeCleanerView(APIView):
     permission_classes = (IsAuthenticated,)

@@ -24,7 +24,8 @@ INSTALLED_APPS = [
 CUSTOM_APPS = [
     'authentication',
     'job_portal',
-    'dashboard'
+    'dashboard',
+    'job_scraper'
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
@@ -162,3 +163,23 @@ AWS_S3_REGION_NAME = 'us-west-1'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_DEFAULT_ACL = 'public-read'
 AWS_QUERYSTRING_AUTH = False
+
+# maintain logging
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'ERROR',
+#             'class': 'logging.FileHandler',
+#             'filename': 'octagon.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'ERROR',
+#             'propagate': True,
+#         },
+#     },
+# }

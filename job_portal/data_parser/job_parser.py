@@ -15,15 +15,23 @@ class JobParser(object):
         message = {}
         valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
         for file_item in self.filelist:
-            ext = os.path.splitext(file_item.name)[1]
+            if isinstance(file_item, str):
+                ext = ".csv"
+            else:
+                ext = os.path.splitext(file_item.name)[1]
             if not ext.lower() in valid_extensions:
                 message = {'detail': 'Unsupported file extension'}
                 return False, message
             # read and check if columns match
-
             df = pd.read_csv(file_item, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file_item, nrows=1)
-            file_item.file.seek(0)
-            if (set(self.job_desc_cols).issubset(df.columns) and len(df.columns) == len(self.job_desc_cols)) == False:
+
+            try:
+                file_item.file.seek(0)
+            except Exception as e:
+                print(e)
+                file_item = open(file_item, 'r')
+                file_item.seek(0)
+            if not (set(self.job_desc_cols).issubset(df.columns) and len(df.columns) == len(self.job_desc_cols)):
                 unsupported_cols_list = list(set(df.columns).difference(set(self.job_desc_cols)))
                 message = {'detail': 'Unsupported columns exist in file: ' + ",".join(unsupported_cols_list)}
                 return False, message
@@ -34,8 +42,8 @@ class JobParser(object):
         for file in self.filelist:
             # Check whether file is in text format or not
             df = pd.DataFrame()
-            if file.name.endswith(".csv"):
-                df = self.read_csv(file)
+            if isinstance(file, str) or file.name.endswith(".csv"):
+                df = pd.read_csv(file, engine='c')
             elif file.name.endswith('xlsx'):
                 df = self.read_xlsx(file)
             elif file.name.endswith(('.ods', 'odf', '.odt')):

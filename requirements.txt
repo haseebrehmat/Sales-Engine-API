@@ -17,3 +17,8 @@ rest_framework_roles
 openpyxl==3.1.0
 gunicorn
 boto3
+selenium
+apscheduler
+scipy
+beautifulsoup4
+webdriver_manager

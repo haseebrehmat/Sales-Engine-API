@@ -1,5 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
+
+from authentication.views.create_permissions import CreatePermissions
 from authentication.views.authenticate import UserLogin
 from authentication.views.company import CompanyView, CompanyDetailView
 from authentication.views.integrations import IntegrationView, IntegrationDetailView
@@ -38,4 +40,5 @@ urlpatterns = [
     path('role/', RoleView.as_view()),
     path('role/<str:pk>/', RoleDetailView.as_view()),
     path('role_users/<str:pk>/', RoleUserView.as_view()),
+    path('create_permissions/', CreatePermissions.as_view()),
 ]

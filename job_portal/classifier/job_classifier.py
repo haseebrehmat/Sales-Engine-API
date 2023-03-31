@@ -3,9 +3,12 @@ from django.utils import timezone
 import pandas as pd
 from dateutil import parser
 from job_portal.models import JobDetail
-from job_portal.utils.keywords_dic import keyword, languages, developer, regular_expressions
+from job_portal.utils.keywords_dic import keyword, languages, developer, regular_expressions, all_jobs_titles
 from django.db.models import F, Value
+import openai
+from settings.base import env
 
+openai.api_key = env('CHATGPT_API_KEY')
 
 class JobClassifier(object):
 
@@ -13,36 +16,24 @@ class JobClassifier(object):
         self.data_frame = dataframe
 
     def classifier_stage1(self, job_title):
-        job_title = job_title.lower()
-
         # check regular expression
         for regex in regular_expressions:
             if re.search(regex['exp'], job_title):
                 return regex['tech_stack']
 
         language_dict = languages
-        final_result = list()
-        if isinstance(job_title, str):  # Full Stack Django Developer
-            class_list = []
-            for key, value in language_dict.items():
-                data = [key for x in value if x.lower() in job_title]
-                if len(data) > 0:
-                    if "javascript" in job_title:
-                        data = ["JavaScript"]
-                    elif "java" in job_title:
-                        data = ["java"]
-                    else:
-                        pass
-
-                class_list.extend(data)
-
-            final_result = list(set(class_list))
-        return final_result[0] if len(final_result) > 0 else 'others'
+        # final_result = list()
+        for key, value in language_dict.items():
+            for x in value:
+                if x.lower() in job_title:
+                    return key
+        return 'others'
 
     def find_job_techkeyword(self, job_title):
         # job_title = ",".join(job_title.split("/")).lower()
 
         # run stage 1 of the classififer
+        job_title = job_title.lower()
         data = self.classifier_stage1(job_title)
         if data == "others":
             return self.job_classifier_stage2(job_title)
@@ -60,12 +51,58 @@ class JobClassifier(object):
     def job_classifier_other_dev_stage(self, job_title):
         dev_list = map(str.lower, developer)
         for x in dev_list:
-            if x in job_title.lower():
+            if x in job_title:
                 return "others dev"
         return "others"
 
-    def classify_job(self, job_title):
-        return self.find_job_techkeyword(job_title)
+
+    def getJobTitleForOtherDev(self, job_description):
+        job_titles = all_jobs_titles
+        # Flatten the nested dictionary into a list of all keywords
+        all_keywords = [keyword for subdict in job_titles.values()
+                        for subsubdict in subdict.values() for keyword in subsubdict]
+
+        # Count the number of occurrences of each keyword in the job description
+        keyword_counts = {title: sum(keyword in job_description for keyword in keywords)
+                        for title, keywords in job_titles.items()}
+
+        # Add the counts of all nested keywords to the corresponding top-level job titles
+        for keyword in all_keywords:
+            for title, subdict in job_titles.items():
+                for subsubdict in subdict.values():
+                    if keyword in subsubdict:
+                        keyword_counts[title] += job_description.count(keyword)
+
+        # Find the job title with the highest keyword count
+        return max(keyword_counts, key=keyword_counts.get)
+
+    def classify_job_with_chatgpt(self, job_description):
+        job_titles = all_jobs_titles
+        try:
+            result = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=(
+                    f"which is best job title for following job description selected from given list {job_titles}, if job description is {job_description}, then write answer in single word from above list"),
+                max_tokens=2000,
+                n=1,
+                stop=None,
+                temperature=0.7,
+            )
+            if len(result.choices) > 0:
+                return result.choices[0].text.strip()
+            else:
+                return 'others dev'
+        except Exception as e:
+            return 'others dev'
+
+    def classify_job(self, job_title, job_description):
+        result = self.find_job_techkeyword(job_title)
+        if result == 'others dev' and job_description:
+            try:
+                result = self.getJobTitleForOtherDev(job_description)
+            except Exception as e:
+                print('Expression', e)
+        return result
 
     def classify_hour(self, job_date):
         # apply regex patterns to get the hours value
@@ -156,8 +193,9 @@ class JobClassifier(object):
         self.data_frame = custom_df.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame["job_source_url"] = my_job_sources
 
-        self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
-            lambda x: self.classify_job(str(x)) if (x is not None) else None)
+        self.data_frame['tech_keywords'] = self.data_frame.apply(
+            lambda row: self.classify_job(str(row['job_title']), str(row['job_description'])) if (row['job_title'] is not None) else None, axis=1)
+
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
             lambda x: self.classify_day(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
@@ -177,9 +215,9 @@ class JobClassifier(object):
     def update_tech_stack(self):
         # update jobs with new tech keywords according to job title
         self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
-        self.data_frame['tech_keywords'] = self.data_frame['job_title'].apply(
-            lambda x: self.classify_job(str(x)) if (x is not None) else None)
-
+        self.data_frame['tech_keywords'] = self.data_frame.apply(
+            lambda row: self.classify_job(str(row['job_title']), str(row['job_description'])) if (
+                        row['job_title'] is not None) else None, axis=1)
     def update_job_type(self):
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
             lambda s: s.lower().strip() if type(s) == str else str(s).strip())

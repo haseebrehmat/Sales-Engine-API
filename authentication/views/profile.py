@@ -18,6 +18,10 @@ class ProfileView(APIView):
         if len(serializer.data) > 0:
             data = serializer.data
             data.update(**data["user"])
+            try:
+                data['role'] = request.user.roles.name
+            except:
+                data['role'] = ""
             del data["user"]
 
         return Response(data, status.HTTP_200_OK)
