@@ -10,6 +10,7 @@ from settings.base import env
 
 openai.api_key = env('CHATGPT_API_KEY')
 
+
 class JobClassifier(object):
 
     def __init__(self, dataframe: pd.DataFrame):
@@ -55,8 +56,7 @@ class JobClassifier(object):
                 return "others dev"
         return "others"
 
-
-    def getJobTitleForOtherDev(self, job_description):
+    def get_job_title_for_others_dev(self, job_description):
         job_titles = all_jobs_titles
         # Flatten the nested dictionary into a list of all keywords
         all_keywords = [keyword for subdict in job_titles.values()
@@ -64,7 +64,7 @@ class JobClassifier(object):
 
         # Count the number of occurrences of each keyword in the job description
         keyword_counts = {title: sum(keyword in job_description for keyword in keywords)
-                        for title, keywords in job_titles.items()}
+                          for title, keywords in job_titles.items()}
 
         # Add the counts of all nested keywords to the corresponding top-level job titles
         for keyword in all_keywords:
@@ -74,7 +74,8 @@ class JobClassifier(object):
                         keyword_counts[title] += job_description.count(keyword)
 
         # Find the job title with the highest keyword count
-        return max(keyword_counts, key=keyword_counts.get)
+        result = max(keyword_counts, key=keyword_counts.get)
+        return result if keyword_counts[result] > 0 else 'others dev'
 
     def classify_job_with_chatgpt(self, job_description):
         job_titles = all_jobs_titles
@@ -99,7 +100,7 @@ class JobClassifier(object):
         result = self.find_job_techkeyword(job_title)
         if result == 'others dev' and job_description:
             try:
-                result = self.getJobTitleForOtherDev(job_description)
+                result = self.get_job_title_for_others_dev(job_description)
             except Exception as e:
                 print('Expression', e)
         return result
@@ -194,7 +195,8 @@ class JobClassifier(object):
         self.data_frame["job_source_url"] = my_job_sources
 
         self.data_frame['tech_keywords'] = self.data_frame.apply(
-            lambda row: self.classify_job(str(row['job_title']), str(row['job_description'])) if (row['job_title'] is not None) else None, axis=1)
+            lambda row: self.classify_job(str(row['job_title']), str(row['job_description'])) if (
+                    row['job_title'] is not None) else None, axis=1)
 
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
             lambda x: self.classify_day(str(x)) if (x is not None) else None)
@@ -217,7 +219,8 @@ class JobClassifier(object):
         self.data_frame = self.data_frame.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame['tech_keywords'] = self.data_frame.apply(
             lambda row: self.classify_job(str(row['job_title']), str(row['job_description'])) if (
-                        row['job_title'] is not None) else None, axis=1)
+                    row['job_title'] is not None) else None, axis=1)
+
     def update_job_type(self):
         self.data_frame['job_type'] = self.data_frame['job_type'].apply(
             lambda s: s.lower().strip() if type(s) == str else str(s).strip())

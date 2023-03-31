@@ -14,6 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_roles.granting import allof, is_self
 from authentication.models import User, Team
+from authentication.models.company import Company
+from authentication.serializers.company import CompanySerializer
 from dashboard.filters.dashboard_analytics import CustomJobFilter
 from dashboard.permissions.dashboard import DashboardPermission
 from dashboard.serializers.dashboard_anylatics import DashboardAnalyticsSerializer
@@ -60,14 +62,20 @@ class DashboardAnalyticsView(ListAPIView):
     # @method_decorator(cache_page(60*2))
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        try:
+            company = request.user.profile.company.id
+            print("try")
+        except:
+            company = request.GET.get("company", "")
+        print("company =>", company)
         # get all users under the current user team
-        if request.user.is_superuser:
-            return Response({"detail": "Admin can't view dashboard"}, status=406)
+        if request.user.is_superuser and company == "":
+            company = Company.objects.filter(status=True).first()
 
-        else:
-            user_team = Team.objects.filter(
-                reporting_to__profile__company=request.user.profile.company
-            ).values_list('members__id', flat=True)
+        user_team = Team.objects.filter(
+            reporting_to__profile__company_id=company
+        ).values_list('members__id', flat=True)
+        print("User Team", user_team)
 
         # get all statistics
         queryset = queryset.filter(applied_by__in=user_team)

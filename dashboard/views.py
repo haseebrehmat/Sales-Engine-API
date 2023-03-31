@@ -18,30 +18,29 @@ from dashboard.serializers.dashboard_anylatics import DashboardAnalyticsSerializ
 from job_portal.models import AppliedJobStatus, JobDetail
 
 
-
 class DashboardAnalyticsView(ListAPIView):
     queryset = AppliedJobStatus.objects.all()
     serializer_class = DashboardAnalyticsSerializer
-    filter_backends = [DjangoFilterBackend,OrderingFilter,SearchFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     model = AppliedJobStatus
     parser_classes = (MultiPartParser, JSONParser)
     filterset_class = CustomJobFilter
     ordering = ('-applied_date')
     search_fields = ['applied_by']
     http_method_names = ['get']
-    ordering_fields = ['job__job_posted_date','applied_date']
+    ordering_fields = ['job__job_posted_date', 'applied_date']
     permission_classes = (AllowAny,)
 
     @swagger_auto_schema(responses={200: DashboardAnalyticsSerializer(many=False)})
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-
     def keyword_count(self):
-        unique_keyword_object = JobDetail.objects.extra(   select={     'name': 'tech_keywords'   } ).values('name').annotate(value=Count('tech_keywords'))
+        unique_keyword_object = JobDetail.objects.extra(select={'name': 'tech_keywords'}).values('name').annotate(
+            value=Count('tech_keywords'))
         unique_count_dic = json.dumps(list(unique_keyword_object), cls=DjangoJSONEncoder)
         unique_count_data = json.loads(unique_count_dic)
-        return sorted(unique_count_data, key=lambda x: x["value"],reverse=True)
+        return sorted(unique_count_data, key=lambda x: x["value"], reverse=True)
 
     # @method_decorator(cache_page(60*2))
     def list(self, request, *args, **kwargs):
@@ -59,8 +58,9 @@ class DashboardAnalyticsView(ListAPIView):
         unique_users_list = []
         for item in list(unique_users):
             data = []
-            if queryset.count()>0:
-                data = queryset.filter(applied_by=item).values('job__job_status').annotate(count=Count('job__job_status'))
+            if queryset.count() > 0:
+                data = queryset.filter(applied_by=item).values('job__job_status').annotate(
+                    count=Count('job__job_status'))
             user_count_dic = json.dumps(list(data), cls=DjangoJSONEncoder)
             user_status_count_data = json.loads(user_count_dic)
             user_status_count_dic = self.map_status(user_status_count_data)
@@ -72,22 +72,22 @@ class DashboardAnalyticsView(ListAPIView):
             unique_users_list.append(copy.deepcopy(user_status_count_dic))
 
         final_dictionary = {
-            'statistics':status_count_dic,
-            'leads':unique_users_list,
+            'statistics': status_count_dic,
+            'leads': unique_users_list,
             'tech_keywords_count_list': self.keyword_count(),
-            'weekly_leads':[]
+            'weekly_leads': []
         }
         serializer = self.get_serializer(queryset, many=False)
         return Response(final_dictionary)
 
-    def map_status(self,status_count_data):
+    def map_status(self, status_count_data):
         result_data = OrderedDict({
-            'total':0,
-            'prospects':0,
+            'total': 0,
+            'prospects': 0,
             'cold': 0,
             'warm': 0,
             'hot': 0,
-            'rejected':0,
+            'rejected': 0,
             'hired': 0,
         })
         job_status_keys = {
@@ -95,11 +95,11 @@ class DashboardAnalyticsView(ListAPIView):
             3: 'rejected',
             4: 'cold',
             5: 'warm',
-            6 : 'hot'
+            6: 'hot'
         }
         for i in status_count_data:
             if i['job__job_status'] in job_status_keys:
-                result_data[job_status_keys[i['job__job_status']]]+= i['count']
+                result_data[job_status_keys[i['job__job_status']]] += i['count']
                 # data[job_status_keys[i['job__job_status']]] = i['count']
         # calculate total, prospects
 
