@@ -1289,34 +1289,60 @@ languages = {
     ],
 }
 
+
+# ['Service Now', 'salesforce', 'qa', 'Ml Engineer', 'Data Engineering/Data Engineer',
+#  'Data Science/Data Scientist', 'blockchain', 'Dynamics', 'PHP', 'Python',
+# 'React Native', 'mern', 'JavaScript', 'Java', 'Devops', 'Ruby on Rails',
+#  'Go/Golang', 'C#/Dot Net', 'C/C++', 'ios', 'Android', 'UI/UX', 'Networking', 'Database']
+
 regular_expressions = [
     {
         'tech_stack': 'Ruby on Rails',
-        'exp': '(?i)(^|\W)(ror|ruby)(\W|$)'
+        'exp': '(?i)(^|\W)(ror|ruby|ruby[-\s]?on[-\s]?rails|turbo[-\s]?links|sidekiq|rails|capybara|hotwire|rspec|minitest)(\W|$)'
+    },
+    {
+        'tech_stack': 'Service Now',
+        'exp': '(?i)(^|\W)(service[-\s]now)(\W|$)'
+    },
+    {
+        'tech_stack': 'salesforce',
+        'exp': '(?i)(^|\W)(sales[-\s]?force)(\W|$)'
     },
     {
         'tech_stack': 'UI/UX',
-        'exp': '(?i)(^|\W)(ux|ui)(\W|$)'
+        'exp': '(?i)(^|\W)(ux|ui|user[-\s]?experience|web[-\s]?interface|software[-\s]?design|digital[-\s]?designer|graphic[-\s]?designer|InVision|canva|mockup|figma)(\W|$)'
     },
     {
         'tech_stack': 'Ml Engineer',
-        'exp': '(?i)(^|\W)(ai|ml|machine learning)(\W|$)'
+        'exp': '(?i)(^|\W)(ai|ml|machine learning|Deep Learning|deeplearning|nlp|Scikit-learn|Scikit learn|Keras|PyTorch|image processing|Natural Language Processing|Predictive Modeler|Computer Vision|OpenCV|Open CV|mlpack|Text Mining|Text[-\s]?Classification|Artificial[-\s]?Intelligence|Voice[-\s]?Classification|Reinforcement[-\s]?Learning|Artificial|Neural[-\s](Network|Networks))(\W|$)'
+    },
+    {
+        'tech_stack': 'Data Engineering/Data Engineer',
+        'exp': '(?i)(^|\W)(data[-\s]?engineer|data[-\s]?engineering|big[-\s]?data|ETL[-\s]?developer|ETL[-\s]?Engineer|Data[-\s]?Solutions|Data[-\s]?Warehouse|Data[-\s]?Mining|Data[-\s]?Integration|Data[-\s]?Center|integration[-\s]?engineer|integration[-\s]?analyst|integration[-\s]?architect)(\W|$)'
+    },
+    {
+        'tech_stack': 'Data Science/Data Scientist',
+        'exp': '(?i)(^|\W)(data science|data scientist|pandas|Data Scientist|Data Visualization|Tabeleau|Matplotlib)(\W|$)'
     },
     {
         'tech_stack': 'Go/Golang',
-        'exp': '(?i)(^|\W)(go|golang)(\W|$)'
+        'exp': '(?i)(^|\W)(go|golang|distributed systems)(\W|$)'
     },
     {
         'tech_stack': 'blockchain',
-        'exp': '(?i)(^|\W)(defi)(\W|$)'
+        'exp': '(?i)(^|\W)(block[-\s]?chain|bit[-\s]?coin|Byzantine Fault Tolerance|defi|dlt|DApp|Crypto[-\s]?currency|Crypto|Ethereum|solana|solidity|ICOs|Metaverse|Smart[-\s]?Contract|Smart[-\s]?Contracts|Solid[-\s]?JS|UTXO|web[-\s]?3|cryptography)(\W|$)'
+    },
+    {
+        'tech_stack': 'Dynamics',
+        'exp': '(?i)(^|\W)(dynamics|dynamics[-_\s]?365|ms[-\s]dynamics|D365)(\W|$)'
     },
     {
         'tech_stack': 'C#/Dot Net',
-        'exp': '(?i)(^|\W)(unity|dotnet|dot net|dot-net|c#|asp|.net|net|wpf|netcore)(\W|$)'
+        'exp': '(?i)(^|\W)(C[-\s]?Sharp|unity|dot[_-\s]?net|c#|asp|[.]?net|wpf|net[\s]?core)(\W|$)'
     },
     {
         'tech_stack': 'ios',
-        'exp': '(?i)(^|\W)(ios|swift|swiftui|arkit)(\W|$)'
+        'exp': '(?i)(^|\W)(ios|swift|swift[-\s]?ui|arkit)(\W|$)'
     },
     {
         'tech_stack': 'flutter',
@@ -1324,11 +1350,11 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Android',
-        'exp': '(?i)(^|\W)(android|kotlin)(\W|$)'
+        'exp': '(?i)(^|\W)(android|kotlin|mobile[-\s]?app|mobile[-\s]?developer)(\W|$)'
     },
     {
         'tech_stack': 'Java',
-        'exp': '(?i)(^|\W)(java|servlets|jpa|spring|springboot)(\W|$)'
+        'exp': '(?i)(^|\W)(java|servlets|jpa|spring|spring[-\s]?boot|jpm|core java|java8|junit|maven|Eclipse|Scala|Spring MVC|Netbeans|jsp|javaee)(\W|$)'
     },
     {
         'tech_stack': 'C/C++',
@@ -1336,19 +1362,44 @@ regular_expressions = [
     },
     {
         'tech_stack': 'qa',
-        'exp': '(?i)(^|\W)(qa|qe|sqa)(\W|$)'
+        'exp': '(?i)(^|\W)(qa|qe|sqa|SDET|api[-\s]?test|testing|Test[-\s]?Automation|Automation[-\s]?Testing|Quality[-\s]?Assurance|quality|regression|selenium[-\s]?test)(\W|$)'
     },
     {
         'tech_stack': 'PHP',
-        'exp': '(?i)(^|\W)(php|lamp|yii)(\W|$)'
+        'exp': '(?i)(^|\W)(php|lamp|yii|laravel|cakephp|wordpress|magento|codeigniter|lamp stack|symphony|alpine[-.\s]?js)(\W|$)'
+    },
+    {
+        'tech_stack': 'Python',
+        'exp': '(?i)(^|\W)(python|django|flask|fast[-\s]?api|sqlachemy)(\W|$)'
+    },
+    {
+        'tech_stack': 'React Native',
+        'exp': '(?i)(^|\W)(react[-_\s]?native)(\W|$)'
+    },
+    {
+        'tech_stack': 'mern',
+        'exp': '(?i)(^|\W)(mern|mean|mven|JavaScript Developer|React[-.\s]?js|express[-.\s]?js|node[-.\s]?js|Frontend\/React|react|node)(\W|$)'
     },
     {
         'tech_stack': 'JavaScript',
-        'exp': '(?i)(^|\W)(nest)(\W|$)'
-    },{
+        'exp': '(?i)(^|\W)(javascript|material[-\s]?ui|mapbox|nest|nest[-.\s]?.js|vue|vue[-.\s]?js|angular|angular[-.\s]?js|nuxt[-.\s]?js|nuxt|npm|yarn|npx|angular|redux|ngrx|ractive[.\s]?js|backbone[.-\s]?js|proctor|recoil.js|ramda[.-\s]?js|espresso|gatsbyjs|webdriver.io)(\W|$)'
+    },
+    {
+        'tech_stack': 'Devops',
+        'exp': '(?i)(^|\W)(dev[-\s]?ops|azure|deployment|CI[-\/\s]?CD|Continuous[-\s]?Integration|Release[-\s]?Engineer|Systems[-\s]?Engineer|Cloud[-\s]?Developer|Cloud[-\s]?Engineer|Infrastructure Engineer|aws|Operations Engineer|Amazon Web Services|Google[-\s]?Cloud|Apache|Nginx|Gunicorn)(\W|$)'
+    },
+    {
+        'tech_stack': 'Networking',
+        'exp': '(?i)(^|\W)(network|networking|voip engineer|netsuite|wireless communications|cloud network)(\W|$)'
+    },
+    {
         'tech_stack': 'Database',
-        'exp': '(?i)(^|\W)(ssrs|ssis)(\W|$)'
-    }
+        'exp': '(?i)(^|\W)(database|sql|mysql|oracle|sqlite|solaris|postgress|mongo|mongodb|plsql|pl\/sql|pl sql|ms sql|mssql|db|mariadb|kdb+|dbt|ssrs|ssis|t-sql|ms-sql|redis|relation database|nosql|no sql|mangodb|rdbms|cassandra)(\W|$)'
+    },
+    {
+        'tech_stack': 'UI/UX',
+        'exp': '(?i)(^|\W)(front[-\s]?end)(\W|$)'
+    },
 ]
 
 developer = [
