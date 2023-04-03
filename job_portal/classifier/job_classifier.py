@@ -8,7 +8,7 @@ from django.db.models import F, Value
 import openai
 from settings.base import env
 
-openai.api_key = env('CHATGPT_API_KEY')
+# openai.api_key = env('CHATGPT_API_KEY')
 
 
 class JobClassifier(object):
@@ -111,8 +111,8 @@ class JobClassifier(object):
         regex_hours = r'(?i)^(active|posted?.*\s)?([0-9]*\s?)(hours|hour|h|hr)\s*(ago)?'
         value = re.search(regex_hours, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
-            today_date_time = timezone.now() + timezone.timedelta(days=-1)
-            return today_date_time
+            hours = int(re.findall(r'\d+', job_date)[0])
+            return timezone.now() if hours < 22 else timezone.now() + timezone.timedelta(days=-1)
         else:
             return job_date
 
