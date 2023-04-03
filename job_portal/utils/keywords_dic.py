@@ -524,8 +524,6 @@ languages = {
     ],
     "qa": [
         "SDET",
-        "qa",
-        "sqa",
         "api test",
         "test api",
         "selenium test",
@@ -627,10 +625,10 @@ languages = {
     "blockchain": [
         "BIPs",
         "Bitcoin",
-        "Block",
         "Block Height",
         "Block Reward",
         "Blockchain",
+        "Block chain",
         "Blockchain 2.0",
         "Blockchain Architecture",
         "Blockchain Development",
@@ -653,7 +651,6 @@ languages = {
         "Double Spending",
         "EIPs",
         "EWASM",
-        "Encryption",
         "Ethereum",
         "Ethereum Enterprise Alliance",
         "Ethereum Platform",
@@ -707,7 +704,8 @@ languages = {
         "blockchain ecosystem",
         "cryptography",
         "cypher",
-        "web3"
+        "web3",
+        "web 3",
     ],
     "Dynamics": [
         "dynamics",
@@ -718,16 +716,11 @@ languages = {
         "D365",
         "ms dynamics",
     ],
-    "flutter": [
-        "flutter",
-        "dart"
-    ],
     "PHP": [
         "cakephp",
         "php/laravel",
         "magento",
         "wordpress",
-        "yii",
         "symphony",
         "lamp stack",
         "codeigniter",
@@ -735,10 +728,8 @@ languages = {
         "laravel",
         "php8/laravel8",
         "livewire",
-        "lamp",
         "magento 2",
         "alpinejs",
-        "php"
     ],
     "Python": [
         "python",
@@ -861,6 +852,7 @@ languages = {
         "React",
         "ReactJS",
         "Node",
+        "node.js",
         "Nodejs",
         "Javascript",
         "React.js",
@@ -872,14 +864,12 @@ languages = {
         "materialui",
         "react/redux",
         "mapbox",
-        "express",
         "backbone.js",
         "potractor",
         "nest.js",
         "react.js",
         "node",
         "vue",
-        "nest",
         "requirejs",
         "featherjs",
         "nestjs",
@@ -901,9 +891,9 @@ languages = {
         "socket.io",
         "preact",
         "recoil",
-        "node",
         "angular12",
-        "ionic",
+        "ionic react",
+        "react iconic",
         "react hooks",
         "nuxt",
         "gatsbyjs",
@@ -938,7 +928,6 @@ languages = {
     "Java": [
         "jpm",
         "j2ee",
-        "java",
         "core java",
         "javase",
         "java ee",
@@ -946,13 +935,12 @@ languages = {
         "hibernate",
         "java8",
         "servlets",
-        "spring",
-        "jpa",
+        "spring Boot",
+        "java spring",
         "javaee",
         "rxjava",
         "jsp",
         "junit",
-        "gradle",
         "java developer",
         "maven",
         "Java Developer",
@@ -1028,10 +1016,10 @@ languages = {
         "ruby",
         "ror developer",
         "ror engineer",
-        "kql",
         "ruby architect",
         "ruby software engineer",
-        "turbo",
+        "turbo link",
+        "turbolink",
         "frontend developer - ruby",
         "ruby consultant",
         "sidekiq",
@@ -1052,7 +1040,6 @@ languages = {
         "rspec",
         "test engineer - ruby",
         "ruby/rails",
-        "wireframes"
     ],
     "Go/Golang": [
         "golang",
@@ -1150,10 +1137,8 @@ languages = {
         "ios developer",
         "core data",
         "uikit",
-        "swift",
+        "swift ui",
         "cocoa touch",
-        "xcode",
-        "arkit",
         "objective c",
     ],
     "Android": [
@@ -1164,6 +1149,7 @@ languages = {
         "Mobile develop",
         "mobile development",
         "mobile app",
+        "gradle",
         "full stack mobile engineer",
     ],
     "UI/UX": [
@@ -1260,6 +1246,7 @@ languages = {
         "sql",
         "postgres",
         "mongo",
+        "mongodb",
         "prisma",
         "pl/sql",
         "ms sql",
@@ -1283,7 +1270,6 @@ languages = {
         "indexeddb",
         "mysql/postgresql",
         "mysql/mongodb",
-        "ssrs",
         "postgresql",
         "redis",
         "mangodb",
@@ -1298,7 +1284,6 @@ languages = {
         "knex.js",
         "microsoft sql",
         "t-sql",
-        "ssis",
         "cassandra",
         "ms-sql"
     ],
@@ -1331,7 +1316,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'ios',
-        'exp': '(?i)(^|\W)(ios)(\W|$)'
+        'exp': '(?i)(^|\W)(ios|swift|swiftui|arkit)(\W|$)'
     },
     {
         'tech_stack': 'flutter',
@@ -1343,7 +1328,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Java',
-        'exp': '(?i)(^|\W)(java)(\W|$)'
+        'exp': '(?i)(^|\W)(java|servlets|jpa|spring|springboot)(\W|$)'
     },
     {
         'tech_stack': 'C/C++',
@@ -1352,6 +1337,17 @@ regular_expressions = [
     {
         'tech_stack': 'qa',
         'exp': '(?i)(^|\W)(qa|qe|sqa)(\W|$)'
+    },
+    {
+        'tech_stack': 'PHP',
+        'exp': '(?i)(^|\W)(php|lamp|yii)(\W|$)'
+    },
+    {
+        'tech_stack': 'JavaScript',
+        'exp': '(?i)(^|\W)(nest)(\W|$)'
+    },{
+        'tech_stack': 'Database',
+        'exp': '(?i)(^|\W)(ssrs|ssis)(\W|$)'
     }
 ]
 
