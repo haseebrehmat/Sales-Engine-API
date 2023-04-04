@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from job_scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, \
     ADZUNA_PAGE_CAP
 import urllib3
@@ -11,11 +11,12 @@ import numpy as np
 from scipy.stats import norm
 import re
 
+from job_scraper.models.scraper_logs import ScraperLogs
+
 CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 http = urllib3.PoolManager()
 
 results_div_index = 3
-
 
 def cleanhtml(raw_html):
     return re.sub(CLEANR, '', raw_html)
@@ -62,6 +63,7 @@ def transform_data(df):
 
 
 def adzuna_scraping():
+
     r = http.request('GET', ADZUNA_FULL)
     soup = BeautifulSoup(r.data, 'html.parser')
     total_results = ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / 500)
@@ -100,3 +102,6 @@ def adzuna_scraping():
         all_data = pd.concat([all_data, per_link_data], axis=0, ignore_index=True)
     date_time = str(datetime.now())
     all_data.to_csv(f'job_scraper/job_data/adzuna_results - {date_time}.csv', index=False)
+    total_job = len(all_data)
+    ScraperLogs.objects.create(total_jobs=total_job, job_source="Adzuna")
+

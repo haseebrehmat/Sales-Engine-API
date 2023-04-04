@@ -10,6 +10,8 @@ import pandas as pd
 from selenium.webdriver.support.wait import WebDriverWait
 from datetime import datetime
 
+from job_scraper.models.scraper_logs import ScraperLogs
+
 links = [
     'https://www.ziprecruiter.com/candidate/search?search=Developer&location=USA&refine_by_location_type=no_remote&radius=100&days=1&refine_by_salary=&refine_by_tags=employment_type%3Afull_time&refine_by_title=&refine_by_org_name=',
     'https://www.ziprecruiter.com/candidate/search?search=Developer&location=USA&refine_by_location_type=&radius=100&days=1&refine_by_salary=&refine_by_tags=employment_type%3Acontract&refine_by_title=&refine_by_org_name=',
@@ -85,5 +87,7 @@ def ziprecruiter_scraping():
                 df.to_csv(f'job_scraper/job_data/ziprecruiter - {date_time}.csv', index=False)
 
         c += 1
+    ScraperLogs.objects.create(total_jobs=len(df), job_source="Zip Recruiter")
+
     driver.close()
     print("SCRAPING_ENDED")
