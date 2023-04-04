@@ -8,7 +8,7 @@ from django.db.models import F, Value
 import openai
 from settings.base import env
 
-openai.api_key = env('CHATGPT_API_KEY')
+# openai.api_key = env('CHATGPT_API_KEY')
 
 
 class JobClassifier(object):
@@ -16,14 +16,20 @@ class JobClassifier(object):
     def __init__(self, dataframe: pd.DataFrame):
         self.data_frame = dataframe
 
-    def classifier_stage1(self, job_title):
-        # check regular expression
+    def match_text_with_regex(self, text):
         for regex in regular_expressions:
-            if re.search(regex['exp'], job_title):
+            if re.search(regex['exp'], text):
                 return regex['tech_stack']
+        return None
+
+    def classifier_stage1(self, job_title):
+        # check regular expression for job title
+        matched_result = self.match_text_with_regex(job_title)
+
+        if matched_result:
+            return matched_result
 
         language_dict = languages
-        # final_result = list()
         for key, value in language_dict.items():
             for x in value:
                 if x.lower() in job_title:
@@ -97,13 +103,14 @@ class JobClassifier(object):
             return 'others dev'
 
     def classify_job(self, job_title, job_description):
-        result = self.find_job_techkeyword(job_title)
-        if result == 'others dev' and job_description:
-            try:
-                result = self.get_job_title_for_others_dev(job_description)
-            except Exception as e:
-                print('Expression', e)
-        return result
+        job_title = job_title.strip().lower()
+        classifier_result = self.find_job_techkeyword(job_title)
+        if classifier_result == 'others dev' and job_description:
+            job_description = job_description.strip().lower()
+            classifier_result = self.find_job_techkeyword(job_description)
+            if classifier_result == 'others dev':
+                classifier_result = self.get_job_title_for_others_dev(job_description)
+        return classifier_result
 
     def classify_hour(self, job_date):
         # apply regex patterns to get the hours value
@@ -111,8 +118,8 @@ class JobClassifier(object):
         regex_hours = r'(?i)^(active|posted?.*\s)?([0-9]*\s?)(hours|hour|h|hr)\s*(ago)?'
         value = re.search(regex_hours, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
-            today_date_time = timezone.now() + timezone.timedelta(days=-1)
-            return today_date_time
+            hours = int(re.findall(r'\d+', job_date)[0])
+            return timezone.now() if hours < 22 else timezone.now() + timezone.timedelta(days=-1)
         else:
             return job_date
 
