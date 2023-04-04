@@ -10,6 +10,10 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models.scraper_logs import ScraperLogs
+
+total_job = 0
+
 
 # calls url
 def request_url(driver, url):
@@ -118,6 +122,7 @@ def data_exists(driver):
 
 
 def jobs_types(driver, url, job_type, scrapped_data):
+    global total_job
     count = 0
     request_url(driver, url)  # select type from the const file
     if find_jobs(driver, scrapped_data, job_type):
@@ -126,6 +131,7 @@ def jobs_types(driver, url, job_type, scrapped_data):
         while (True):
             if find_jobs(driver, scrapped_data, job_type, "&start=" + str(count)):
                 count += 25
+                total_job += 25
             else:
                 break
     else:
@@ -157,3 +163,4 @@ def linkedin():
             print(SCRAPING_ENDED)
         else:
             print(LOGIN_FAILED)
+    ScraperLogs.objects.create(total_jobs=total_job, job_source="LinkedIn")

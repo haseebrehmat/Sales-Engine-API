@@ -8,6 +8,10 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models.scraper_logs import ScraperLogs
+
+total_job = 0
+
 
 # calls url
 def request_url(driver, url):
@@ -21,6 +25,7 @@ def append_data(data, field):
 
 # find's job name
 def find_jobs(driver, scrapped_data, job_type):
+    global total_job
     count = 0
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "css-12bkbc3")
@@ -51,6 +56,7 @@ def find_jobs(driver, scrapped_data, job_type):
 
             scrapped_data.append(data)
             count += 1
+            total_job += 1
 
         except Exception as e:
             print(e)
@@ -98,4 +104,6 @@ def simply_hired():
                 print("Fetching...")
             count = count + 1
     print(SCRAPING_ENDED)
+    ScraperLogs.objects.create(total_jobs=total_job, job_source="Simply Hired")
+
 # simply_hired()
