@@ -73,23 +73,25 @@ class JobCleanerView(APIView):
             return Response({'detail': 'Jobs are not updated with new tech keywords!'}, status=404)
 
     def update_data(self, job_data):
-        user_bulk_update_list = []
         data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'job_description')))
         classify_data = JobClassifier(data)
         classify_data.update_tech_stack()
-        update_count = 0
 
+        # Get a list of all the JobDetail objects to update
+        job_details = JobDetail.objects.filter(id__in=classify_data.data_frame['pk'].values)
+
+        # Create a list of updated JobDetail objects
+        updated_job_details = []
         for key in classify_data.data_frame.itertuples():
-            update_item = JobDetail.objects.get(id=key.pk)
-            if update_item.tech_keywords != key.tech_keywords.lower():
-                update_count += 1
-                update_item.tech_keywords = key.tech_keywords.lower()
+            job_detail = job_details.get(id=key.pk)
+            if job_detail.tech_keywords != key.tech_keywords.lower():
+                job_detail.tech_keywords = key.tech_keywords.lower()
                 # append the updated user object to the list
-                user_bulk_update_list.append(update_item)
+                updated_job_details.append(job_detail)
 
         # update scores of all users in one operation
-        JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
-        return update_count
+        JobDetail.objects.bulk_update(updated_job_details, ['tech_keywords'])
+        return len(updated_job_details)
 
 class JobTypeCleanerView(APIView):
     permission_classes = (IsAuthenticated,)
