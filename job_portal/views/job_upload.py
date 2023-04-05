@@ -77,21 +77,18 @@ class JobCleanerView(APIView):
         classify_data = JobClassifier(data)
         classify_data.update_tech_stack()
 
-        # Get a list of all the JobDetail objects to update
-        job_details = JobDetail.objects.filter(id__in=classify_data.data_frame['pk'].values)
+        updated_job_details = [job_detail.__class__(id=job_detail.id, tech_keywords=key.tech_keywords.lower())
+                               for job_detail, key in zip(job_data, classify_data.data_frame.itertuples())]
 
-        # Create a list of updated JobDetail objects
-        updated_job_details = []
-        for key in classify_data.data_frame.itertuples():
-            job_detail = job_details.get(id=key.pk)
-            if job_detail.tech_keywords != key.tech_keywords.lower():
-                job_detail.tech_keywords = key.tech_keywords.lower()
-                # append the updated user object to the list
-                updated_job_details.append(job_detail)
-
-        # update scores of all users in one operation
-        JobDetail.objects.bulk_update(updated_job_details, ['tech_keywords'])
-        return len(updated_job_details)
+        # update jobs in bulks in small batches
+        num_records = len(updated_job_details)
+        batch_size = 500
+        for i in range(0, num_records, batch_size):
+            start_index = i
+            end_index = min(i + batch_size, num_records)
+            user_bulk_update_list = updated_job_details[start_index:end_index]
+            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
+        return num_records
 
 class JobTypeCleanerView(APIView):
     permission_classes = (IsAuthenticated,)

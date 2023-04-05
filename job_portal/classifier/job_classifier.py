@@ -1,4 +1,4 @@
-import re
+import regex as re
 from django.utils import timezone
 import pandas as pd
 from dateutil import parser
@@ -18,8 +18,17 @@ class JobClassifier(object):
 
     def match_text_with_regex(self, text):
         for regex in regular_expressions:
-            if re.search(regex['exp'], text):
+            pattern = re.compile(regex['exp'])
+            if pattern.search(text):
                 return regex['tech_stack']
+        return None
+
+    def classify_job_with_languages(self, text):
+        language_dict = languages
+        for key, value in language_dict.items():
+            for x in value:
+                if x.lower() in text:
+                    return key
         return None
 
     def classifier_stage1(self, job_title):
@@ -29,12 +38,8 @@ class JobClassifier(object):
         if matched_result:
             return matched_result
 
-        language_dict = languages
-        for key, value in language_dict.items():
-            for x in value:
-                if x.lower() in job_title:
-                    return key
-        return 'others'
+        result = self.classify_job_with_languages(job_title)
+        return 'others' if result is None else result
 
     def find_job_techkeyword(self, job_title):
         # job_title = ",".join(job_title.split("/")).lower()
@@ -107,9 +112,10 @@ class JobClassifier(object):
         classifier_result = self.find_job_techkeyword(job_title)
         if classifier_result == 'others dev' and job_description:
             job_description = job_description.strip().lower()
-            classifier_result = self.find_job_techkeyword(job_description)
-            if classifier_result == 'others dev':
-                classifier_result = self.get_job_title_for_others_dev(job_description)
+            classifier_result = self.match_text_with_regex(job_description)
+            if classifier_result is None:
+                result = self.classify_job_with_languages(job_description)
+                return 'others dev' if result is None else result
         return classifier_result
 
     def classify_hour(self, job_date):

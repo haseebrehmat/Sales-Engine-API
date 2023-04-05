@@ -1324,7 +1324,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Data Science/Data Scientist',
-        'exp': '(?i)(^|\W)(data[-\s](science|scientist|Visualization)|pandas|Tabeleau|Matplotlib)(\W|$)'
+        'exp': '(?i)(^|\W)(data[-\s](science|scientist|Visualization)|pandas|tableau|Matplotlib|Power[-\s]Bi)(\W|$)'
     },
     {
         'tech_stack': 'blockchain',
