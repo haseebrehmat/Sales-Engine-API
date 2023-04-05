@@ -28,6 +28,8 @@ class CustomPagination(pagination.PageNumberPagination):
             'total_jobs': self.total_job_count(),
             'total_job_type': self.unique_job_type(),
             'filtered_jobs': self.page.paginator.count,
+            'recruiter_jobs': self.get_recruiter_jobs_count(),
+            'non_recruiter_jobs': self.total_job_count() - self.get_recruiter_jobs_count(),
             'data': data,
             'tech_keywords_count_list': self.keyword_count(),
             'job_source_count_list': self.unique_job_source(),
@@ -66,6 +68,11 @@ class CustomPagination(pagination.PageNumberPagination):
         job_count = JobDetail.objects.filter(appliedjobstatus__applied_by=None).count()
         return job_count
 
+    def get_recruiter_jobs_count(self):
+        queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
+        queryset = self.filter_query(queryset).filter(block=True)
+        return queryset.count()
+
     def unique_job_source(self):
         queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
         queryset = self.filter_query(queryset)
@@ -102,3 +109,4 @@ class CustomPagination(pagination.PageNumberPagination):
         #     elif self.request.GET.get("job_visibility", "all") == "recruiter":
         #         queryset = queryset.filter(company_name__in=company)
         return queryset
+

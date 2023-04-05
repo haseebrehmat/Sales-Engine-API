@@ -527,14 +527,11 @@ languages = {
         "api test",
         "test api",
         "selenium test",
-        "performance test",
-        "test",
-        "testing",
+        "automation test",
         "Automation Test",
         "Test Automation",
         "Quality Assurance",
         "Quality Assurance Consultant",
-        "testing",
         "qa engineer",
         "qa test",
         "quality engineer",
@@ -547,12 +544,31 @@ languages = {
         "software test",
         "software quality",
         "quality engineer",
-        "quality",
-        "bug",
         "test engineer",
         "test automation",
         "qa automation",
         "qa manual",
+        "Quality control",
+        "Debugging",
+        "Test plan",
+        "Test case",
+        "Test scenario",
+        "Test automation",
+        "Performance testing",
+        "User acceptance testing",
+        "User acceptance testing (UAT)",
+        "Functional testing",
+        "Non-functional testing",
+        "Test strategy",
+        "Defect tracking",
+        "Root cause analysis",
+        "Code review",
+        "bugs and issues",
+        "bugs",
+        "product quality",
+        "manual test",
+        "automated test",
+        "UI & UX testing",
     ],
     "Ml Engineer": [
         "ai ml",
@@ -1201,8 +1217,6 @@ languages = {
         "user-experience",
         "user-interface",
         "design analyst",
-        "design software",
-        "software design",
         "User Interface Designer",
         "UX-UI Designer",
         "user interface",
@@ -1291,6 +1305,10 @@ languages = {
 
 regular_expressions = [
     {
+        'tech_stack': 'qa',
+        'exp': '(?i)(^|\W)(qa|qe|Quality[-\s]Assurance|Quality[-\s]Engineer)(\W|$)'
+    },
+    {
         'tech_stack': 'Ruby on Rails',
         'exp': '(?i)(^|\W)(ror|ruby|ruby[-\s]?on[-\s]?rails|turbo[-\s]?links|side[-\s]?kiq|rails|capybara|hot[-\s]?wire|r[-\s]?spec|mini[-\s]?test)(\W|$)'
     },
@@ -1339,10 +1357,6 @@ regular_expressions = [
         'exp': '(?i)(^|\W)(C[-\s]?Sharp|unity|dot[-_\s]?net|c#|asp|net|.net|wpf|net[\s]?core)(\W|$)'
     },
     {
-        'tech_stack': 'Java',
-        'exp': '(?i)(^|\W)(java|servlets|jpa|spring|spring[-\s]?boot|jpm|core[-\s]java|java8|junit|maven|Eclipse|Scala|Spring MVC|Netbeans|jsp|javaee)(\W|$)'
-    },
-    {
         'tech_stack': 'C/C++',
         'exp': '(?i)(^|\W)(c\+\+|(c|cpp)[-\s](developers?|programmers?|engineers?|programming|programs?|development|code|experts?))(\W|$)'
     },
@@ -1359,6 +1373,10 @@ regular_expressions = [
         'exp': '(?i)(^|\W)(go|golang|distributed[-\s]systems?)(\W|$)'
     },
     {
+        'tech_stack': 'Java',
+        'exp': '(?i)(^|\W)(java|servlets|jpa|spring|spring[-\s]?boot|jpm|core[-\s]java|java8|junit|maven|Eclipse|Scala|Spring MVC|Netbeans|jsp|javaee)(\W|$)'
+    },
+    {
         'tech_stack': 'React Native',
         'exp': '(?i)(^|\W)(react[-_\s]?native)(\W|$)'
     },
@@ -1372,11 +1390,11 @@ regular_expressions = [
     },
     {
         'tech_stack': 'qa',
-        'exp': '(?i)(^|\W)(qa|qe|sqa|SDET|api[-\s]test|Test[-\s]Automation|Automation[-\s](Testing|Test|Tester)|Quality[-\s]Assurance|test cases|software quality|regression|selenium[-\s]test)(\W|$)'
+        'exp': '(?i)(^|\W)(software defects|(black|white)[-\s]?box|sqa|SDET|api[-\s]test|test[-\s](plans?|scripts?|cases?|scenarios?|security|automations?|strategy)|(browser[-\s]compatibility|cross[-\s]browser|unit|Component|Integration|End-to-End|Regression|Sanity|Happy[-\s]path|monkey|Alpha|beta|Operational[-\s]acceptance|Penetration|Load|stress|Scalability|Volume|Endurance|Soak|Usability|Ad[-\s]?hoc|Branch|GUI|Incremental[-\s]Integration|Systems?|software|Smoke|Exploratory|Gorilla|product|security|automations?|manual|selenium|Performance|UI|UX|(front|back)[-\s]?end|User[-\s]acceptance|(Non[-\s])?functional|(white|black|gray)[-\s]?box)[-\s]test(ing)?|Automation[-\s](Testing|Test|Tester)|bugs|(software|product)[-\s]quality)(\W|$)'
     },
     {
         'tech_stack': 'UI/UX',
-        'exp': '(?i)(^|\W)(ux|ui|uxui|uiux|(web|user)[-\s](experience|interface)|(software|web)[-\s]designs?|(digital|graphic)[-\s]designer|InVision|canva|mockup|figma|wireframes?)(\W|$)'
+        'exp': '(?i)(^|\W)(ux|ui|uxui|uiux|(web|user)[-\s](experience|interface)|web[-\s]designs?|(digital|graphic)[-\s]designer|InVision|canva|mockup|figma|wireframes?)(\W|$)'
     },
     {
         'tech_stack': 'Devops',

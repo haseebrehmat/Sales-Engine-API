@@ -39,7 +39,10 @@ class JobClassifier(object):
             return matched_result
 
         result = self.classify_job_with_languages(job_title)
-        return 'others' if result is None else result
+        if result:
+            return result
+        else:
+            return 'others'
 
     def find_job_techkeyword(self, job_title):
         # job_title = ",".join(job_title.split("/")).lower()
