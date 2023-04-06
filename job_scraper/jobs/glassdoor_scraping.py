@@ -8,6 +8,7 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 
 total_job = 0
@@ -100,8 +101,13 @@ def glassdoor():
                           options=options) as driver:  # modified
         request_url(driver, GLASSDOOR_LOGIN_URL)
         logged_in = login(driver)
-        types = [GLASSDOOR_CONTRACT_RESULTS, GLASSDOOR_FULL_RESULTS, GLASSDOOR_REMOTE_RESULTS]
-        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+        # types = [GLASSDOOR_CONTRACT_RESULTS, GLASSDOOR_FULL_RESULTS, GLASSDOOR_REMOTE_RESULTS]
+        types = []
+        job_type = []
+        for c in range(3):
+            query = list(JobSourceQuery.objects.filter(job_source='glassdoor').values_list("queries", flat=True))[0]
+            types.append(query[c]['link'])
+            job_type.append(query[c]['job_type'])
         if logged_in:
             for url in types:
                 request_url(driver, url)

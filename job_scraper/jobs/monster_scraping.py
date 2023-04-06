@@ -10,6 +10,7 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 total_job = 0
 
@@ -97,8 +98,13 @@ def monster():
         scrapped_data = []
         count = 0
 
-        types = [MONSTER_CONTRACT_RESULTS, MONSTER_FULL_RESULTS, MONSTER_REMOTE_RESULTS]
-        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+        # types = [MONSTER_CONTRACT_RESULTS, MONSTER_FULL_RESULTS, MONSTER_REMOTE_RESULTS]
+        types = []
+        job_type = []
+        for c in range(3):
+            query = list(JobSourceQuery.objects.filter(job_source='monster').values_list("queries", flat=True))[0]
+            types.append(query[c]['link'])
+            job_type.append(query[c]['job_type'])
         for url in types:
             driver.get(url)
             driver.maximize_window()
