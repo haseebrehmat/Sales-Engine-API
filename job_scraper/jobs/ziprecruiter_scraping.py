@@ -10,6 +10,7 @@ import pandas as pd
 from selenium.webdriver.support.wait import WebDriverWait
 from datetime import datetime
 
+from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 
 links = [

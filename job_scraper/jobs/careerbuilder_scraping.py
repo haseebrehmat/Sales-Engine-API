@@ -9,6 +9,7 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 
 total_jobs = 0
@@ -104,7 +105,6 @@ def load_jobs(driver):
     except:
         return False
 
-
 # code starts from here
 def career_builder():
     count = 0
@@ -118,8 +118,13 @@ def career_builder():
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                           options=options) as driver:  # modified
         driver.maximize_window()
-        types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
-        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+        # types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
+        types = []
+        job_type = []
+        for c in range(3):
+            query = list(JobSourceQuery.objects.filter(job_source='career_builder').values_list("queries", flat=True))[0]
+            types.append(query[c]['link'])
+            job_type.append(query[c]['job_type'])
         for url in types:
             request_url(driver, url)
             while load_jobs(driver):

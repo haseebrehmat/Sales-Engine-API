@@ -11,6 +11,7 @@ import numpy as np
 from scipy.stats import norm
 import re
 
+from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 
 CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
@@ -71,8 +72,10 @@ def adzuna_scraping():
     salary_ranges = ranges_of_salaries(SALARY_STD, SALARY_AVERAGE, total_results)
     for i in tqdm(range(len(salary_ranges))):
         try:
+            types = JobSourceQuery.objects.filter(job_source='adzuna').first()
             link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}&st={salary_ranges[i + 1]}'
         except:
+            types = JobSourceQuery.objects.filter(job_source='adzuna').first()
             link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}'
         r = http.request('GET', link)
         soup = BeautifulSoup(r.data, 'html.parser')
