@@ -67,8 +67,6 @@ class JobCleanerView(APIView):
     def put(self, request):
         try:
             job_data = JobDetail.objects.all().select_related()
-            # thread = Thread(target=self.update_data, args=(job_data,), )
-            # thread.start()
             self.update_data(job_data)
             return Response({'detail': f'jobs updated successfully with new tech keywords!'}, status=204)
         except Exception as e:
@@ -76,7 +74,6 @@ class JobCleanerView(APIView):
 
     @start_new_thread
     def update_data(self, job_data):
-        print("Cleaning Jobs")
         data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'job_description')))
         classify_data = JobClassifier(data)
         classify_data.update_tech_stack()
@@ -92,13 +89,11 @@ class JobCleanerView(APIView):
         # update jobs in bulks in small batches
         num_records = len(updated_job_details)
         batch_size = 500
-        print("before bulk update")
         for i in range(0, num_records, batch_size):
             start_index = i
             end_index = min(i + batch_size, num_records)
             user_bulk_update_list = updated_job_details[start_index:end_index]
             JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
-        print('job updated successfully!')
         return num_records
 
 
