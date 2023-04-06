@@ -36,16 +36,26 @@ class JobDetailsView(ModelViewSet):
         current_user = request.user
 
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
+
         if len(current_user_jobs_list) > 0:
             queryset = self.get_queryset().exclude(id__in=current_user_jobs_list.values_list('job_id', flat=True))
         else:
             queryset = self.get_queryset()
         # pass the queryset to the remaining filters
         queryset = self.filter_queryset(queryset)
+
+        # handle job search with exact match of job title
+        job_title_params = self.request.GET.get('search')
+
+        if job_title_params:
+            queryset = queryset.filter(job_title__icontains=job_title_params)
+
         page = self.paginate_queryset(queryset)
+
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+
         return Response(serializer.data)
