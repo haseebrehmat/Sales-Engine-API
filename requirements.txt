@@ -23,3 +23,5 @@ scipy
 beautifulsoup4
 webdriver_manager
 regex
+celery
+eventlet

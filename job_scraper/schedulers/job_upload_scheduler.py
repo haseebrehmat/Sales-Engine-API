@@ -19,7 +19,8 @@ from job_scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from job_scraper.models import SchedulerSettings
 from job_scraper.models.scheduler import SchedulerSync
 from job_scraper.utils.helpers import convert_time_into_minutes
-from job_scraper.utils.thread import start_new_thread
+#from job_scraper.utils.thread import start_new_thread
+from celery import shared_task
 
 scraper_functions = {
     "linkedin": [
@@ -116,7 +117,8 @@ def upload_file(job_parser):
         model_instances, ignore_conflicts=True, batch_size=1000)
 
 
-@start_new_thread
+#@start_new_thread
+@shared_task()
 def load_job_scrappers(job_source):
     try:
         SchedulerSync.objects.filter(job_source=job_source).update(running=True)

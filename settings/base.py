@@ -32,7 +32,8 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
-    'django_filters'
+    'django_filters',
+    'django_celery_results'
 ]
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 # Defining Middlewares
@@ -93,6 +94,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 STATIC_URL = 'static/'
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     # os.path.join(BASE_DIR, 'staticfiles'),
@@ -183,3 +191,6 @@ AWS_QUERYSTRING_AUTH = False
 #         },
 #     },
 # }
+
+
+
