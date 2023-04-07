@@ -10,6 +10,7 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 
 total_job = 0
@@ -151,8 +152,13 @@ def linkedin():
                           options=options) as driver:  # modified
         request_url(driver, LOGIN_URL)
         logged_in = login(driver)
-        types = [CONTRACT_JOB_URL, FULL_TIME_JOB_URL, REMOTE_JOB_URL]
-        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+        # types = [CONTRACT_JOB_URL, FULL_TIME_JOB_URL, REMOTE_JOB_URL]
+        types = []
+        job_type = []
+        for c in range(3):
+            query = list(JobSourceQuery.objects.filter(job_source='linkedin').values_list("queries", flat=True))[0]
+            types.append(query[c]['link'])
+            job_type.append(query[c]['job_type'])
         if logged_in:
             count = 0
             scrapped_data = []

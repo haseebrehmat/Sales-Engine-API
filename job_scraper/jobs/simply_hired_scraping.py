@@ -8,6 +8,7 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 
 total_job = 0
@@ -95,8 +96,13 @@ def simply_hired():
     # options.headless = True  # newly added
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                           options=options) as driver:  # modified
-        types = [SIMPLYHIREDCONTRACT, SIMPLYHIREDFULL, SIMPLYHIREDREMOTE]
-        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+        # types = [SIMPLYHIREDCONTRACT, SIMPLYHIREDFULL, SIMPLYHIREDREMOTE]
+        types = []
+        job_type = []
+        for c in range(3):
+            query = list(JobSourceQuery.objects.filter(job_source='simply_hired').values_list("queries", flat=True))[0]
+            types.append(query[c]['link'])
+            job_type.append(query[c]['job_type'])
         for url in types:
             scrapped_data = []
             request_url(driver, url)
