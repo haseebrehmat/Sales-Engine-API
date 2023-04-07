@@ -120,6 +120,7 @@ def upload_file(job_parser):
 #@start_new_thread
 @shared_task()
 def load_job_scrappers(job_source):
+    print("Shared Task Started \n")
     try:
         SchedulerSync.objects.filter(job_source=job_source).update(running=True)
         if job_source != "all":
@@ -143,6 +144,7 @@ def load_job_scrappers(job_source):
     except Exception as e:
         print(e)
     SchedulerSync.objects.all().update(running=False)
+    print("Shared Task Ended \n")
 
     return True
 
