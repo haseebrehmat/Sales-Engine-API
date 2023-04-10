@@ -33,7 +33,8 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'django_filters',
-    'django_celery_results'
+    'django_celery_results',
+    'django_celery_beat',
 ]
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 # Defining Middlewares

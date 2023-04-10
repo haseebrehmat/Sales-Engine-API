@@ -33,10 +33,10 @@ class SyncScheduler(APIView):
             load_job_scrappers.delay(job_source)
 
 
-            result = load_job_scrappers.delay(job_source)
-            while(1):
-                print(result.status)
-                sleep(10)
+            # result = load_job_scrappers.delay(job_source)
+            # while(1):
+            #     print(result.status)
+            #     sleep(10)
 
         return Response({"detail": message}, status=status.HTTP_200_OK)
 
