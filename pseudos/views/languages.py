@@ -15,12 +15,13 @@ class LanguageView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        vertical_id = self.request.GET.get("id", "")
-        return Language.objects.filter(verticals_d=vertical_id)
+        vertical_id = self.request.GET.get("id")
+        return Language.objects.filter(vertical_id=vertical_id).exclude(vertical_id=None)
 
     def post(self, request):
         serializer = LanguageSerializer(data=request.data, many=False)
         if serializer.is_valid():
+            serializer.validated_data["vertical_id"] = request.data.get("vertical_id")
             serializer.create(serializer.validated_data)
             message = "Language created successfully"
             status_code = status.HTTP_201_CREATED
@@ -40,7 +41,7 @@ class LanguageDetailView(APIView):
     def put(self, request, pk):
         queryset = Language.objects.filter(pk=pk).first()
         request_data = request.data
-        request_data["verticals_id"] = request.data.get("vertical_id")
+        request_data["vertical_id"] = request.data.get("vertical_id")
         serializer = LanguageSerializer(queryset, data=request_data)
         if serializer.is_valid():
             serializer.save()

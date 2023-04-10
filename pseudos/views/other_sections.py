@@ -15,14 +15,15 @@ class OtherSectionView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        vertical_id = self.request.GET.get("id", "")
-        return OtherSection.objects.filter(verticals_d=vertical_id)
+        vertical_id = self.request.GET.get("id")
+        return OtherSection.objects.filter(vertical_id=vertical_id).exclude(vertical_id=None)
 
     def post(self, request):
         serializer = OtherSectionSerializer(data=request.data, many=False)
         if serializer.is_valid():
+            serializer.validated_data["vertical_id"] = request.data.get("vertical_id", "")
             serializer.create(serializer.validated_data)
-            message = "Other Section created successfully"
+            message = "Section created successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
         else:
@@ -40,11 +41,11 @@ class OtherSectionDetailView(APIView):
     def put(self, request, pk):
         queryset = OtherSection.objects.filter(pk=pk).first()
         request_data = request.data
-        request_data["verticals_id"] = request.data.get("vertical_id")
+        request_data["vertical_id"] = request.data.get("vertical_id")
         serializer = OtherSectionSerializer(queryset, data=request_data)
         if serializer.is_valid():
             serializer.save()
-            message = "Other Section updated successfully"
+            message = "Section updated successfully"
             status_code = status.HTTP_200_OK
             return Response({"detail": message}, status_code)
         else:

@@ -15,8 +15,8 @@ class CertificateView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        vertical_id = self.request.GET.get("id", "")
-        return Certificate.objects.filter(verticals_id=vertical_id)
+        vertical_id = self.request.GET.get("id")
+        return Certificate.objects.filter(vertical_id=vertical_id).exclude(vertical_id=None)
 
     def post(self, request):
         serializer = CertificateSerializer(data=request.data, many=False)
@@ -40,7 +40,7 @@ class CertificateDetailView(APIView):
     def put(self, request, pk):
         queryset = Certificate.objects.filter(pk=pk).first()
         request_data = request.data
-        request_data["verticals_id"] = request.data.get("vertical_id")
+        request_data["vertical_id"] = request.data.get("vertical_id")
         serializer = CertificateSerializer(queryset, data=request_data)
         if serializer.is_valid():
             serializer.save()

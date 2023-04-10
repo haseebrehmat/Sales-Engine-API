@@ -13,14 +13,19 @@ from settings.utils.helpers import serializer_errors
 class VerticalView(ListAPIView):
     serializer_class = VerticalSerializer
     pagination_class = CustomPagination
-    queryset = Verticals.objects.all()
 
     def get_queryset(self):
-        # self.queryset.filter(company=self.request.user.profile.company)
-        return self.queryset
+        queryset = Verticals.objects.filter(pseudo_id=self.request.GET.get("pseudo_id")).exclude(pseudo_id=None)
+        return queryset
 
     def post(self, request):
-        serializer = VerticalSerializer(data=request.data, many=False)
+        request_data = request.data
+        request_data["hobbies"] = request_data.get("hobbies", "")
+        if request_data["hobbies"] != "":
+            request_data["hobbies"] = ",".join(request_data["hobbies"])
+
+        serializer = VerticalSerializer(data=request_data, many=False)
+
         if serializer.is_valid():
             serializer.validated_data["verticals_id"] = request.data.get("vertical_id")
             serializer.create(serializer.validated_data)
@@ -41,10 +46,15 @@ class VerticalDetailView(APIView):
 
     def put(self, request, pk):
         queryset = Verticals.objects.filter(pk=pk).first()
-        request.data["verticals_id"] = request.data.get("vertical_id")
-        serializer = VerticalSerializer(queryset, data=request.data)
+        request_data = request.data
+        request_data["verticals_id"] = request_data.get("vertical_id")
+        request_data["hobbies"] = request_data.get("hobbies", "")
+        if request_data["hobbies"] != "":
+            request_data["hobbies"] = ",".join(request_data["hobbies"])
+        print(request_data["hobbies"])
+        serializer = VerticalSerializer(queryset, data=request_data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(hobbies=request_data["hobbies"])
             message = "Vertical updated successfully"
             status_code = status.HTTP_200_OK
             return Response({"detail": message}, status_code)

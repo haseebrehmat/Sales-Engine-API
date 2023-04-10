@@ -15,13 +15,13 @@ class SkillView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        vertical_id = self.request.GET.get("id", "")
-        return Skills.objects.filter(verticals_id=vertical_id)
+        vertical_id = self.request.GET.get("id")
+        return Skills.objects.filter(vertical_id=vertical_id).exclude(vertical_id=None)
 
     def post(self, request):
         serializer = SkillSerializer(data=request.data, many=False)
         if serializer.is_valid():
-            serializer.validated_data["verticals_id"] = request.data.get("vertical_id")
+            serializer.validated_data["vertical_id"] = request.data.get("vertical_id")
             serializer.create(serializer.validated_data)
             message = "Skill created successfully"
             status_code = status.HTTP_201_CREATED
@@ -41,7 +41,7 @@ class SkillDetailView(APIView):
     def put(self, request, pk):
         queryset = Skills.objects.filter(pk=pk).first()
         request_data = request.data
-        request_data["verticals_id"] = request.data.get("vertical_id")
+        request_data["vertical_id"] = request.data.get("vertical_id")
         serializer = SkillSerializer(queryset, data=request_data)
         if serializer.is_valid():
             serializer.save()
