@@ -105,6 +105,13 @@ def load_jobs(driver):
     except:
         return False
 
+
+def accept_cookie(driver):
+    accept = driver.find_elements(By.CLASS_NAME, "btn-clear-white-transparent")
+    if len(accept) > 0:
+        accept[0].click()
+
+
 # code starts from here
 def career_builder():
     count = 0
@@ -122,11 +129,13 @@ def career_builder():
         types = []
         job_type = []
         for c in range(3):
-            query = list(JobSourceQuery.objects.filter(job_source='career_builder').values_list("queries", flat=True))[0]
+            query = list(JobSourceQuery.objects.filter(job_source='career_builder').values_list("queries", flat=True))[
+                0]
             types.append(query[c]['link'])
             job_type.append(query[c]['job_type'])
         for url in types:
             request_url(driver, url)
+            accept_cookie(driver)
             while load_jobs(driver):
                 print("Loading...")
             find_jobs(driver, scrapped_data, job_type[count])
