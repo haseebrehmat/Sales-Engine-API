@@ -108,8 +108,8 @@ def monster():
         for url in types:
             driver.get(url)
             driver.maximize_window()
-        find_jobs(driver, scrapped_data, job_type[count])
-        count += 1
+            find_jobs(driver, scrapped_data, job_type[count])
+            count += 1
     print("SCRAPING_ENDED")
     ScraperLogs.objects.create(total_jobs=total_job, job_source="Monster")
 

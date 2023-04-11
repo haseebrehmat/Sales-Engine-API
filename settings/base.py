@@ -25,7 +25,8 @@ CUSTOM_APPS = [
     'authentication',
     'job_portal',
     'dashboard',
-    'job_scraper'
+    'job_scraper',
+    'pseudos'
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
