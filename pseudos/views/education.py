@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Education
+from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.education import EducationSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class EducationView(ListAPIView):
+    permission_classes = (VerticalPermissions,)
     serializer_class = EducationSerializer
     pagination_class = CustomPagination
 
@@ -32,6 +34,7 @@ class EducationView(ListAPIView):
 
 
 class EducationDetailView(APIView):
+    permission_classes = (VerticalPermissions,)
 
     def get(self, request, pk):
         queryset = Education.objects.filter(pk=pk).first()

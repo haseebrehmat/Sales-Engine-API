@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Language
+from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.languages import LanguageSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class LanguageView(ListAPIView):
+    permission_classes = (VerticalPermissions,)
     serializer_class = LanguageSerializer
     pagination_class = CustomPagination
 
@@ -32,6 +34,7 @@ class LanguageView(ListAPIView):
 
 
 class LanguageDetailView(APIView):
+    permission_classes = (VerticalPermissions,)
 
     def get(self, request, pk):
         queryset = Language.objects.filter(pk=pk).first()

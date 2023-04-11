@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import OtherSection
+from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.other_sections import OtherSectionSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class OtherSectionView(ListAPIView):
+    permission_classes = (VerticalPermissions,)
     serializer_class = OtherSectionSerializer
     pagination_class = CustomPagination
 
@@ -32,6 +34,7 @@ class OtherSectionView(ListAPIView):
 
 
 class OtherSectionDetailView(APIView):
+    permission_classes = (VerticalPermissions,)
 
     def get(self, request, pk):
         queryset = OtherSection.objects.filter(pk=pk).first()

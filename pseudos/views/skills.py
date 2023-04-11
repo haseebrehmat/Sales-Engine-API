@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Skills
+from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.skills import SkillSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class SkillView(ListAPIView):
+    permission_classes = (VerticalPermissions,)
     serializer_class = SkillSerializer
     pagination_class = CustomPagination
 
@@ -32,6 +34,7 @@ class SkillView(ListAPIView):
 
 
 class SkillDetailView(APIView):
+    permission_classes = (VerticalPermissions,)
 
     def get(self, request, pk):
         queryset = Skills.objects.filter(pk=pk).first()
