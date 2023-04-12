@@ -2,11 +2,12 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from time import sleep
 from job_scraper.models import SchedulerSync
 from job_scraper.models import AllSyncConfig
 from job_scraper.utils.scraper_permission import ScraperPermissions
 from job_scraper.schedulers.job_upload_scheduler import load_job_scrappers, load_all_job_scrappers
+
 
 
 class SyncScheduler(APIView):
@@ -34,9 +35,10 @@ class SyncScheduler(APIView):
             message = f"{job_source} sync in progress, Process is already running in the background"
         else:
             message = f"{job_source} sync in progress, It will take a while"
-            load_job_scrappers(job_source)
+            load_job_scrappers.delay(job_source)  # running on celery shared task
 
         return Response({"detail": message}, status=status.HTTP_200_OK)
+
 
 
 class SyncAllScrapersView(APIView):
@@ -68,6 +70,7 @@ class SyncAllScrapersView(APIView):
         return Response(False)
 
 
+
 class SchedulerStatusView(APIView):
 
     permission_classes = (AllowAny,)
@@ -79,3 +82,4 @@ class SchedulerStatusView(APIView):
         else:
             data = [{"job_source": x.job_source, "running": x.running} for x in queryset]
         return Response(data, status=status.HTTP_200_OK)
+

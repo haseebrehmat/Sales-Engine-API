@@ -9,7 +9,7 @@ from job_portal.utils.job_status import JOB_STATUS_CHOICE
 from settings.utils.model_fields import TimeStamped
 
 
-class JobDetail(models.Model):
+class  JobDetail(models.Model):
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
