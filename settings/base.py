@@ -26,7 +26,8 @@ CUSTOM_APPS = [
     'job_portal',
     'dashboard',
     'job_scraper',
-    'pseudos'
+    'pseudos',
+    'error_logger',
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
@@ -193,3 +194,21 @@ AWS_QUERYSTRING_AUTH = False
 #         },
 #     },
 # }
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "db": {
+            "level": "DEBUG",
+            "class": "settings.handlers.DBHandler",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "level": "ERROR",
+            "handlers": ["db"],
+            "propagate": False,
+        },
+    },
+}
+
