@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+
 sudo rm -rf /home/ubuntu/logs/*
 sudo mkdir /home/ubuntu/logs
 
@@ -7,3 +8,4 @@ sudo cp /home/ubuntu/Octagon-BE/gunicorn/gunicorn.service  /etc/systemd/system/g
 
 sudo systemctl start gunicorn.service
 sudo systemctl enable gunicorn.service
+
