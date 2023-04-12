@@ -29,7 +29,7 @@ class VerticalView(ListAPIView):
         serializer = VerticalSerializer(data=request_data, many=False)
 
         if serializer.is_valid():
-            serializer.validated_data["verticals_id"] = request.data.get("vertical_id")
+            serializer.validated_data["pseudo_id"] = request.data.get("pseudo_id")
             serializer.create(serializer.validated_data)
             message = "Vertical created successfully"
             status_code = status.HTTP_201_CREATED
@@ -50,7 +50,7 @@ class VerticalDetailView(APIView):
     def put(self, request, pk):
         queryset = Verticals.objects.filter(pk=pk).first()
         request_data = request.data
-        request_data["verticals_id"] = request_data.get("vertical_id")
+        request_data["pseudo_id"] = request_data.get("pseudo_id")
         request_data["hobbies"] = request_data.get("hobbies", "")
         if request_data["hobbies"] != "":
             request_data["hobbies"] = ",".join(request_data["hobbies"])
