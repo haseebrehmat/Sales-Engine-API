@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Links
+from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.links import LinkSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class LinkView(ListAPIView):
+    permission_classes = (VerticalPermissions,)
     serializer_class = LinkSerializer
     pagination_class = CustomPagination
 
@@ -32,6 +34,7 @@ class LinkView(ListAPIView):
 
 
 class LinkDetailView(APIView):
+    permission_classes = (VerticalPermissions,)
 
     def get(self, request, pk):
         queryset = Links.objects.filter(pk=pk).first()

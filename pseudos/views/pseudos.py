@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Pseudos
+from pseudos.permissions.pseudos import PseudoPermissions
 from pseudos.serializers.pseudos import PseudoSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class PseudosView(ListAPIView):
+    permission_classes = (PseudoPermissions,)
     serializer_class = PseudoSerializer
     pagination_class = CustomPagination
     queryset = Pseudos.objects.all()
@@ -33,6 +35,7 @@ class PseudosView(ListAPIView):
 
 
 class PseudoDetailView(APIView):
+    permission_classes = (PseudoPermissions,)
 
     def get(self, request, pk):
         queryset = Pseudos.objects.filter(pk=pk).first()

@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Certificate
+from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.certificates import CertificateSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class CertificateView(ListAPIView):
+    permission_classes = (VerticalPermissions,)
     serializer_class = CertificateSerializer
     pagination_class = CustomPagination
 
@@ -31,6 +33,7 @@ class CertificateView(ListAPIView):
 
 
 class CertificateDetailView(APIView):
+    permission_classes = (VerticalPermissions,)
 
     def get(self, request, pk):
         queryset = Certificate.objects.filter(pk=pk).first()

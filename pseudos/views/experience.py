@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Experience
+from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.experience import ExperienceSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class ExperienceView(ListAPIView):
+    permission_classes = (VerticalPermissions,)
     serializer_class = ExperienceSerializer
     pagination_class = CustomPagination
 
@@ -32,6 +34,7 @@ class ExperienceView(ListAPIView):
 
 
 class ExperienceDetailView(APIView):
+    permission_classes = (VerticalPermissions,)
 
     def get(self, request, pk):
         queryset = Experience.objects.filter(pk=pk).first()
