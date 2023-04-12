@@ -5,9 +5,9 @@ sed -i 's/\[]/\["3.86.7.0/"]/' /home/ubuntu/Octagon-BE/settings/production.py
 python manage.py migrate 
 python manage.py makemigrations     
 python manage.py collectstatic
+sudo service gunicorn restart
 celery -A settings worker -l info -P eventlet
 celery -A settings beat -l info
-sudo service gunicorn restart
 sudo service nginx restart
 #sudo tail -f /var/log/nginx/error.log
 #sudo systemctl reload nginx
