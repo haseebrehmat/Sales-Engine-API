@@ -193,6 +193,3 @@ AWS_QUERYSTRING_AUTH = False
 #         },
 #     },
 # }
-
-
-

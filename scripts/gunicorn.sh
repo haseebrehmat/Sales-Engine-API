@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-# create application logs files
 sudo rm -rf /home/ubuntu/logs/*
 sudo mkdir /home/ubuntu/logs
 

@@ -6,6 +6,7 @@ from pseudos.views.languages import LanguageView, LanguageDetailView
 from pseudos.views.links import LinkView, LinkDetailView
 from pseudos.views.other_sections import OtherSectionView, OtherSectionDetailView
 from pseudos.views.pseudos import PseudosView, PseudoDetailView
+from pseudos.views.resume import ResumeView
 # from pseudos.views.resume_section import ResumeSectionDetailView, ResumeSectionView
 from pseudos.views.skills import SkillView, SkillDetailView
 from pseudos.views.verticals import VerticalView, VerticalDetailView
@@ -15,8 +16,7 @@ urlpatterns = [
     path('pseudo/<str:pk>/', PseudoDetailView.as_view()),
     path('vertical/', VerticalView.as_view()),
     path('vertical/<str:pk>/', VerticalDetailView.as_view()),
-    # path('resume/', ResumeSectionView.as_view()),
-    # path('resume/<str:pk>/', ResumeSectionDetailView.as_view()),
+    path('resume/<str:pk>/', ResumeView.as_view()),
     path('skill/', SkillView.as_view()),
     path('skill/<str:pk>/', SkillDetailView.as_view()),
     path('experience/', ExperienceView.as_view()),
