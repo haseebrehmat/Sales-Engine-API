@@ -22,6 +22,8 @@ from job_scraper.utils.helpers import convert_time_into_minutes
 #from job_scraper.utils.thread import start_new_thread
 from celery import shared_task
 
+from job_scraper.utils.thread import start_new_thread
+
 scraper_functions = {
     "linkedin": [
         linkedin,  # Tested working

@@ -13,7 +13,7 @@ urlpatterns = [
     path('job_source_link/', JobQueriesView.as_view()),
     path('job_source_link/<str:pk>/', JobQueriesDetailView.as_view()),
     path('scheduler_status/', SchedulerStatusView.as_view()),
-    path('sync_scheduler/', SyncAllScrapersView.as_view())
+    path('sync_scheduler/', SyncAllScrapersView.as_view()),
     path('logs/', ScraperLogView.as_view()),
 ]
 

@@ -25,3 +25,5 @@ webdriver_manager
 regex
 celery
 eventlet
+django_celery_results
+django_celery_beat
