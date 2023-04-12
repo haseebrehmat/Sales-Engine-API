@@ -86,13 +86,12 @@ def dice():
         "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
     )
     # options.headless = True  # newly added
-    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                          options=options) as driver:  # modified
-        # types = [DICE_CONTRACT_RESULTS, DICE_FULL_RESULTS, DICE_REMOTE_RESULTS]
+    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
         types = []
         job_type = []
         for c in range(3):
-            query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True))[0]
+            query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True).first())
+            print(query[c]['link'])
             types.append(query[c]['link'])
             job_type.append(query[c]['job_type'])
         for url in types:

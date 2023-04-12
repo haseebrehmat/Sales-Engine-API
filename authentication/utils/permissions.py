@@ -229,4 +229,44 @@ permissions = [
         "codename": "view_manual_job",
         "name": "View Manual Job"
     },
+    {
+        "codename": 'view_pseudo',
+        "name": 'View Pseudos',
+        "module": 'Pseudos',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'create_pseudo',
+        "name": 'Create Pseudo',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'edit_pseudo',
+        "name": 'Edit Pseudo',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'view_vertical',
+        "name": 'View Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'create_vertical',
+        "name": 'Create Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'edit_vertical',
+        "name": 'Edit Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'delete_vertical',
+        "name": 'Delete Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'delete_pseudo',
+        "name": 'Delete Pseudo',
+    },
 ]

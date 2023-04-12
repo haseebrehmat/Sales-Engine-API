@@ -16,40 +16,39 @@ class JobClassifier(object):
     def __init__(self, dataframe: pd.DataFrame):
         self.data_frame = dataframe
 
-    def match_text_with_regex(self, text):
-        for regex in regular_expressions:
+    def match_text_with_regex(self, text, regular_expression_list):
+        for regex in regular_expression_list:
             pattern = re.compile(regex['exp'])
             if pattern.search(text):
                 return regex['tech_stack']
         return None
 
-    def classify_job_with_languages(self, text):
-        language_dict = languages
-        for key, value in language_dict.items():
+    def classify_job_with_languages(self, text, langugages_dict):
+        for key, value in langugages_dict.items():
             for x in value:
                 if x.lower() in text:
                     return key
         return None
 
-    def classifier_stage1(self, job_title):
+    def classifier_stage1(self, job_title, regular_expression_list, langugages_dict):
         # check regular expression for job title
-        matched_result = self.match_text_with_regex(job_title)
+        matched_result = self.match_text_with_regex(job_title, regular_expression_list)
 
         if matched_result:
             return matched_result
 
-        result = self.classify_job_with_languages(job_title)
+        result = self.classify_job_with_languages(job_title, langugages_dict)
         if result:
             return result
         else:
             return 'others'
 
-    def find_job_techkeyword(self, job_title):
+    def find_job_techkeyword(self, job_title, regular_expression_list, langugages_dict):
         # job_title = ",".join(job_title.split("/")).lower()
 
         # run stage 1 of the classififer
         job_title = job_title.lower()
-        data = self.classifier_stage1(job_title)
+        data = self.classifier_stage1(job_title, regular_expression_list, langugages_dict)
         if data == "others":
             return self.job_classifier_stage2(job_title)
         return data
@@ -112,12 +111,17 @@ class JobClassifier(object):
 
     def classify_job(self, job_title, job_description):
         job_title = job_title.strip().lower()
-        classifier_result = self.find_job_techkeyword(job_title)
+        regular_expression_list=regular_expressions
+        classifier_result = self.find_job_techkeyword(job_title, regular_expression_list, languages)
         if classifier_result == 'others dev' and job_description:
             job_description = job_description.strip().lower()
-            classifier_result = self.match_text_with_regex(job_description)
+            tags = ['qa']
+            regular_expression_list = [regex_exp for regex_exp in regular_expressions if regex_exp['tech_stack'].lower() not in tags]
+            classifier_result = self.match_text_with_regex(job_description, regular_expression_list)
             if classifier_result is None:
-                result = self.classify_job_with_languages(job_description)
+                updated_langugages = {key: languages[key]
+                      for key in languages.keys() if key.lower() not in tags}
+                result = self.classify_job_with_languages(job_description, updated_langugages)
                 return 'others dev' if result is None else result
         return classifier_result
 

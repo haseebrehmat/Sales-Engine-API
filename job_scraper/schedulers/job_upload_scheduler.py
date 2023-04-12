@@ -16,7 +16,7 @@ from job_scraper.jobs.linkedin_scraping import linkedin
 from job_scraper.jobs.monster_scraping import monster
 from job_scraper.jobs.simply_hired_scraping import simply_hired
 from job_scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
-from job_scraper.models import SchedulerSettings
+from job_scraper.models import SchedulerSettings, AllSyncConfig
 from job_scraper.models.scheduler import SchedulerSync
 from job_scraper.utils.helpers import convert_time_into_minutes
 #from job_scraper.utils.thread import start_new_thread
@@ -117,7 +117,34 @@ def upload_file(job_parser):
         model_instances, ignore_conflicts=True, batch_size=1000)
 
 
-#@start_new_thread
+@start_new_thread
+def load_all_job_scrappers():
+    SchedulerSync.objects.all().update(running=False)
+    SchedulerSync.objects.filter(job_source="all").update(running=True)
+    while bool(AllSyncConfig.objects.filter(status=True).values_list(flat=True)):
+        try:
+            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
+            functions = []
+            for function in scrapers:
+                functions.extend(function)
+
+            for function in functions:
+                try:
+                    function()
+                except Exception as e:
+                    print(e)
+                try:
+                    upload_jobs()
+                except Exception as e:
+                    print("Error in uploading jobs", e)
+                remove_files()
+        except Exception as e:
+            print(e)
+    SchedulerSync.objects.all().update(running=False)
+
+    return True
+
+
 @shared_task()
 def load_job_scrappers(job_source):
     try:
@@ -195,7 +222,6 @@ all_jobs_scheduler = BackgroundScheduler()
 job_interval_scheduler = BackgroundScheduler()
 job_time_scheduler = BackgroundScheduler()
 
-
 linkedin_scheduler = BackgroundScheduler()
 indeed_scheduler = BackgroundScheduler()
 dice_scheduler = BackgroundScheduler()
@@ -270,15 +296,14 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "simply_hired":
                 simply_hired_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["simply_hired"])
+                                               args=["simply_hired"])
 
             elif scheduler.job_source.lower() == "zip_recruiter":
                 zip_recruiter_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["zip_recruiter"])
+                                                args=["zip_recruiter"])
 
             elif scheduler.job_source.lower() == "adzuna_recruiter":
                 adzuna_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["adzuna_recruiter"])
-
+                                         args=["adzuna_recruiter"])
 
 # scheduler_settings()
