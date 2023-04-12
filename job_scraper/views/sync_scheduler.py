@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from job_scraper.models import SchedulerSync
-from job_scraper.schedulers.job_upload_scheduler import load_job_scrappers
+from job_scraper.models import AllSyncConfig
+from job_scraper.utils.scraper_permission import ScraperPermissions
+from job_scraper.schedulers.job_upload_scheduler import load_job_scrappers, load_all_job_scrappers
 
 
 class SyncScheduler(APIView):
@@ -37,7 +39,37 @@ class SyncScheduler(APIView):
         return Response({"detail": message}, status=status.HTTP_200_OK)
 
 
+class SyncAllScrapersView(APIView):
+    permission_classes = (ScraperPermissions,)
+
+    def post(self, request):
+        sync_status = bool(AllSyncConfig.objects.all().first().status)
+        queryset = AllSyncConfig.objects.all()
+        if queryset.count() > 0:
+            if sync_status:
+                AllSyncConfig.objects.all().update(status=False)
+            else:
+                AllSyncConfig.objects.all().update(status=True)
+                load_all_job_scrappers()
+        else:
+            if sync_status:
+                AllSyncConfig.objects.create(status=False)
+            else:
+                AllSyncConfig.objects.create(status=True)
+                load_all_job_scrappers()
+        if sync_status:
+            return Response({"Sync stopped"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"Sync started"}, status=status.HTTP_200_OK)
+
+    def get(self, request):
+        if bool(AllSyncConfig.objects.filter(status=True).values_list(flat=True)):
+            return Response(True)
+        return Response(False)
+
+
 class SchedulerStatusView(APIView):
+
     permission_classes = (AllowAny,)
 
     def get(self, request):
