@@ -3,7 +3,8 @@ from datetime import timedelta
 from celery import Celery
 from celery.schedules import crontab
 import django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.local')
+from settings.base import ENVIRONMENT
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'settings.{ENVIRONMENT}')
 django.setup()
 from job_scraper.models import SchedulerSettings
 from job_scraper.utils.helpers import convert_time_into_minutes
@@ -33,6 +34,7 @@ for object in objects:
 
 app.conf.timezone = 'Asia/Karachi'
 app.autodiscover_tasks()
+
 
 @app.task(bind=True)
 def debug_task(self):

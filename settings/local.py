@@ -12,4 +12,3 @@ DATABASES = {
     }
 }
 
-print("Local")
