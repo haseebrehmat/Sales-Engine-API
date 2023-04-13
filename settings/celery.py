@@ -12,6 +12,7 @@ from job_scraper.utils.helpers import convert_time_into_minutes
 objects = SchedulerSettings.objects.all()
 
 app = Celery('settings')
+
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 scheduler_config = {}
@@ -31,6 +32,8 @@ for object in objects:
         scheduler_config[object.job_source]['schedule'] = crontab(minute=min, hour=hour)
 
     app.conf.beat_schedule = scheduler_config
+
+
 
 app.conf.timezone = 'Asia/Karachi'
 app.autodiscover_tasks()

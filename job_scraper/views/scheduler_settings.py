@@ -99,6 +99,7 @@ class SchedulerDetailView(APIView):
             message = {"detail": "Scheduler updated successfully"}
             return Response(message, status=status_code)
 
+
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
 
