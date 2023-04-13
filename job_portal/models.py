@@ -6,10 +6,11 @@ from django.utils import timezone
 from authentication.models import User
 from authentication.models.company import Company
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
+from pseudos.models import Verticals
 from settings.utils.model_fields import TimeStamped
 
 
-class  JobDetail(models.Model):
+class JobDetail(models.Model):
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -39,6 +40,8 @@ class  JobDetail(models.Model):
 
 
 class AppliedJobStatus(models.Model):
+    vertical = models.ForeignKey(Verticals, on_delete=models.SET_NULL, blank=True, null=True)
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -55,6 +58,8 @@ class AppliedJobStatus(models.Model):
         blank=True, null=False)
     applied_date = models.DateTimeField(default=timezone.now)
     job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
+    resume = models.TextField(blank=True, null=True)
+    cover_letter = models.TextField(blank=True, null=True)
 
     class Meta:
         default_permissions = ()

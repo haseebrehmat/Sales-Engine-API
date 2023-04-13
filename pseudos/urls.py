@@ -1,5 +1,6 @@
 from django.urls import path
 from pseudos.views.certificates import CertificateView, CertificateDetailView
+from pseudos.views.cover_letter import CoverLetterView, CoverLetterDetailView
 from pseudos.views.education import EducationView, EducationDetailView
 from pseudos.views.experience import ExperienceView, ExperienceDetailView
 from pseudos.views.languages import LanguageView, LanguageDetailView
@@ -29,6 +30,8 @@ urlpatterns = [
     path('language/<str:pk>/', LanguageDetailView.as_view()),
     path('certificate/', CertificateView.as_view()),
     path('certificate/<str:pk>/', CertificateDetailView.as_view()),
+    path('cover_letter/', CoverLetterView.as_view()),
+    path('cover_letter/<str:pk>/', CoverLetterDetailView.as_view()),
     path('other_section/', OtherSectionView.as_view()),
     path('other_section/<str:pk>/', OtherSectionDetailView.as_view()),
 
