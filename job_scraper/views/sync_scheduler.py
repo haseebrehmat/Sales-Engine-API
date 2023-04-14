@@ -9,7 +9,6 @@ from job_scraper.utils.scraper_permission import ScraperPermissions
 from job_scraper.schedulers.job_upload_scheduler import load_job_scrappers, load_all_job_scrappers
 
 
-
 class SyncScheduler(APIView):
     permission_classes = (AllowAny,)
 
@@ -38,7 +37,6 @@ class SyncScheduler(APIView):
             load_job_scrappers.delay(job_source)  # running on celery shared task
 
         return Response({"detail": message}, status=status.HTTP_200_OK)
-
 
 
 class SyncAllScrapersView(APIView):
@@ -70,9 +68,7 @@ class SyncAllScrapersView(APIView):
         return Response(False)
 
 
-
 class SchedulerStatusView(APIView):
-
     permission_classes = (AllowAny,)
 
     def get(self, request):
@@ -82,4 +78,3 @@ class SchedulerStatusView(APIView):
         else:
             data = [{"job_source": x.job_source, "running": x.running} for x in queryset]
         return Response(data, status=status.HTTP_200_OK)
-
