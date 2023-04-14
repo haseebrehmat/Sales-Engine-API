@@ -2,11 +2,11 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
 from authentication.exceptions import InvalidUserException
 from job_scraper.models import SchedulerSettings
 from job_scraper.schedulers.job_upload_scheduler import scheduler_settings
 from job_scraper.serializers.scheduler_settings import SchedulerSerializer
+from settings.celery import restart_server
 from settings.utils.helpers import serializer_errors
 
 
@@ -95,8 +95,8 @@ class SchedulerDetailView(APIView):
         if serializer.is_valid():
             serializer.save()
             status_code = status.HTTP_200_OK
-            scheduler_settings()    # This will update current schedulers
             message = {"detail": "Scheduler updated successfully"}
+            restart_server()
             return Response(message, status=status_code)
 
 
