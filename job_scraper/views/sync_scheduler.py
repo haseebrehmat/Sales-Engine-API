@@ -43,20 +43,14 @@ class SyncAllScrapersView(APIView):
     permission_classes = (ScraperPermissions,)
 
     def post(self, request):
+        if len(AllSyncConfig.objects.all()) == 0:
+            AllSyncConfig.objects.create(status=False)
         sync_status = bool(AllSyncConfig.objects.all().first().status)
-        queryset = AllSyncConfig.objects.all()
-        if queryset.count() > 0:
-            if sync_status:
-                AllSyncConfig.objects.all().update(status=False)
-            else:
-                AllSyncConfig.objects.all().update(status=True)
-                load_all_job_scrappers()
+        if sync_status:
+            AllSyncConfig.objects.all().update(status=False)
         else:
-            if sync_status:
-                AllSyncConfig.objects.create(status=False)
-            else:
-                AllSyncConfig.objects.create(status=True)
-                load_all_job_scrappers()
+            AllSyncConfig.objects.all().update(status=True)
+            load_all_job_scrappers()
         if sync_status:
             return Response({"Sync stopped"}, status=status.HTTP_200_OK)
         else:
