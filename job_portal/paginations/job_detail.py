@@ -110,8 +110,10 @@ class CustomPagination(pagination.PageNumberPagination):
         if self.request.GET.get("job_type", "") != "":
             queryset = queryset.filter(job_type__iexact=self.request.GET.get("job_type"))
         if self.request.GET.get("job_visibility") != "all":
-            company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list(
-                "company_name", flat=True)
+            if self.request.user.profile.company:
+                company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list("company_name", flat=True)
+            else:
+                company = BlacklistJobs.objects.all().values_list("company_name", flat=True)
             company = list(company)
             if self.request.GET.get("job_visibility") == "non-recruiter":
                 queryset = queryset.exclude(company_name__in=company, block=True)
