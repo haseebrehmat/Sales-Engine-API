@@ -19,7 +19,7 @@ from job_scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from job_scraper.models import SchedulerSettings, AllSyncConfig
 from job_scraper.models.scheduler import SchedulerSync
 from job_scraper.utils.helpers import convert_time_into_minutes
-#from job_scraper.utils.thread import start_new_thread
+# from job_scraper.utils.thread import start_new_thread
 from celery import shared_task
 
 from job_scraper.utils.thread import start_new_thread
@@ -121,9 +121,7 @@ def upload_file(job_parser):
 
 @start_new_thread
 def load_all_job_scrappers():
-    SchedulerSync.objects.all().update(running=False)
-    SchedulerSync.objects.filter(job_source="all").update(running=True)
-    while bool(AllSyncConfig.objects.filter(status=True).values_list(flat=True)):
+    while AllSyncConfig.objects.filter(status=True).first() is not None:
         try:
             scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
             functions = []
@@ -142,12 +140,13 @@ def load_all_job_scrappers():
                 remove_files()
         except Exception as e:
             print(e)
-    SchedulerSync.objects.all().update(running=False)
+    print("Script Terminated")
 
     return True
 
 
-@shared_task()
+# @shared_task()
+@start_new_thread
 def load_job_scrappers(job_source):
     try:
         SchedulerSync.objects.filter(job_source=job_source).update(running=True)
@@ -308,4 +307,5 @@ def scheduler_settings():
                 adzuna_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["adzuna_recruiter"])
 
-# scheduler_settings()
+
+scheduler_settings()

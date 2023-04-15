@@ -34,7 +34,7 @@ class SyncScheduler(APIView):
             message = f"{job_source} sync in progress, Process is already running in the background"
         else:
             message = f"{job_source} sync in progress, It will take a while"
-            load_job_scrappers.delay(job_source)  # running on celery shared task
+            load_job_scrappers(job_source)  # running on celery shared task
 
         return Response({"detail": message}, status=status.HTTP_200_OK)
 
@@ -43,7 +43,7 @@ class SyncAllScrapersView(APIView):
     permission_classes = (ScraperPermissions,)
 
     def post(self, request):
-        if len(AllSyncConfig.objects.all()) == 0:
+        if AllSyncConfig.objects.count() == 0:
             AllSyncConfig.objects.create(status=False)
         sync_status = bool(AllSyncConfig.objects.all().first().status)
         if sync_status:
@@ -57,7 +57,7 @@ class SyncAllScrapersView(APIView):
             return Response({"Sync started"}, status=status.HTTP_200_OK)
 
     def get(self, request):
-        if bool(AllSyncConfig.objects.filter(status=True).values_list(flat=True)):
+        if AllSyncConfig.objects.filter(status=True).first() is not None:
             return Response(True)
         return Response(False)
 
@@ -66,7 +66,7 @@ class SchedulerStatusView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        queryset = SchedulerSync.objects.all().exclude(job_source=None)
+        queryset = SchedulerSync.objects.exclude(job_source=None)
         if len(queryset) is None:
             data = []
         else:
