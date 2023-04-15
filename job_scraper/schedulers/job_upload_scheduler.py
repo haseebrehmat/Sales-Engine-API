@@ -20,7 +20,7 @@ from job_scraper.models import SchedulerSettings, AllSyncConfig
 from job_scraper.models.scheduler import SchedulerSync
 from job_scraper.utils.helpers import convert_time_into_minutes
 # from job_scraper.utils.thread import start_new_thread
-from celery import shared_task
+# from celery import shared_task
 
 from job_scraper.utils.thread import start_new_thread
 
