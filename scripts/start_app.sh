@@ -6,8 +6,8 @@ python manage.py migrate
 python manage.py makemigrations     
 python manage.py collectstatic
 sudo service gunicorn restart
-celery -A settings worker -l info -P eventlet
-celery -A settings beat -l info
+#celery -A settings worker -l info -P eventlet
+#celery -A settings beat -l info
 sudo service nginx restart
 #sudo tail -f /var/log/nginx/error.log
 #sudo systemctl reload nginx

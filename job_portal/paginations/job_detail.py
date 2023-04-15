@@ -109,6 +109,9 @@ class CustomPagination(pagination.PageNumberPagination):
             queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
         if self.request.GET.get("job_type", "") != "":
             queryset = queryset.filter(job_type__iexact=self.request.GET.get("job_type"))
+        if self.request.GET.get("tech_keywords", "") != "":
+            keywords_list = self.request.GET.get("tech_keywords").split(",")
+            queryset = queryset.filter(tech_keywords__in=keywords_list)
         if self.request.GET.get("job_visibility") != "all":
             if self.request.user.profile.company:
                 company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list("company_name", flat=True)
