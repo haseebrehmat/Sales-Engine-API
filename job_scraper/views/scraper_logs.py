@@ -1,5 +1,4 @@
 from rest_framework.generics import ListAPIView
-from rest_framework.views import APIView
 
 from job_scraper.models import ScraperLogs
 from job_scraper.serializers.scraper_logs_serializer import ScraperLogsSerializer

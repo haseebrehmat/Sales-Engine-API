@@ -149,7 +149,7 @@ def load_all_job_scrappers():
 @start_new_thread
 def load_job_scrappers(job_source):
     try:
-        SchedulerSync.objects.filter(job_source=job_source).update(running=True)
+        SchedulerSync.objects.filter(job_source=job_source, type='instant').update(running=True)
         if job_source != "all":
             functions = scraper_functions[job_source]
         else:
@@ -175,6 +175,7 @@ def load_job_scrappers(job_source):
 
 
 def run_scheduler(job_source):
+    SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=True)
     if job_source == "linkedin":
         linkedin()
         linkedin_job_create()
@@ -205,6 +206,7 @@ def run_scheduler(job_source):
 
     upload_jobs()
     remove_files(job_source=job_source)
+    SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=False)
 
 
 def start_job_sync(job_source):
@@ -308,4 +310,4 @@ def scheduler_settings():
                                          args=["adzuna_recruiter"])
 
 
-scheduler_settings()
+# scheduler_settings()

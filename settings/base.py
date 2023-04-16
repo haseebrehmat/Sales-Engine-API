@@ -3,13 +3,14 @@ from datetime import timedelta
 import environ
 
 from pathlib import Path
+
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
-#BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 ENVIRONMENT = env('ENVIRONMENT')
 ALLOWED_HOSTS = ["*"]
@@ -35,8 +36,8 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'django_filters',
-    'django_celery_results',
-    'django_celery_beat',
+    # 'django_celery_results',
+    # 'django_celery_beat',
 ]
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 # Defining Middlewares
@@ -211,4 +212,3 @@ LOGGING = {
         },
     },
 }
-

@@ -1,4 +1,5 @@
 from settings.base import *
+print("Development DB")
 DEBUG = True
 DATABASES = {
     'default': {

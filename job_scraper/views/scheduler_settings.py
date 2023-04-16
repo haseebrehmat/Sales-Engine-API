@@ -6,7 +6,7 @@ from authentication.exceptions import InvalidUserException
 from job_scraper.models import SchedulerSettings
 from job_scraper.schedulers.job_upload_scheduler import scheduler_settings
 from job_scraper.serializers.scheduler_settings import SchedulerSerializer
-from settings.celery import restart_server
+# from settings.celery import restart_server
 from settings.utils.helpers import serializer_errors
 
 
@@ -96,9 +96,8 @@ class SchedulerDetailView(APIView):
             serializer.save()
             status_code = status.HTTP_200_OK
             message = {"detail": "Scheduler updated successfully"}
-            restart_server()
+            scheduler_settings()
             return Response(message, status=status_code)
-
 
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
