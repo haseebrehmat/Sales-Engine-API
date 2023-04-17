@@ -25,9 +25,12 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         job_details['id'] = json_results['pk']
         job_details['applied_date'] = instance.applied_date
         job_details['status'] = instance.job_status
-        job_details["resume"] = instance.resume
-        job_details["vertical_id"] = instance.vertical_id
-        job_details["cover_letter"] = instance.cover_letter
+        try:
+            job_details["resume"] = instance.resume
+            job_details["vertical_id"] = instance.vertical_id
+            job_details["cover_letter"] = instance.cover_letter
+        except Exception as e:
+            print(e)
 
         # result['job_details'] = job_details
         return job_details
