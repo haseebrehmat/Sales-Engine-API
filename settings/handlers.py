@@ -8,10 +8,12 @@ import uuid
 class DBHandler(Handler):
     def emit(self, record):
         level = record.levelname
-        if level =='INFO':
-            self.saveInfoLog(record, level)
+        # if level =='INFO':
+        #     self.saveInfoLog(record, level)
 
-        elif level in ['ERROR', 'WARNING']:
+        # elif level in ['ERROR', 'WARNING']:
+        #     self.saveErrorLog(record, level)
+        if level == 'WARNING':
             self.saveErrorLog(record, level)
 
     def saveErrorLog(self, record, level):
@@ -69,41 +71,41 @@ class DBHandler(Handler):
         except Exception as e:
             print(e)
 
-    def saveInfoLog(self, record, level):
-        try:
-            from error_logger.models import Log
-            path = record.pathname
-            line_number = record.lineno
-            error_message = None
-            traceback_log = record.args[0]
-            error_line = None
-            method = None
-            status_code = None
-            user_id = None
+    # def saveInfoLog(self, record, level):
+    #     try:
+    #         from error_logger.models import Log
+    #         path = record.pathname
+    #         line_number = record.lineno
+    #         error_message = None
+    #         traceback_log = record.args[0]
+    #         error_line = None
+    #         method = None
+    #         status_code = None
+    #         user_id = None
 
-            if hasattr(record, 'request'):
-                if hasattr(record.request, 'method'):
-                    method = record.request.method
+    #         if hasattr(record, 'request'):
+    #             if hasattr(record.request, 'method'):
+    #                 method = record.request.method
 
-                if hasattr(record.request, 'user') and record.request.user.is_authenticated:
-                    user_id = int(uuid.UUID(str(record.request.user.id)).int) if record.request.user.is_authenticated else None
-            if hasattr(record, 'status_code'):
-                status_code = record.status_code
+    #             if hasattr(record.request, 'user') and record.request.user.is_authenticated:
+    #                 user_id = int(uuid.UUID(str(record.request.user.id)).int) if record.request.user.is_authenticated else None
+    #         if hasattr(record, 'status_code'):
+    #             status_code = record.status_code
 
-            log = Log(
-                user_id=user_id,
-                level=level,
-                log_message=record.getMessage(),
-                error_message=error_message,
-                error_line=error_line,
-                traceback=traceback_log,
-                path=path,
-                line_number=line_number,
-                method=method,
-                status_code=status_code,
-                time=timezone.now()
-            )
-            log.save()
+    #         log = Log(
+    #             user_id=user_id,
+    #             level=level,
+    #             log_message=record.getMessage(),
+    #             error_message=error_message,
+    #             error_line=error_line,
+    #             traceback=traceback_log,
+    #             path=path,
+    #             line_number=line_number,
+    #             method=method,
+    #             status_code=status_code,
+    #             time=timezone.now()
+    #         )
+    #         log.save()
 
-        except Exception as e:
-            print(e)
+    #     except Exception as e:
+    #         print(e)
