@@ -4,7 +4,7 @@ from django.db import models
 import pseudos.models
 from authentication.models import User
 from settings.utils.model_fields import TimeStamped
-from pseudos.models.verticals import Verticals
+# from pseudos.models.verticals import Verticals
 
 
 class TeamsMemmbers(models.QuerySet):
@@ -30,7 +30,7 @@ class Team(TimeStamped):
     name = models.CharField(max_length=250, blank=True, null=True)
     reporting_to = models.ForeignKey('User', on_delete=models.SET_NULL, blank=True, null=True)
     members = models.ManyToManyField('User', related_name='reporting_user')
-    verticals = models.ManyToManyField(Verticals, related_name='verticals', blank=True)
+    # verticals = models.ManyToManyField(Verticals, related_name='verticals', blank=True)
 
     objects = TeamManagementManager()
 

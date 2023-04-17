@@ -7,6 +7,7 @@ from authentication.models import User
 from authentication.models.company import Company
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
 from pseudos.models import Verticals
+# from pseudos.models import Verticals
 from settings.utils.model_fields import TimeStamped
 
 

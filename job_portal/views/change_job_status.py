@@ -22,9 +22,9 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        vertical_id = request.data.pop("vertical_id", "")
-        resume = request.data.pop("resume", None)
-        cover_letter = request.data.pop("cover_letter", None)
+        # vertical_id = request.data.pop("vertical_id", "")
+        # resume = request.data.pop("resume", None)
+        # cover_letter = request.data.pop("cover_letter", None)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         job_status = self.request.data.get('status')
@@ -36,22 +36,22 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         if current_user:
             # make sure the current user apply only one time on one job
 
-            print(cover_letter, resume, vertical_id)
+            # print(cover_letter, resume, vertical_id)
 
             obj, create = AppliedJobStatus.objects.get_or_create(job=job_details, applied_by=current_user)
             if not create:
                 return Response({'detail': 'User already applied on this job'}, status=status.HTTP_400_BAD_REQUEST, )
 
-            if vertical_id != "":
-                obj.vertical_id = vertical_id[0]
-            if resume is not None:
-                file_name = f"Resume-{vertical_id[0]}"
-                resume = upload_image(resume[0], file_name)
-                print("Resume => ", resume)
-                obj.resume = resume
-            if cover_letter is not None:
-                file_name = f"CoverLetter-{vertical_id[0]}"
-                obj.cover_letter = upload_image(cover_letter[0], file_name)
+            # if vertical_id != "":
+            #     obj.vertical_id = vertical_id[0]
+            # if resume is not None:
+            #     file_name = f"Resume-{vertical_id[0]}"
+            #     resume = upload_image(resume[0], file_name)
+            #     print("Resume => ", resume)
+            #     obj.resume = resume
+            # if cover_letter is not None:
+            #     file_name = f"CoverLetter-{vertical_id[0]}"
+            #     obj.cover_letter = upload_image(cover_letter[0], file_name)
 
             obj.save()
             data = JobStatusSerializer(obj, many=False)
