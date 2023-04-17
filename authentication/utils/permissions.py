@@ -11,6 +11,16 @@ permissions = [
     },
     {
         "module": "User Management",
+        "codename": "view_member_team",
+        "name": "View Member Team"
+    },
+    {
+        "module": "User Management",
+        "codename": "edit_member_team",
+        "name": "Edit Member Team"
+    },
+    {
+        "module": "User Management",
         "codename": "view_user",
         "name": "View Users"
     },

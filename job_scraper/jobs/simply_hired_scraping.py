@@ -66,7 +66,7 @@ def find_jobs(driver, scrapped_data, job_type):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'job_scraper/job_data/simplyhired - {date_time}.csv', index=False)
+    df.to_csv(f'job_scraper/job_data/simply_hired - {date_time}.csv', index=False)
 
     if not data_exists(driver):
         return False
@@ -100,7 +100,7 @@ def simply_hired():
         types = []
         job_type = []
         for c in range(3):
-            query = list(JobSourceQuery.objects.filter(job_source='simply_hired').values_list("queries", flat=True))[0]
+            query = list(JobSourceQuery.objects.filter(job_source='simplyhired').values_list("queries", flat=True))[0]
             types.append(query[c]['link'])
             job_type.append(query[c]['job_type'])
         for url in types:

@@ -27,39 +27,30 @@ from job_scraper.utils.thread import start_new_thread
 scraper_functions = {
     "linkedin": [
         linkedin,  # Tested working
-        linkedin_job_create,
     ],
     "indeed": [
         indeed,  # Tested working
-        indeed_job_create,
     ],
     "dice": [
         dice,  # Tested working
-        dice_job_create,
     ],
     "careerbuilder": [
         career_builder,  # Test working
-        career_builder_job_create,
     ],
     "glassdoor": [
         glassdoor,  # Tested working
-        glassdoor_job_create,
     ],
     "monster": [
         monster,  # Tested working
-        monster_job_create,
     ],
     "simplyhired": [
         simply_hired,  # Tested working
-        simply_hired_job_create,
     ],
     "ziprecruiter": [
         ziprecruiter_scraping,  # not working
-        zip_recruiter_job_create,
     ],
     "adzuna": [
         adzuna_scraping,
-        adzuna_job_create
     ]
 }
 
@@ -178,31 +169,22 @@ def run_scheduler(job_source):
     SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=True)
     if job_source == "linkedin":
         linkedin()
-        linkedin_job_create()
     elif job_source == "indeed":
         indeed()
-        indeed_job_create()
     elif job_source == "dice":
         dice()
-        dice_job_create()
-    elif job_source == "career_builder":
+    elif job_source == "career_builder" or job_source == "careerbuilder":
         career_builder()
-        career_builder_job_create()
     elif job_source == "glassdoor":
         glassdoor()
-        glassdoor_job_create()
     elif job_source == "monster":
         monster()
-        monster_job_create()
-    elif job_source == "zip_recruiter":
+    elif job_source == "zip_recruiter" or job_source == "ziprecruiter":
         ziprecruiter_scraping()
-        zip_recruiter_job_create()
-    elif job_source == "simply_hired":
+    elif job_source == "simply_hired" or job_source == "simplyhired":
         simply_hired()
-        simply_hired_job_create()
     elif job_source == "adzuna":
         adzuna_scraping()
-        adzuna_job_create()
 
     upload_jobs()
     remove_files(job_source=job_source)
