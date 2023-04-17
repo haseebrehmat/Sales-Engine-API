@@ -7,7 +7,7 @@ class Log(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        blank=True, null=False)
+        blank=True, null=True)
 
     level = models.CharField(max_length=10)
     log_message = models.TextField(null=True)

@@ -195,6 +195,7 @@ AWS_QUERYSTRING_AUTH = False
 #         },
 #     },
 # }
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -210,5 +211,14 @@ LOGGING = {
             "handlers": ["db"],
             "propagate": False,
         },
+        "django": {
+            "handlers": ["db"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+    },
+    "root": {
+        "handlers": ["db"],
+        "level": "WARNING",
     },
 }
