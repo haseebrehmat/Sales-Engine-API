@@ -9,4 +9,4 @@ class LogsView(ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Log.objects.all()
+        return Log.objects.all().order_by('-time')
