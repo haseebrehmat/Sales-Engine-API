@@ -64,10 +64,8 @@ class DashboardAnalyticsView(ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         try:
             company = request.user.profile.company.id
-            print("try")
         except:
             company = request.GET.get("company", "")
-        print("company =>", company)
         # get all users under the current user team
         if request.user.is_superuser and company == "":
             company = Company.objects.filter(status=True).first()
@@ -75,7 +73,6 @@ class DashboardAnalyticsView(ListAPIView):
         user_team = Team.objects.filter(
             reporting_to__profile__company_id=company
         ).values_list('members__id', flat=True)
-        print("User Team", user_team)
 
         # get all statistics
         queryset = queryset.filter(applied_by__in=user_team)
