@@ -1,5 +1,5 @@
 from settings.base import *
-DEBUG = True
+DEBUG = False
 print("Production DB")
 DATABASES = {
     'default': {
