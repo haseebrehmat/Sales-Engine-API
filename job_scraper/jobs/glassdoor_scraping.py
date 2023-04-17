@@ -96,12 +96,10 @@ def glassdoor():
     options.add_argument(
         "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
     )
-    # options.headless = True  # newly added
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                           options=options) as driver:  # modified
         request_url(driver, GLASSDOOR_LOGIN_URL)
         logged_in = login(driver)
-        # types = [GLASSDOOR_CONTRACT_RESULTS, GLASSDOOR_FULL_RESULTS, GLASSDOOR_REMOTE_RESULTS]
         types = []
         job_type = []
         for c in range(3):

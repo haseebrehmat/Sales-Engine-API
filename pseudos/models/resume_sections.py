@@ -49,3 +49,11 @@ class OtherSection(TimeStamped):
     vertical = models.ForeignKey(Verticals, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=250, blank=True, null=True)
     value = models.JSONField(blank=True, null=True)
+
+
+class Projects(TimeStamped):
+    vertical = models.ForeignKey(Verticals, on_delete=models.CASCADE, blank=True, null=True)
+    name = models.CharField(max_length=250, blank=True, null=True)
+    title = models.CharField(max_length=250, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    repo = models.CharField(max_length=500, blank=True, null=True)
