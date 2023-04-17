@@ -2,7 +2,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from pseudos.models import Verticals, Skills, Experience, Education, Links, Language, OtherSection
+from pseudos.models import Verticals, Skills, Experience, Education, Links, Language, OtherSection, Projects
 
 
 class ResumeView(APIView):
@@ -24,7 +24,7 @@ class ResumeView(APIView):
         }
 
         data["summary"] = vertical.summary
-        data["hobbies"] = vertical.hobbies
+        data["hobbies"] = "" if len(vertical.hobbies) == 0 else vertical.hobbies.split(",")
         skills = Skills.objects.filter(vertical_id=pk)
         data["skills"] = [{"name": skill.name, "level": skill.level} for skill in skills]
 
@@ -47,11 +47,18 @@ class ResumeView(APIView):
         } for x in education]
 
         links = Links.objects.filter(vertical_id=pk)
-        data["links"] = [{x.platform: x.url} for x in links]
+        temp = {}
+        for x in links:
+            temp[x.platform] = x.url
+        data["links"] = temp
 
         languages = Language.objects.filter(vertical_id=pk)
         data["languages"] = [{"name": x.name, "level": x.level} for x in languages]
 
         others = OtherSection.objects.filter(vertical_id=pk)
         data["others"] = [{"name": x.name, "value": x.value} for x in others]
+        projects = Projects.objects.filter(vertical_id=pk)
+        projects = [{"name": x.name, "title": x.title, "description": x.description, "repo": x.repo}
+                    for x in projects]
+        data["projects"] = projects
         return Response(data)

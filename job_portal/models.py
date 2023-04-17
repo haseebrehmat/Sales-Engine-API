@@ -10,7 +10,7 @@ from pseudos.models import Verticals
 from settings.utils.model_fields import TimeStamped
 
 
-class JobDetail(models.Model):
+class JobDetail(TimeStamped):
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
