@@ -8,6 +8,11 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models import JobSourceQuery
+from job_scraper.models.scraper_logs import ScraperLogs
+
+total_job = 0
+
 
 # calls url
 def request_url(driver, url):
@@ -21,6 +26,7 @@ def append_data(data, field):
 
 # find's job name
 def find_jobs(driver, scrapped_data, job_type):
+    global total_job
     c = 0
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "slider_container")
@@ -53,8 +59,9 @@ def find_jobs(driver, scrapped_data, job_type):
 
             scrapped_data.append(data)
             c += 1
+            total_job += 1
         except Exception as e:
-            print(e)
+            print("Exception in Indeed Scraping", e)
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
@@ -90,8 +97,13 @@ def indeed():
     with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                           options=options) as driver:  # modified
         driver.maximize_window()
-        types = [INDEED_CONTRACT_RESULTS, INDEED_FULL_RESULTS, INDEED_REMOTE_RESULTS]
-        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+        # types = [INDEED_CONTRACT_RESULTS, INDEED_FULL_RESULTS, INDEED_REMOTE_RESULTS]
+        types = []
+        job_type = []
+        for c in range(3):
+            query = list(JobSourceQuery.objects.filter(job_source='indeed').values_list("queries", flat=True))[0]
+            types.append(query[c]['link'])
+            job_type.append(query[c]['job_type'])
         for url in types:
             scrapped_data = []
             request_url(driver, url)
@@ -100,3 +112,4 @@ def indeed():
                 print("Fetching...")
             count = count + 1
     print(SCRAPING_ENDED)
+    ScraperLogs.objects.create(total_jobs=total_job, job_source="Indeed")

@@ -16,47 +16,41 @@ from job_scraper.jobs.linkedin_scraping import linkedin
 from job_scraper.jobs.monster_scraping import monster
 from job_scraper.jobs.simply_hired_scraping import simply_hired
 from job_scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
-from job_scraper.models import SchedulerSettings
+from job_scraper.models import SchedulerSettings, AllSyncConfig
 from job_scraper.models.scheduler import SchedulerSync
 from job_scraper.utils.helpers import convert_time_into_minutes
+# from job_scraper.utils.thread import start_new_thread
+# from celery import shared_task
+
 from job_scraper.utils.thread import start_new_thread
 
 scraper_functions = {
     "linkedin": [
         linkedin,  # Tested working
-        linkedin_job_create,
     ],
     "indeed": [
         indeed,  # Tested working
-        indeed_job_create,
     ],
     "dice": [
         dice,  # Tested working
-        dice_job_create,
     ],
     "careerbuilder": [
         career_builder,  # Test working
-        career_builder_job_create,
     ],
     "glassdoor": [
         glassdoor,  # Tested working
-        glassdoor_job_create,
     ],
     "monster": [
         monster,  # Tested working
-        monster_job_create,
     ],
     "simplyhired": [
         simply_hired,  # Tested working
-        simply_hired_job_create,
     ],
     "ziprecruiter": [
         ziprecruiter_scraping,  # not working
-        zip_recruiter_job_create,
     ],
     "adzuna": [
         adzuna_scraping,
-        adzuna_job_create
     ]
 }
 
@@ -117,9 +111,36 @@ def upload_file(job_parser):
 
 
 @start_new_thread
+def load_all_job_scrappers():
+    while AllSyncConfig.objects.filter(status=True).first() is not None:
+        try:
+            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
+            functions = []
+            for function in scrapers:
+                functions.extend(function)
+
+            for function in functions:
+                try:
+                    function()
+                except Exception as e:
+                    print(e)
+                try:
+                    upload_jobs()
+                except Exception as e:
+                    print("Error in uploading jobs", e)
+                remove_files()
+        except Exception as e:
+            print(e)
+    print("Script Terminated")
+
+    return True
+
+
+# @shared_task()
+@start_new_thread
 def load_job_scrappers(job_source):
     try:
-        SchedulerSync.objects.filter(job_source=job_source).update(running=True)
+        SchedulerSync.objects.filter(job_source=job_source, type='instant').update(running=True)
         if job_source != "all":
             functions = scraper_functions[job_source]
         else:
@@ -141,41 +162,33 @@ def load_job_scrappers(job_source):
     except Exception as e:
         print(e)
     SchedulerSync.objects.all().update(running=False)
-
     return True
 
 
 def run_scheduler(job_source):
+    SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=True)
     if job_source == "linkedin":
         linkedin()
-        linkedin_job_create()
     elif job_source == "indeed":
         indeed()
-        indeed_job_create()
     elif job_source == "dice":
         dice()
-        dice_job_create()
-    elif job_source == "career_builder":
+    elif job_source == "career_builder" or job_source == "careerbuilder":
         career_builder()
-        career_builder_job_create()
     elif job_source == "glassdoor":
         glassdoor()
-        glassdoor_job_create()
     elif job_source == "monster":
         monster()
-        monster_job_create()
-    elif job_source == "zip_recruiter":
+    elif job_source == "zip_recruiter" or job_source == "ziprecruiter":
         ziprecruiter_scraping()
-        zip_recruiter_job_create()
-    elif job_source == "simply_hired":
+    elif job_source == "simply_hired" or job_source == "simplyhired":
         simply_hired()
-        simply_hired_job_create()
     elif job_source == "adzuna":
         adzuna_scraping()
-        adzuna_job_create()
 
     upload_jobs()
     remove_files(job_source=job_source)
+    SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=False)
 
 
 def start_job_sync(job_source):
@@ -193,7 +206,6 @@ def start_background_job(job_source):
 all_jobs_scheduler = BackgroundScheduler()
 job_interval_scheduler = BackgroundScheduler()
 job_time_scheduler = BackgroundScheduler()
-
 
 linkedin_scheduler = BackgroundScheduler()
 indeed_scheduler = BackgroundScheduler()
@@ -269,15 +281,15 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "simply_hired":
                 simply_hired_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["simply_hired"])
+                                               args=["simply_hired"])
 
             elif scheduler.job_source.lower() == "zip_recruiter":
                 zip_recruiter_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["zip_recruiter"])
+                                                args=["zip_recruiter"])
 
             elif scheduler.job_source.lower() == "adzuna_recruiter":
                 adzuna_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["adzuna_recruiter"])
+                                         args=["adzuna_recruiter"])
 
 
 # scheduler_settings()

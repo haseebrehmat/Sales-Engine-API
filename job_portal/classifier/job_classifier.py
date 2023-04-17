@@ -1,4 +1,4 @@
-import re
+import regex as re
 from django.utils import timezone
 import pandas as pd
 from dateutil import parser
@@ -8,7 +8,7 @@ from django.db.models import F, Value
 import openai
 from settings.base import env
 
-openai.api_key = env('CHATGPT_API_KEY')
+# openai.api_key = env('CHATGPT_API_KEY')
 
 
 class JobClassifier(object):
@@ -16,26 +16,39 @@ class JobClassifier(object):
     def __init__(self, dataframe: pd.DataFrame):
         self.data_frame = dataframe
 
-    def classifier_stage1(self, job_title):
-        # check regular expression
-        for regex in regular_expressions:
-            if re.search(regex['exp'], job_title):
+    def match_text_with_regex(self, text, regular_expression_list):
+        for regex in regular_expression_list:
+            pattern = re.compile(regex['exp'])
+            if pattern.search(text):
                 return regex['tech_stack']
+        return None
 
-        language_dict = languages
-        # final_result = list()
-        for key, value in language_dict.items():
+    def classify_job_with_languages(self, text, langugages_dict):
+        for key, value in langugages_dict.items():
             for x in value:
-                if x.lower() in job_title:
+                if x.lower() in text:
                     return key
-        return 'others'
+        return None
 
-    def find_job_techkeyword(self, job_title):
+    def classifier_stage1(self, job_title, regular_expression_list, langugages_dict):
+        # check regular expression for job title
+        matched_result = self.match_text_with_regex(job_title, regular_expression_list)
+
+        if matched_result:
+            return matched_result
+
+        result = self.classify_job_with_languages(job_title, langugages_dict)
+        if result:
+            return result
+        else:
+            return 'others'
+
+    def find_job_techkeyword(self, job_title, regular_expression_list, langugages_dict):
         # job_title = ",".join(job_title.split("/")).lower()
 
         # run stage 1 of the classififer
         job_title = job_title.lower()
-        data = self.classifier_stage1(job_title)
+        data = self.classifier_stage1(job_title, regular_expression_list, langugages_dict)
         if data == "others":
             return self.job_classifier_stage2(job_title)
         return data
@@ -97,13 +110,20 @@ class JobClassifier(object):
             return 'others dev'
 
     def classify_job(self, job_title, job_description):
-        result = self.find_job_techkeyword(job_title)
-        if result == 'others dev' and job_description:
-            try:
-                result = self.get_job_title_for_others_dev(job_description)
-            except Exception as e:
-                print('Expression', e)
-        return result
+        job_title = job_title.strip().lower()
+        regular_expression_list=regular_expressions
+        classifier_result = self.find_job_techkeyword(job_title, regular_expression_list, languages)
+        if classifier_result == 'others dev' and job_description:
+            job_description = job_description.strip().lower()
+            tags = ['qa']
+            regular_expression_list = [regex_exp for regex_exp in regular_expressions if regex_exp['tech_stack'].lower() not in tags]
+            classifier_result = self.match_text_with_regex(job_description, regular_expression_list)
+            if classifier_result is None:
+                updated_langugages = {key: languages[key]
+                      for key in languages.keys() if key.lower() not in tags}
+                result = self.classify_job_with_languages(job_description, updated_langugages)
+                return 'others dev' if result is None else result
+        return classifier_result
 
     def classify_hour(self, job_date):
         # apply regex patterns to get the hours value
@@ -111,8 +131,8 @@ class JobClassifier(object):
         regex_hours = r'(?i)^(active|posted?.*\s)?([0-9]*\s?)(hours|hour|h|hr)\s*(ago)?'
         value = re.search(regex_hours, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
-            today_date_time = timezone.now() + timezone.timedelta(days=-1)
-            return today_date_time
+            hours = int(re.findall(r'\d+', job_date)[0])
+            return timezone.now() if hours < 22 else timezone.now() + timezone.timedelta(days=-1)
         else:
             return job_date
 

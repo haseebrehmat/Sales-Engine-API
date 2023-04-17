@@ -28,6 +28,8 @@ class CustomPagination(pagination.PageNumberPagination):
             'total_jobs': self.total_job_count(),
             'total_job_type': self.unique_job_type(),
             'filtered_jobs': self.page.paginator.count,
+            'recruiter_jobs': self.get_recruiter_jobs_count(),
+            'non_recruiter_jobs': self.get_non_recruiter_jobs_count(),
             'data': data,
             'tech_keywords_count_list': self.keyword_count(),
             'job_source_count_list': self.unique_job_source(),
@@ -66,6 +68,20 @@ class CustomPagination(pagination.PageNumberPagination):
         job_count = JobDetail.objects.filter(appliedjobstatus__applied_by=None).count()
         return job_count
 
+    def get_recruiter_jobs_count(self):
+        if self.request.GET.get("job_visibility") == "non-recruiter" or self.page.paginator.count == 0:
+            return 0
+        queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
+        queryset = self.filter_query(queryset).filter(block=True)
+        return queryset.count()
+
+    def get_non_recruiter_jobs_count(self):
+        if self.request.GET.get("job_visibility") == "recruiter" or self.page.paginator.count == 0:
+            return 0
+        queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
+        queryset = self.filter_query(queryset).filter(block=False)
+        return queryset.count()
+
     def unique_job_source(self):
         queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
         queryset = self.filter_query(queryset)
@@ -89,16 +105,21 @@ class CustomPagination(pagination.PageNumberPagination):
             queryset = queryset.filter(job_posted_date__gte=self.request.GET.get("from_date"))
         if self.request.GET.get("to_date", "") != "":
             queryset = queryset.filter(job_posted_date__lte=self.request.GET.get("to_date"))
-        # if self.request.GET.get("job_source", "") != "":
-        #     queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
+        if self.request.GET.get("job_source", "") != "":
+            queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
         if self.request.GET.get("job_type", "") != "":
             queryset = queryset.filter(job_type__iexact=self.request.GET.get("job_type"))
-        # if self.request.GET.get("job_visibility", "all") != "all":
-        #     company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list(
-        #         "company_name", flat=True)
-        #     company = list(company)
-        #     if self.request.GET.get("job_visibility", "all") == "non-recruiter":
-        #         queryset = queryset.exclude(company_name__in=company)
-        #     elif self.request.GET.get("job_visibility", "all") == "recruiter":
-        #         queryset = queryset.filter(company_name__in=company)
+        if self.request.GET.get("tech_keywords", "") != "":
+            keywords_list = self.request.GET.get("tech_keywords").split(",")
+            queryset = queryset.filter(tech_keywords__in=keywords_list)
+        if self.request.GET.get("job_visibility") != "all":
+            if self.request.user.profile.company:
+                company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list("company_name", flat=True)
+            else:
+                company = BlacklistJobs.objects.all().values_list("company_name", flat=True)
+            company = list(company)
+            if self.request.GET.get("job_visibility") == "non-recruiter":
+                queryset = queryset.exclude(company_name__in=company, block=True)
+            elif self.request.GET.get("job_visibility") == "recruiter":
+                queryset = queryset.filter(company_name__in=company, block=True)
         return queryset

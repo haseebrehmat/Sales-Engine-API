@@ -11,6 +11,16 @@ permissions = [
     },
     {
         "module": "User Management",
+        "codename": "view_member_team",
+        "name": "View Member Team"
+    },
+    {
+        "module": "User Management",
+        "codename": "edit_member_team",
+        "name": "Edit Member Team"
+    },
+    {
+        "module": "User Management",
         "codename": "view_user",
         "name": "View Users"
     },
@@ -228,5 +238,45 @@ permissions = [
         "module": "Jobs",
         "codename": "view_manual_job",
         "name": "View Manual Job"
+    },
+    {
+        "codename": 'view_pseudo',
+        "name": 'View Pseudos',
+        "module": 'Pseudos',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'create_pseudo',
+        "name": 'Create Pseudo',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'edit_pseudo',
+        "name": 'Edit Pseudo',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'view_vertical',
+        "name": 'View Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'create_vertical',
+        "name": 'Create Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'edit_vertical',
+        "name": 'Edit Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'delete_vertical',
+        "name": 'Delete Vertical',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'delete_pseudo',
+        "name": 'Delete Pseudo',
     },
 ]

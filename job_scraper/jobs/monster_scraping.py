@@ -10,6 +10,9 @@ from selenium import webdriver
 import pandas as pd
 import time
 
+from job_scraper.models import JobSourceQuery
+from job_scraper.models.scraper_logs import ScraperLogs
+total_job = 0
 
 def append_data(data, field):
     data.append(str(field).strip("+"))
@@ -31,6 +34,7 @@ def load_jobs(driver):
 # find's job name
 def find_jobs(driver, scrapped_data, job_type):
     count = 0
+    global total_job
     time.sleep(7)
     while load_jobs(driver):
         jobs = driver.find_elements(
@@ -71,7 +75,8 @@ def find_jobs(driver, scrapped_data, job_type):
         append_data(data, "Monster")
         append_data(data, job_type)
         scrapped_data.append(data)
-    count += 1
+        count += 1
+        total_job += 1
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type"]
@@ -92,13 +97,21 @@ def monster():
                           options=options) as driver:  # modified
         scrapped_data = []
         count = 0
-        types = [MONSTER_CONTRACT_RESULTS, MONSTER_FULL_RESULTS, MONSTER_REMOTE_RESULTS]
-        job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
+
+        # types = [MONSTER_CONTRACT_RESULTS, MONSTER_FULL_RESULTS, MONSTER_REMOTE_RESULTS]
+        types = []
+        job_type = []
+        for c in range(3):
+            query = list(JobSourceQuery.objects.filter(job_source='monster').values_list("queries", flat=True))[0]
+            types.append(query[c]['link'])
+            job_type.append(query[c]['job_type'])
         for url in types:
             driver.get(url)
             driver.maximize_window()
-        find_jobs(driver, scrapped_data, job_type[count])
-        count += 1
+            find_jobs(driver, scrapped_data, job_type[count])
+            count += 1
     print("SCRAPING_ENDED")
+    ScraperLogs.objects.create(total_jobs=total_job, job_source="Monster")
+
 
 # monster()

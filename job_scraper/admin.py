@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+
+
+from job_scraper.models import SchedulerSettings
+
+admin.site.register(SchedulerSettings)

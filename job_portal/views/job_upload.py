@@ -11,6 +11,7 @@ from job_portal.data_parser.job_parser import JobParser
 from job_portal.exceptions import InvalidFileException
 from job_portal.models import JobDetail
 from job_portal.serializers.job_detail import JobDataUploadSerializer
+from job_scraper.utils.thread import start_new_thread
 
 
 class JobDataUploadView(CreateAPIView):
@@ -66,30 +67,35 @@ class JobCleanerView(APIView):
     def put(self, request):
         try:
             job_data = JobDetail.objects.all().select_related()
-            thread = Thread(target=self.update_data, args=(job_data,), )
-            thread.start()
+            self.update_data(job_data)
             return Response({'detail': f'jobs updated successfully with new tech keywords!'}, status=204)
         except Exception as e:
             return Response({'detail': 'Jobs are not updated with new tech keywords!'}, status=404)
 
+    @start_new_thread
     def update_data(self, job_data):
-        user_bulk_update_list = []
         data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'job_description')))
         classify_data = JobClassifier(data)
         classify_data.update_tech_stack()
-        update_count = 0
 
+        updated_job_details = []
         for key in classify_data.data_frame.itertuples():
-            update_item = JobDetail.objects.get(id=key.pk)
+            update_item = job_data.get(id=key.pk)
             if update_item.tech_keywords != key.tech_keywords.lower():
-                update_count += 1
                 update_item.tech_keywords = key.tech_keywords.lower()
                 # append the updated user object to the list
-                user_bulk_update_list.append(update_item)
+                updated_job_details.append(update_item)
 
-        # update scores of all users in one operation
-        JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
-        return update_count
+        # update jobs in bulks in small batches
+        num_records = len(updated_job_details)
+        batch_size = 500
+        for i in range(0, num_records, batch_size):
+            start_index = i
+            end_index = min(i + batch_size, num_records)
+            user_bulk_update_list = updated_job_details[start_index:end_index]
+            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
+        return num_records
+
 
 class JobTypeCleanerView(APIView):
     permission_classes = (IsAuthenticated,)

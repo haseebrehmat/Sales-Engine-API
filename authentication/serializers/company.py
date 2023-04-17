@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-from authentication.models import User
-from authentication.models.company import Company, CompanyAPIIntegration
-from authentication.serializers.users import UserSerializer
+from authentication.models.company import CompanyAPIIntegration, Company
 
 
 class CompanySerializer(serializers.ModelSerializer):

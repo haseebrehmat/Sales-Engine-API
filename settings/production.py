@@ -1,5 +1,6 @@
 from settings.base import *
-DEBUG=True
+DEBUG = True
+print("Production DB")
 DATABASES = {
     'default': {
         'ENGINE': env("PRODUCTION_DB_ENGINE"),

@@ -3,13 +3,14 @@ from datetime import timedelta
 import environ
 
 from pathlib import Path
+
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
-#BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 ENVIRONMENT = env('ENVIRONMENT')
 ALLOWED_HOSTS = ["*"]
@@ -25,14 +26,18 @@ CUSTOM_APPS = [
     'authentication',
     'job_portal',
     'dashboard',
-    'job_scraper'
+    'job_scraper',
+    'pseudos',
+    'error_logger',
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
-    'django_filters'
+    'django_filters',
+    # 'django_celery_results',
+    # 'django_celery_beat',
 ]
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
 # Defining Middlewares
@@ -93,6 +98,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 STATIC_URL = 'static/'
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     # os.path.join(BASE_DIR, 'staticfiles'),
@@ -183,3 +195,30 @@ AWS_QUERYSTRING_AUTH = False
 #         },
 #     },
 # }
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "db": {
+            "level": "DEBUG",
+            "class": "settings.handlers.DBHandler",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "level": "ERROR",
+            "handlers": ["db"],
+            "propagate": False,
+        },
+        # "django": {
+        #     "handlers": ["db"],
+        #     "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        #     "propagate": False,
+        # },
+    },
+    # "root": {
+    #     "handlers": ["db"],
+    #     "level": "WARNING",
+    # },
+}
