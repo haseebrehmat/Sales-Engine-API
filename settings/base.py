@@ -211,14 +211,14 @@ LOGGING = {
             "handlers": ["db"],
             "propagate": False,
         },
-        "django": {
-            "handlers": ["db"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-            "propagate": False,
-        },
+        # "django": {
+        #     "handlers": ["db"],
+        #     "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        #     "propagate": False,
+        # },
     },
-    "root": {
-        "handlers": ["db"],
-        "level": "WARNING",
-    },
+    # "root": {
+    #     "handlers": ["db"],
+    #     "level": "WARNING",
+    # },
 }
