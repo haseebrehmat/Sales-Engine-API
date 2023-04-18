@@ -2,6 +2,8 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+
+from authentication.models import Profile
 from authentication.serializers.team_management import TeamManagementSerializer
 from pseudos.models.verticals import Verticals
 from authentication.models.team_management import Team
@@ -10,7 +12,7 @@ from pseudos.models import Pseudos
 from pseudos.serializers.pseudos import PseudoSerializer
 
 
-class TeamVerticalsAssignView(ListAPIView):         # class for assignment verticals to team
+class TeamVerticalsAssignView(ListAPIView):  # class for assignment verticals to team
     permission_classes = (IsAuthenticated,)
     serializer_class = PseudoSerializer
 
@@ -32,26 +34,30 @@ class TeamVerticalsAssignView(ListAPIView):         # class for assignment verti
         return Response(message, status=status_code)
 
 
-class UserVerticalsAssignView(ListAPIView):            # class for assignment verticals to team members
+class UserVerticalsAssignView(ListAPIView):  # class for assignment verticals to team members
     permission_classes = (AllowAny,)
     serializer_class = PseudoSerializer
 
-    def get(self, request):                             # New function for get complete team
+    def get(self, request):  # New function for get complete team
         pk = request.query_params.get('team_id')
         team = Team.objects.filter(id=pk).first()
-        serializer = TeamManagementSerializer(team)
+        if team is not None:
+            serializer = TeamManagementSerializer(team)
+            data = serializer.data
+        else:
+            data = []
         status_code = status.HTTP_200_OK
-        return Response(serializer.data, status=status_code)
+        return Response(data, status=status_code)
 
     def post(self, request):
-        user = request.data.get('user_id')
-        user = User.objects.filter(id=user).first()
+        user_id = request.data.get('user_id')
+        profile = Profile.objects.filter(user_id=user_id).first()
         verticals = request.data.get('verticals')
         verticals = Verticals.objects.filter(id__in=verticals)
-        for instance in user.vertical.all():
-            user.vertical.remove(instance)
+        for instance in profile.vertical.all():
+            profile.vertical.remove(instance)
         for instance in verticals:
-            user.vertical.add(instance)
+            profile.vertical.add(instance)
         status_code = status.HTTP_200_OK
         message = {"detail": "Verticals Assignment Successfully"}
         return Response(message, status=status_code)

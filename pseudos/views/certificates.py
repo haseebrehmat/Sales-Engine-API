@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-# from pseudos.models import Certificate
+from pseudos.models import Certificate
 from pseudos.permissions.verticals import VerticalPermissions
-# from pseudos.serializers.certificates import CertificateSerializer
+from pseudos.serializers.certificates import CertificateSerializer
 from pseudos.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
