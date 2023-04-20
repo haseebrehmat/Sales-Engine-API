@@ -57,45 +57,56 @@ def append_data(data, field):
 
 # find's job name
 def find_jobs(driver, scrapped_data, job_type, url=None):
-    WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results__list-item"))
-    )
-    if url is not None:
-        get_url = driver.current_url
-        request_url(driver, get_url + str(url))
+    try:
         WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results__list-item"))
+        EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results__list-item"))
         )
+    except:
+        print("waited for jobs")
+
+    try:
+        if url is not None:
+            get_url = driver.current_url
+            request_url(driver, get_url + str(url))
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results__list-item"))
+            )
+    except Exception as e:
+        return False
 
     time.sleep(2)
     if not data_exists(driver):
         return False
 
-    jobs = driver.find_elements(By.CLASS_NAME, "job-card-container__link")
+    jobs = driver.find_elements(By.CLASS_NAME, "jobs-search-results__list-item")
 
     for job in jobs:
-        job.click()
-        WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "jobs-unified-top-card__job-title"))
-        )
+        try:
+            job.click()
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "jobs-unified-top-card__job-title"))
+            )
+        except Exception as e:
+            print(e)
 
     for job in jobs:
         try:
             data = []
             job.click()
+
             WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "jobs-unified-top-card__job-insight"))
             )
 
-            job_posted_date = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__posted-date")
+            job_posted_date = driver.find_elements(By.CLASS_NAME,"jobs-unified-top-card__posted-date")
             if job_posted_date:
-                job_title = driver.find_element(By.CLASS_NAME, "jobs-unified-top-card__job-title")
+                job_title = driver.find_element(By.CLASS_NAME,"jobs-unified-top-card__job-title")
                 append_data(data, job_title.text)
-                company_name = driver.find_element(By.CLASS_NAME, "jobs-unified-top-card__company-name")
+                company_name = driver.find_element(By.CLASS_NAME,"jobs-unified-top-card__company-name")
                 append_data(data, company_name.text)
-                address = driver.find_element(By.CLASS_NAME, "jobs-unified-top-card__bullet")
+                address = driver.find_element(By.CLASS_NAME,"jobs-unified-top-card__bullet")
                 append_data(data, address.text)
-                job_description = driver.find_element(By.CLASS_NAME, "jobs-description-content__text")
+                job_description = driver.find_element(By.CLASS_NAME,"jobs-description-content__text")
                 append_data(data, job_description.text)
                 job_source_url = driver.find_element(By.CLASS_NAME, "jobs-unified-top-card__content--two-pane")
                 url = job_source_url.find_element(By.TAG_NAME, 'a')
@@ -109,8 +120,8 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
             print(e)
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type"]
+    columns_name = ["job_title", "company_name", "address", "job_description",
+                    'job_source_url', "job_posted_date", "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'job_scraper/job_data/linkedin - {date_time}.csv', index=False)
     return True
