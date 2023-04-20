@@ -2,9 +2,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, AbstractUser
-
 from settings.utils.model_fields import TimeStamped, LowercaseEmailField
-from pseudos.models.verticals import Verticals
 
 
 class CustomUserManager(BaseUserManager):
@@ -46,7 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=True)
-    vertical = models.ManyToManyField(Verticals, related_name='vertical', blank=True)
 
     roles = models.ForeignKey(
         "Role",

@@ -1,13 +1,39 @@
 from rest_framework import serializers
 
-from job_portal.models import JobDetail
+from authentication.models import Profile
+from job_portal.models import JobDetail, AppliedJobStatus
+from pseudos.models import Verticals
 
 
 class JobDetailSerializer(serializers.ModelSerializer):
     job_status = serializers.CharField(default=0)
+    total_vertical = serializers.SerializerMethodField(default=0)
+    remaining_vertical = serializers.SerializerMethodField(default=0)
+
     class Meta:
         model = JobDetail
         fields = "__all__"
+
+    def get_total_vertical(self, obj):
+        try:
+            user_id = self.context['request'].user
+            profile = Profile.objects.filter(user_id=user_id).first()
+            verticals = profile.vertical.count()
+        except:
+            verticals = 0
+        return verticals
+
+    def get_remaining_vertical(self, obj):
+        try:
+            total = self.get_total_vertical(obj)
+            user_id = self.context['request'].user
+            profile = Profile.objects.filter(user_id=user_id).first()
+            verticals = profile.vertical.all()
+            used = AppliedJobStatus.objects.filter(job_id=obj.id, vertical__in=verticals).count()
+            remaining = used
+        except:
+            remaining = 0
+        return remaining
 
 
 class JobKeywordSerializer(serializers.Serializer):
@@ -24,27 +50,28 @@ class TechKeywordSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500)
     count = serializers.IntegerField(default=0)
 
+
 class JobTypeSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500)
     count = serializers.IntegerField(default=0)
 
+
 class JobDetailOutputSerializer(serializers.Serializer):
     from_date = serializers.DateField(required=False, allow_null=True,
-        format="%d-%m-%Y",
-        input_formats=["%d-%m-%Y", "%Y-%m-%d"],)
+                                      format="%d-%m-%Y",
+                                      input_formats=["%d-%m-%Y", "%Y-%m-%d"], )
     to_date = serializers.DateField(
         required=False, allow_null=True,
         format="%d-%m-%Y",
-        input_formats=["%d-%m-%Y", "%Y-%m-%d"],)
+        input_formats=["%d-%m-%Y", "%Y-%m-%d"], )
     data = JobDetailSerializer(many=True, source='*')
-    links = LinkSerializer(many=False,source='*')
-    tech_keywords_count_list = TechKeywordSerializer(many=True,source='*')
-    job_source_count_list = JobKeywordSerializer(many=True,source='*')
-    job_type_count_list = JobTypeSerializer(many=True,source='*')
+    links = LinkSerializer(many=False, source='*')
+    tech_keywords_count_list = TechKeywordSerializer(many=True, source='*')
+    job_source_count_list = JobKeywordSerializer(many=True, source='*')
+    job_type_count_list = JobTypeSerializer(many=True, source='*')
 
     class Meta:
-        fields = ['links','job_source_count_list','data','tech_keywords_count_list','job_type_count_list']
-
+        fields = ['links', 'job_source_count_list', 'data', 'tech_keywords_count_list', 'job_type_count_list']
 
 
 class JobDataUploadSerializer(serializers.Serializer):

@@ -65,7 +65,7 @@ class AppliedJobStatus(models.Model):
         default_permissions = ()
         db_table = "applied_job_status"
         ordering = ["id"]
-        unique_together = [("applied_by", "job")]
+        # unique_together = [("applied_by", "job")]
 
     def __str__(self):
         return self.applied_by.username
@@ -90,3 +90,6 @@ class BlacklistJobs(TimeStamped):
 
     class Meta:
         default_permissions = ()
+
+
+# class UserAppliedJobs(TimeStamped):

@@ -11,7 +11,7 @@ class ResumeView(APIView):
     def get(self, request, pk):
         vertical = Verticals.objects.filter(pk=pk).first()
         data = dict()
-        data['basic_info'] = {
+        data['basic'] = {
             "name": vertical.name,
             "hidden": vertical.hidden,
             "email": vertical.email,

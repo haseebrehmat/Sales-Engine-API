@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django.core import serializers as dj_serializers
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueTogetherValidator
 
 from job_portal.models import JobDetail, AppliedJobStatus
 from job_portal.serializers.job_detail import JobDetailSerializer, LinkSerializer
@@ -25,9 +26,13 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         job_details['id'] = json_results['pk']
         job_details['applied_date'] = instance.applied_date
         job_details['status'] = instance.job_status
-        job_details["resume"] = instance.resume
-        job_details["vertical_id"] = instance.vertical_id
-        job_details["cover_letter"] = instance.cover_letter
+        try:
+            job_details["resume"] = instance.resume
+            job_details["vertical"] = {"id": instance.vertical.id, "name": instance.vertical.name,
+                                       "identity": instance.vertical.identity}
+            job_details["cover_letter"] = instance.cover_letter
+        except Exception as e:
+            print(e)
 
         # result['job_details'] = job_details
         return job_details
@@ -94,7 +99,6 @@ class JobStatusSerializer(serializers.ModelSerializer):
     #     job_details = JobDetail.objects.filter(id=job_id).update(job_status = job_status)
     #     obj = AppliedJobStatus.objects.get(job_id=job_id)
     #     return obj
-
 
     # def create(self, validated_data):
     #     job_status = validated_data.pop('status')

@@ -1,8 +1,5 @@
 import uuid
 from django.db import models
-
-import pseudos.models
-from authentication.models import User
 from settings.utils.model_fields import TimeStamped
 from pseudos.models.verticals import Verticals
 
@@ -14,8 +11,6 @@ class TeamsMemmbers(models.QuerySet):
     def get_memmbers(self):
         return self.reporting_to.values_list('id', flat=True)
 
-        # return self.filter(applied_by__groups__name='TL')
-
 
 class TeamManagementManager(models.Manager):
     def get_queryset(self):
@@ -23,14 +18,15 @@ class TeamManagementManager(models.Manager):
 
 
 class Team(TimeStamped):
+    reporting_to = models.ForeignKey('User', on_delete=models.SET_NULL, blank=True, null=True)
+    members = models.ManyToManyField('User', related_name='reporting_user')
+    verticals = models.ManyToManyField(Verticals, related_name='verticals', blank=True)
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
     name = models.CharField(max_length=250, blank=True, null=True)
-    reporting_to = models.ForeignKey('User', on_delete=models.SET_NULL, blank=True, null=True)
-    members = models.ManyToManyField('User', related_name='reporting_user')
-    verticals = models.ManyToManyField(Verticals, related_name='verticals', blank=True)
 
     objects = TeamManagementManager()
 

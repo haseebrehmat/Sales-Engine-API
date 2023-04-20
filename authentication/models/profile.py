@@ -1,10 +1,14 @@
 import uuid
 
 from django.db import models
+
+from pseudos.models import Verticals
 from settings.utils.model_fields import TimeStamped
 
 
 class Profile(TimeStamped):
+    vertical = models.ManyToManyField(Verticals, related_name='vertical', blank=True)
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
