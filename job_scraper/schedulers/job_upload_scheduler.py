@@ -8,6 +8,7 @@ from job_scraper.jobs.adzuna_scraping import adzuna_scraping
 from job_scraper.jobs.careerbuilder_scraping import career_builder
 from job_scraper.jobs.dice_scraping import dice
 from job_scraper.jobs.glassdoor_scraping import glassdoor
+from job_scraper.jobs.google_careers_scraping import google_careers
 from job_scraper.jobs.indeed_scraping import indeed
 from job_scraper.jobs.jobs_create import linkedin_job_create, monster_job_create, glassdoor_job_create, \
     career_builder_job_create, dice_job_create, indeed_job_create, simply_hired_job_create, zip_recruiter_job_create, \
@@ -51,6 +52,9 @@ scraper_functions = {
     ],
     "adzuna": [
         adzuna_scraping,
+    ],
+    "googlecareers": [
+        google_careers,
     ]
 }
 
@@ -185,6 +189,8 @@ def run_scheduler(job_source):
         simply_hired()
     elif job_source == "adzuna":
         adzuna_scraping()
+    elif job_source == "google_careers" or job_source == "googlecareers":
+        google_careers()
 
     upload_jobs()
     remove_files(job_source=job_source)
@@ -216,6 +222,7 @@ monster_scheduler = BackgroundScheduler()
 zip_recruiter_scheduler = BackgroundScheduler()
 adzuna_scheduler = BackgroundScheduler()
 simply_hired_scheduler = BackgroundScheduler()
+google_careers_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -250,6 +257,9 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "adzuna":
                 adzuna_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["simply_hired"])
+
+            elif scheduler.job_source.lower() == "google_careers":
+                google_careers_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["google_careers"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -290,6 +300,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "adzuna_recruiter":
                 adzuna_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["adzuna_recruiter"])
+
+            elif scheduler.job_source.lower() == "google_careers":
+                google_careers_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["google_careers"])
 
 
 # scheduler_settings()
