@@ -8,3 +8,5 @@ class AppliedJobStatusSerializer(serializers.ModelSerializer):
         model = AppliedJobStatus
         fields = "__all__"
         depth = 1
+
+

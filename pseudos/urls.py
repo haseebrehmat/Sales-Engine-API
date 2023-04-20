@@ -3,6 +3,7 @@ from pseudos.views.certificates import CertificateView, CertificateDetailView
 from pseudos.views.cover_letter import CoverLetterView, CoverLetterDetailView
 from pseudos.views.education import EducationView, EducationDetailView
 from pseudos.views.experience import ExperienceView, ExperienceDetailView
+from pseudos.views.generate_cover_letter import GenerateCoverLetter
 from pseudos.views.languages import LanguageView, LanguageDetailView
 from pseudos.views.links import LinkView, LinkDetailView
 from pseudos.views.other_sections import OtherSectionView, OtherSectionDetailView
@@ -12,7 +13,7 @@ from pseudos.views.resume import ResumeView
 # from pseudos.views.resume_section import ResumeSectionDetailView, ResumeSectionView
 from pseudos.views.skills import SkillView, SkillDetailView
 from pseudos.views.verticals import VerticalView, VerticalDetailView
-from pseudos.views.team_verticals_assignment import TeamVerticalsAssignView, UserVerticalsAssignView
+from pseudos.views.team_verticals_assignment import TeamVerticalsAssignView, UserVerticalsAssignView, UserVerticals
 
 urlpatterns = [
     path('pseudo/', PseudosView.as_view()),
@@ -34,11 +35,13 @@ urlpatterns = [
     path('certificate/<str:pk>/', CertificateDetailView.as_view()),
     path('cover_letter/', CoverLetterView.as_view()),
     path('cover_letter/<str:pk>/', CoverLetterDetailView.as_view()),
+    path('generate/cover_letter/', GenerateCoverLetter.as_view()),
     path('other_section/', OtherSectionView.as_view()),
     path('other_section/<str:pk>/', OtherSectionDetailView.as_view()),
     path('project/', ProjectView.as_view()),
     path('project/<str:pk>/', ProjectDetailView.as_view()),
     path('team_vertical_assignment/', TeamVerticalsAssignView.as_view()),
     path('user_vertical_assignment/', UserVerticalsAssignView.as_view()),
+    path('user_vertical/', UserVerticals.as_view()),
 
 ]
