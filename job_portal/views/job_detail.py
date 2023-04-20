@@ -6,6 +6,8 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+
+from authentication.models import Profile
 from job_portal.filters.job_detail import CustomJobFilter
 from job_portal.models import JobDetail, AppliedJobStatus
 from job_portal.paginations.job_detail import CustomPagination
@@ -14,10 +16,9 @@ from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDeta
 
 
 class JobDetailsView(ModelViewSet):
-    queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
+    queryset = JobDetail.objects.all()
     serializer_class = JobDetailSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    model = JobDetail
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     parser_classes = (MultiPartParser, JSONParser)
     pagination_class = CustomPagination
     filterset_class = CustomJobFilter
@@ -38,7 +39,18 @@ class JobDetailsView(ModelViewSet):
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
 
         if len(current_user_jobs_list) > 0:
-            queryset = self.get_queryset().exclude(id__in=current_user_jobs_list.values_list('job_id', flat=True))
+            profile = Profile.objects.filter(user_id=current_user).first()
+            verticals = profile.vertical.all()
+            print("vertical count", verticals.count())
+
+            excluded_list = current_user_jobs_list.values_list('job_id', flat=True)
+            print(len(excluded_list))
+            excluded_list = [str(x) for x in excluded_list
+                             if AppliedJobStatus.objects.filter(job_id=str(x), vertical__in=verticals).count() >= verticals.count()]
+
+            print(len(excluded_list))
+            print(excluded_list, sep="/n")
+            queryset = self.get_queryset().exclude(id__in=excluded_list)
         else:
             queryset = self.get_queryset()
         # pass the queryset to the remaining filters

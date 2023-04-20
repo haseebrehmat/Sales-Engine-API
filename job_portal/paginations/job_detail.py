@@ -1,4 +1,6 @@
 import json
+import math
+import random
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Count
@@ -33,7 +35,7 @@ class CustomPagination(pagination.PageNumberPagination):
             'data': data,
             'tech_keywords_count_list': self.keyword_count(),
             'job_source_count_list': self.unique_job_source(),
-            'job_status_choice': dict(JOB_STATUS_CHOICE)
+            'job_status_choice': dict(JOB_STATUS_CHOICE),
         })
         return response
 

@@ -20,6 +20,7 @@ from utils.model_fields.timestamped import TimeStamped
 class Verticals(TimeStamped):
     pseudo = models.ForeignKey(Pseudos, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=250)
+    identity = models.CharField(max_length=250, blank=True, null=True)
     hidden = models.BooleanField(default=False)
     email = models.EmailField(max_length=250, blank=True, null=True)
     phone = models.CharField(max_length=30, blank=True, null=True)
