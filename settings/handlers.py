@@ -13,7 +13,7 @@ class DBHandler(Handler):
 
         # elif level in ['ERROR', 'WARNING']:
         #     self.saveErrorLog(record, level)
-        if level == 'WARNING':
+        if level == 'ERROR':
             self.saveErrorLog(record, level)
 
     def saveErrorLog(self, record, level):
