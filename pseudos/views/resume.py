@@ -1,4 +1,5 @@
-from rest_framework.permissions import AllowAny
+from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -6,10 +7,13 @@ from pseudos.models import Verticals, Skills, Experience, Education, Links, Lang
 
 
 class ResumeView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
         vertical = Verticals.objects.filter(pk=pk).first()
+        if vertical is None:
+            return Response({"detail": "Resume details not found"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         data = dict()
         data['basic'] = {
             "name": vertical.name,
