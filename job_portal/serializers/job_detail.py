@@ -23,8 +23,9 @@ class JobDetailSerializer(serializers.ModelSerializer):
 
     def get_remaining_vertical(self, obj):
         try:
-            verticals = self.context['request'].user.profile.all()
-            remaining = AppliedJobStatus.objects.filter(job_id=obj.id, vertical__in=verticals).count()
+            verticals = self.context['request'].user.profile.vertical.all()
+            used = AppliedJobStatus.objects.filter(job_id=obj.id, vertical__in=verticals).count()
+            remaining = used
         except:
             remaining = 0
         return remaining
