@@ -21,19 +21,18 @@ class CoverLetterView(ListAPIView):
         return CoverLetter.objects.filter(vertical_id=vertical_id).exclude(vertical_id=None)
 
     def post(self, request):
-        print(request.data)
-        serializer = CoverLetterSerializer(data=request.data, many=False)
-        print(serializer.is_valid())
-        if serializer.is_valid():
-            serializer.validated_data["vertical_id"] = request.data.get("vertical_id")
-            print(serializer.validated_data)
-            serializer.create(serializer.validated_data)
-            message = "Cover letter created successfully"
-            status_code = status.HTTP_201_CREATED
-            return Response({"detail": message}, status_code)
+        vertical_id = request.data.get("vertical_id")
+        if vertical_id is not None:
+            if CoverLetter.objects.filter(vertical_id=vertical_id).count() == 0:
+                CoverLetter.objects.create(vertical_id=vertical_id, template=request.data.get("template", ""))
+            else:
+                CoverLetter.objects.filter(vertical_id=vertical_id).update(template=request.data.get("template", ""))
+            message = {"detail": "Cover letter saved successfully"}
+            status_code = status.HTTP_200_OK
         else:
-            data = serializer_errors(serializer)
-            raise InvalidUserException(data)
+            message = {"detail": "Vertical ID cannot be empty"}
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return Response(message, status_code)
 
 
 class CoverLetterDetailView(APIView):
