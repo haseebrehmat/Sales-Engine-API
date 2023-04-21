@@ -16,21 +16,15 @@ class JobDetailSerializer(serializers.ModelSerializer):
 
     def get_total_vertical(self, obj):
         try:
-            user_id = self.context['request'].user
-            profile = Profile.objects.filter(user_id=user_id).first()
-            verticals = profile.vertical.count()
+            verticals = self.context['request'].user.profile.vertical.count()
         except:
             verticals = 0
         return verticals
 
     def get_remaining_vertical(self, obj):
         try:
-            total = self.get_total_vertical(obj)
-            user_id = self.context['request'].user
-            profile = Profile.objects.filter(user_id=user_id).first()
-            verticals = profile.vertical.all()
-            used = AppliedJobStatus.objects.filter(job_id=obj.id, vertical__in=verticals).count()
-            remaining = used
+            verticals = self.context['request'].user.profile.all()
+            remaining = AppliedJobStatus.objects.filter(job_id=obj.id, vertical__in=verticals).count()
         except:
             remaining = 0
         return remaining

@@ -38,8 +38,6 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         job_id = self.request.data.get('job')
         current_user = self.request.user
 
-        print("ids => ", vertical_id, job_id, current_user)
-        print(AppliedJobStatus.objects.filter(vertical_id=vertical_id, job_id=job_id, applied_by=current_user).count())
         if AppliedJobStatus.objects.filter(vertical_id=vertical_id, job_id=job_id, applied_by=current_user).count() != 0:
             return Response({"detail": "Job already assigned to this vertical"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
@@ -47,8 +45,6 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         # get current user
         if current_user:
             # make sure the current user apply only one time on one job
-
-            # print(cover_letter, resume, vertical_id)
 
             obj = AppliedJobStatus.objects.create(job=job_details, applied_by=current_user)
             # if not create:
@@ -125,7 +121,6 @@ def generate_cover_letter_pdf(cover_letter):
     html = template.render(context)
     # html = cover_letter
     pdf_file = BytesIO()
-    pisa_status = pisa.CreatePDF(BytesIO(html.encode("ISO-8859-1")), pdf_file)
     pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), pdf_file)
     if not pdf.err:
         return HttpResponse(pdf_file.getvalue(), content_type='application/pdf')

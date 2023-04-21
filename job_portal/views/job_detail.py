@@ -1,8 +1,6 @@
-from threading import Thread
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.filters import OrderingFilter
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -39,18 +37,9 @@ class JobDetailsView(ModelViewSet):
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
 
         if len(current_user_jobs_list) > 0:
-            profile = Profile.objects.filter(user_id=current_user).first()
-            verticals = profile.vertical.all()
-            print("vertical count", verticals.count())
+            excluded_jobs = self.get_applied_jobs(current_user, current_user_jobs_list)
+            queryset = self.get_queryset().exclude(id__in=excluded_jobs)
 
-            excluded_list = current_user_jobs_list.values_list('job_id', flat=True)
-            print(len(excluded_list))
-            excluded_list = [str(x) for x in excluded_list
-                             if AppliedJobStatus.objects.filter(job_id=str(x), vertical__in=verticals).count() >= verticals.count()]
-
-            print(len(excluded_list))
-            print(excluded_list, sep="/n")
-            queryset = self.get_queryset().exclude(id__in=excluded_list)
         else:
             queryset = self.get_queryset()
         # pass the queryset to the remaining filters
@@ -71,3 +60,12 @@ class JobDetailsView(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
 
         return Response(serializer.data)
+
+    def get_applied_jobs(self, user, job_list):
+        verticals = user.profile.vertical.all()
+
+        excluded_list = job_list.values_list('job_id', flat=True)
+        excluded_list = [str(x) for x in excluded_list
+                         if AppliedJobStatus.objects.filter(job_id=str(x),
+                                                            vertical__in=verticals).count() >= verticals.count()]
+        return excluded_list
