@@ -77,28 +77,32 @@ def find_jobs(driver, scrapped_data, job_type):
 
 # code starts from here
 def dice():
-    count = 0
-    scrapped_data = []
-    options = webdriver.ChromeOptions()  # newly added
-    options.add_argument("--headless")
-    options.add_argument("window-size=1200,1100")
-    options.add_argument(
-        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-    )
-    # options.headless = True  # newly added
-    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-        types = []
-        job_type = []
-        for c in range(3):
-            query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True).first())
-            print(query[c]['link'])
-            types.append(query[c]['link'])
-            job_type.append(query[c]['job_type'])
-        for url in types:
-            request_url(driver, url)
-            while find_jobs(driver, scrapped_data, job_type[count]):
-                print("Fetching...")
-            count = count + 1
-    ScraperLogs.objects.create(total_jobs=total_job, job_source="Dice")
-
-    print(SCRAPING_ENDED)
+    try:
+        count = 0
+        scrapped_data = []
+        options = webdriver.ChromeOptions()  # newly added
+        options.add_argument("--headless")
+        options.add_argument("window-size=1200,1100")
+        options.add_argument(
+            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+        )
+        # options.headless = True  # newly added
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+            types = []
+            job_type = []
+            try:
+                query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True))[0]
+                for c in range(len(query)):
+                    types.append(query[c]['link'])
+                    job_type.append(query[c]['job_type'])
+                for url in types:
+                    request_url(driver, url)
+                    while find_jobs(driver, scrapped_data, job_type[count]):
+                        print("Fetching...")
+                    count += 1
+                ScraperLogs.objects.create(total_jobs=total_job, job_source="Dice")
+                print(SCRAPING_ENDED)
+            except Exception as e:
+                print(LINK_ISSUE)
+    except Exception as e:
+        print(e)

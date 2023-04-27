@@ -129,8 +129,11 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
 
 # check if there is more jobs available or not
 def data_exists(driver):
-    page_exists = driver.find_elements(By.CLASS_NAME, "jobs-search-no-results-banner__image")
-    return True if page_exists[0].text == '' else False
+    try:
+        page_exists = driver.find_elements(By.CLASS_NAME, "jobs-search-no-results-banner__image")
+        return True if page_exists[0].text == '' else False
+    except Exception as e:
+        return True
 
 
 def jobs_types(driver, url, job_type, scrapped_data):
@@ -140,44 +143,50 @@ def jobs_types(driver, url, job_type, scrapped_data):
     if find_jobs(driver, scrapped_data, job_type):
         count += 25
 
-        while (True):
-            if find_jobs(driver, scrapped_data, job_type, "&start=" + str(count)):
-                count += 25
-                total_job += 25
-            else:
-                break
+        while find_jobs(driver, scrapped_data, job_type, "&start=" + str(count)):
+            count += 25
+            total_job += 25
     else:
         print(NO_JOB_RESULT)
 
 
 # code starts from here
 def linkedin():
-    options = webdriver.ChromeOptions()  # newly added
-    options.add_argument("--headless")
-    options.add_argument("window-size=1200,1100")
-    options.add_argument(
-        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-    )
-    # options.headless = True  # newly added
-    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                          options=options) as driver:  # modified
-        request_url(driver, LOGIN_URL)
-        logged_in = login(driver)
-        # types = [CONTRACT_JOB_URL, FULL_TIME_JOB_URL, REMOTE_JOB_URL]
-        types = []
-        job_type = []
-        for c in range(3):
-            query = list(JobSourceQuery.objects.filter(job_source='linkedin').values_list("queries", flat=True))[0]
-            types.append(query[c]['link'])
-            job_type.append(query[c]['job_type'])
-        if logged_in:
-            count = 0
-            scrapped_data = []
-            for url in types:
-                jobs_types(driver, url, job_type[count], scrapped_data)
-                count = count + 1
-                print(job_type[count], "is done")
-            print(SCRAPING_ENDED)
-        else:
-            print(LOGIN_FAILED)
-    ScraperLogs.objects.create(total_jobs=total_job, job_source="LinkedIn")
+    try:
+        options = webdriver.ChromeOptions()  # newly added
+        options.add_argument("--headless")
+        options.add_argument("window-size=1200,1100")
+        options.add_argument(
+            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+        )
+        # options.headless = True  # newly added
+        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                            options=options) as driver:  # modified
+            request_url(driver, LOGIN_URL)
+            logged_in = login(driver)
+            # types = [CONTRACT_JOB_URL, FULL_TIME_JOB_URL, REMOTE_JOB_URL]
+            types = []
+            job_type = []
+            try:
+                query = list(JobSourceQuery.objects.filter(job_source='linkedin').values_list("queries", flat=True))[0]
+                for c in range(len(query)):
+                    types.append(query[c]['link'])
+                    job_type.append(query[c]['job_type'])
+                if logged_in:
+                    count = 0
+                    scrapped_data = []
+                    for url in types:
+                        jobs_types(driver, url, job_type[count], scrapped_data)
+                        print(job_type[count], "is done")
+                        count += 1
+                    print(SCRAPING_ENDED)
+                else:
+                    print(LOGIN_FAILED)
+            except Exception as e:
+                print(e)
+                print("Linkedin")
+                print(LINK_ISSUE)
+            ScraperLogs.objects.create(total_jobs=total_job, job_source="Linkedin")
+    except Exception as e:
+        print(e)
