@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 from authentication.models import Profile
 from authentication.serializers.team_management import TeamManagementSerializer
+from job_portal.models import JobDetail, AppliedJobStatus
+from job_portal.serializers.job_detail import JobDetailSerializer
 from pseudos.models.verticals import Verticals
 from authentication.models.team_management import Team
 from authentication.models.user import User
@@ -121,4 +123,27 @@ class UserVerticals(APIView):
             data = []
         else:
             data = [{"id": vertical.id, "name": vertical.name, "identity": vertical.identity} for vertical in verticals]
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class JobVerticals(APIView):
+
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        job_id = request.GET.get("job_id")
+        job = JobDetail.objects.filter(id=job_id).first()
+        serializer = JobDetailSerializer(job, many=False)
+
+        user = User.objects.filter(id=user_id).first()
+        verticals = user.profile.vertical.all()
+        data = {"total_verticals": [{"name": x.name, "identity": x.identity, "id": x.id} for x in verticals]}
+        data["total_verticals_count"] = len(data["total_verticals"])
+        jobs = AppliedJobStatus.objects.filter(job_id=job_id, vertical__in=verticals)
+        data["applied_verticals"] = [
+            {"name": x.vertical.name, "identity": x.vertical.identity, "id": x.vertical.id}
+            for x in jobs
+        ]
+        data["job_details"] = serializer.data
+        data["totaL_applied_count"] = len(data["applied_verticals"])
+
         return Response(data, status=status.HTTP_200_OK)
