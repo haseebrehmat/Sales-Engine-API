@@ -1,6 +1,6 @@
 # import os
 # import subprocess
-# from job_scraper.utils.thread import start_new_thread
+# from scraper.utils.thread import start_new_thread
 # from datetime import timedelta
 # from celery import Celery
 # from celery.schedules import crontab
@@ -9,8 +9,8 @@
 #
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'settings.{ENVIRONMENT}')
 # django.setup()
-# from job_scraper.models import SchedulerSettings
-# from job_scraper.utils.helpers import convert_time_into_minutes
+# from scraper.models import SchedulerSettings
+# from scraper.utils.helpers import convert_time_into_minutes
 #
 # objects = SchedulerSettings.objects.all()
 #
@@ -21,7 +21,7 @@
 #
 # for object in objects:
 #     scheduler_config[f'{object.job_source}'] = {
-#         'task': 'job_scraper.schedulers.job_upload_scheduler.load_job_scrappers',
+#         'task': 'scraper.schedulers.job_upload_scheduler.load_job_scrappers',
 #         'schedule': None,
 #         'args': [object.job_source],
 #     }
