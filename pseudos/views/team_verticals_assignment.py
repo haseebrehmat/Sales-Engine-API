@@ -55,7 +55,7 @@ class UserVerticalsAssignView(APIView):  # class for assignment verticals to tea
             data = serializer.data
 
             for x in data["members"]:
-                verticals = Verticals.objects.filter(vertical__user__id=x["id"], id__in=vertical_id).exclude(~Q(vertical__user__team=team))
+                verticals = Verticals.objects.filter(vertical__user__id=x["id"], id__in=vertical_id)
                 if verticals.count() > 0:
                     temp = [
                         {"id": vertical.id, "name": vertical.name, "identity": vertical.identity, "pseudo": vertical.pseudo.name}
