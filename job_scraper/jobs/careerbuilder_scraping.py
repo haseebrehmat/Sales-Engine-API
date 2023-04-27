@@ -114,31 +114,36 @@ def accept_cookie(driver):
 
 # code starts from here
 def career_builder():
-    count = 0
-    scrapped_data = []
-    options = webdriver.ChromeOptions()  # newly added
-    options.add_argument("--headless")
-    options.add_argument("window-size=1200,1100")
-    options.add_argument(
-        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-    )
-    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                          options=options) as driver:  # modified
-        driver.maximize_window()
-        # types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
-        types = []
-        job_type = []
-        for c in range(3):
-            query = list(JobSourceQuery.objects.filter(job_source='career_builder').values_list("queries", flat=True))[
-                0]
-            types.append(query[c]['link'])
-            job_type.append(query[c]['job_type'])
-        for url in types:
-            request_url(driver, url)
-            accept_cookie(driver)
-            while load_jobs(driver):
-                print("Loading...")
-            find_jobs(driver, scrapped_data, job_type[count])
-            count = count + 1
-    ScraperLogs.objects.create(total_jobs=total_jobs, job_source="Career Builder")
-    print(SCRAPING_ENDED)
+    try:
+        count = 0
+        scrapped_data = []
+        options = webdriver.ChromeOptions()  # newly added
+        options.add_argument("--headless")
+        options.add_argument("window-size=1200,1100")
+        options.add_argument(
+            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+        )
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                            options=options) as driver:  # modified
+            driver.maximize_window()
+            # types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
+            types = []
+            job_type = []
+            try:
+                query = list(JobSourceQuery.objects.filter(job_source='careerbuilder').values_list("queries", flat=True))[0]
+                for c in range(len(query)):
+                    types.append(query[c]['link'])
+                    job_type.append(query[c]['job_type'])
+                for url in types:
+                    request_url(driver, url)
+                    accept_cookie(driver)
+                    while load_jobs(driver):
+                        print("Loading...")
+                    find_jobs(driver, scrapped_data, job_type[count])
+                    count += 1
+                ScraperLogs.objects.create(total_jobs=total_jobs, job_source="Career Builder")
+                print(SCRAPING_ENDED)
+            except Exception as e:
+                print(LINK_ISSUE)
+    except Exception as e:
+        print(e)
