@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.filters import SearchFilter
 
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Pseudos
@@ -16,10 +17,11 @@ class PseudosView(ListAPIView):
     serializer_class = PseudoSerializer
     pagination_class = CustomPagination
     queryset = Pseudos.objects.all()
+    filter_backends = [SearchFilter]
+    search_fields = ["name"]
 
     def get_queryset(self):
-        # self.queryset.filter(company=self.request.user.profile.company)
-        return self.queryset
+        return self.queryset.filter(company=self.request.user.profile.company)
 
     def post(self, request):
         serializer = PseudoSerializer(data=request.data, many=False)

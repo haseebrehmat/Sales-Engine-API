@@ -63,6 +63,14 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
         except Exception as e:
             print("Exception in applied job serializer", e)
 
+        try:
+            job_details["resume"] = instance.resume
+            job_details["vertical"] = {"id": instance.vertical.id, "name": instance.vertical.name,
+                                       "identity": instance.vertical.identity}
+            job_details["cover_letter"] = instance.cover_letter
+        except Exception as e:
+            print(e)
+
         # result['job_details'] = job_details
         return job_details
 
