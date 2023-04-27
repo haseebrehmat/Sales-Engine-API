@@ -46,5 +46,6 @@ CAREER_BUILDER_CSV = "job_scraper/job_data/career_builder_results.csv"
 MONSTER_CSV = "job_scraper/job_data/monster.csv"
 ADZUNA_CSV = "job_scraper/job_data/adzuna.csv"
 ZIP_RECRUITER_CSV = "job_scraper/job_data/zip_recruiter.csv"
-
-
+GOOGLE_FULL_TIME = "https://careers.google.com/jobs/results/?distance=50&employment_type=FULL_TIME&hl=en_US&jlo=en_US&location=United%20States&q=developer"
+GOOGLE_FULL_TIME_REMOTE = "https://careers.google.com/jobs/results/?distance=50&employment_type=FULL_TIME&has_remote=true&hl=en_US&jlo=en_US&location=United%20States&q=developer"
+LINK_ISSUE = "Links issue or there is no link for this scraper"
