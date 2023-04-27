@@ -112,7 +112,9 @@ def upload_file(job_parser):
 
 @start_new_thread
 def load_all_job_scrappers():
+    print()
     while AllSyncConfig.objects.filter(status=True).first() is not None:
+        print("Load All Scraper Function")
         try:
             scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
             functions = []
