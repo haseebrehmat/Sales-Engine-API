@@ -11,6 +11,7 @@ import numpy as np
 from scipy.stats import norm
 import re
 
+from job_scraper.constants.const import *
 from job_scraper.models import JobSourceQuery
 from job_scraper.models.scraper_logs import ScraperLogs
 
@@ -64,47 +65,48 @@ def transform_data(df):
 
 
 def adzuna_scraping():
-
-    r = http.request('GET', ADZUNA_FULL)
-    soup = BeautifulSoup(r.data, 'html.parser')
-    total_results = ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / 500)
-    all_data = pd.DataFrame()
-    salary_ranges = ranges_of_salaries(SALARY_STD, SALARY_AVERAGE, total_results)
-    for i in tqdm(range(len(salary_ranges))):
-        try:
-            types = JobSourceQuery.objects.filter(job_source='adzuna').first()
-            link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}&st={salary_ranges[i + 1]}'
-        except:
-            types = JobSourceQuery.objects.filter(job_source='adzuna').first()
-            link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}'
-        r = http.request('GET', link)
+    try:
+        r = http.request('GET', ADZUNA_FULL)
         soup = BeautifulSoup(r.data, 'html.parser')
-        try:
-            no_of_pages = min(ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / ADZUNA_RESULTS_PER_PAGE),
-                              ADZUNA_PAGE_CAP)
-        except:
-            continue
-
-        per_link_data = pd.DataFrame()
-        for page_number in tqdm(range(no_of_pages)):
-            r = http.request('GET', f'{link}&p={page_number}')
-            soup = BeautifulSoup(r.data, 'html.parser')
-            results = fetch_results(soup)
-            df = pd.DataFrame(json.loads(results)['results'])
+        total_results = ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / 500)
+        all_data = pd.DataFrame()
+        salary_ranges = ranges_of_salaries(SALARY_STD, SALARY_AVERAGE, total_results)
+        for i in tqdm(range(len(salary_ranges))):
             try:
-                df = df[['title', 'company', 'contract_type', 'location_raw', 'description', 'created', 'numeric_id']]
-            except KeyError as e:
-                if 'None of' in e.args[0]:
-                    continue
-                elif 'contract_type' in e.args[0]:
-                    df = df[['title', 'company', 'location_raw', 'description', 'created', 'numeric_id']]
-                else:
-                    raise e
-            per_link_data = pd.concat([per_link_data, transform_data(df)], axis=0, ignore_index=True)
+                types = JobSourceQuery.objects.filter(job_source='adzuna').first()
+                link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}&st={salary_ranges[i + 1]}'
+            except:
+                types = JobSourceQuery.objects.filter(job_source='adzuna').first()
+                link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}'
+            r = http.request('GET', link)
+            soup = BeautifulSoup(r.data, 'html.parser')
+            try:
+                no_of_pages = min(ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / ADZUNA_RESULTS_PER_PAGE),
+                                ADZUNA_PAGE_CAP)
+            except:
+                continue
 
-        all_data = pd.concat([all_data, per_link_data], axis=0, ignore_index=True)
-    date_time = str(datetime.now())
-    all_data.to_csv(f'job_scraper/job_data/adzuna_results - {date_time}.csv', index=False)
-    total_job = len(all_data)
-    ScraperLogs.objects.create(total_jobs=total_job, job_source="Adzuna")
+            per_link_data = pd.DataFrame()
+            for page_number in tqdm(range(no_of_pages)):
+                r = http.request('GET', f'{link}&p={page_number}')
+                soup = BeautifulSoup(r.data, 'html.parser')
+                results = fetch_results(soup)
+                df = pd.DataFrame(json.loads(results)['results'])
+                try:
+                    df = df[['title', 'company', 'contract_type', 'location_raw', 'description', 'created', 'numeric_id']]
+                except KeyError as e:
+                    if 'None of' in e.args[0]:
+                        continue
+                    elif 'contract_type' in e.args[0]:
+                        df = df[['title', 'company', 'location_raw', 'description', 'created', 'numeric_id']]
+                    else:
+                        raise e
+                per_link_data = pd.concat([per_link_data, transform_data(df)], axis=0, ignore_index=True)
 
+            all_data = pd.concat([all_data, per_link_data], axis=0, ignore_index=True)
+        date_time = str(datetime.now())
+        all_data.to_csv(f'job_scraper/job_data/adzuna_results - {date_time}.csv', index=False)
+        total_job = len(all_data)
+        ScraperLogs.objects.create(total_jobs=total_job, job_source="Adzuna")
+    except Exception as e:
+        print(LINK_ISSUE)

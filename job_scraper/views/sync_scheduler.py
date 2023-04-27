@@ -24,7 +24,8 @@ class SyncScheduler(APIView):
             "monster",
             "simplyhired",
             "ziprecruiter",
-            "adzuna"
+            "adzuna",
+            "googlecareers"
         ]
         if job_source.lower() not in valid_job_sources:
             return Response({"detail": f"{job_source} not a valid job source"}, status=status.HTTP_406_NOT_ACCEPTABLE)
