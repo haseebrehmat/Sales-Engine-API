@@ -1,13 +1,13 @@
+from threading import Thread
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.filters import OrderingFilter
+from rest_framework import status
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
-from authentication.models import Profile
 from job_portal.filters.job_detail import CustomJobFilter
-from job_portal.models import JobDetail, AppliedJobStatus
+from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
 from job_portal.paginations.job_detail import CustomPagination
 from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer
@@ -16,7 +16,8 @@ from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDeta
 class JobDetailsView(ModelViewSet):
     queryset = JobDetail.objects.all()
     serializer_class = JobDetailSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    model = JobDetail
     parser_classes = (MultiPartParser, JSONParser)
     pagination_class = CustomPagination
     filterset_class = CustomJobFilter
@@ -25,6 +26,9 @@ class JobDetailsView(ModelViewSet):
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
     permission_classes = (JobDetailPermission,)
+
+    def get_paginated_response(self, data, query):
+        return self.paginator.get_paginated_response(data, query)
 
     # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
@@ -39,7 +43,6 @@ class JobDetailsView(ModelViewSet):
         if len(current_user_jobs_list) > 0:
             excluded_jobs = self.get_applied_jobs(current_user, current_user_jobs_list)
             queryset = self.get_queryset().exclude(id__in=excluded_jobs)
-
         else:
             queryset = self.get_queryset()
         # pass the queryset to the remaining filters
@@ -55,11 +58,33 @@ class JobDetailsView(ModelViewSet):
 
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            self.update_serializer_for_blacklist_jobs(serializer)
+            return self.get_paginated_response(serializer.data, queryset)
 
         serializer = self.get_serializer(queryset, many=True)
 
+        serializer = self.update_serializer_for_blacklist_jobs(serializer)
+
         return Response(serializer.data)
+
+    def get_blacklist_companies(self):
+        if self.request.user.profile.company:
+            company = self.request.user.profile.company
+            blacklist_companies = list(BlacklistJobs.objects.filter(company_id=company.id).values_list(
+                "company_name", flat=True))
+        else:
+            blacklist_companies = list(BlacklistJobs.objects.all().values_list("company_name", flat=True))
+        blacklist_companies = [c.lower() for c in blacklist_companies if c]
+        return blacklist_companies
+
+    def update_serializer_for_blacklist_jobs(self, serializer):
+        blocked_companies = self.get_blacklist_companies()
+        for data in serializer.data:
+            if data['company_name'] in blocked_companies:
+                data['block'] = True
+            else:
+                data['block'] = False
+        return serializer
 
     def get_applied_jobs(self, user, job_list):
         verticals = user.profile.vertical.all()
