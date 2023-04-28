@@ -59,8 +59,8 @@ class AppliedJobStatus(models.Model):
         blank=True, null=False)
     applied_date = models.DateTimeField(default=timezone.now)
     job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
-    resume = models.TextField(blank=True, null=True)
-    cover_letter = models.TextField(blank=True, null=True)
+    # resume = models.TextField(blank=True, null=True)
+    # cover_letter = models.TextField(blank=True, null=True)
 
     class Meta:
         default_permissions = ()
