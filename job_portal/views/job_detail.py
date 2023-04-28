@@ -14,7 +14,7 @@ from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDeta
 
 
 class JobDetailsView(ModelViewSet):
-    queryset = JobDetail.objects.filter(appliedjobstatus__applied_by=None)
+    queryset = JobDetail.objects.all()
     serializer_class = JobDetailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     model = JobDetail
@@ -41,7 +41,8 @@ class JobDetailsView(ModelViewSet):
         current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
 
         if len(current_user_jobs_list) > 0:
-            queryset = self.get_queryset().exclude(id__in=current_user_jobs_list.values_list('job_id', flat=True))
+            excluded_jobs = self.get_applied_jobs(current_user, current_user_jobs_list)
+            queryset = self.get_queryset().exclude(id__in=excluded_jobs)
         else:
             queryset = self.get_queryset()
         # pass the queryset to the remaining filters
@@ -84,3 +85,12 @@ class JobDetailsView(ModelViewSet):
             else:
                 data['block'] = False
         return serializer
+
+    def get_applied_jobs(self, user, job_list):
+        verticals = user.profile.vertical.all()
+
+        excluded_list = job_list.values_list('job_id', flat=True)
+        excluded_list = [str(x) for x in excluded_list
+                         if AppliedJobStatus.objects.filter(job_id=str(x),
+                                                            vertical__in=verticals).count() >= verticals.count()]
+        return excluded_list
