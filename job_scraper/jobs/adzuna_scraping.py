@@ -73,10 +73,10 @@ def adzuna_scraping():
         salary_ranges = ranges_of_salaries(SALARY_STD, SALARY_AVERAGE, total_results)
         for i in tqdm(range(len(salary_ranges))):
             try:
-                types = JobSourceQuery.objects.filter(job_source='adzuna').first()
+                # types = JobSourceQuery.objects.filter(job_source='adzuna').first()
                 link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}&st={salary_ranges[i + 1]}'
             except:
-                types = JobSourceQuery.objects.filter(job_source='adzuna').first()
+                # types = JobSourceQuery.objects.filter(job_source='adzuna').first()
                 link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}'
             r = http.request('GET', link)
             soup = BeautifulSoup(r.data, 'html.parser')
@@ -109,4 +109,4 @@ def adzuna_scraping():
         total_job = len(all_data)
         ScraperLogs.objects.create(total_jobs=total_job, job_source="Adzuna")
     except Exception as e:
-        print(LINK_ISSUE)
+        print(e)
