@@ -5,6 +5,7 @@ from django.utils import timezone
 import re
 import uuid
 
+
 class DBHandler(Handler):
     def emit(self, record):
         level = record.levelname
@@ -13,7 +14,7 @@ class DBHandler(Handler):
 
         # elif level in ['ERROR', 'WARNING']:
         #     self.saveErrorLog(record, level)
-        if level == 'WARNING':
+        if level == 'ERROR':
             self.saveErrorLog(record, level)
 
     def saveErrorLog(self, record, level):
