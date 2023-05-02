@@ -26,7 +26,7 @@ CUSTOM_APPS = [
     'authentication',
     'job_portal',
     'dashboard',
-    'job_scraper',
+    'scraper',
     'pseudos',
     'error_logger',
 ]
