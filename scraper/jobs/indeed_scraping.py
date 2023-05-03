@@ -39,14 +39,16 @@ def find_jobs(driver, scrapped_data, job_type):
             job.click()
             time.sleep(3)
 
-            job_title = driver.find_element(By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
+            job_title = driver.find_element(
+                By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
             append_data(data, job_title.text.replace('- job post', ''))
             # import pdb
             # pdb.set_trace()
             append_data(data, company_name[c].text)
             address = driver.find_element(By.CLASS_NAME, "css-6z8o9s")
             append_data(data, address.text.replace('•Remote', ''))
-            job_description = driver.find_element(By.CLASS_NAME, "jobsearch-jobDescriptionText")
+            job_description = driver.find_element(
+                By.CLASS_NAME, "jobsearch-jobDescriptionText")
             append_data(data, job_description.text)
             append_data(data, driver.current_url)
             job_posted_date = driver.find_elements(By.CLASS_NAME, "css-659xjq")
@@ -67,12 +69,13 @@ def find_jobs(driver, scrapped_data, job_type):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'job_scraper/job_data/indeed - {date_time}.csv', index=False)
+    df.to_csv(f'scraper/job_data/indeed - {date_time}.csv', index=False)
 
     if not data_exists(driver):
         return False
 
-    next_page = driver.find_element(By.CSS_SELECTOR, "a[aria-label='Next Page']")
+    next_page = driver.find_element(
+        By.CSS_SELECTOR, "a[aria-label='Next Page']")
     next_page.click()
 
     return True
@@ -80,12 +83,13 @@ def find_jobs(driver, scrapped_data, job_type):
 
 # check if there is more jobs available or not
 def data_exists(driver):
-    page_exists = driver.find_elements(By.CSS_SELECTOR, "a[aria-label='Next Page']")
+    page_exists = driver.find_elements(
+        By.CSS_SELECTOR, "a[aria-label='Next Page']")
     return False if len(page_exists) == 0 else True
 
 
 # code starts from here
-def indeed():
+def indeed(link, job_type):
     try:
         count = 0
         options = webdriver.ChromeOptions()  # newly added
@@ -96,16 +100,16 @@ def indeed():
         )
         # options.headless = True  # newly added
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                            options=options) as driver:  # modified
+                              options=options) as driver:  # modified
             driver.maximize_window()
             # types = [INDEED_CONTRACT_RESULTS, INDEED_FULL_RESULTS, INDEED_REMOTE_RESULTS]
-            types = []
-            job_type = []
+            types = [link]
+            job_type = [job_type]
             try:
-                query = list(JobSourceQuery.objects.filter(job_source='indeed').values_list("queries", flat=True))[0]
-                for c in range(len(query)):
-                    types.append(query[c]['link'])
-                    job_type.append(query[c]['job_type'])
+                # query = list(JobSourceQuery.objects.filter(job_source='indeed').values_list("queries", flat=True))[0]
+                # for c in range(len(query)):
+                #     types.append(query[c]['link'])
+                #     job_type.append(query[c]['job_type'])
                 for url in types:
                     scrapped_data = []
                     request_url(driver, url)
@@ -114,7 +118,8 @@ def indeed():
                         print("Fetching...")
                     count += 1
                 print(SCRAPING_ENDED)
-                ScraperLogs.objects.create(total_jobs=total_job, job_source="Indeed")
+                ScraperLogs.objects.create(
+                    total_jobs=total_job, job_source="Indeed")
             except Exception as e:
                 print(LINK_ISSUE)
     except Exception as e:

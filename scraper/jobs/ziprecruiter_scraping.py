@@ -35,7 +35,7 @@ def ziprecruiter_scraping():
         )
         # options.headless = True  # newly added
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                            options=options) as driver:  # modified
+                              options=options) as driver:  # modified
             original_window = driver.current_window_handle
             driver.switch_to.new_window('tab')
             details_window = driver.current_window_handle
@@ -48,7 +48,8 @@ def ziprecruiter_scraping():
                     driver.get(next_link)
                     try:
                         job_search = WebDriverWait(driver, 60).until(
-                            EC.presence_of_element_located((By.XPATH, "//div[@data-type='job_results']"))
+                            EC.presence_of_element_located(
+                                (By.XPATH, "//div[@data-type='job_results']"))
                         )
                     except:
                         continue
@@ -56,22 +57,24 @@ def ziprecruiter_scraping():
                     for job in job_search.find_elements(By.TAG_NAME, 'article'):
                         driver.switch_to.window(original_window)
                         job_detail = {'job_title': job.get_attribute('data-job-title'),
-                                    'company_name': job.get_attribute('data-company-name'),
-                                    'job_source': 'Ziprecruiter',
-                                    'address': job.get_attribute('data-location'),
-                                    'job_type': job.find_element(By.XPATH,
-                                                                "//section[@class='perks_item perks_type']").text,
-                                    'job_type': job_type[c],
-                                    'job_source_url': job.find_element(By.TAG_NAME, 'a').get_attribute('href')
-                                    }
+                                      'company_name': job.get_attribute('data-company-name'),
+                                      'job_source': 'Ziprecruiter',
+                                      'address': job.get_attribute('data-location'),
+                                      'job_type': job.find_element(By.XPATH,
+                                                                   "//section[@class='perks_item perks_type']").text,
+                                      'job_type': job_type[c],
+                                      'job_source_url': job.find_element(By.TAG_NAME, 'a').get_attribute('href')
+                                      }
                         if 'https://www.ziprecruiter.com/k' in job_detail['job_source_url']:
                             driver.switch_to.window(details_window)
                             driver.get(job_detail['job_source_url'])
                             job_data = WebDriverWait(driver, 30).until(
-                                EC.presence_of_element_located((By.XPATH, "//div[@class='job_more_section']"))
+                                EC.presence_of_element_located(
+                                    (By.XPATH, "//div[@class='job_more_section']"))
                             )
 
-                            job_detail['job_description'] = driver.find_element(By.CLASS_NAME, 'jobDescriptionSection').text
+                            job_detail['job_description'] = driver.find_element(
+                                By.CLASS_NAME, 'jobDescriptionSection').text
 
                             for single_job in job_data.find_elements(By.XPATH, "//p[@class='job_more']"):
                                 if 'Posted date:' in single_job.text:
@@ -81,16 +84,21 @@ def ziprecruiter_scraping():
 
                         all_data.append(job_detail)
                     driver.switch_to.window(original_window)
-                    next_link = 'https://www.ziprecruiter.com' + job_search.get_attribute('data-next-url')
+                    next_link = 'https://www.ziprecruiter.com' + \
+                        job_search.get_attribute('data-next-url')
 
                     df = pd.DataFrame.from_dict(all_data)
-                    df['job_description'] = df['job_description'].str.replace('<.*?>', '', regex=True)
-                    df['job_posted_date'] = df['job_posted_date'].str.replace('Posted date: ', '')
+                    df['job_description'] = df['job_description'].str.replace(
+                        '<.*?>', '', regex=True)
+                    df['job_posted_date'] = df['job_posted_date'].str.replace(
+                        'Posted date: ', '')
                     df['job_type'] = df['job_type'].str.replace('Type\n', '')
-                    df.to_csv(f'job_scraper/job_data/ziprecruiter - {date_time}.csv', index=False)
+                    df.to_csv(
+                        f'scraper/job_data/ziprecruiter - {date_time}.csv', index=False)
 
             c += 1
-        ScraperLogs.objects.create(total_jobs=len(df), job_source="Zip Recruiter")
+        ScraperLogs.objects.create(
+            total_jobs=len(df), job_source="Zip Recruiter")
 
         driver.close()
         print("SCRAPING_ENDED")

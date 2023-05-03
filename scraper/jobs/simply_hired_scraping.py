@@ -66,7 +66,7 @@ def find_jobs(driver, scrapped_data, job_type):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'job_scraper/job_data/simply_hired - {date_time}.csv', index=False)
+    df.to_csv(f'scraper/job_data/simply_hired - {date_time}.csv', index=False)
 
     if not data_exists(driver):
         return False
@@ -84,7 +84,7 @@ def data_exists(driver):
 
 
 # code starts from here
-def simply_hired():
+def simply_hired(link, job_type):
     try:
         count = 0
         scrapped_data = []
@@ -96,15 +96,15 @@ def simply_hired():
         )
         # options.headless = True  # newly added
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                            options=options) as driver:  # modified
+                              options=options) as driver:  # modified
             # types = [SIMPLYHIREDCONTRACT, SIMPLYHIREDFULL, SIMPLYHIREDREMOTE]
-            types = []
-            job_type = []
+            types = [link]
+            job_type = [job_type]
             try:
-                query = list(JobSourceQuery.objects.filter(job_source='simplyhired').values_list("queries", flat=True))[0]
-                for c in range(len(query)):
-                    types.append(query[c]['link'])
-                    job_type.append(query[c]['job_type'])
+                # query = list(JobSourceQuery.objects.filter(job_source='simplyhired').values_list("queries", flat=True))[0]
+                # for c in range(len(query)):
+                #     types.append(query[c]['link'])
+                #     job_type.append(query[c]['job_type'])
                 for url in types:
                     scrapped_data = []
                     request_url(driver, url)
@@ -112,7 +112,8 @@ def simply_hired():
                         print("Fetching...")
                     count += 1
                 print(SCRAPING_ENDED)
-                ScraperLogs.objects.create(total_jobs=total_job, job_source="Simply Hired")
+                ScraperLogs.objects.create(
+                    total_jobs=total_job, job_source="Simply Hired")
             except Exception as e:
                 print(LINK_ISSUE)
     except Exception as e:
