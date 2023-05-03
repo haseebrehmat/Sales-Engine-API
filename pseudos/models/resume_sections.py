@@ -1,12 +1,33 @@
 from django.db import models
+
+from authentication.models.company import Company
 from pseudos.models.verticals import Verticals
 from utils.model_fields.timestamped import TimeStamped
 
 
 class Skills(TimeStamped):
     vertical = models.ForeignKey(Verticals, on_delete=models.CASCADE, blank=True, null=True)
+    generic_skill = models.ForeignKey('GenericSkills', on_delete=models.CASCADE, blank=True, null=True)
     level = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = "skills"
+        unique_together = ("vertical", "generic_skill")
+        default_permissions = ()
+
+
+class GenericSkills(TimeStamped):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
+    type = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        db_table = "generic_skills"
+        unique_together = ("name", "type", "company")
+        default_permissions = ()
 
 
 class Experience(TimeStamped):
