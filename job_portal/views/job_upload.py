@@ -11,7 +11,7 @@ from job_portal.data_parser.job_parser import JobParser
 from job_portal.exceptions import InvalidFileException
 from job_portal.models import JobDetail
 from job_portal.serializers.job_detail import JobDataUploadSerializer
-from job_scraper.utils.thread import start_new_thread
+from scraper.utils.thread import start_new_thread
 
 
 class JobDataUploadView(CreateAPIView):

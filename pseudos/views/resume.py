@@ -7,7 +7,7 @@ from pseudos.models import Verticals, Skills, Experience, Education, Links, Lang
 
 
 class ResumeView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request, pk):
         vertical = Verticals.objects.filter(pk=pk).first()
@@ -16,15 +16,15 @@ class ResumeView(APIView):
 
         data = dict()
         data['basic'] = {
-            "name": vertical.name,
-            "hidden": vertical.hidden,
-            "email": vertical.email,
-            "phone": vertical.phone,
-            "address": vertical.address,
-            "designation": vertical.designation,
-            "avatar": vertical.avatar,
-            "portfolio": vertical.portfolio,
-            "description": vertical.description
+            "name": None if vertical.name == "" else vertical.name,
+            "hidden": None if vertical.hidden == "" else vertical.hidden,
+            "email": None if vertical.email == "" else vertical.email,
+            "phone": None if vertical.phone == "" else vertical.phone,
+            "address": None if vertical.address == "" else vertical.address,
+            "designation": None if vertical.designation == "" else vertical.designation,
+            "avatar": None if vertical.avatar == "" else vertical.avatar,
+            "portfolio": None if vertical.portfolio == "" else vertical.portfolio,
+            "description": None if vertical.description == "" else vertical.description
         }
 
         data["summary"] = vertical.summary

@@ -51,16 +51,16 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
             #     return Response({'detail': 'User already applied on this job'}, status=status.HTTP_400_BAD_REQUEST, )
 
             if vertical_id != "":
-                obj.vertical_id = vertical_id[0]
+                obj.vertical_id = vertical_id
             if resume is not None:
-                file_name = f"Resume-{vertical_id[0]}"
+                file_name = f"Resume-{vertical_id}"
                 resume = upload_pdf(resume[0], file_name)
                 obj.resume = resume
             if cover_letter is not None:
                 cover_letter = cover_letter[0]
                 resp = generate_cover_letter_pdf(cover_letter)
                 cover_letter = BytesIO(resp.content)
-                file_name = f"CoverLetter-{vertical_id[0]}"
+                file_name = f"CoverLetter-{vertical_id}"
                 obj.cover_letter = upload_pdf(cover_letter, file_name)
 
             obj.save()
