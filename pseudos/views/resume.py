@@ -29,8 +29,17 @@ class ResumeView(APIView):
 
         data["summary"] = vertical.summary
         data["hobbies"] = "" if len(vertical.hobbies) == 0 else vertical.hobbies.split(",")
-        skills = Skills.objects.filter(vertical_id=pk)
-        data["skills"] = [{"name": skill.name, "level": skill.level} for skill in skills]
+        skills_all = Skills.objects.filter(vertical_id=pk)
+        skills_client_side = skills_all.filter(generic_skill__type='clientside')
+        skills_server_side = skills_all.filter(generic_skill__type='serverside')
+        skills_devops = skills_all.filter(generic_skill__type='devops')
+        skills_others = skills_all.filter(generic_skill__type='others')
+        data["skills"] ={"all" : [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_all],
+                         "clientside" : [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_client_side],
+                         "serverside": [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_server_side],
+                         "devops": [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_devops],
+                         "others": [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_others],
+                         }
 
         experience = Experience.objects.filter(vertical_id=pk)
         data["experience"] = [{

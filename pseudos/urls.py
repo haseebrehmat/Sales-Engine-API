@@ -11,7 +11,7 @@ from pseudos.views.projects import ProjectView, ProjectDetailView
 from pseudos.views.pseudos import PseudosView, PseudoDetailView
 from pseudos.views.resume import ResumeView
 # from pseudos.views.resume_section import ResumeSectionDetailView, ResumeSectionView
-from pseudos.views.skills import SkillView, SkillDetailView
+from pseudos.views.skills import SkillView, SkillDetailView, GenericSkillView, GenericSkillDetailView
 from pseudos.views.verticals import VerticalView, VerticalDetailView
 from pseudos.views.team_verticals_assignment import TeamVerticalsAssignView, UserVerticalsAssignView, UserVerticals
 
@@ -23,6 +23,8 @@ urlpatterns = [
     path('resume/<str:pk>/', ResumeView.as_view()),
     path('skill/', SkillView.as_view()),
     path('skill/<str:pk>/', SkillDetailView.as_view()),
+    path('generic_skill/', GenericSkillView.as_view()),
+    path('generic_skill/<str:pk>/', GenericSkillDetailView.as_view()),
     path('experience/', ExperienceView.as_view()),
     path('experience/<str:pk>/', ExperienceDetailView.as_view()),
     path('education/', EducationView.as_view()),
