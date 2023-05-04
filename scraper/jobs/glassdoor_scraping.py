@@ -23,7 +23,8 @@ def login(driver):
     time.sleep(1)
     driver.find_element(By.CLASS_NAME, "password-input").click()
     driver.find_element(By.ID, "inlineUserPassword").clear()
-    driver.find_element(By.ID, "inlineUserPassword").send_keys(GLASSDOOR_PASSWORD)
+    driver.find_element(By.ID, "inlineUserPassword").send_keys(
+        GLASSDOOR_PASSWORD)
     driver.find_element(By.CLASS_NAME, "css-1dqhu4c").click()
     login = driver.find_elements(By.CLASS_NAME, "iconContainer")
     if len(login) > 0:
@@ -61,11 +62,13 @@ def find_jobs(driver, scrapped_data, job_type):
                 append_data(data, company_name[count].text)
                 address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
                 append_data(data, address.text)
-                job_description = driver.find_element(By.CLASS_NAME, "jobDescriptionContent")
+                job_description = driver.find_element(
+                    By.CLASS_NAME, "jobDescriptionContent")
                 append_data(data, job_description.text)
                 url = driver.find_elements(By.CLASS_NAME, "css-1rd3saf")
                 append_data(data, url[count].get_attribute('href'))
-                job_posted_date = driver.find_elements(By.CLASS_NAME, "css-1vfumx3")
+                job_posted_date = driver.find_elements(
+                    By.CLASS_NAME, "css-1vfumx3")
                 append_data(data, job_posted_date[count].text)
                 append_data(data, "Glassdoor")
                 append_data(data, job_type)
@@ -76,7 +79,7 @@ def find_jobs(driver, scrapped_data, job_type):
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                         "job_source", "job_type"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(f'job_scraper/job_data/glassdoor - {date_time}.csv', index=False)
+        df.to_csv(f'scraper/job_data/glassdoor - {date_time}.csv', index=False)
     except Exception as e:
         print(e)
 
@@ -87,7 +90,7 @@ def find_jobs(driver, scrapped_data, job_type):
 
 
 # code starts from here
-def glassdoor():
+def glassdoor(link, job_type):
     try:
         scrapped_data = []
         count = 0
@@ -98,16 +101,16 @@ def glassdoor():
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                            options=options) as driver:  # modified
+                              options=options) as driver:  # modified
             request_url(driver, GLASSDOOR_LOGIN_URL)
             logged_in = login(driver)
-            types = []
-            job_type = []
+            types = [link]
+            job_type = [job_type]
             try:
-                query = list(JobSourceQuery.objects.filter(job_source='glassdoor').values_list("queries", flat=True))[0]
-                for c in range(len(query)):
-                    types.append(query[c]['link'])
-                    job_type.append(query[c]['job_type'])
+                # query = list(JobSourceQuery.objects.filter(job_source='glassdoor').values_list("queries", flat=True))[0]
+                # for c in range(len(query)):
+                #     types.append(query[c]['link'])
+                #     job_type.append(query[c]['job_type'])
                 if logged_in:
                     for url in types:
                         request_url(driver, url)
@@ -116,7 +119,8 @@ def glassdoor():
                             print("Fetching...")
                         print(job_type[count], "is done")
                         count += 1
-                    ScraperLogs.objects.create(total_jobs=total_job, job_source="GlassDoor")
+                    ScraperLogs.objects.create(
+                        total_jobs=total_job, job_source="GlassDoor")
                     print(SCRAPING_ENDED)
             except Exception as e:
                 print(LINK_ISSUE)

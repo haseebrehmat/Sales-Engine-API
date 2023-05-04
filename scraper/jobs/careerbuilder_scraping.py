@@ -47,7 +47,8 @@ def find_jobs(driver, scrapped_data, job_type):
     jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
     links = driver.find_elements(By.CLASS_NAME, "job-listing-item")
     c_name = driver.find_elements(By.CLASS_NAME, "data-details")
-    job_posted_date = driver.find_elements(By.CLASS_NAME, "data-results-publish-time")
+    job_posted_date = driver.find_elements(
+        By.CLASS_NAME, "data-results-publish-time")
     job_title = driver.find_elements(By.CLASS_NAME, "data-results-title")
 
     for job in jobs:
@@ -67,7 +68,8 @@ def find_jobs(driver, scrapped_data, job_type):
             company = c_name[c_count].find_elements(By.TAG_NAME, "span")
             append_data(data, company[0].text)
             append_data(data, company[1].text)
-            job_description = driver.find_element(By.CLASS_NAME, "jdp-left-content")
+            job_description = driver.find_element(
+                By.CLASS_NAME, "jdp-left-content")
             append_data(data, job_description.text)
             append_data(data, links[count].get_attribute("href"))
             append_data(data, job_posted_date[count].text)
@@ -83,7 +85,8 @@ def find_jobs(driver, scrapped_data, job_type):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'job_scraper/job_data/career_builder - {date_time}.csv', index=False)
+    df.to_csv(
+        f'scraper/job_data/career_builder - {date_time}.csv', index=False)
 
 
 # find's job name
@@ -113,7 +116,7 @@ def accept_cookie(driver):
 
 
 # code starts from here
-def career_builder():
+def career_builder(link, job_type):
     try:
         count = 0
         scrapped_data = []
@@ -124,16 +127,16 @@ def career_builder():
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                            options=options) as driver:  # modified
+                              options=options) as driver:  # modified
             driver.maximize_window()
             # types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
-            types = []
-            job_type = []
+            types = [link]
+            job_type = [job_type]
             try:
-                query = list(JobSourceQuery.objects.filter(job_source='careerbuilder').values_list("queries", flat=True))[0]
-                for c in range(len(query)):
-                    types.append(query[c]['link'])
-                    job_type.append(query[c]['job_type'])
+                # query = list(JobSourceQuery.objects.filter(job_source='careerbuilder').values_list("queries", flat=True))[0]
+                # for c in range(len(query)):
+                #     types.append(query[c]['link'])
+                #     job_type.append(query[c]['job_type'])
                 for url in types:
                     request_url(driver, url)
                     accept_cookie(driver)
@@ -141,7 +144,8 @@ def career_builder():
                         print("Loading...")
                     find_jobs(driver, scrapped_data, job_type[count])
                     count += 1
-                ScraperLogs.objects.create(total_jobs=total_jobs, job_source="Career Builder")
+                ScraperLogs.objects.create(
+                    total_jobs=total_jobs, job_source="Career Builder")
                 print(SCRAPING_ENDED)
             except Exception as e:
                 print(LINK_ISSUE)

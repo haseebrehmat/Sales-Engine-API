@@ -73,7 +73,7 @@ class CustomPagination(pagination.PageNumberPagination):
         return keywords
 
     def total_job_count(self):
-        return self.query.count()
+        return JobDetail.objects.count()
 
     def get_recruiter_jobs_count(self):
         if self.request.GET.get("job_visibility") == "non-recruiter" or self.page.paginator.count == 0:
