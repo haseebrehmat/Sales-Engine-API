@@ -10,6 +10,8 @@ import pandas as pd
 import numpy as np
 from scipy.stats import norm
 import re
+from utils.helpers import saveLogs
+
 
 from scraper.constants.const import *
 from scraper.models import JobSourceQuery
@@ -106,6 +108,7 @@ def adzuna_scraping():
                         df = df[['title', 'company', 'location_raw',
                                  'description', 'created', 'numeric_id']]
                     else:
+                        saveLogs(e)
                         raise e
                 per_link_data = pd.concat(
                     [per_link_data, transform_data(df)], axis=0, ignore_index=True)
@@ -118,4 +121,5 @@ def adzuna_scraping():
         total_job = len(all_data)
         ScraperLogs.objects.create(total_jobs=total_job, job_source="Adzuna")
     except Exception as e:
+        saveLogs(e)
         print(e)

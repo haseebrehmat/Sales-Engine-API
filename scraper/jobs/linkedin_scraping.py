@@ -12,6 +12,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 
 total_job = 0
 
@@ -49,6 +50,7 @@ def login(driver):
 
     except Exception as e:
         print(e)
+        saveLogs(e)
         return False
 
 
@@ -76,6 +78,7 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
                     (By.CLASS_NAME, "jobs-search-results__list-item"))
             )
     except Exception as e:
+        saveLogs(e)
         return False
 
     time.sleep(2)
@@ -130,6 +133,7 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
 
                 scrapped_data.append(data)
         except Exception as e:
+            saveLogs(e)
             print(e)
 
     date_time = str(datetime.now())
@@ -147,6 +151,7 @@ def data_exists(driver):
             By.CLASS_NAME, "jobs-search-no-results-banner__image")
         return True if page_exists[0].text == '' else False
     except Exception as e:
+        saveLogs(e)
         return True
 
 
@@ -200,8 +205,10 @@ def linkedin(link, job_type):
             except Exception as e:
                 print(e)
                 print("Linkedin")
+                saveLogs(f'{LINK_ISSUE} {e}')
                 print(LINK_ISSUE)
             ScraperLogs.objects.create(
                 total_jobs=total_job, job_source="Linkedin")
     except Exception as e:
+        saveLogs(e)
         print(e)

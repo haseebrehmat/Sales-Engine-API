@@ -39,6 +39,8 @@ class JobDataUploadView(CreateAPIView):
 
     def upload_file(self, job_parser):
         # parse, classify and upload data to database
+        if job_parser.data_frame.empty:
+            raise Exception("Dataframe is empty")
         classify_data = JobClassifier(job_parser.data_frame)
         classify_data.classify()
 

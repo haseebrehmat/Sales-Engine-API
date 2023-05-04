@@ -13,6 +13,8 @@ from datetime import datetime
 from scraper.constants.const import *
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
+
 
 links = [
     'https://www.ziprecruiter.com/candidate/search?search=Developer&location=USA&refine_by_location_type=no_remote&radius=100&days=1&refine_by_salary=&refine_by_tags=employment_type%3Afull_time&refine_by_title=&refine_by_org_name=',
@@ -104,4 +106,5 @@ def ziprecruiter_scraping():
         print("SCRAPING_ENDED")
 
     except Exception as e:
+        saveLogs(f'{LINK_ISSUE} {e}')
         print(LINK_ISSUE)
