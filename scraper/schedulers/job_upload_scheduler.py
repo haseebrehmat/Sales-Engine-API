@@ -1,5 +1,6 @@
 import datetime
 import os
+from scraper.models import JobSourceQuery
 from apscheduler.schedulers.background import BackgroundScheduler
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
@@ -58,7 +59,6 @@ scraper_functions = {
     ]
 }
 
-
 def upload_jobs():
     try:
         path = 'scraper/job_data/'
@@ -114,88 +114,101 @@ def upload_file(job_parser):
         model_instances, ignore_conflicts=True, batch_size=1000)
 
 
+def get_job_source_quries(job_source):
+    job_source_queries = list(JobSourceQuery.objects.filter(job_source=job_source).values_list("queries", flat=True))
+    return job_source_queries[0] if len(job_source_queries) > 0 else job_source_queries
+
+def get_scrapers_list(job_source):
+    scrapers = {}
+    if job_source != "all":
+        if job_source in list(scraper_functions.keys()):
+            query = get_job_source_quries(job_source)
+            function = scraper_functions[job_source]
+            if len(function) != 0:
+                scrapers[job_source] = {'stop_status': False, 'function': function[0],
+                                 'job_source_queries': query}
+
+    else:
+        for key in list(scraper_functions.keys()):
+            query = get_job_source_quries(key)
+            function = scraper_functions[key]
+            if len(function) != 0:
+                function = scraper_functions[key]
+                scrapers[key] = {'stop_status': False, 'function': function[0],
+                                 'job_source_queries': query}
+    return scrapers
+
+def run_scrapers(scrapers):
+    scrapers_without_links = ['adzuna', 'googlecareers', 'ziprecruiter']
+    try:
+        is_completed = False
+        i = 0
+        while is_completed == False:
+            flag = False
+            for key in list(scrapers.keys()):
+                scraper = scrapers[key]
+                scraper_function = scraper['function']
+                if not scraper['stop_status']:
+                    try:
+                        if key in scrapers_without_links:
+                            scraper_function()
+                            scraper['stop_status'] = True
+                            flag = True
+                        else:
+                            job_source_queries = scraper['job_source_queries']
+                            if i < len(job_source_queries):
+                                link = job_source_queries[i]['link']
+                                job_type = job_source_queries[i]['job_type']
+                                scraper_function(link, job_type)
+                                flag = True
+                            elif not scraper['stop_status']:
+                                scraper['stop_status'] = True
+                    except Exception as e:
+                        print(e)
+
+                    try:
+                        upload_jobs()
+                    except Exception as e:
+                        print("Error in uploading jobs", e)
+                    remove_files(key)
+            i += 1
+            if not flag:
+                is_completed = True
+    except Exception as e:
+        print(str(e))
+
 @start_new_thread
 def load_all_job_scrappers():
     print()
     while AllSyncConfig.objects.filter(status=True).first() is not None:
         print("Load All Scraper Function")
         try:
-            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
-            functions = []
-            for function in scrapers:
-                functions.extend(function)
-
-            for function in functions:
-                try:
-                    function()
-                except Exception as e:
-                    print(e)
-                try:
-                    upload_jobs()
-                except Exception as e:
-                    print("Error in uploading jobs", e)
-                remove_files()
+            scrapers = get_scrapers_list('all')
+            run_scrapers(scrapers)
         except Exception as e:
             print(e)
     print("Script Terminated")
-
     return True
 
 
 # @shared_task()
 @start_new_thread
 def load_job_scrappers(job_source):
+    job_source = job_source.lower()
     try:
         SchedulerSync.objects.filter(job_source=job_source, type='instant').update(running=True)
-        if job_source != "all":
-            functions = scraper_functions[job_source]
-        else:
-            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
-            functions = []
-            for function in scrapers:
-                functions.extend(function)
-
-        for function in functions:
-            try:
-                function()
-            except Exception as e:
-                print(e)
-            try:
-                upload_jobs()
-            except Exception as e:
-                print("Error in uploading jobs", e)
-            remove_files(job_source)
+        scrapers = get_scrapers_list(job_source)
+        run_scrapers(scrapers)
     except Exception as e:
-        print(e)
+        print(str(e))
     SchedulerSync.objects.all().update(running=False)
     return True
 
-
 def run_scheduler(job_source):
     SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=True)
-    if job_source == "linkedin":
-        linkedin()
-    elif job_source == "indeed":
-        indeed()
-    elif job_source == "dice":
-        dice()
-    elif job_source == "career_builder" or job_source == "careerbuilder":
-        career_builder()
-    elif job_source == "glassdoor":
-        glassdoor()
-    elif job_source == "monster":
-        monster()
-    elif job_source == "zip_recruiter" or job_source == "ziprecruiter":
-        ziprecruiter_scraping()
-    elif job_source == "simply_hired" or job_source == "simplyhired":
-        simply_hired()
-    elif job_source == "adzuna":
-        adzuna_scraping()
-    elif job_source == "google_careers" or job_source == "googlecareers":
-        google_careers()
-
-    upload_jobs()
-    remove_files(job_source=job_source)
+    job_source = job_source.replace('_', '').lower()
+    if job_source in list(scraper_functions.keys()):
+        run_scrapers(get_scrapers_list(job_source))
     SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=False)
 
 
