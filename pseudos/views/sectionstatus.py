@@ -63,6 +63,6 @@ class SectionStatusView(APIView):
         #                                  many=False,)
         #         if serializer.is_valid():
         #             serializer.create(serializer.data)
-        message = "Status Done"
+        message = "Section Info Saved Successfully"
         status_code = status.HTTP_200_OK
         return Response({"detail": message}, status_code)
