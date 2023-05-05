@@ -12,6 +12,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 total_job = 0
 
 
@@ -117,8 +118,10 @@ def monster(link, job_type):
                 ScraperLogs.objects.create(
                     total_jobs=total_job, job_source="Monster")
             except Exception as e:
+                saveLogs(f'{LINK_ISSUE} {e}')
                 print(LINK_ISSUE)
     except Exception as e:
+        saveLogs(e)
         print(e)
 
 

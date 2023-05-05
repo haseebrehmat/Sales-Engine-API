@@ -5,3 +5,7 @@ from pseudos.models import Skills, GenericSkills
 admin.site.register(GenericSkills)
 
 admin.site.register(Skills)
+from pseudos.models import SectionStatus
+# Register your models here.
+admin.site.register(SectionStatus)
+# admin.site.register(Verticals)

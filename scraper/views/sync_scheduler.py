@@ -37,13 +37,15 @@ class SyncScheduler(APIView):
                 message = f"Cannot start {job_source} instant scraper, Time/Interval based already running"
                 return Response({"detail": message}, status=status.HTTP_200_OK)
         queryset = queryset.filter(type="instant").first()
-        if queryset.running:
-            message = f"{job_source} sync in progress, Process is already running in the background"
+        if queryset:
+            if queryset.running:
+                message = f"{job_source} sync in progress, Process is already running in the background"
+            else:
+                message = f"{job_source} sync in progress, It will take a while"
+                load_job_scrappers(job_source)  # running on separate thread
+                return Response({"detail": message}, status=status.HTTP_200_OK)
         else:
-            message = f"{job_source} sync in progress, It will take a while"
-            load_job_scrappers(job_source)  # running on separate thread
-
-        return Response({"detail": message}, status=status.HTTP_200_OK)
+            return Response({"detail": f'Scheduler setting is missing for {job_source}.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SyncAllScrapersView(APIView):

@@ -10,6 +10,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 
 total_job = 0
 
@@ -81,6 +82,7 @@ def find_jobs(driver, scrapped_data, job_type):
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
         df.to_csv(f'scraper/job_data/glassdoor - {date_time}.csv', index=False)
     except Exception as e:
+        saveLogs(e)
         print(e)
 
     if driver.find_element(By.CLASS_NAME, "nextButton").is_enabled():
@@ -123,6 +125,7 @@ def glassdoor(link, job_type):
                         total_jobs=total_job, job_source="GlassDoor")
                     print(SCRAPING_ENDED)
             except Exception as e:
+                saveLogs(e)
                 print(LINK_ISSUE)
     except Exception as e:
         print(e)

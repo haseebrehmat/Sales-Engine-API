@@ -9,6 +9,8 @@ from datetime import datetime
 import pandas as pd
 import logging
 import time
+from utils.helpers import saveLogs
+
 
 total_job = 0
 
@@ -34,9 +36,10 @@ def find_jobs(driver, scrapped_data, job_type):
       try:
         job.location_once_scrolled_into_view
         job.click()
-        print("Job no.", count + 1, "clicked")
+        # print("Job no.", count + 1, "clicked")
       except Exception as e:
-        print("Job no.", count + 1, "clicked")
+        print(e)
+        # print("Job no.", count + 1, "clicked")
       time.sleep(2)
       job_title = driver.find_elements(By.CLASS_NAME,"gc-card__title")
       append_data(data, job_title[count].text)
@@ -61,7 +64,7 @@ def find_jobs(driver, scrapped_data, job_type):
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv('google_careers.csv', index=False)
+    df.to_csv(f'scraper/job_data/google_careers - {date_time}.csv', index=False)
 
     cookie = driver.find_elements(By.CLASS_NAME, "gc-cookie-bar__buttons")
     if len(cookie) > 0:
@@ -70,6 +73,7 @@ def find_jobs(driver, scrapped_data, job_type):
 
 
   except Exception as e:
+    saveLogs(e)
     print(e)
 
   time.sleep(2)
@@ -80,6 +84,7 @@ def find_jobs(driver, scrapped_data, job_type):
     time.sleep(2)
     return True
   except Exception as e:
+    saveLogs(e)
     return False
 
 def job_display(driver):
@@ -90,6 +95,7 @@ def job_display(driver):
     time.sleep(3)
     return True
   except Exception as e:
+    saveLogs(e)
     print("No jobs to display")
     return False
 
@@ -123,4 +129,5 @@ def google_careers():
       ScraperLogs.objects.create(total_jobs=total_job, job_source="GoogleCareers")
       print(SCRAPING_ENDED)
     except Exception as e:
+      saveLogs(e)
       print("Failed")

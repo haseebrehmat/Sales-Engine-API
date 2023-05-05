@@ -1,5 +1,6 @@
 from scraper.serializers.job_serializer import JobSerializer
 from scraper.constants.const import *
+from utils.helpers import saveLogs
 
 import csv
 
@@ -34,61 +35,70 @@ def file_read(file_name):
 def linkedin_job_create():
     try:
         file_read(LINKEDIN_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def indeed_job_create():
     try:
         file_read(INDEED_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def dice_job_create():
     try:
         file_read(DICE_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def career_builder_job_create():
     try:
         file_read(CAREER_BUILDER_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def glassdoor_job_create():
     try:
         file_read(GLASSDOOR_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def monster_job_create():
     try:
         file_read(MONSTER_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def simply_hired_job_create():
     try:
         file_read(SIMPLYHIREDCSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def zip_recruiter_job_create():
     try:
         file_read(ZIP_RECRUITER_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")
 
 
 def adzuna_job_create():
     try:
         file_read(ADZUNA_CSV)
-    except:
+    except Exception as e:
+        saveLogs(e)
         print("File Not Found")

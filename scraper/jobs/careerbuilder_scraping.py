@@ -11,6 +11,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 
 total_jobs = 0
 
@@ -36,7 +37,9 @@ def data_exists(driver):
 
         page_exists = driver.find_elements(By.CLASS_NAME, "btn-clear-blue")
         return False if len(page_exists) == 0 else True
-    except:
+    except Exception as e:
+        print(e)
+        saveLogs(e)
         return False
 
 
@@ -80,13 +83,13 @@ def find_jobs(driver, scrapped_data, job_type):
             c_count += 1
         except Exception as e:
             print(e)
+            saveLogs(e)
     print("Per Page Scrapped")
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(
-        f'scraper/job_data/career_builder - {date_time}.csv', index=False)
+    df.to_csv(f'scraper/job_data/career_builder - {date_time}.csv', index=False)
 
 
 # find's job name
@@ -105,7 +108,8 @@ def load_jobs(driver):
             return True
         else:
             return False
-    except:
+    except Exception as e:
+        saveLogs(e)
         return False
 
 
@@ -118,6 +122,7 @@ def accept_cookie(driver):
 # code starts from here
 def career_builder(link, job_type):
     try:
+        print("career_builder started ... ")
         count = 0
         scrapped_data = []
         options = webdriver.ChromeOptions()  # newly added
@@ -148,6 +153,8 @@ def career_builder(link, job_type):
                     total_jobs=total_jobs, job_source="Career Builder")
                 print(SCRAPING_ENDED)
             except Exception as e:
+                saveLogs(e)
                 print(LINK_ISSUE)
     except Exception as e:
+        saveLogs(e)
         print(e)
