@@ -12,6 +12,7 @@ from pseudos.views.pseudos import PseudosView, PseudoDetailView
 from pseudos.views.resume import ResumeView
 # from pseudos.views.resume_section import ResumeSectionDetailView, ResumeSectionView
 from pseudos.views.skills import SkillView, SkillDetailView, GenericSkillView, GenericSkillDetailView
+from pseudos.views.sectionstatus import SectionStatusView
 from pseudos.views.verticals import VerticalView, VerticalDetailView
 from pseudos.views.team_verticals_assignment import TeamVerticalsAssignView, UserVerticalsAssignView, UserVerticals, \
     JobVerticals
@@ -47,5 +48,6 @@ urlpatterns = [
     path('user_vertical_assignment/', UserVerticalsAssignView.as_view()),
     path('user_vertical/', UserVerticals.as_view()),
     path('job_vertical/', JobVerticals.as_view()),
+    path('section_status/<str:pk>/', SectionStatusView.as_view()),
 
 ]
