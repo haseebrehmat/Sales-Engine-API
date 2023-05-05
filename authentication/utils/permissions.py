@@ -279,4 +279,19 @@ permissions = [
         "codename": 'delete_pseudo',
         "name": 'Delete Pseudo',
     },
+    {
+        "module": 'Pseudos',
+        "codename": 'create_generic_skill',
+        "name": 'Create Generic Skill',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'edit_generic_skill',
+        "name": 'Edit Generic Skill',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'delete_generic_skill',
+        "name": 'Delete Generic Skill',
+    },
 ]

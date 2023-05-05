@@ -11,6 +11,7 @@ from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
 from job_portal.paginations.job_detail import CustomPagination
 from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer
+from scraper.utils.thread import start_new_thread
 
 
 class JobDetailsView(ModelViewSet):
@@ -64,6 +65,7 @@ class JobDetailsView(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
 
         serializer = self.update_serializer_for_blacklist_jobs(serializer)
+        self.export_csv(queryset)
 
         return Response(serializer.data)
 
@@ -94,3 +96,7 @@ class JobDetailsView(ModelViewSet):
                          if AppliedJobStatus.objects.filter(job_id=str(x),
                                                             vertical__in=verticals).count() >= verticals.count()]
         return excluded_list
+
+    @start_new_thread
+    def export_csv(self, queryset):
+        print(queryset)

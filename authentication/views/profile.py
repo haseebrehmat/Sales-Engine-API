@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
@@ -9,10 +9,13 @@ from settings.utils.helpers import serializer_errors
 
 
 class ProfileView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
-        queryset = Profile.objects.filter(user_id=request.user.id).first()
+
+        # queryset = Profile.objects.filter(user_id=request.user.id).first()
+        queryset = Profile.objects.filter(user__email="developer@gmail.com").first()
         serializer = ProfileSerializer(queryset, many=False)
         data = []
         if len(serializer.data) > 0:
