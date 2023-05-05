@@ -10,6 +10,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 
 total_job = 0
 
@@ -63,7 +64,8 @@ def find_jobs(driver, scrapped_data, job_type):
             c += 1
             total_job += 1
         except Exception as e:
-            print("Exception in Indeed Scraping", e)
+            msg = f"Exception in Indeed Scraping {e}"
+            saveLogs(msg)
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
@@ -121,6 +123,8 @@ def indeed(link, job_type):
                 ScraperLogs.objects.create(
                     total_jobs=total_job, job_source="Indeed")
             except Exception as e:
+                saveLogs(e)
                 print(LINK_ISSUE)
     except Exception as e:
+        saveLogs(e)
         print(e)
