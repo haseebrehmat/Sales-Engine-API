@@ -128,4 +128,5 @@ def glassdoor(link, job_type):
                 saveLogs(e)
                 print(LINK_ISSUE)
     except Exception as e:
+        saveLogs(e)
         print(e)

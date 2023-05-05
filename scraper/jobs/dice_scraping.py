@@ -104,7 +104,7 @@ def dice(link, job_type):
                 ScraperLogs.objects.create(total_jobs=total_job, job_source="Dice")
                 print(SCRAPING_ENDED)
             except Exception as e:
-                saveLogs(LINK_ISSUE)
+                saveLogs(e)
                 print(LINK_ISSUE)
     except Exception as e:
         saveLogs(e)
