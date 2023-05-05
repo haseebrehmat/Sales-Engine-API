@@ -116,7 +116,7 @@ def simply_hired(link, job_type):
                 ScraperLogs.objects.create(
                     total_jobs=total_job, job_source="Simply Hired")
             except Exception as e:
-                saveLogs(f'{LINK_ISSUE} {e}')
+                saveLogs(e)
                 print(LINK_ISSUE)
     except Exception as e:
         saveLogs(e)

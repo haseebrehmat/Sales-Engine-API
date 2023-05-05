@@ -89,7 +89,8 @@ def adzuna_scraping():
             try:
                 no_of_pages = min(ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / ADZUNA_RESULTS_PER_PAGE),
                                   ADZUNA_PAGE_CAP)
-            except:
+            except Exception as e:
+                saveLogs(e)
                 continue
 
             per_link_data = pd.DataFrame()
