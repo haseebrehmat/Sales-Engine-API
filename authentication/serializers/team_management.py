@@ -4,17 +4,24 @@ from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
 from rest_framework.permissions import IsAuthenticated
 
+from authentication.serializers.users import UserSerializer
 from settings.utils.helpers import serializer_errors
 
-from authentication.models import Team, User
+from authentication.models import Team, User, Profile
 from rest_framework import serializers
 
 
 class TeamManagementSerializer(serializers.ModelSerializer):
+    members = serializers.SerializerMethodField()
+
     class Meta:
         model = Team
         fields = "__all__"
         depth = 1
+
+    def get_members(self, obj):
+        serializer = UserSerializer(obj.members.all(), many=True)
+        return serializer.data
 
     def create(self, validated_data):
         members = validated_data.pop("members")
@@ -24,7 +31,7 @@ class TeamManagementSerializer(serializers.ModelSerializer):
         team.members.clear()
         for member in members:
             team.members.add(member)
-    
+
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name")
         members = validated_data.get("members")

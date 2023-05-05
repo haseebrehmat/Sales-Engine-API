@@ -1,4 +1,5 @@
-from rest_framework.permissions import AllowAny
+from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -10,23 +11,35 @@ class ResumeView(APIView):
 
     def get(self, request, pk):
         vertical = Verticals.objects.filter(pk=pk).first()
+        if vertical is None:
+            return Response({"detail": "Resume details not found"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         data = dict()
-        data['basic_info'] = {
-            "name": vertical.name,
-            "hidden": vertical.hidden,
-            "email": vertical.email,
-            "phone": vertical.phone,
-            "address": vertical.address,
-            "designation": vertical.designation,
-            "avatar": vertical.avatar,
-            "portfolio": vertical.portfolio,
-            "description": vertical.description
+        data['basic'] = {
+            "name": None if vertical.name == "" else vertical.name,
+            "hidden": None if vertical.hidden == "" else vertical.hidden,
+            "email": None if vertical.email == "" else vertical.email,
+            "phone": None if vertical.phone == "" else vertical.phone,
+            "address": None if vertical.address == "" else vertical.address,
+            "designation": None if vertical.designation == "" else vertical.designation,
+            "avatar": None if vertical.avatar == "" else vertical.avatar,
+            "portfolio": None if vertical.portfolio == "" else vertical.portfolio,
+            "description": None if vertical.description == "" else vertical.description
         }
 
         data["summary"] = vertical.summary
         data["hobbies"] = "" if len(vertical.hobbies) == 0 else vertical.hobbies.split(",")
-        skills = Skills.objects.filter(vertical_id=pk)
-        data["skills"] = [{"name": skill.name, "level": skill.level} for skill in skills]
+        skills_all = Skills.objects.filter(vertical_id=pk)
+        skills_client_side = skills_all.filter(generic_skill__type='clientside')
+        skills_server_side = skills_all.filter(generic_skill__type='serverside')
+        skills_devops = skills_all.filter(generic_skill__type='devops')
+        skills_others = skills_all.filter(generic_skill__type='others')
+        data["skills"] ={"all" : [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_all],
+                         "clientside" : [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_client_side],
+                         "serverside": [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_server_side],
+                         "devops": [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_devops],
+                         "others": [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_others],
+                         }
 
         experience = Experience.objects.filter(vertical_id=pk)
         data["experience"] = [{

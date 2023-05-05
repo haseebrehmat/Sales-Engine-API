@@ -4,6 +4,7 @@ from authentication.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     company = serializers.SerializerMethodField()
+    # verticals = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -21,3 +22,16 @@ class UserSerializer(serializers.ModelSerializer):
         except:
             company = None
         return company
+
+    # def get_verticals(self, obj):
+    #     try:
+    #         verticals = obj.profile.vertical.all()
+    #         verticals = [{
+    #             "id": vertical.id,
+    #             "name": vertical.name,
+    #             "identity": vertical.identity,
+    #         } for vertical in verticals]
+    #         return verticals
+    #     except Exception as e:
+    #         print("Exception in user serializer => ", str(e))
+    #         return []

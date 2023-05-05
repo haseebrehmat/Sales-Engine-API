@@ -3,24 +3,26 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from job_portal.models import BlacklistJobs, JobDetail
-
+from django.db import transaction
 
 class BlackListJobsView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @transaction.atomic
     def post(self, request):
         status_code = status.HTTP_406_NOT_ACCEPTABLE
         # add word to blacklist and mark all companies blacklisted
         if request.user.profile and request.user.profile.company:
             company_name = request.data.get('company_name', False)
             if company_name and company_name != "":
-                company_name = company_name.lower()
-                black_company, is_created = BlacklistJobs.objects.get_or_create(company=request.user.profile.company,
-                                                                                company_name=company_name)
+                with transaction.atomic():
+                    company_name = company_name.lower()
+                    black_company, is_created = BlacklistJobs.objects.get_or_create(company=request.user.profile.company,
+                                                                                    company_name=company_name)
 
-                JobDetail.objects.filter(company_name__iexact=company_name).update(block=True)
-                message = "User company has been blacklisted"
-                status_code = status.HTTP_200_OK
+                    JobDetail.objects.filter(company_name__iexact=company_name).update(block=True)
+                    message = "User company has been blacklisted"
+                    status_code = status.HTTP_200_OK
             else:
                 if company_name == "":
                     message = "Company doesn't exist, It cannot be marked as recruiter"

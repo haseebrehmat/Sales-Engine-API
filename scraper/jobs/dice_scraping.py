@@ -12,6 +12,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 
 total_job = 0
 
@@ -61,7 +62,7 @@ def find_jobs(driver, scrapped_data, job_type):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f"job_scraper/job_data/dice_results - {date_time}.csv", index=False)
+    df.to_csv(f"scraper/job_data/dice_results - {date_time}.csv", index=False)
 
     finished = "disabled"
     pagination = driver.find_elements(By.CLASS_NAME, "pagination-next")
@@ -76,7 +77,7 @@ def find_jobs(driver, scrapped_data, job_type):
 
 
 # code starts from here
-def dice():
+def dice(link, job_type):
     try:
         count = 0
         scrapped_data = []
@@ -88,13 +89,13 @@ def dice():
         )
         # options.headless = True  # newly added
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-            types = []
-            job_type = []
+            types = [link]
+            job_type = [job_type]
             try:
-                query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True))[0]
-                for c in range(len(query)):
-                    types.append(query[c]['link'])
-                    job_type.append(query[c]['job_type'])
+                # query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True))[0]
+                # for c in range(len(query)):
+                #     types.append(query[c]['link'])
+                #     job_type.append(query[c]['job_type'])
                 for url in types:
                     request_url(driver, url)
                     while find_jobs(driver, scrapped_data, job_type[count]):
@@ -103,6 +104,8 @@ def dice():
                 ScraperLogs.objects.create(total_jobs=total_job, job_source="Dice")
                 print(SCRAPING_ENDED)
             except Exception as e:
+                saveLogs(LINK_ISSUE)
                 print(LINK_ISSUE)
     except Exception as e:
+        saveLogs(e)
         print(e)

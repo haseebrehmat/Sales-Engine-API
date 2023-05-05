@@ -1,5 +1,8 @@
 import datetime
 import os
+import pandas as pd
+import logging
+from scraper.models import JobSourceQuery
 from apscheduler.schedulers.background import BackgroundScheduler
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
@@ -20,10 +23,16 @@ from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
+# from error_logger.models import Log
 # from scraper.utils.thread import start_new_thread
 # from celery import shared_task
 
+from utils.helpers import saveLogs
+
 from scraper.utils.thread import start_new_thread
+
+# logger = logging.getLogger(__name__)
+
 
 scraper_functions = {
     "linkedin": [
@@ -72,6 +81,18 @@ def upload_jobs():
             upload_file(job_parser)
     except Exception as e:
         print(e)
+        saveLogs(e)
+
+
+def is_file_empty(file):
+    valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
+    if isinstance(file, str):
+        ext = ".csv"
+    else:
+        ext = os.path.splitext(file.name)[1]
+    df = pd.read_csv(
+        file, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file, nrows=1)
+    return df.empty
 
 
 def remove_files(job_source="all"):
@@ -87,8 +108,11 @@ def remove_files(job_source="all"):
                     os.remove(file_path)
                     print(f"Removed {file_path}")
                 except Exception as e:
-                    print(f"Failed to remove {file_path}. Error: {str(e)}")
+                    msg = f"Failed to remove {file_path}. Error: {str(e)}"
+                    print(msg)
+                    saveLogs(msg)
     except Exception as e:
+        saveLogs(e)
         print(e)
 
 
@@ -114,87 +138,115 @@ def upload_file(job_parser):
         model_instances, ignore_conflicts=True, batch_size=1000)
 
 
+def get_job_source_quries(job_source):
+    job_source_queries = list(JobSourceQuery.objects.filter(
+        job_source=job_source).values_list("queries", flat=True))
+    return job_source_queries[0] if len(job_source_queries) > 0 else job_source_queries
+
+
+def get_scrapers_list(job_source):
+    scrapers = {}
+    if job_source != "all":
+        if job_source in list(scraper_functions.keys()):
+            query = get_job_source_quries(job_source)
+            function = scraper_functions[job_source]
+            if len(function) != 0:
+                scrapers[job_source] = {'stop_status': False, 'function': function[0],
+                                        'job_source_queries': query}
+
+    else:
+        for key in list(scraper_functions.keys()):
+            query = get_job_source_quries(key)
+            function = scraper_functions[key]
+            if len(function) != 0:
+                function = scraper_functions[key]
+                scrapers[key] = {'stop_status': False, 'function': function[0],
+                                 'job_source_queries': query}
+    return scrapers
+
+
+def run_scrapers(scrapers):
+    scrapers_without_links = ['adzuna', 'googlecareers', 'ziprecruiter']
+    try:
+        is_completed = False
+        i = 0
+        while is_completed == False:
+            flag = False
+            for key in list(scrapers.keys()):
+                scraper = scrapers[key]
+                scraper_function = scraper['function']
+                if not scraper['stop_status']:
+                    try:
+                        if key in scrapers_without_links:
+                            scraper_function()
+                            scraper['stop_status'] = True
+                            flag = True
+                        else:
+                            job_source_queries = scraper['job_source_queries']
+                            if i < len(job_source_queries):
+                                link = job_source_queries[i]['link']
+                                job_type = job_source_queries[i]['job_type']
+                                scraper_function(link, job_type)
+                                flag = True
+                            elif not scraper['stop_status']:
+                                scraper['stop_status'] = True
+                    except Exception as e:
+                        print(e)
+                        saveLogs(e)
+
+                    try:
+                        upload_jobs()
+                    except Exception as e:
+                        print("Error in uploading jobs", e)
+                        saveLogs(e)
+                    remove_files(key)
+            i += 1
+            if not flag:
+                is_completed = True
+    except Exception as e:
+        print(str(e))
+        saveLogs(e)
+
+
 @start_new_thread
 def load_all_job_scrappers():
+    print()
     while AllSyncConfig.objects.filter(status=True).first() is not None:
+        print("Load All Scraper Function")
         try:
-            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
-            functions = []
-            for function in scrapers:
-                functions.extend(function)
-
-            for function in functions:
-                try:
-                    function()
-                except Exception as e:
-                    print(e)
-                try:
-                    upload_jobs()
-                except Exception as e:
-                    print("Error in uploading jobs", e)
-                remove_files()
+            scrapers = get_scrapers_list('all')
+            run_scrapers(scrapers)
         except Exception as e:
             print(e)
+            saveLogs(e)
     print("Script Terminated")
-
     return True
 
 
 # @shared_task()
 @start_new_thread
 def load_job_scrappers(job_source):
+    job_source = job_source.lower()
     try:
-        SchedulerSync.objects.filter(job_source=job_source, type='instant').update(running=True)
-        if job_source != "all":
-            functions = scraper_functions[job_source]
-        else:
-            scrapers = [scraper_functions[key] for key in list(scraper_functions.keys())]
-            functions = []
-            for function in scrapers:
-                functions.extend(function)
-
-        for function in functions:
-            try:
-                function()
-            except Exception as e:
-                print(e)
-            try:
-                upload_jobs()
-            except Exception as e:
-                print("Error in uploading jobs", e)
-            remove_files(job_source)
+        SchedulerSync.objects.filter(
+            job_source=job_source, type='instant').update(running=True)
+        scrapers = get_scrapers_list(job_source)
+        run_scrapers(scrapers)
     except Exception as e:
-        print(e)
+        print(str(e))
+        saveLogs(e)
     SchedulerSync.objects.all().update(running=False)
     return True
 
 
 def run_scheduler(job_source):
-    SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=True)
-    if job_source == "linkedin":
-        linkedin()
-    elif job_source == "indeed":
-        indeed()
-    elif job_source == "dice":
-        dice()
-    elif job_source == "career_builder" or job_source == "careerbuilder":
-        career_builder()
-    elif job_source == "glassdoor":
-        glassdoor()
-    elif job_source == "monster":
-        monster()
-    elif job_source == "zip_recruiter" or job_source == "ziprecruiter":
-        ziprecruiter_scraping()
-    elif job_source == "simply_hired" or job_source == "simplyhired":
-        simply_hired()
-    elif job_source == "adzuna":
-        adzuna_scraping()
-    elif job_source == "google_careers" or job_source == "googlecareers":
-        google_careers()
-
-    upload_jobs()
-    remove_files(job_source=job_source)
-    SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=False)
+    SchedulerSync.objects.filter(
+        job_source=job_source, type="time/interval").update(running=True)
+    # job_source = job_source.replace('_', '').lower()
+    if job_source in list(scraper_functions.keys()):
+        run_scrapers(get_scrapers_list(job_source))
+    SchedulerSync.objects.filter(
+        job_source=job_source, type="time/interval").update(running=False)
 
 
 def start_job_sync(job_source):
@@ -229,37 +281,48 @@ def scheduler_settings():
     schedulers = SchedulerSettings.objects.all()
     for scheduler in schedulers:
         if scheduler.interval_based:
-            interval = convert_time_into_minutes(scheduler.interval, scheduler.interval_type)
+            interval = convert_time_into_minutes(
+                scheduler.interval, scheduler.interval_type)
 
             if scheduler.job_source.lower() == "linkedin":
-                linkedin_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["linkedin"])
+                linkedin_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["linkedin"])
 
             elif scheduler.job_source.lower() == "indeed":
-                indeed_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["indeed"])
+                indeed_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["indeed"])
 
             elif scheduler.job_source.lower() == "dice":
-                dice_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["dice"])
+                dice_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["dice"])
 
             elif scheduler.job_source.lower().replace("_", "") == "careerbuilder":
-                career_builder_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["career_builder"])
+                career_builder_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["career_builder"])
 
             elif scheduler.job_source.lower() == "glassdoor":
-                glassdoor_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["glassdoor"])
+                glassdoor_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["glassdoor"])
 
             elif scheduler.job_source.lower() == "monster":
-                monster_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["monster"])
+                monster_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["monster"])
 
             elif scheduler.job_source.lower() == "zip_recruiter":
-                zip_recruiter_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["zip_recruiter"])
+                zip_recruiter_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["zip_recruiter"])
 
             elif scheduler.job_source.lower() == "simply_hired":
-                simply_hired_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["simply_hired"])
+                simply_hired_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["simply_hired"])
 
             elif scheduler.job_source.lower() == "adzuna":
-                adzuna_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["simply_hired"])
+                adzuna_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["simply_hired"])
 
             elif scheduler.job_source.lower() == "google_careers":
-                google_careers_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["google_careers"])
+                google_careers_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["google_careers"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -303,7 +366,7 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "google_careers":
                 google_careers_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["google_careers"])
+                                                 args=["google_careers"])
 
 
 # scheduler_settings()

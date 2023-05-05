@@ -12,6 +12,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 
 total_job = 0
 
@@ -36,17 +37,20 @@ def login(driver):
         driver.find_element(By.ID, "password").send_keys(PASSWORD)
 
         driver.find_element(By.CLASS_NAME, "btn__primary--large").click()
-        not_logged_in = driver.find_elements(By.CLASS_NAME, "form__label--error")
+        not_logged_in = driver.find_elements(
+            By.CLASS_NAME, "form__label--error")
         if len(not_logged_in) > 0:
             return False
 
         WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "global-nav__primary-item"))
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, "global-nav__primary-item"))
         )
         return True
 
     except Exception as e:
         print(e)
+        saveLogs(e)
         return False
 
 
@@ -59,7 +63,8 @@ def append_data(data, field):
 def find_jobs(driver, scrapped_data, job_type, url=None):
     try:
         WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results__list-item"))
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, "jobs-search-results__list-item"))
         )
     except:
         print("waited for jobs")
@@ -69,22 +74,26 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
             get_url = driver.current_url
             request_url(driver, get_url + str(url))
             WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "jobs-search-results__list-item"))
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "jobs-search-results__list-item"))
             )
     except Exception as e:
+        saveLogs(e)
         return False
 
     time.sleep(2)
     if not data_exists(driver):
         return False
 
-    jobs = driver.find_elements(By.CLASS_NAME, "jobs-search-results__list-item")
+    jobs = driver.find_elements(
+        By.CLASS_NAME, "jobs-search-results__list-item")
 
     for job in jobs:
         try:
             job.click()
             WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "jobs-unified-top-card__job-title"))
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "jobs-unified-top-card__job-title"))
             )
         except Exception as e:
             print(e)
@@ -95,20 +104,27 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
             job.click()
 
             WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "jobs-unified-top-card__job-insight"))
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "jobs-unified-top-card__job-insight"))
             )
 
-            job_posted_date = driver.find_elements(By.CLASS_NAME,"jobs-unified-top-card__posted-date")
+            job_posted_date = driver.find_elements(
+                By.CLASS_NAME, "jobs-unified-top-card__posted-date")
             if job_posted_date:
-                job_title = driver.find_element(By.CLASS_NAME,"jobs-unified-top-card__job-title")
+                job_title = driver.find_element(
+                    By.CLASS_NAME, "jobs-unified-top-card__job-title")
                 append_data(data, job_title.text)
-                company_name = driver.find_element(By.CLASS_NAME,"jobs-unified-top-card__company-name")
+                company_name = driver.find_element(
+                    By.CLASS_NAME, "jobs-unified-top-card__company-name")
                 append_data(data, company_name.text)
-                address = driver.find_element(By.CLASS_NAME,"jobs-unified-top-card__bullet")
+                address = driver.find_element(
+                    By.CLASS_NAME, "jobs-unified-top-card__bullet")
                 append_data(data, address.text)
-                job_description = driver.find_element(By.CLASS_NAME,"jobs-description-content__text")
+                job_description = driver.find_element(
+                    By.CLASS_NAME, "jobs-description-content__text")
                 append_data(data, job_description.text)
-                job_source_url = driver.find_element(By.CLASS_NAME, "jobs-unified-top-card__content--two-pane")
+                job_source_url = driver.find_element(
+                    By.CLASS_NAME, "jobs-unified-top-card__content--two-pane")
                 url = job_source_url.find_element(By.TAG_NAME, 'a')
                 append_data(data, url.get_attribute('href'))
                 append_data(data, job_posted_date[0].text)
@@ -117,22 +133,25 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
 
                 scrapped_data.append(data)
         except Exception as e:
+            saveLogs(e)
             print(e)
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'job_scraper/job_data/linkedin - {date_time}.csv', index=False)
+    df.to_csv(f'scraper/job_data/linkedin - {date_time}.csv', index=False)
     return True
 
 
 # check if there is more jobs available or not
 def data_exists(driver):
     try:
-        page_exists = driver.find_elements(By.CLASS_NAME, "jobs-search-no-results-banner__image")
+        page_exists = driver.find_elements(
+            By.CLASS_NAME, "jobs-search-no-results-banner__image")
         return True if page_exists[0].text == '' else False
     except Exception as e:
+        saveLogs(e)
         return True
 
 
@@ -151,7 +170,7 @@ def jobs_types(driver, url, job_type, scrapped_data):
 
 
 # code starts from here
-def linkedin():
+def linkedin(link, job_type):
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -162,17 +181,17 @@ def linkedin():
         # options.headless = True  # newly added
         # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                            options=options) as driver:  # modified
+                              options=options) as driver:  # modified
             request_url(driver, LOGIN_URL)
             logged_in = login(driver)
             # types = [CONTRACT_JOB_URL, FULL_TIME_JOB_URL, REMOTE_JOB_URL]
-            types = []
-            job_type = []
+            types = [link]
+            job_type = [job_type]
             try:
-                query = list(JobSourceQuery.objects.filter(job_source='linkedin').values_list("queries", flat=True))[0]
-                for c in range(len(query)):
-                    types.append(query[c]['link'])
-                    job_type.append(query[c]['job_type'])
+                # query = list(JobSourceQuery.objects.filter(job_source='linkedin').values_list("queries", flat=True))[0]
+                # for c in range(len(query)):
+                #     types.append(query[c]['link'])
+                #     job_type.append(query[c]['job_type'])
                 if logged_in:
                     count = 0
                     scrapped_data = []
@@ -186,7 +205,10 @@ def linkedin():
             except Exception as e:
                 print(e)
                 print("Linkedin")
+                saveLogs(f'{LINK_ISSUE} {e}')
                 print(LINK_ISSUE)
-            ScraperLogs.objects.create(total_jobs=total_job, job_source="Linkedin")
+            ScraperLogs.objects.create(
+                total_jobs=total_job, job_source="Linkedin")
     except Exception as e:
+        saveLogs(e)
         print(e)
