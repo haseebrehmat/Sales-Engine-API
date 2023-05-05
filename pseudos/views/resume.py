@@ -3,7 +3,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from pseudos.models import Verticals, Skills, Experience, Education, Links, Language, OtherSection, Projects
+from pseudos.models import Verticals, Skills, Experience, Education, Links, Language, OtherSection, Projects, \
+    SectionStatus
 
 
 class ResumeView(APIView):
@@ -26,14 +27,13 @@ class ResumeView(APIView):
             "portfolio": None if vertical.portfolio == "" else vertical.portfolio,
             "description": None if vertical.description == "" else vertical.description
         }
-
         data["summary"] = vertical.summary
         data["hobbies"] = "" if len(vertical.hobbies) == 0 else vertical.hobbies.split(",")
         skills_all = Skills.objects.filter(vertical_id=pk)
-        skills_client_side = skills_all.filter(generic_skill__type='clientside')
-        skills_server_side = skills_all.filter(generic_skill__type='serverside')
-        skills_devops = skills_all.filter(generic_skill__type='devops')
-        skills_others = skills_all.filter(generic_skill__type='others')
+        skills_client_side = skills_all.filter(generic_skill__type='clientside',vertical_id=pk)
+        skills_server_side = skills_all.filter(generic_skill__type='serverside',vertical_id=pk)
+        skills_devops = skills_all.filter(generic_skill__type='devops',vertical_id=pk)
+        skills_others = skills_all.filter(generic_skill__type='others',vertical_id=pk)
         data["skills"] ={"all" : [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_all],
                          "clientside" : [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_client_side],
                          "serverside": [{"name": skill.generic_skill.name, "level": skill.level} for skill in skills_server_side],
@@ -74,4 +74,9 @@ class ResumeView(APIView):
         projects = [{"name": x.name, "title": x.title, "description": x.description, "repo": x.repo}
                     for x in projects]
         data["projects"] = projects
+        statuses = SectionStatus.objects.filter(vertical_id=pk)
+        data["sections"] = []
+        for status in statuses:
+            status.code = {status.code: [{"name": status.name, "status": status.status}]}
+            data["sections"].append(status.code)
         return Response(data)
