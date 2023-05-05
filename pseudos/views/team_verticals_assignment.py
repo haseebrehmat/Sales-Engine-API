@@ -144,6 +144,6 @@ class JobVerticals(APIView):
             for x in jobs
         ]
         data["job_details"] = serializer.data
-        data["totaL_applied_count"] = len(data["applied_verticals"])
+        data["total_applied_count"] = len(data["applied_verticals"])
 
         return Response(data, status=status.HTTP_200_OK)

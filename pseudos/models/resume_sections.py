@@ -78,3 +78,11 @@ class Projects(TimeStamped):
     title = models.CharField(max_length=250, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     repo = models.CharField(max_length=500, blank=True, null=True)
+
+
+class SectionStatus(TimeStamped):
+    vertical = models.ForeignKey(Verticals, on_delete=models.CASCADE, blank=True, null=True)
+    code = models.CharField(max_length=100, blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    status = models.BooleanField(default=True)
+
