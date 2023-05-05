@@ -75,8 +75,8 @@ class ResumeView(APIView):
                     for x in projects]
         data["projects"] = projects
         statuses = SectionStatus.objects.filter(vertical_id=pk)
-        data["sections"] = []
+        data["sections"] = {}
         for status in statuses:
-            status.code = {status.code: [{"name": status.name, "status": status.status}]}
-            data["sections"].append(status.code)
+            status.code = {status.code: {"name": status.name, "status": status.status}}
+            data["sections"].update(status.code)
         return Response(data)
