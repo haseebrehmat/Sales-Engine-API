@@ -30,8 +30,13 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     def create(self, request, *args, **kwargs):
 
         vertical_id = request.data.get("vertical_id", "")
+        resume_type = request.data.get('resume_type')
         resume = request.data.pop("resume", None)
+        if not resume:
+            return Response({"detail": "Resume is missing"}, status=status.HTTP_400_BAD_REQUEST)
         cover_letter = request.data.pop("cover_letter", None)
+        if not cover_letter:
+            return Response({"detail": "Resume is missing"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         job_status = self.request.data.get('status')
@@ -52,9 +57,14 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
 
             if vertical_id != "":
                 obj.vertical_id = vertical_id
-            if resume is not None:
+            if resume:
                 file_name = f"Resume-{vertical_id}"
-                resume = upload_pdf(resume[0], file_name)
+                if resume_type == 'manual':
+                    obj.is_manual_resume = True
+                    resume = upload_pdf(resume, file_name)
+                else:
+                    obj.is_manual_resume = False
+                    resume = upload_pdf(resume[0], file_name)
                 obj.resume = resume
             if cover_letter is not None:
                 cover_letter = cover_letter[0]
@@ -111,6 +121,7 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         else:
             msg = {'detail': 'Applied job id not found'}
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 def generate_cover_letter_pdf(cover_letter):
