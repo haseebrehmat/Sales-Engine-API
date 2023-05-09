@@ -31,7 +31,7 @@ class SkillView(ListAPIView):
                 status_code = status.HTTP_201_CREATED
                 return Response({"detail": message}, status_code)
             except Exception as e:
-                return Response({"detail": "Duplicates not allowed"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                return Response({"detail": "Skill already exist"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             data = serializer_errors(serializer)
             raise InvalidUserException(data)
@@ -60,7 +60,7 @@ class SkillDetailView(APIView):
                 status_code = status.HTTP_200_OK
                 return Response({"detail": message}, status_code)
             except Exception as e:
-                return Response({"detail": "Duplicates not allowed"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                return Response({"detail": "Skill already exist"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             data = serializer_errors(serializer)
             raise InvalidUserException(data)
