@@ -38,6 +38,7 @@ def find_jobs(driver, scrapped_data, job_type):
         job.click()
         # print("Job no.", count + 1, "clicked")
       except Exception as e:
+        saveLogs(e)
         print(e)
         # print("Job no.", count + 1, "clicked")
       time.sleep(2)
@@ -48,6 +49,7 @@ def find_jobs(driver, scrapped_data, job_type):
       try:
         append_data(data, address[count].text.split('\n')[1])
       except Exception as e:
+        saveLogs(e)
         append_data(data, "USA")
       job_description = driver.find_elements(By.CLASS_NAME,"gc-card__content")
       append_data(data, job_description[0].text)

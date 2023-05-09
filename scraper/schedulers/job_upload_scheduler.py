@@ -1,5 +1,6 @@
 import datetime
 import os
+import traceback
 import pandas as pd
 import logging
 from scraper.models import JobSourceQuery
@@ -80,7 +81,7 @@ def upload_jobs():
             job_parser.parse_file()
             upload_file(job_parser)
     except Exception as e:
-        print(e)
+        print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
         saveLogs(e)
 
 
@@ -110,7 +111,7 @@ def remove_files(job_source="all"):
                 except Exception as e:
                     msg = f"Failed to remove {file_path}. Error: {str(e)}"
                     print(msg)
-                    saveLogs(msg)
+                    saveLogs(e)
     except Exception as e:
         saveLogs(e)
         print(e)
@@ -189,6 +190,11 @@ def run_scrapers(scrapers):
                                 scraper_function(link, job_type)
                                 flag = True
                             elif not scraper['stop_status']:
+                                if i == 0:
+                                    try:
+                                        raise Exception(f'No link for {key}')
+                                    except Exception as e:
+                                        saveLogs(e)
                                 scraper['stop_status'] = True
                     except Exception as e:
                         print(e)
