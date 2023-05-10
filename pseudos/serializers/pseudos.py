@@ -12,4 +12,4 @@ class PseudoSerializer(serializers.ModelSerializer):
 
     def get_verticals(self, obj):
         queryset = Verticals.objects.filter(pseudo=obj)
-        return [{"id": x.id, "name": x.name} for x in queryset]
+        return [{"id": x.id, "name": x.name, "assigned": x.assigned} for x in queryset]

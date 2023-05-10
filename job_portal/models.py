@@ -59,6 +59,7 @@ class AppliedJobStatus(models.Model):
     applied_date = models.DateTimeField(default=timezone.now)
     job_status = models.IntegerField(default=0, choices=JOB_STATUS_CHOICE)
     resume = models.TextField(blank=True, null=True)
+    is_manual_resume = models.BooleanField(default=False)
     cover_letter = models.TextField(blank=True, null=True)
 
     class Meta:

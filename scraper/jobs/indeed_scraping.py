@@ -65,7 +65,7 @@ def find_jobs(driver, scrapped_data, job_type):
             total_job += 1
         except Exception as e:
             msg = f"Exception in Indeed Scraping {e}"
-            saveLogs(msg)
+            saveLogs(e)
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",

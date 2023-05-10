@@ -11,6 +11,7 @@ class CreatePermissions(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
+        #self.create_permissions()
         if request.user.is_superuser:
             self.create_permissions()
             return Response({"detail": "Permissions updated successfully"})

@@ -53,7 +53,8 @@ def ziprecruiter_scraping():
                             EC.presence_of_element_located(
                                 (By.XPATH, "//div[@data-type='job_results']"))
                         )
-                    except:
+                    except Exception as e:
+                        saveLogs(e)
                         continue
 
                     for job in job_search.find_elements(By.TAG_NAME, 'article'):
@@ -106,5 +107,5 @@ def ziprecruiter_scraping():
         print("SCRAPING_ENDED")
 
     except Exception as e:
-        saveLogs(f'{LINK_ISSUE} {e}')
+        saveLogs(e)
         print(LINK_ISSUE)

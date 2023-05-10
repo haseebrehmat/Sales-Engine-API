@@ -1,11 +1,9 @@
 from django.contrib import admin
-from pseudos.models import Skills, GenericSkills
+from pseudos.models import Skills, GenericSkills, Verticals
 # Register your models here.
 
 admin.site.register(GenericSkills)
 
 admin.site.register(Skills)
-from pseudos.models import SectionStatus
-# Register your models here.
-admin.site.register(SectionStatus)
-# admin.site.register(Verticals)
+
+admin.site.register(Verticals)

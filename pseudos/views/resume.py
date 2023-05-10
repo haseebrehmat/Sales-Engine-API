@@ -28,7 +28,11 @@ class ResumeView(APIView):
             "description": None if vertical.description == "" else vertical.description
         }
         data["summary"] = vertical.summary
-        data["hobbies"] = "" if len(vertical.hobbies) == 0 else vertical.hobbies.split(",")
+        try:
+            data["hobbies"] = "" if len(vertical.hobbies) == 0 else vertical.hobbies.split(",")
+        except:
+            data["hobbies"] = ""
+
         skills_all = Skills.objects.filter(vertical_id=pk)
         skills_client_side = skills_all.filter(generic_skill__type='clientside',vertical_id=pk)
         skills_server_side = skills_all.filter(generic_skill__type='serverside',vertical_id=pk)
