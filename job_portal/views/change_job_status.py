@@ -15,6 +15,7 @@ from job_portal.models import AppliedJobStatus, JobDetail
 from job_portal.permissions.applied_job_status import ApplyJobPermission
 from job_portal.permissions.change_job import JobStatusPermission
 from job_portal.serializers.applied_job import JobStatusSerializer
+from pseudos.models import Verticals
 from settings.utils.helpers import is_valid_uuid
 from utils.upload_to_s3 import upload_pdf
 
@@ -30,6 +31,10 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     def create(self, request, *args, **kwargs):
 
         vertical_id = request.data.get("vertical_id", "")
+        # getting Team from the vertical
+        vertical = Verticals.objects.filter(id=vertical_id).first()
+        team = Team.objects.filter(verticals__exact=vertical).first().id
+
         resume_type = request.data.get('resume_type')
         resume = request.data.get("resume")
         if resume:
@@ -62,6 +67,7 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
 
             if vertical_id != "":
                 obj.vertical_id = vertical_id
+                obj.team_id = team
             if resume:
                 file_name = f"Resume-{vertical_id}"
                 if resume_type == 'manual':

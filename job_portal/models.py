@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from authentication.models import User
+from authentication.models import User, Team
 from authentication.models.company import Company
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
 from pseudos.models import Verticals
@@ -41,7 +41,7 @@ class JobDetail(TimeStamped):
 
 class AppliedJobStatus(models.Model):
     vertical = models.ForeignKey(Verticals, on_delete=models.SET_NULL, blank=True, null=True)
-
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, blank=True, null=True)
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
