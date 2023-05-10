@@ -108,7 +108,8 @@ class UserVerticals(APIView):
     def get(self, request):
         user_id = request.user.id
         job_id = request.GET.get("job_id")
-        user_applied = AppliedJobStatus.objects.filter(applied_by=user_id)
+        user_applied = AppliedJobStatus.objects.filter(applied_by=user_id, job_id=job_id)
+
         job = JobDetail.objects.filter(pk=job_id).first()
         profile = Profile.objects.filter(user_id=user_id).first()
         verticals = list(profile.vertical.values_list('id', flat=True))
@@ -136,7 +137,7 @@ class UserVerticals(APIView):
                     'vertical': apply.vertical.name,
                     "pseudo": apply.vertical.pseudo.name,
                     'time': apply.applied_date.strftime('%Y-%m-%d %H:%M:%S'),
-                    'team': apply.team,
+                    'team': apply.team.name,
                 } for apply in user_applied]
             }
         return Response(data, status=status.HTTP_200_OK)
