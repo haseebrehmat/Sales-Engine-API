@@ -14,8 +14,7 @@ class ProfileView(APIView):
 
     def get(self, request):
 
-        # queryset = Profile.objects.filter(user_id=request.user.id).first()
-        queryset = Profile.objects.filter(user__email="developer@gmail.com").first()
+        queryset = Profile.objects.filter(user_id=request.user.id).first()
         serializer = ProfileSerializer(queryset, many=False)
         data = []
         if len(serializer.data) > 0:
@@ -56,5 +55,3 @@ class ProfileView(APIView):
             return Response({"detail": "Profile updated successfully"}, status=status.HTTP_200_OK)
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
-
-
