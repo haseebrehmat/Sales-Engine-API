@@ -1,4 +1,5 @@
 import datetime
+import uuid
 from threading import Thread
 
 import pandas as pd
@@ -128,12 +129,11 @@ class JobDetailsView(ModelViewSet):
             ]
             data = list(queryset.values(*values_list))
             df = pd.DataFrame(data)
-            filename = "Export-" + request.user.email + "-" + str(datetime.datetime.now())
-            df.to_csv(f'job_portal/{filename}.csv', index=True)
-            path = f"job_portal/{filename}.csv"
+            filename = "export-" + str(uuid.uuid4())[:10] + ".csv"
+            df.to_csv(f'job_portal/{filename}', index=True)
+            path = f"job_portal/{filename}"
 
             url = upload_to_s3.upload_csv(path, filename)
-            print(url)
             context = {
                 "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
                 "username": request.user.username,
@@ -143,7 +143,7 @@ class JobDetailsView(ModelViewSet):
             }
 
             html_string = render_to_string("csv_email_template.html", context)
-            msg = EmailMultiAlternatives("Reset Password", "Reset Password",
+            msg = EmailMultiAlternatives("Jobs Export", "Jobs Export",
                                          FROM_EMAIL,
                                          [request.user.email])
 
