@@ -54,5 +54,3 @@ class ProfileView(APIView):
             return Response({"detail": "Profile updated successfully"}, status=status.HTTP_200_OK)
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
-
-
