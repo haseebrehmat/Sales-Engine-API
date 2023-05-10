@@ -13,7 +13,6 @@ class ProfileView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-
         queryset = Profile.objects.filter(user_id=request.user.id).first()
         serializer = ProfileSerializer(queryset, many=False)
         data = []
