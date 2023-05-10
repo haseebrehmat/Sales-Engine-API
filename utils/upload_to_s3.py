@@ -38,7 +38,7 @@ def upload_pdf(object_name, user_id):
 
     try:
         file = object_name.file
-    except:
+    except Exception as e:
         file = object_name
     s3.upload_fileobj(file, bucket_path, file_path,
                       ExtraArgs={'ContentType': 'application/pdf',
