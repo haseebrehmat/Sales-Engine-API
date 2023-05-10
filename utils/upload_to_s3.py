@@ -44,5 +44,18 @@ def upload_pdf(object_name, user_id):
                                  'ACL': 'public-read'})
 
     file_url = "https://d3mag5wsxt0rth.cloudfront.net/" + str(file_name)
-    print(file_url)
+    return file_url
+
+
+def upload_csv(file_path, file_name):
+    s3 = boto3.client('s3', aws_access_key_id='AKIAQDQXUW4VV7HSLFXE',
+                      aws_secret_access_key='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')
+
+    # Delete the Previous Image of User
+    bucket_path = 'octagon-user-profile-images'
+    s3.upload_file(file_path, bucket_path, file_name,
+                      ExtraArgs={'ContentType': 'text/*',
+                                 'ACL': 'public-read'})
+
+    file_url = "https://d3mag5wsxt0rth.cloudfront.net/" + str(file_name)
     return file_url

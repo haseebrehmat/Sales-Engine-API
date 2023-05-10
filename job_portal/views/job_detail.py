@@ -1,4 +1,9 @@
+import datetime
 from threading import Thread
+
+import pandas as pd
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -12,6 +17,9 @@ from job_portal.paginations.job_detail import CustomPagination
 from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer
 from scraper.utils.thread import start_new_thread
+from settings.base import FROM_EMAIL
+from settings.utils.helpers import get_host
+from utils import upload_to_s3
 
 
 class JobDetailsView(ModelViewSet):
@@ -34,7 +42,6 @@ class JobDetailsView(ModelViewSet):
     # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
     def list(self, request, *args, **kwargs):
-        print()
         if self.queryset.count() == 0:
             return Response([], status=200)
 
@@ -56,6 +63,11 @@ class JobDetailsView(ModelViewSet):
         if job_title_params:
             queryset = queryset.filter(job_title__icontains=job_title_params)
 
+        # Exporting CSV Data
+        if request.GET.get("download", "") == "true":
+            self.export_csv(queryset, self.request)
+            return Response("Export in progress, You will be notify through email")
+
         page = self.paginate_queryset(queryset)
 
         if page is not None:
@@ -66,7 +78,6 @@ class JobDetailsView(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
 
         serializer = self.update_serializer_for_blacklist_jobs(serializer)
-        self.export_csv(queryset)
 
         return Response(serializer.data)
 
@@ -99,5 +110,49 @@ class JobDetailsView(ModelViewSet):
         return excluded_list
 
     @start_new_thread
-    def export_csv(self, queryset):
-        print(queryset)
+    def export_csv(self, queryset, request):
+        try:
+
+            # columns = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+            #             "job_source", "job_type"]
+            values_list = [
+                "job_title",
+                "company_name",
+                "job_source",
+                "job_type",
+                "address",
+                "job_description",
+                "tech_keywords",
+                "job_posted_date",
+                "job_source_url",
+            ]
+            data = list(queryset.values(*values_list))
+            df = pd.DataFrame(data)
+            filename = "Export-" + request.user.email + "-" + str(datetime.datetime.now())
+            df.to_csv(f'job_portal/{filename}.csv', index=True)
+            path = f"job_portal/{filename}.csv"
+
+            url = upload_to_s3.upload_csv(path, filename)
+            print(url)
+            context = {
+                "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
+                "username": request.user.username,
+                "company": "Octagon",
+                "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
+                "download_link": url
+            }
+
+            html_string = render_to_string("csv_email_template.html", context)
+            msg = EmailMultiAlternatives("Reset Password", "Reset Password",
+                                         FROM_EMAIL,
+                                         [request.user.email])
+
+            msg.attach_alternative(
+                html_string,
+                "text/html"
+            )
+            email_status = msg.send()
+            return email_status
+        except Exception as e:
+            print("Error in exporting csv function", e)
+            return False
