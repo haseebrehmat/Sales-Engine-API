@@ -77,7 +77,6 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
                 resume = upload_pdf(resume, file_name)
                 obj.resume = resume
             if cover_letter is not None:
-                cover_letter = cover_letter[0]
                 resp = generate_cover_letter_pdf(cover_letter)
                 cover_letter = BytesIO(resp.content)
                 file_name = f"CoverLetter-{vertical_id}"
