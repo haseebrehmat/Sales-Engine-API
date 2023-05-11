@@ -25,7 +25,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type):
+def find_jobs(driver, scrapped_data, job_type, page_no):
     global total_job
     count = 0
     time.sleep(3)
@@ -72,8 +72,11 @@ def find_jobs(driver, scrapped_data, job_type):
     if not data_exists(driver):
         return False
 
-    next_page = driver.find_element(By.CLASS_NAME, "css-gxlopd")
-    next_page.click()
+    next_page = driver.find_elements(By.CLASS_NAME, "css-1wxsdwr")
+    for i in next_page:
+        if int(i.text) == page_no:
+            i.click()
+            break
 
     return True
 
@@ -86,6 +89,7 @@ def data_exists(driver):
 
 # code starts from here
 def simply_hired(link, job_type):
+    print("Simply hired")
     try:
         count = 0
         scrapped_data = []
@@ -107,9 +111,10 @@ def simply_hired(link, job_type):
                 #     types.append(query[c]['link'])
                 #     job_type.append(query[c]['job_type'])
                 for url in types:
+                    page_no = 2
                     scrapped_data = []
                     request_url(driver, url)
-                    while find_jobs(driver, scrapped_data, job_type[count]):
+                    while find_jobs(driver, scrapped_data, job_type[count], page_no):
                         print("Fetching...")
                     count += 1
                 print(SCRAPING_ENDED)

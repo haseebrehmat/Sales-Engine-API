@@ -172,6 +172,7 @@ def jobs_types(driver, url, job_type, scrapped_data):
 
 # code starts from here
 def linkedin(link, job_type):
+    print("linkedin")
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")

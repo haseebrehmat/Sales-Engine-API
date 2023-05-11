@@ -69,6 +69,7 @@ def transform_data(df):
 
 
 def adzuna_scraping():
+    print("Adzuna")
     try:
         r = http.request('GET', ADZUNA_FULL)
         soup = BeautifulSoup(r.data, 'html.parser')

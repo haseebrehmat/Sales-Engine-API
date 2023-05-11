@@ -74,26 +74,32 @@ def upload_jobs():
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
-        job_parser = JobParser(files)
-        # validate files first
-        is_valid, message = job_parser.validate_file()
-        if is_valid:
-            job_parser.parse_file()
-            upload_file(job_parser)
+        for file in files:
+            if not is_file_empty(file):
+                job_parser = JobParser(file)
+                # validate files first
+                is_valid, message = job_parser.validate_file()
+                if is_valid:
+                    job_parser.parse_file()
+                upload_file(job_parser)
     except Exception as e:
         print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
         saveLogs(e)
 
 
 def is_file_empty(file):
-    valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
-    if isinstance(file, str):
-        ext = ".csv"
-    else:
-        ext = os.path.splitext(file.name)[1]
-    df = pd.read_csv(
-        file, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file, nrows=1)
-    return df.empty
+    try:
+        valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
+        if isinstance(file, str):
+            ext = ".csv"
+        else:
+            ext = os.path.splitext(file.name)[1]
+        df = pd.read_csv(
+            file, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file, nrows=1)
+        return df.empty
+    except Exception as e:
+        saveLogs(e)
+        return True
 
 
 def remove_files(job_source="all"):
