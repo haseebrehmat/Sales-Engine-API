@@ -93,6 +93,7 @@ def find_jobs(driver, scrapped_data, job_type):
 
 # code starts from here
 def glassdoor(link, job_type):
+    print("Glassdoor")
     try:
         scrapped_data = []
         count = 0
