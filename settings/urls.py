@@ -1,7 +1,7 @@
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/job_scraper/', include("scraper.urls")),
     path('api/profile/', include("pseudos.urls")),
     path('api/error_logger/', include("error_logger.urls")),
+    path('api/lead_managament/', include("lead_management.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
