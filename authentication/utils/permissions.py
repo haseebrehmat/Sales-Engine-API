@@ -333,5 +333,25 @@ permissions = [
         "module": 'Status',
         "codename": 'remove_company_status',
         "name": 'Remove Status',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'view_phase',
+        "name": 'View Phases',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'create_phase',
+        "name": 'Create Phase',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'edit_phase',
+        "name": 'Edit Phase',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'delete_phase',
+        "name": 'Delete Phase',
     }
 ]
