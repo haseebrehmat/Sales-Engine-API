@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny
 
 from scraper.models import ScraperLogs
 from scraper.serializers.scraper_logs_serializer import ScraperLogsSerializer

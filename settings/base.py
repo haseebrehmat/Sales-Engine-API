@@ -29,6 +29,7 @@ CUSTOM_APPS = [
     'scraper',
     'pseudos',
     'error_logger',
+    'lead_management',
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',

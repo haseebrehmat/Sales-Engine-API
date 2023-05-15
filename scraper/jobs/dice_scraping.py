@@ -78,6 +78,7 @@ def find_jobs(driver, scrapped_data, job_type):
 
 # code starts from here
 def dice(link, job_type):
+    print("Dice")
     try:
         count = 0
         scrapped_data = []

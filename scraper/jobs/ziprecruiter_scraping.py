@@ -26,6 +26,7 @@ job_type = ["Contract", "Full Time on Site", "Full Time Remote"]
 
 
 def ziprecruiter_scraping():
+    print("Zip Recruiter")
     try:
         date_time = str(datetime.now())
         c = 0
@@ -58,6 +59,7 @@ def ziprecruiter_scraping():
                         continue
 
                     for job in job_search.find_elements(By.TAG_NAME, 'article'):
+                        print("zip")
                         driver.switch_to.window(original_window)
                         job_detail = {'job_title': job.get_attribute('data-job-title'),
                                       'company_name': job.get_attribute('data-company-name'),

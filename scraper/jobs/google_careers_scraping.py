@@ -103,6 +103,7 @@ def job_display(driver):
 
 # code starts from here
 def google_careers():
+  print("Google Careers")
   count = 0
   scrapped_data = []
   options = webdriver.ChromeOptions()  # newly added

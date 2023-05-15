@@ -92,6 +92,7 @@ def data_exists(driver):
 
 # code starts from here
 def indeed(link, job_type):
+    print("Indeed")
     try:
         count = 0
         options = webdriver.ChromeOptions()  # newly added

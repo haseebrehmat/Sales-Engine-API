@@ -74,30 +74,38 @@ def upload_jobs():
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
-        job_parser = JobParser(files)
-        # validate files first
-        is_valid, message = job_parser.validate_file()
-        if is_valid:
-            job_parser.parse_file()
-            upload_file(job_parser)
+        for file in files:
+            if not is_file_empty(file):
+                job_parser = JobParser(file)
+                # validate files first
+                is_valid, message = job_parser.validate_file()
+                if is_valid:
+                    job_parser.parse_file()
+                upload_file(job_parser)
     except Exception as e:
         print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
         saveLogs(e)
 
 
 def is_file_empty(file):
-    valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
-    if isinstance(file, str):
-        ext = ".csv"
-    else:
-        ext = os.path.splitext(file.name)[1]
-    df = pd.read_csv(
-        file, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file, nrows=1)
-    return df.empty
+    try:
+        valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
+        if isinstance(file, str):
+            ext = ".csv"
+        else:
+            ext = os.path.splitext(file.name)[1]
+        df = pd.read_csv(
+            file, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file, nrows=1)
+        return df.empty
+    except Exception as e:
+        saveLogs(e)
+        return True
 
 
 def remove_files(job_source="all"):
     try:
+        if "simply" in job_source:
+            job_source = "simply"
         folder_path = 'scraper/job_data'
         files = os.listdir(folder_path)
 
@@ -149,20 +157,28 @@ def get_scrapers_list(job_source):
     scrapers = {}
     if job_source != "all":
         if job_source in list(scraper_functions.keys()):
-            query = get_job_source_quries(job_source)
-            function = scraper_functions[job_source]
-            if len(function) != 0:
-                scrapers[job_source] = {'stop_status': False, 'function': function[0],
-                                        'job_source_queries': query}
+            try:
+                query = get_job_source_quries(job_source)
+                function = scraper_functions[job_source]
+                if len(function) != 0:
+                    scrapers[job_source] = {'stop_status': False, 'function': function[0],
+                                            'job_source_queries': query}
+            except Exception as e:
+                print("error in get scraper function", str(e))
+                saveLogs(e)
 
     else:
         for key in list(scraper_functions.keys()):
-            query = get_job_source_quries(key)
-            function = scraper_functions[key]
-            if len(function) != 0:
+            try:
+                query = get_job_source_quries(key)
                 function = scraper_functions[key]
-                scrapers[key] = {'stop_status': False, 'function': function[0],
-                                 'job_source_queries': query}
+                if len(function) != 0:
+                    function = scraper_functions[key]
+                    scrapers[key] = {'stop_status': False, 'function': function[0],
+                                     'job_source_queries': query}
+            except Exception as e:
+                print("error in get scraper function", str(e))
+                saveLogs(e)
     return scrapers
 
 
@@ -171,7 +187,7 @@ def run_scrapers(scrapers):
     try:
         is_completed = False
         i = 0
-        while is_completed == False:
+        while not is_completed:
             flag = False
             for key in list(scrapers.keys()):
                 scraper = scrapers[key]
