@@ -22,7 +22,6 @@ class StatusList(APIView):
             obj = Status.objects.filter(name=name).first()
             if not obj:
                 obj = Status.objects.create(name=name, is_active=bool(is_active))
-                serializer = StatusSerializer(obj)
                 return Response({'detail': 'Status Created Successfully!'})
             else:
                 msg = 'Status already exist!'
