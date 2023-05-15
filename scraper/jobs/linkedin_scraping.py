@@ -96,6 +96,7 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
                     (By.CLASS_NAME, "jobs-unified-top-card__job-title"))
             )
         except Exception as e:
+            saveLogs(e)
             print(e)
 
     for job in jobs:
@@ -171,6 +172,7 @@ def jobs_types(driver, url, job_type, scrapped_data):
 
 # code starts from here
 def linkedin(link, job_type):
+    print("linkedin")
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -204,8 +206,7 @@ def linkedin(link, job_type):
                     print(LOGIN_FAILED)
             except Exception as e:
                 print(e)
-                print("Linkedin")
-                saveLogs(f'{LINK_ISSUE} {e}')
+                saveLogs(e)
                 print(LINK_ISSUE)
             ScraperLogs.objects.create(
                 total_jobs=total_job, job_source="Linkedin")

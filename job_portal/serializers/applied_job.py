@@ -29,7 +29,7 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         try:
             job_details["resume"] = instance.resume
             job_details["vertical"] = {"id": instance.vertical.id, "name": instance.vertical.name,
-                                       "identity": instance.vertical.identity}
+                                       "identity": instance.vertical.identity, "pseudo": instance.vertical.pseudo.name}
             job_details["cover_letter"] = instance.cover_letter
         except Exception as e:
             print(e)

@@ -29,6 +29,7 @@ CUSTOM_APPS = [
     'scraper',
     'pseudos',
     'error_logger',
+    'lead_management',
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
@@ -166,7 +167,8 @@ AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 REACT_APP_URL = env('REACT_APP_URL')
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+# EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 CHATGPT_API_KEY = env('CHATGPT_API_KEY')
 AWS_ACCESS_KEY_ID = 'AKIAQDQXUW4VV7HSLFXE'
 AWS_SECRET_ACCESS_KEY = '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'

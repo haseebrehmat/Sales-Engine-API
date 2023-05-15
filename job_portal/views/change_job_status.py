@@ -15,6 +15,7 @@ from job_portal.models import AppliedJobStatus, JobDetail
 from job_portal.permissions.applied_job_status import ApplyJobPermission
 from job_portal.permissions.change_job import JobStatusPermission
 from job_portal.serializers.applied_job import JobStatusSerializer
+from pseudos.models import Verticals
 from settings.utils.helpers import is_valid_uuid
 from utils.upload_to_s3 import upload_pdf
 
@@ -30,8 +31,21 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     def create(self, request, *args, **kwargs):
 
         vertical_id = request.data.get("vertical_id", "")
-        resume = request.data.pop("resume", None)
-        cover_letter = request.data.pop("cover_letter", None)
+        # getting Team from the vertical
+        vertical = Verticals.objects.filter(id=vertical_id).first()
+        team = Team.objects.filter(verticals__exact=vertical).first().id
+
+        resume_type = request.data.get('resume_type')
+        resume = request.data.get("resume")
+        if resume:
+            request.data.pop("resume", None)
+        else:
+            return Response({"detail": "Resume is missing"}, status=status.HTTP_400_BAD_REQUEST)
+        cover_letter = request.data.get("cover_letter")
+        if cover_letter:
+            request.data.pop("cover_letter", None)
+        else:
+            return Response({"detail": "Cover Letter is missing"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         job_status = self.request.data.get('status')
@@ -46,18 +60,23 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         if current_user:
             # make sure the current user apply only one time on one job
 
-            obj = AppliedJobStatus.objects.create(job=job_details, applied_by=current_user)
+            obj = AppliedJobStatus.objects.create(
+                job=job_details, applied_by=current_user)
             # if not create:
             #     return Response({'detail': 'User already applied on this job'}, status=status.HTTP_400_BAD_REQUEST, )
 
             if vertical_id != "":
                 obj.vertical_id = vertical_id
-            if resume is not None:
+                obj.team_id = team
+            if resume:
                 file_name = f"Resume-{vertical_id}"
-                resume = upload_pdf(resume[0], file_name)
+                if resume_type == 'manual':
+                    obj.is_manual_resume = True
+                else:
+                    obj.is_manual_resume = False
+                resume = upload_pdf(resume, file_name)
                 obj.resume = resume
             if cover_letter is not None:
-                cover_letter = cover_letter[0]
                 resp = generate_cover_letter_pdf(cover_letter)
                 cover_letter = BytesIO(resp.content)
                 file_name = f"CoverLetter-{vertical_id}"
@@ -94,7 +113,8 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
             obj = obj.first()
             instance = self.get_queryset().filter(id=self.kwargs.get('job', ''))
             # current use must be the lead
-            user_team = Team.objects.filter(reporting_to=request.user, members=obj.applied_by)
+            user_team = Team.objects.filter(
+                reporting_to=request.user, members=obj.applied_by)
             if len(user_team) == 0:
                 msg = {'detail': 'User is not a part of the current user team'}
                 return Response(msg, status=status.HTTP_200_OK)
@@ -103,7 +123,8 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
                 instance.update(job_status=job_status)
                 data = JobStatusSerializer(obj, many=False)
 
-                msg = {"data": data.data, 'detail': 'Job status updated successfully'}
+                msg = {"data": data.data,
+                       'detail': 'Job status updated successfully'}
                 return Response(msg, status=status.HTTP_200_OK)
             else:
                 msg = {'detail': 'Applied job id not found'}

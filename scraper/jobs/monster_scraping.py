@@ -29,7 +29,8 @@ def load_jobs(driver):
         if finished in data_exists.text:
             return False
         return True
-    except:
+    except Exception as e:
+        saveLogs(e)
         return False
 
 
@@ -39,16 +40,18 @@ def find_jobs(driver, scrapped_data, job_type):
     global total_job
     time.sleep(7)
     while load_jobs(driver):
-        jobs = driver.find_elements(
-            By.CLASS_NAME, "job-search-resultsstyle__JobCardWrap-sc-1wpt60k-5")
-        for job in jobs:
-            job.click()
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "descriptionstyles__DescriptionContainer-sc-13ve12b-0"))
-            )
+        try:
+            jobs = driver.find_elements(
+                By.CLASS_NAME, "job-search-resultsstyle__JobCardWrapNew-sc-1wpt60k-6")
+
+            for job in jobs:
+                job.location_once_scrolled_into_view
+        except Exception as e:
+            print(e)
+
     jobs = driver.find_elements(
-        By.CLASS_NAME, "job-search-resultsstyle__JobCardWrap-sc-1wpt60k-5")
+        By.CLASS_NAME, "job-search-resultsstyle__JobCardWrapNew-sc-1wpt60k-6")
+
     for job in jobs:
         data = []
         job.click()
@@ -69,7 +72,7 @@ def find_jobs(driver, scrapped_data, job_type):
             By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
         append_data(data, job_description.text)
         url = driver.find_elements(
-            By.CLASS_NAME, "job-cardstyle__JobCardTitle-sc-1mbmxes-2")
+            By.CLASS_NAME, "sc-kszsFN")
         append_data(data, url[count].get_attribute('href'))
         job_posted_date = driver.find_element(
             By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
@@ -88,6 +91,7 @@ def find_jobs(driver, scrapped_data, job_type):
 
 # code starts from here
 def monster(link, job_type):
+    print("Monster")
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -118,7 +122,7 @@ def monster(link, job_type):
                 ScraperLogs.objects.create(
                     total_jobs=total_job, job_source="Monster")
             except Exception as e:
-                saveLogs(f'{LINK_ISSUE} {e}')
+                saveLogs(e)
                 print(LINK_ISSUE)
     except Exception as e:
         saveLogs(e)

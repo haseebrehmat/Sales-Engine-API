@@ -17,7 +17,7 @@ class TeamManagementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
-        depth = 1
+        depth = 2
 
     def get_members(self, obj):
         serializer = UserSerializer(obj.members.all(), many=True)

@@ -1,10 +1,12 @@
+from pprint import pprint
+from django.core import serializers
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from itertools import chain
 from authentication.models import Profile
 from authentication.serializers.team_management import TeamManagementSerializer
 from job_portal.models import JobDetail, AppliedJobStatus
@@ -30,14 +32,15 @@ class TeamVerticalsAssignView(ListAPIView):  # class for assignment verticals to
         team = Team.objects.filter(id=team).first()
         all_verticals = request.data.get('verticals')
         all_verticals = Verticals.objects.filter(id__in=all_verticals)
-
+        for vertical in team.verticals.all():
+            Verticals.objects.filter(id=vertical.id).update(assigned=False)
         team.verticals.clear()
-
         for vertical in all_verticals:
-            team.verticals.add(vertical)
-
+            if vertical.assigned == False:
+                team.verticals.add(vertical)
+                Verticals.objects.filter(id=vertical.id).update(assigned=True)
         status_code = status.HTTP_200_OK
-        message = {"detail": "Verticals Assignment Successfully"}
+        message = {"detail": "Verticals Saved Successfully"}
         return Response(message, status=status_code)
 
 
@@ -49,7 +52,6 @@ class UserVerticalsAssignView(APIView):  # class for assignment verticals to tea
         pk = request.query_params.get('team_id')
         team = Team.objects.filter(id=pk).first()
         vertical_id = team.verticals.values_list("id", flat=True)
-
         if team is not None:
             serializer = TeamManagementSerializer(team)
             data = serializer.data
@@ -58,7 +60,8 @@ class UserVerticalsAssignView(APIView):  # class for assignment verticals to tea
                 verticals = Verticals.objects.filter(vertical__user__id=x["id"], id__in=vertical_id)
                 if verticals.count() > 0:
                     temp = [
-                        {"id": vertical.id, "name": vertical.name, "identity": vertical.identity, "pseudo": vertical.pseudo.name}
+                        {"id": vertical.id, "name": vertical.name, "identity": vertical.identity,
+                         "pseudo": vertical.pseudo.name}
                         for vertical in verticals]
                     x["verticals"] = temp
 
@@ -80,7 +83,6 @@ class UserVerticalsAssignView(APIView):  # class for assignment verticals to tea
 
         # User Profile
         profile = Profile.objects.filter(user_id=user_id).first()
-
         # Getting Vertical based on IDs
         verticals = Verticals.objects.filter(id__in=verticals)
 
@@ -92,37 +94,52 @@ class UserVerticalsAssignView(APIView):  # class for assignment verticals to tea
         for team in other_teams:
             other_vertical.extend([team for team in team.verticals.all()])
         other_vertical.extend([x for x in verticals])
-
-        print()
-        # clearing verticals from profile
-        # for vertical in profile.vertical.all():
-        #     if vertical in Verticals.objects.filter(vertical__user=user_id, vertical__user__team=current_team):
-        profile.vertical.clear()
-
-        # other_team_verticals =
-        # for instance in profile.vertical.all():
-        #     if instance not in other_vertical:
-        #         profile.vertical.remove(instance)
-
-        # verticals = other_vertical
-
-        profile.vertical.set(verticals)
+        for vertical in current_team_verticals:
+            profile.vertical.remove(vertical)
+        for v in verticals:
+            profile.vertical.add(v)
 
         status_code = status.HTTP_200_OK
-        message = {"detail": "Verticals Assignment Successfully"}
+        message = {"detail": "Verticals Saved Successfully"}
         return Response(message, status=status_code)
 
 
 class UserVerticals(APIView):
     def get(self, request):
-        user_id = request.GET.get("user_id")
-        profile = Profile.objects.filter(user_id=user_id).first()
-        verticals = profile.vertical.all()
+        user_id = request.user.id
+        job_id = request.GET.get("job_id")
+        user_applied = AppliedJobStatus.objects.filter(applied_by=user_id, job_id=job_id)
 
-        if len(verticals) == 0:
+        job = JobDetail.objects.filter(pk=job_id).first()
+        profile = Profile.objects.filter(user_id=user_id).first()
+        verticals = list(profile.vertical.values_list('id', flat=True))
+        teams = Team.objects.filter(members__id=user_id).all()
+        if len(verticals) == 0 or len(teams) == 0:
             data = []
         else:
-            data = [{"id": vertical.id, "name": vertical.name, "identity": vertical.identity} for vertical in verticals]
+            data = {"assigned": [{
+                'id': team.id,
+                'name': team.name,
+                'verticals': [{"id": vertical.id, "name": vertical.name, "identity": vertical.identity}
+                              for vertical in team.verticals.filter(id__in=verticals)]
+            } for team in teams],
+                "job": {
+                    'id': job.id,
+                    'name': job.job_title,
+                    'company': job.company_name,
+                    'type': job.job_type,
+                    'description': job.job_description,
+                    'source': job.job_source,
+                    'link': job.job_source_url,
+                    'posted_at': job.job_posted_date,
+                },
+                "history": [{
+                    'vertical': apply.vertical.name,
+                    "pseudo": apply.vertical.pseudo.name,
+                    'time': apply.applied_date.strftime('%Y-%m-%d %H:%M:%S'),
+                    'team': apply.team.name,
+                } for apply in user_applied]
+            }
         return Response(data, status=status.HTTP_200_OK)
 
 
@@ -144,6 +161,5 @@ class JobVerticals(APIView):
             for x in jobs
         ]
         data["job_details"] = serializer.data
-        data["totaL_applied_count"] = len(data["applied_verticals"])
-
+        data["total_applied_count"] = len(data["applied_verticals"])
         return Response(data, status=status.HTTP_200_OK)

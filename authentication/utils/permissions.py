@@ -279,4 +279,79 @@ permissions = [
         "codename": 'delete_pseudo',
         "name": 'Delete Pseudo',
     },
+    {
+        "module": 'Pseudos',
+        "codename": 'create_generic_skill',
+        "name": 'Create Generic Skill',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'edit_generic_skill',
+        "name": 'Edit Generic Skill',
+    },
+    {
+        "module": 'Pseudos',
+        "codename": 'delete_generic_skill',
+        "name": 'Delete Generic Skill',
+    },
+    {
+        "module": 'Resume Builder',
+        "codename": 'view_resume_builder',
+        "name": 'View Resume Builder',
+    },
+    {
+        "module": 'Status',
+        "codename": 'view_status',
+        "name": 'View All Status',
+    },
+    {
+        "module": 'Status',
+        "codename": 'create_status',
+        "name": 'Create Status',
+    },
+    {
+        "module": 'Status',
+        "codename": 'edit_status',
+        "name": 'Edit Status',
+    },
+    {
+        "module": 'Status',
+        "codename": 'delete_status',
+        "name": 'Delete Status',
+    },
+    {
+        "module": 'Status',
+        "codename": 'view_company_status',
+        "name": 'View Status',
+    },
+    {
+        "module": 'Status',
+        "codename": 'add_company_status',
+        "name": 'Add Status',
+    },
+    {
+        "module": 'Status',
+        "codename": 'remove_company_status',
+        "name": 'Remove Status',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'view_phase',
+        "name": 'View Phases',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'create_phase',
+        "name": 'Create Phase',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'edit_phase',
+        "name": 'Edit Phase',
+    },
+    {
+        "module": 'Phases',
+        "codename": 'delete_phase',
+        "name": 'Delete Phase',
+    }
 ]

@@ -19,6 +19,7 @@ from utils.model_fields.timestamped import TimeStamped
 
 class Verticals(TimeStamped):
     pseudo = models.ForeignKey(Pseudos, on_delete=models.CASCADE, blank=True, null=True)
+    assigned = hidden = models.BooleanField(default=False)
     name = models.CharField(max_length=250)
     identity = models.CharField(max_length=250, blank=True, null=True)
     hidden = models.BooleanField(default=False)

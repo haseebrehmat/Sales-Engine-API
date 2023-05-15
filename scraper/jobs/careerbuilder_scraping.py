@@ -47,44 +47,47 @@ def find_jobs(driver, scrapped_data, job_type):
     global total_jobs
     count = 0
     c_count = 4
-    jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
-    links = driver.find_elements(By.CLASS_NAME, "job-listing-item")
-    c_name = driver.find_elements(By.CLASS_NAME, "data-details")
-    job_posted_date = driver.find_elements(
-        By.CLASS_NAME, "data-results-publish-time")
-    job_title = driver.find_elements(By.CLASS_NAME, "data-results-title")
+    try:
+        jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
+        links = driver.find_elements(By.CLASS_NAME, "job-listing-item")
+        c_name = driver.find_elements(By.CLASS_NAME, "data-details")
+        job_posted_date = driver.find_elements(
+            By.CLASS_NAME, "data-results-publish-time")
+        job_title = driver.find_elements(By.CLASS_NAME, "data-results-title")
 
-    for job in jobs:
-        try:
-            data = []
-            job.click()
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "jdp_title_header"))
-            )
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "jdp-left-content"))
-            )
+        for job in jobs:
+            try:
+                data = []
+                job.click()
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, "jdp_title_header"))
+                )
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, "jdp-left-content"))
+                )
 
-            append_data(data, job_title[c_count].text)
-            company = c_name[c_count].find_elements(By.TAG_NAME, "span")
-            append_data(data, company[0].text)
-            append_data(data, company[1].text)
-            job_description = driver.find_element(
-                By.CLASS_NAME, "jdp-left-content")
-            append_data(data, job_description.text)
-            append_data(data, links[count].get_attribute("href"))
-            append_data(data, job_posted_date[count].text)
-            append_data(data, "Careerbuilder")
-            append_data(data, job_type)
-            scrapped_data.append(data)
-            count += 1
-            c_count += 1
-        except Exception as e:
-            print(e)
-            saveLogs(e)
-    print("Per Page Scrapped")
+                append_data(data, job_title[c_count].text)
+                company = c_name[c_count].find_elements(By.TAG_NAME, "span")
+                append_data(data, company[0].text)
+                append_data(data, company[1].text)
+                job_description = driver.find_element(
+                    By.CLASS_NAME, "jdp-left-content")
+                append_data(data, job_description.text)
+                append_data(data, links[count].get_attribute("href"))
+                append_data(data, job_posted_date[count].text)
+                append_data(data, "Careerbuilder")
+                append_data(data, job_type)
+                scrapped_data.append(data)
+                count += 1
+                c_count += 1
+            except Exception as e:
+                print(e)
+                saveLogs(e)
+        print("Per Page Scrapped")
+    except Exception as e:
+        print(e)
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
@@ -121,6 +124,7 @@ def accept_cookie(driver):
 
 # code starts from here
 def career_builder(link, job_type):
+    print("Career builder")
     try:
         print("career_builder started ... ")
         count = 0
