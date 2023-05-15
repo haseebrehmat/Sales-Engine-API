@@ -80,4 +80,8 @@ class SchedulerStatusView(APIView):
             data = []
         else:
             data = [{"job_source": x.job_source, "running": x.running, "type": x.type} for x in queryset]
+        infinite_scraper_running_status = False
+        if AllSyncConfig.objects.filter(status=True).first() is not None:
+            infinite_scraper_running_status = True
+        data.append({"job_source": 'all', "running": infinite_scraper_running_status, "type": 'Infinite Scrapper'})
         return Response(data, status=status.HTTP_200_OK)

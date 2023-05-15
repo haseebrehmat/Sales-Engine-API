@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
@@ -9,7 +9,8 @@ from settings.utils.helpers import serializer_errors
 
 
 class ProfileView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         queryset = Profile.objects.filter(user_id=request.user.id).first()
@@ -53,5 +54,3 @@ class ProfileView(APIView):
             return Response({"detail": "Profile updated successfully"}, status=status.HTTP_200_OK)
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
-
-

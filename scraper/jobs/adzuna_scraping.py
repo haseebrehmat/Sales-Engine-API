@@ -69,6 +69,7 @@ def transform_data(df):
 
 
 def adzuna_scraping():
+    print("Adzuna")
     try:
         r = http.request('GET', ADZUNA_FULL)
         soup = BeautifulSoup(r.data, 'html.parser')
@@ -89,7 +90,8 @@ def adzuna_scraping():
             try:
                 no_of_pages = min(ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / ADZUNA_RESULTS_PER_PAGE),
                                   ADZUNA_PAGE_CAP)
-            except:
+            except Exception as e:
+                saveLogs(e)
                 continue
 
             per_link_data = pd.DataFrame()
