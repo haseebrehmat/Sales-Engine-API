@@ -5,6 +5,7 @@ from django.utils import timezone
 import re
 import uuid
 
+
 class DBHandler(Handler):
     def emit(self, record):
         level = record.levelname

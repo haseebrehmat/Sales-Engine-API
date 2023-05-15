@@ -104,6 +104,8 @@ def is_file_empty(file):
 
 def remove_files(job_source="all"):
     try:
+        if "simply" in job_source:
+            job_source = "simply"
         folder_path = 'scraper/job_data'
         files = os.listdir(folder_path)
 
@@ -155,20 +157,28 @@ def get_scrapers_list(job_source):
     scrapers = {}
     if job_source != "all":
         if job_source in list(scraper_functions.keys()):
-            query = get_job_source_quries(job_source)
-            function = scraper_functions[job_source]
-            if len(function) != 0:
-                scrapers[job_source] = {'stop_status': False, 'function': function[0],
-                                        'job_source_queries': query}
+            try:
+                query = get_job_source_quries(job_source)
+                function = scraper_functions[job_source]
+                if len(function) != 0:
+                    scrapers[job_source] = {'stop_status': False, 'function': function[0],
+                                            'job_source_queries': query}
+            except Exception as e:
+                print("error in get scraper function", str(e))
+                saveLogs(e)
 
     else:
         for key in list(scraper_functions.keys()):
-            query = get_job_source_quries(key)
-            function = scraper_functions[key]
-            if len(function) != 0:
+            try:
+                query = get_job_source_quries(key)
                 function = scraper_functions[key]
-                scrapers[key] = {'stop_status': False, 'function': function[0],
-                                 'job_source_queries': query}
+                if len(function) != 0:
+                    function = scraper_functions[key]
+                    scrapers[key] = {'stop_status': False, 'function': function[0],
+                                     'job_source_queries': query}
+            except Exception as e:
+                print("error in get scraper function", str(e))
+                saveLogs(e)
     return scrapers
 
 
@@ -177,7 +187,7 @@ def run_scrapers(scrapers):
     try:
         is_completed = False
         i = 0
-        while is_completed == False:
+        while not is_completed:
             flag = False
             for key in list(scrapers.keys()):
                 scraper = scrapers[key]
