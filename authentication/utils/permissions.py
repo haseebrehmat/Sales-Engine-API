@@ -353,5 +353,22 @@ permissions = [
         "module": 'Phases',
         "codename": 'delete_phase',
         "name": 'Delete Phase',
-    }
+    },
+    {
+        "module": 'Leads',
+        "codename": 'view_lead',
+        "name": 'View Leads',
+    },
+    {
+        "module": 'Leads',
+        "codename": 'create_lead',
+        "name": 'Create Lead',
+
+    },
+    {
+        "module": 'Leads',
+        "codename": 'edit_lead',
+        "name": 'Edit Lead',
+    },
+
 ]

@@ -16,5 +16,4 @@ class CustomPermission(TimeStamped):
     name = models.CharField(max_length=200)
 
     def __str__(self):
-        return f"{self.module} - {self.name}"
-
+        return f"{self.module} - {self.name} - {self.codename}"

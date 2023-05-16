@@ -1,37 +1,44 @@
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from lead_management.models import Phase, Status, CompanyStatus
 from lead_management.serializers import PhaseSerializer
+from settings.utils.custom_pagination import CustomPagination
+from rest_framework import status
 
 
-class PhaseList(APIView):
-    permission_classes = (AllowAny,)
+class PhaseList(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PhaseSerializer
+    pagination_class = CustomPagination
 
-    def get(self, request):
-        queryset = Phase.objects.all()
-        serializer = PhaseSerializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return Phase.objects.all()
 
     def post(self, request):
-        name = request.data.get('name')
-        company_status_id = request.data.get('company_status_id')
-        is_active = request.data.get('is_active')
-        company_id = request.user.roles.company_id
-        company_status = CompanyStatus.objects.filter(pk=company_status_id, company_id=company_id).first()
-
-        if name:
-            name = name.lower()
-            obj = Phase.objects.filter(name=name).first()
-            if not obj:
-                Phase.objects.create(name=name, company_status_id=company_status_id, is_active=bool(is_active))
-                return Response({'detail': 'Status Created Successfully!'})
+        try:
+            name = request.data.get('name')
+            company_status_id = request.data.get('company_status_id')
+            if request.user.profile:
+                company_id = request.user.profile.company_id
+                company_status = CompanyStatus.objects.filter(pk=company_status_id, company_id=company_id).first()
+                if name:
+                    name = name.lower()
+                    obj = Phase.objects.filter(name=name).first()
+                    if not obj:
+                        Phase.objects.create(name=name, company_status_id=company_status_id)
+                        return Response({'detail': 'Phase Created Successfully!'})
+                    else:
+                        msg = 'Phase already exist!'
+                else:
+                    msg = 'Phase name should not be empty!'
+                return Response({'detail': msg})
             else:
-                msg = 'Status already exist!'
-        else:
-            msg = 'Status name should not be empty!'
-        return Response({'detail': msg})
+                return Response({'detail': 'User '})
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PhaseDetail(APIView):
@@ -46,25 +53,35 @@ class PhaseDetail(APIView):
             return Response({'detail': f'No status exist against id {pk}.'})
 
     def put(self, request, pk):
-        name = request.data.get('name')
-        is_active = request.data.get('is_active')
-        if name:
-            name = name.lower()
-            obj = Status.objects.filter(pk=pk).first()
-            if obj:
-                obj.name = name
-                obj.is_active = bool(is_active)
-                obj.save()
-                return Response({'detail': 'Phase updated Successfully!'})
+        try:
+            name = request.data.get('name')
+            company_status_id = request.data.get('company_status_id')
+            if request.user.profile:
+                company_id = request.user.profile.company_id
+                company_status = CompanyStatus.objects.filter(pk=company_status_id, company_id=company_id).first()
+                if company_status_id != company_status.id:
+                    return Response({'detail': 'Company Status doest exist for this company.'}, status=status.HTTP_400_BAD_REQUEST)
+                if name:
+                    name = name.lower()
+                    obj = Phase.objects.get(pk=pk)
+                    if obj:
+                        obj.name = name
+                        obj.company_status_id=company_status_id
+                        obj.save()
+                        return Response({'detail': 'Phase Updated Successfully!'}, status=status.HTTP_200_OK)
+                    else:
+                        msg = 'Phase does not not exist!'
+                else:
+                    msg = 'Phase name should not be empty!'
+                return Response({'detail': msg}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                msg = 'No status exist!'
-        else:
-            msg = 'Phase name is missing!'
-        return Response({'detail': msg})
+                return Response({'detail': 'User '})
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
         try:
-            obj = Status.objects.get(pk=pk)
+            obj = Phase.objects.get(pk=pk)
             obj.delete()
             msg = 'Phase deleted successfully!'
         except Exception as e:
