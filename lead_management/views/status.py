@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from settings.utils.custom_pagination import CustomPagination
 from rest_framework.generics import ListAPIView
 from rest_framework import status
+from settings.utils.helpers import serializer_errors
 
 class StatusList(ListAPIView):
     pagination_class = CustomPagination
@@ -31,7 +32,7 @@ class StatusList(ListAPIView):
                 msg = 'Status name should not be empty!'
             return Response({'detail': msg}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'detail': serializer.errors[0]}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': serializer_errors(serializer)}, status=status.HTTP_400_BAD_REQUEST)
 class AllStatuses(APIView):
     def get(self, request):
         if request.user.profile:
