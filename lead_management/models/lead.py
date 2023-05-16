@@ -11,10 +11,9 @@ from settings.utils.model_fields import TimeStamped
 
 class Lead(TimeStamped):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    applied_job_status = models.ForeignKey(AppliedJobStatus, on_delete=models.SET_NULL, null=True)
+    applied_job_status = models.OneToOneField(AppliedJobStatus, on_delete=models.SET_NULL, null=True)
     company_status = models.ForeignKey(CompanyStatus, on_delete=models.SET_NULL, null=True)
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
