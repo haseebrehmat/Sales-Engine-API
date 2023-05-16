@@ -7,13 +7,15 @@ from .phase import Phase
 
 
 class LeadActivity(TimeStamped):
-    lead = models.ForeignKey(Lead, on_delete=models.SET_NULL, blank=True, null=True)
-    name = models.CharField(max_length=256, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    company_status = models.ForeignKey(CompanyStatus, on_delete=models.SET_NULL, blank=True, null=True)
-    phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, blank=True, null=True)
+    lead = models.ForeignKey(Lead, on_delete=models.SET_NULL, null=True)
+    company_status = models.ForeignKey(
+        CompanyStatus, on_delete=models.SET_NULL, null=True)
+    phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
+    effect_date = models.DateField(auto_now_add=True)
+    due_date = models.DateField(auto_now_add=True)
 
     class Meta:
+        unique_together = ('lead', 'company_status', 'phase')
         default_permissions = ()
         db_table = "lead_activity"
 
