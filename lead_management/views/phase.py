@@ -38,7 +38,7 @@ class PhaseList(ListAPIView):
             else:
                 return Response({'detail': 'User '})
         except Exception as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': str(e)}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class PhaseDetail(APIView):
@@ -60,7 +60,7 @@ class PhaseDetail(APIView):
                 company_id = request.user.profile.company_id
                 company_status = CompanyStatus.objects.filter(pk=company_status_id, company_id=company_id).first()
                 if company_status_id != company_status.id:
-                    return Response({'detail': 'Company Status doest exist for this company.'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'detail': 'Company Status doest exist for this company.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
                 if name:
                     name = name.lower()
                     obj = Phase.objects.get(pk=pk)
@@ -73,11 +73,11 @@ class PhaseDetail(APIView):
                         msg = 'Phase does not not exist!'
                 else:
                     msg = 'Phase name should not be empty!'
-                return Response({'detail': msg}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': msg}, status=status.HTTP_406_NOT_ACCEPTABLE)
             else:
                 return Response({'detail': 'User '})
         except Exception as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': str(e)}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def delete(self, request, pk):
         try:
