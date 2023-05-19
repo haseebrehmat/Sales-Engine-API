@@ -1,15 +1,15 @@
-import json
-
 import django_filters
 from django_filters import CharFilter
 from django_filters.rest_framework import FilterSet
 
 from job_portal.models import JobDetail, BlacklistJobs
-
+import datetime
 
 class CustomJobFilter(FilterSet):
-    from_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='gte')
-    to_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='lte')
+    # from_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='gte')
+    # to_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='lte')
+    from_date = django_filters.DateFilter(method='from_date_field', field_name='job_posted_date', lookup_expr='gte')
+    to_date = django_filters.DateFilter(method='to_date_field', field_name='job_posted_date', lookup_expr='lte')
     job_type = CharFilter(field_name='job_type', lookup_expr='iexact')
     # job_source = CharFilter(field_name='job_source', lookup_expr='iexact')
     job_source = CharFilter(method='job_sources_field', field_name='job_source', lookup_expr='iexact')
@@ -21,6 +21,18 @@ class CustomJobFilter(FilterSet):
     class Meta:
         model = JobDetail
         fields = ()
+
+    def from_date_field(self, queryset, field_name, value):
+        if value:
+            queryset = queryset.filter(job_posted_date__gte=value)
+        return queryset
+
+    def to_date_field(self, queryset, field_name, value):
+        from_date = self.request.GET.get('from_date')
+        to_date = self.request.GET.get('to_date')
+        if value:
+            queryset = queryset.filter(job_posted_date__lt=value+datetime.timedelta(days=1))
+        return queryset
 
     def tech_keywords_field(self, queryset, field_name, value):
         if value and value != "":

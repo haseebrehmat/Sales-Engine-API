@@ -16,7 +16,11 @@ class LeadActivityNotesList(ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return LeadActivityNotes.objects.all()
+        lead = self.request.GET.get('lead')
+        company_status = self.request.GET.get('status')
+        phase = self.request.GET.get('phase')
+        lead_activities_ids = list(LeadActivity.objects.filter(lead_id=lead).values_list('id', flat=True))
+        return LeadActivityNotes.objects.filter(lead_activity_id__in=lead_activities_ids)
 
     def post(self, request):
         serializer = LeadActivityNotesSerializer(data=request.data, many=False)

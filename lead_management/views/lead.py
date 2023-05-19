@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from lead_management.models import Lead, LeadActivity, LeadActivityNotes
 from lead_management.serializers import LeadSerializer
+from lead_management.serializers.lead_serializer import LeadDetailSerializer
 from settings.utils.custom_pagination import CustomPagination
 
 
@@ -26,7 +27,7 @@ class LeadDetail(APIView):
     def get(self, request, pk):
         try:
             queryset = Lead.objects.get(pk=pk)
-            serializer = LeadSerializer(queryset)
+            serializer = LeadDetailSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'detail': f'No Lead exist against id {pk}.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
