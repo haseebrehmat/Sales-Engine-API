@@ -58,6 +58,11 @@ class JobDetailsView(ModelViewSet):
         # pass the queryset to the remaining filters
         queryset = self.filter_queryset(queryset)
 
+        from_date = request.GET.get('from_date')
+        to_date = request.GET.get('to_date')
+
+        # queryset = queryset.filter(job_posted_date__range=[datetime.strptime(from_date, "%Y-%m-%d").date(),
+        #                                                    datetime.strptime(to_date, "%Y-%m-%d").date()])
         # handle job search with exact match of job title
         job_title_params = self.request.GET.get('search')
 

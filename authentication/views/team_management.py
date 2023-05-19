@@ -15,6 +15,7 @@ class TeamView(ListAPIView):
     search_fields = ['name', 'reporting_to__username', 'reporting_to__email', 'members__username',  'members__email']
 
     def get(self, request):
+        print()
         queryset = Team.objects.filter(reporting_to__profile__company=request.user.profile.company).select_related()
         queryset = self.filter_queryset(queryset)
         serializer = TeamManagementSerializer(queryset, many=True)

@@ -6,10 +6,8 @@ from job_portal.models import JobDetail, BlacklistJobs
 import datetime
 
 class CustomJobFilter(FilterSet):
-    # from_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='gte')
-    # to_date = django_filters.DateFilter(field_name='job_posted_date', lookup_expr='lte')
-    from_date = django_filters.DateFilter(method='from_date_field', field_name='job_posted_date', lookup_expr='gte')
-    to_date = django_filters.DateFilter(method='to_date_field', field_name='job_posted_date', lookup_expr='lte')
+    from_date = django_filters.DateFilter(method='from_date_field', field_name='job_posted_date')
+    to_date = django_filters.DateFilter(method='to_date_field', field_name='job_posted_date')
     job_type = CharFilter(field_name='job_type', lookup_expr='iexact')
     # job_source = CharFilter(field_name='job_source', lookup_expr='iexact')
     job_source = CharFilter(method='job_sources_field', field_name='job_source', lookup_expr='iexact')

@@ -20,4 +20,4 @@ class LeadActivity(TimeStamped):
         db_table = "lead_activity"
 
     def __str__(self):
-        return self.name
+        return f'{self.lead} - {self.company_status} - {self.phase}'
