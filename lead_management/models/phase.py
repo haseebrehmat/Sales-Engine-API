@@ -4,7 +4,7 @@ from .company_status import CompanyStatus
 
 
 class Phase(models.Model):
-    name = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=100, null=True, unique=True)
     company_status = models.ForeignKey(CompanyStatus, on_delete=models.SET_NULL, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 

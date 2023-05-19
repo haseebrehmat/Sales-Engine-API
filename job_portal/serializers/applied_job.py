@@ -24,6 +24,7 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
         job_details = json_results['fields']
         job_details['id'] = json_results['pk']
+        job_details['applied_job_id'] = instance.id
         job_details['applied_date'] = instance.applied_date
         job_details['status'] = instance.job_status
         try:

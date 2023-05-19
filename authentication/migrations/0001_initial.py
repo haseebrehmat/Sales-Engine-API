@@ -16,6 +16,7 @@ def forwards_func(apps, schema_editor):
     CustomPermission = apps.get_model("authentication", "CustomPermission")
     with open(os.path.join(STATIC_URL, 'permission_files', 'custom_permission.json'), encoding='utf-8') as data_file:
         json_data = json.loads(data_file.read())
+        print(json_data)
         for permission_module in json_data:
             module_name = permission_module['module']
             permissions = permission_module['permissions']

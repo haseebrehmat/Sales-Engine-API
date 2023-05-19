@@ -24,48 +24,60 @@ results_div_index = 3
 
 
 def cleanhtml(raw_html):
-    return re.sub(CLEANR, '', raw_html)
+    try:
+        return re.sub(CLEANR, '', raw_html)
+    except Exception as e:
+        print(e)
 
 
 def ranges_of_salaries(std, mu, results):
-    ppf_func = np.vectorize(norm.ppf)
-    array = np.linspace(0, 1, results)
-    array_z = ppf_func(array[1:-1])
-    find_sample = np.vectorize(lambda z, std, mu: (z * std) + mu)
-    find_sample = np.insert(find_sample(array_z, std, mu), 0, 0)
-    find_sample = np.abs(find_sample.astype(int))
-    return find_sample
+    try:
+        ppf_func = np.vectorize(norm.ppf)
+        array = np.linspace(0, 1, results)
+        array_z = ppf_func(array[1:-1])
+        find_sample = np.vectorize(lambda z, std, mu: (z * std) + mu)
+        find_sample = np.insert(find_sample(array_z, std, mu), 0, 0)
+        find_sample = np.abs(find_sample.astype(int))
+        return find_sample
+    except Exception as e:
+        print(e)
 
 
 def fetch_results(soup):
     global results_div_index
-    if re.search(r'results:.*\[(.|\n)*\]',
-                 soup.find_all('script', {'type': "text/javascript"})[results_div_index].text):
-        res = re.search(r'results:.*\[(.|\n)*\]',
-                        soup.find_all('script', {'type': "text/javascript"})[results_div_index].text)
-    else:
-        for index, result in enumerate(soup.find_all('script', {'type': "text/javascript"})):
-            if "az_wj_data" in result.text:
-                results_div_index = index
-                res = re.search(r'results:.*\[(.|\n)*\]', result.text)
-    results = "{" + res.group().replace("results", "\"results\"", 1) + "}"
-    return results
+    try:
+        if re.search(r'results:.*\[(.|\n)*\]',
+                    soup.find_all('script', {'type': "text/javascript"})[results_div_index].text):
+            res = re.search(r'results:.*\[(.|\n)*\]',
+                            soup.find_all('script', {'type': "text/javascript"})[results_div_index].text)
+        else:
+            for index, result in enumerate(soup.find_all('script', {'type': "text/javascript"})):
+                if "az_wj_data" in result.text:
+                    results_div_index = index
+                    res = re.search(r'results:.*\[(.|\n)*\]', result.text)
+        results = "{" + res.group().replace("results", "\"results\"", 1) + "}"
+        return results
+    except Exception as e:
+        print(e)
 
 
 def transform_data(df):
-    df.rename(columns={'title': 'job_title', 'company': 'company_name', 'contract_type': 'job_type',
-                       'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
-                       'numeric_id': 'job_source_url'}, inplace=True)
-    count = 0
-    for i in df['job_description']:
-        df['job_description'][count] = cleanhtml(i)
-        count += 1
-    df['job_source_url'] = 'https://www.adzuna.com/details/' + \
-        df['job_source_url'].astype(str)
-    df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
-    df['job_source'] = 'Adzuna'
-    df['job_type'] = 'Remote'
-    return df
+    try:
+        df.rename(columns={'title': 'job_title', 'company': 'company_name', 'contract_type': 'job_type',
+                        'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
+                        'numeric_id': 'job_source_url'}, inplace=True)
+        count = 0
+        for i in df['job_description']:
+            df['job_description'][count] = cleanhtml(i)
+            count += 1
+        df['job_source_url'] = 'https://www.adzuna.com/details/' + \
+            df['job_source_url'].astype(str)
+        df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
+        df['job_source'] = 'Adzuna'
+        df['job_type'] = 'Remote'
+        return df
+    except Exception as e:
+        print(e)
 
 
 def adzuna_scraping():

@@ -1,6 +1,6 @@
-from .company_status_serializer import CompanyStatusSerializer
+from .company_status_serializer import CompanyStatusSerializer, CompanyStatusPhasesSerializer
 from .lead_activity_notes_serializer import LeadActivityNotesSerializer
 from .lead_activity_serializer import LeadActivitySerializer
 from .lead_serializer import LeadSerializer
-from .phase_serializer import PhaseSerializer
+from .phase_serializer import PhaseSerializer, PhaseNameSerializer
 from .status_serializer import StatusSerializer
