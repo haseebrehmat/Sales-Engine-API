@@ -1,7 +1,7 @@
 backend_regex = [
     {
         'tech_stack': 'NodeJS',
-        'exp': '(?i)(^|\W)(node([-\s]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(node([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'Ruby on Rails',
