@@ -76,7 +76,7 @@ def upload_jobs():
         files = [path + file for file in temp]
         for file in files:
             if not is_file_empty(file):
-                job_parser = JobParser(file)
+                job_parser = JobParser([file])
                 # validate files first
                 is_valid, message = job_parser.validate_file()
                 if is_valid:
