@@ -49,17 +49,17 @@ class GenerateCoverLetter(APIView):
         back_side_skills = get_skills(job.job_description, backend_regex)
         front_side_skills = get_skills(job.job_description, frontend_regex)
         devops_side_skills = get_skills(job.job_description, devops_regex)
-        core_framework_skills = get_skills(job.job_description, core_framework_regex)
+        core_side_skills = get_skills(job.job_description, core_framework_regex)
 
         back_side_skills = list(dict.fromkeys(back_side_skills))
         front_side_skills = list(dict.fromkeys(front_side_skills))
         devops_side_skills = list(dict.fromkeys(devops_side_skills))
-        core_framework_skills = list(dict.fromkeys(core_framework_skills))
+        core_side_skills = list(dict.fromkeys(core_side_skills))
 
         frontend_skills = f"{', '.join(front_side_skills)}\n"
         devops_skills = f"{', '.join(devops_side_skills)}\n"
         backend_skills = f"{', '.join(back_side_skills)}\n"
-        core_framework_skills = f"{', '.join(core_framework_skills)}\n"
+        core_side_skills = f"{', '.join(core_side_skills)}\n"
 
         # if len(front_side_skills) > 0:
         #     front_side_skills += frontend_skills
@@ -76,7 +76,7 @@ class GenerateCoverLetter(APIView):
             '@company_name@': job.company_name,
             '@client_side_skills@': frontend_skills,
             '@server_side_skills@': backend_skills,
-            '@core_framework_skills@': core_framework_skills,
+            '@core_side_skills@': core_side_skills,
             '@devops_side_skills@': devops_skills,
             '@years_of_experience@': "5 Years"
         }
