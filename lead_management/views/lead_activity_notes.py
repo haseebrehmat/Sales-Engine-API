@@ -38,7 +38,8 @@ class LeadActivityNotesList(APIView):
         lead = request.data.get('lead')
         lead = Lead.objects.filter(pk=lead).first()
         if lead:
-            lead_activity = LeadActivity.objects.filter(lead=lead, company_status=lead.company_status, phase=lead.phase).first()
+            lead_activity = LeadActivity.objects.filter(lead=lead, company_status=lead.company_status,
+                                                        phase=lead.phase).first()
             notes = request.data.get('notes')
             if notes:
                 lead_activity_notes = LeadActivityNotes.objects.create(lead_activity=lead_activity, message=notes,
@@ -64,20 +65,31 @@ class LeadActivityNotesDetail(APIView):
 
     def put(self, request, pk):
         try:
-            obj = LeadActivityNotes.objects.get(pk=pk, user=request)
-            obj.message = request.data.get('notes')
-            obj.save()
-            return Response({'detail': 'Lead Activity Notes Updated Successfully!'}, status=status.HTTP_200_OK)
+            notes = LeadActivityNotes.objects.get(pk=pk)
+            if notes.user_id == request.user.id:
+                notes.message = request.data.get('notes')
+                notes.save()
+                msg = 'Lead Activity Notes Updated Successfully!'
+                status_code = status.HTTP_200_OK
+            else:
+                msg = 'You are not allowed to edit this notes!'
+                status_code = status.HTTP_406_NOT_ACCEPTABLE
+            return Response({'detail': msg}, status=status_code)
         except Exception as e:
             return Response({'detail': f'No Lead Activity Notes exist against id {pk}.'},
                             status=status.HTTP_406_NOT_ACCEPTABLE)
 
-
-
     def delete(self, request, pk):
         try:
-            LeadActivityNotes.objects.get(pk=pk).delete()
-            msg = 'Lead Activity Notes removed successfully!'
+            notes = LeadActivityNotes.objects.get(pk=pk)
+            if notes.user_id == request.user.id:
+                notes.delete()
+                msg = 'Lead Activity Notes removed successfully!'
+                status_code = status.HTTP_200_OK
+            else:
+                msg = 'You are not allowed to delete this notes.'
+                status_code = status.HTTP_406_NOT_ACCEPTABLE
         except Exception as e:
             msg = 'Lead Activity Notes doest not exist!'
-        return Response({'detail': msg})
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return Response({'detail': msg}, status=status_code)
