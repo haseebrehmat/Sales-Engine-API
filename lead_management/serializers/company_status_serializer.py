@@ -2,11 +2,13 @@ from rest_framework import serializers
 
 from lead_management.models import CompanyStatus, Phase
 
+
 class CompanyStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyStatus
         fields = ['id', 'is_active', 'status']
-        depth=1
+        depth = 1
+
 
 class CompanyStatusPhasesSerializer(serializers.ModelSerializer):
     class Meta:

@@ -24,24 +24,30 @@ class LeadActivityList(ListAPIView):
         if serializer.is_valid():
             lead = request.data.get('lead')
             if lead:
-                obj = Lead.objects.filter(id=lead).first()
-                if obj:
-                    phase = request.data.get('phase')
+                obj = Lead.objects.filter(id=lead)
+                if obj.first():
                     company_status = request.data.get('status')
-                    obj.phase_id = phase
-                    obj.company_status_id = company_status
-                    obj.save()
-                    lead_activity = LeadActivity.objects.create(lead_id=lead.id, company_status_id=company_status,
+                    phase = request.data.get('phase')
+                    obj.update(phase_id=phase, company_status_id=company_status)
+                    lead = obj.first()
+                    lead_activity = LeadActivity.objects.create(lead=lead, company_status_id=company_status,
                                                                 phase_id=phase)
+                    effect_date = request.data.get('effect_date')
+                    due_date = request.data.get('due_date')
+                    if effect_date:
+                        lead_activity.effect_date = effect_date
+                    if due_date:
+                        lead_activity.due_date = due_date
+                    lead_activity.save()
                     notes = request.data.get('notes')
                     if notes:
                         LeadActivityNotes.objects.create(lead_activity_id=lead_activity.id, message=notes,
                                                          user_id=request.user.id)
                     return Response({'detail': 'Lead Activity Created Successfully!'}, status=status.HTTP_201_CREATED)
             else:
-                return Response({'detail': 'Invalid lead id'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': 'Invalid lead id'}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            return Response({'detail': serializer_errors(serializer)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': serializer_errors(serializer)}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class LeadActivityDetail(APIView):
@@ -53,7 +59,7 @@ class LeadActivityDetail(APIView):
             serializer = LeadActivitySerializer(queryset)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'detail': f'No Lead Activity exist against id {pk}.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': f'No Lead Activity exist against id {pk}.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def delete(self, request, pk):
         try:

@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from job_portal.models import JobDetail, BlacklistJobs
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
-
+import datetime
 
 class CustomPagination(pagination.PageNumberPagination):
     page_size = 25
@@ -112,9 +112,11 @@ class CustomPagination(pagination.PageNumberPagination):
         if job_title_params:
             queryset = queryset.filter(job_title__icontains=job_title_params)
         if self.request.GET.get("from_date", "") != "":
-            queryset = queryset.filter(job_posted_date__gte=self.request.GET.get("from_date"))
+            from_date = datetime.datetime.strptime(self.request.GET.get("from_date"), "%Y-%m-%d").date()
+            queryset = queryset.filter(job_posted_date__gte=from_date)
         if self.request.GET.get("to_date", "") != "":
-            queryset = queryset.filter(job_posted_date__lte=self.request.GET.get("to_date"))
+            to_date = datetime.datetime.strptime(self.request.GET.get("to_date"), "%Y-%m-%d").date()
+            queryset = queryset.filter(job_posted_date__lt=to_date+datetime.timedelta(days=1))
         if self.request.GET.get("job_source", "") != "":
             queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
         if self.request.GET.get("job_type", "") != "":
