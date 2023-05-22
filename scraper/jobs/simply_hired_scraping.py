@@ -44,7 +44,7 @@ def find_jobs(driver, scrapped_data, job_type, page_no):
             append_data(data, company_name[0])
             address = context[1].text
             append_data(data, address)
-            job_description = driver.find_element(By.CLASS_NAME, "css-imewub")
+            job_description = driver.find_element(By.CLASS_NAME, "css-cxpe4v")
             append_data(data, job_description.text)
             append_data(data, job.get_attribute('href'))
             if context[4].text:
@@ -60,6 +60,7 @@ def find_jobs(driver, scrapped_data, job_type, page_no):
             total_job += 1
 
         except Exception as e:
+            count += 1
             saveLogs(e)
             print(e)
 
@@ -126,5 +127,3 @@ def simply_hired(link, job_type):
     except Exception as e:
         saveLogs(e)
         print(e)
-
-# simply_hired()

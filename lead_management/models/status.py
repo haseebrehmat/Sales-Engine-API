@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Status(models.Model):
-    name = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=30, null=True, unique=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:

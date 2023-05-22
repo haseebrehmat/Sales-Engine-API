@@ -19,5 +19,12 @@ frontend_regex = [
         'tech_stack': 'Angular',
         'exp': '(?i)(^|\W)(angular([-\s]?js)?)(\W|$)'
     },
-
+    {
+        'tech_stack': 'Jest',
+        'exp': '(?i)(^|\W)(jest([-\s]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Jasmine',
+        'exp': '(?i)(^|\W)(jasmine([-\s]?js)?)(\W|$)'
+    },
 ]
