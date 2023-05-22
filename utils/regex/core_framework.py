@@ -351,4 +351,196 @@ core_framework_regex = [
         'tech_stack': 'Spring Transactions',
         'exp': '(?i)(^|\W)(spring([-\s\_.\\]?transactions)?)(\W|$)'
     },
+    {
+        'tech_stack': 'Design Patterns',
+        'exp': '(?i)(^|\W)(Design([-\s\_.\\]?Patterns)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Junit',
+        'exp': '(?i)(^|\W)(junit)(\W|$)'
+    },
+    {
+        'tech_stack': 'Cypress',
+        'exp': '(?i)(^|\W)(cypress)(\W|$)'
+    },
+    {
+        'tech_stack': 'Mockito',
+        'exp': '(?i)(^|\W)(mockito)(\W|$)'
+    },
+    {
+        'tech_stack': 'Appium 11',
+        'exp': '(?i)(^|\W)(Appium([-\s\_.\\]?11)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'TestNG 11',
+        'exp': '(?i)(^|\W)(testng([-\s\_.\\]?11)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Jest',
+        'exp': '(?i)(^|\W)(jest)(\W|$)'
+    },
+    {
+        'tech_stack': 'Craft Automation',
+        'exp': '(?i)(^|\W)(craft([-\s\_.\\]?automation)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'JBehave',
+        'exp': '(?i)(^|\W)(j([-\s\_.\\]?behave)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'XCUI',
+        'exp': '(?i)(^|\W)(xcui)(\W|$)'
+    },
+    {
+        'tech_stack': 'NUnit',
+        'exp': '(?i)(^|\W)(n([-\s\_.\\]?unit)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Nightwatch JS',
+        'exp': '(?i)(^|\W)(night([-\s\_.\\]?watch([-\s\_.\\]?js)?)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'K6',
+        'exp': '(?i)(^|\W)(k6)(\W|$)'
+    },
+    {
+        'tech_stack': 'Selenium Webdriver',
+        'exp': '(?i)(^|\W)(selenium([-\s\_.\\]?webdriver)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'UFT',
+        'exp': '(?i)(^|\W)(uft)(\W|$)'
+    },
+    {
+        'tech_stack': 'Soap UI',
+        'exp': '(?i)(^|\W)(soap([-\s\_.\\]?ui)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Cucumber',
+        'exp': '(?i)(^|\W)(cucumber)(\W|$)'
+    },
+    {
+        'tech_stack': 'Maven',
+        'exp': '(?i)(^|\W)(maven)(\W|$)'
+    },
+    {
+        'tech_stack': 'JMeter',
+        'exp': '(?i)(^|\W)(j([-\s\_.\\]?meter)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Selenium Grid',
+        'exp': '(?i)(^|\W)(selenium([-\s\_.\\]?grid)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Shift Left',
+        'exp': '(?i)(^|\W)(shift([-\s\_.\\]?left)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Katalon',
+        'exp': '(?i)(^|\W)(katalon)(\W|$)'
+    },
+    {
+        'tech_stack': 'Calabash',
+        'exp': '(?i)(^|\W)(calabash)(\W|$)'
+    },
+    {
+        'tech_stack': 'Espresso',
+        'exp': '(?i)(^|\W)(espresso)(\W|$)'
+    },
+    {
+        'tech_stack': 'Swift UI',
+        'exp': '(?i)(^|\W)(swift([-\s\_.\\]?ui)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Objective C',
+        'exp': '(?i)(^|\W)(objective([-\s\_.\\]?c)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Core Graphics',
+        'exp': '(?i)(^|\W)(core([-\s\_.\\]?graphics)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'RxCocoa',
+        'exp': '(?i)(^|\W)(rx([-\s\_.\\]?cocoa)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'RxSwift',
+        'exp': '(?i)(^|\W)(rx([-\s\_.\\]?swift)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Combine',
+        'exp': '(?i)(^|\W)(combine)(\W|$)'
+    },
+    {
+        'tech_stack': 'Interface Builder',
+        'exp': '(?i)(^|\W)(interface([-\s\_.\\]?builder)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Auto Layout',
+        'exp': '(?i)(^|\W)(auto([-\s\_.\\]?layout)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Delegates',
+        'exp': '(?i)(^|\W)(delegates)(\W|$)'
+    },
+    {
+        'tech_stack': 'Core Data',
+        'exp': '(?i)(^|\W)(core([-\s\_.\\]?data)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Clean Architecture',
+        'exp': '(?i)(^|\W)(clean([-\s\_.\\]?architecture)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'SOLID Principles',
+        'exp': '(?i)(^|\W)(solid([-\s\_.\\]?principles)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'CoreML',
+        'exp': '(?i)(^|\W)(core([-\s\_.\\]?ml)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'XCode',
+        'exp': '(?i)(^|\W)(x([-\s\_.\\]?code)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'iOS SDKs',
+        'exp': '(?i)(^|\W)(ios([-\s\_.\\]?sdks)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Storyboard',
+        'exp': '(?i)(^|\W)(story([-\s\_.\\]?board)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Swinject',
+        'exp': '(?i)(^|\W)(swin([-\s\_.\\]?ject)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Flutter',
+        'exp': '(?i)(^|\W)(flutter)(\W|$)'
+    },
+    {
+        'tech_stack': 'Widgets',
+        'exp': '(?i)(^|\W)(widgets)(\W|$)'
+    },
+    {
+        'tech_stack': 'Dart',
+        'exp': '(?i)(^|\W)(dart)(\W|$)'
+    },
+    {
+        'tech_stack': 'Node JS',
+        'exp': '(?i)(^|\W)(node([-\s\_.]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Stencil JS',
+        'exp': '(?i)(^|\W)(stencil([-\s\_.]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Stencil JS',
+        'exp': '(?i)(^|\W)(stencil([-\s\_.]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'PrimeNG',
+        'exp': '(?i)(^|\W)(prime([-\s\_.]?ng)?)(\W|$)'
+    },
 ]
