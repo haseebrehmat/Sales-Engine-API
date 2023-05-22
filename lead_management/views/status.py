@@ -30,9 +30,9 @@ class StatusList(ListAPIView):
                     msg = 'Status already exist!'
             else:
                 msg = 'Status name should not be empty!'
-            return Response({'detail': msg}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': msg}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            return Response({'detail': serializer_errors(serializer)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': serializer_errors(serializer)}, status=status.HTTP_406_NOT_ACCEPTABLE)
 class AllStatuses(APIView):
     def get(self, request):
         if request.user.profile:
@@ -42,7 +42,7 @@ class AllStatuses(APIView):
             serializer = StatusSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({"detail": "User must have company id."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "User must have company id."}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 class StatusDetail(APIView):
     permission_classes = (AllowAny,)
@@ -53,7 +53,7 @@ class StatusDetail(APIView):
             serializer = StatusSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'detail': f'No status exist against id {pk}.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': f'No status exist against id {pk}.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def put(self, request, pk):
         name = request.data.get('name')
@@ -70,7 +70,7 @@ class StatusDetail(APIView):
                 msg = 'No status exist!'
         else:
             msg = 'Status name is missing!'
-        return Response({'detail': msg}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': msg}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
     def delete(self, request, pk):
@@ -81,5 +81,5 @@ class StatusDetail(APIView):
             status_code=status.HTTP_200_OK
         except Exception as e:
             msg = 'Status doest not exist!'
-            status_code = status.HTTP_400_BAD_REQUEST
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
         return Response({'detail': msg}, status=status_code)

@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +21,11 @@ class LeadManagement(ListAPIView):
         return queryset
 
     def post(self, request):
+        data, status_code = self.convert_to_lead(request)
+        return Response(data, status=status_code)
+
+    @transaction.atomic
+    def convert_to_lead(self, request):
         serializer = LeadSerializer(data=request.data, many=False)
 
         if serializer.is_valid():
@@ -29,8 +35,10 @@ class LeadManagement(ListAPIView):
             effect_date = request.data.get('effect_date')
             due_date = request.data.get('due_date')
             notes = request.data.get('notes')
+
             lead = Lead.objects.create(applied_job_status_id=applied_job_status, company_status_id=company_status,
                                        phase_id=phase)
+
             lead_activity = LeadActivity.objects.create(lead_id=lead.id, company_status_id=company_status,
                                                         phase_id=phase)
             if effect_date:
@@ -38,8 +46,9 @@ class LeadManagement(ListAPIView):
             if due_date:
                 lead_activity.due_date = due_date
             lead_activity.save()
+
             if notes:
                 LeadActivityNotes.objects.create(lead_activity=lead_activity, message=notes, user=request.user)
-            return Response({'detail': 'Lead Converted successfully!'}, status=status.HTTP_201_CREATED)
+            return {'detail': 'Lead Converted successfully!'}, status.HTTP_201_CREATED
         else:
-            return Response({'detail': serializer_errors(serializer)}, status=status.HTTP_400_BAD_REQUEST)
+            return {'detail': serializer_errors(serializer)}, status.HTTP_406_NOT_ACCEPTABLE
