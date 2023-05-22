@@ -1,9 +1,12 @@
+import datetime
+
 from django.db import transaction
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from job_portal.models import AppliedJobStatus
 from lead_management.models import Lead, CompanyStatus, LeadActivity, LeadActivityNotes
 from lead_management.serializers import LeadSerializer
 from lead_management.serializers.lead_management_serializer import LeadManagementSerializer
@@ -38,6 +41,8 @@ class LeadManagement(ListAPIView):
 
             lead = Lead.objects.create(applied_job_status_id=applied_job_status, company_status_id=company_status,
                                        phase_id=phase)
+            AppliedJobStatus.objects.filter(id=applied_job_status)\
+                .update(is_deleted=True, deleted_at=datetime.datetime.now())
 
             lead_activity = LeadActivity.objects.create(lead_id=lead.id, company_status_id=company_status,
                                                         phase_id=phase)
