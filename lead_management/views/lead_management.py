@@ -42,7 +42,7 @@ class LeadManagement(ListAPIView):
             lead = Lead.objects.create(applied_job_status_id=applied_job_status, company_status_id=company_status,
                                        phase_id=phase)
             AppliedJobStatus.objects.filter(id=applied_job_status)\
-                .update(is_deleted=True, deleted_at=datetime.datetime.now())
+                .update(is_converted=True, converted_at=datetime.datetime.now())
 
             lead_activity = LeadActivity.objects.create(lead_id=lead.id, company_status_id=company_status,
                                                         phase_id=phase)

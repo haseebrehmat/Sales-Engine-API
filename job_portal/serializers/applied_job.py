@@ -27,6 +27,8 @@ class AppliedJobDetailSerializer(serializers.Serializer):
         job_details['applied_job_id'] = instance.id
         job_details['applied_date'] = instance.applied_date
         job_details['status'] = instance.job_status
+        job_details['is_converted'] = instance.is_converted
+        job_details['converted_at'] = instance.converted_at
         try:
             job_details["resume"] = instance.resume
             job_details["vertical"] = {"id": instance.vertical.id, "name": instance.vertical.name,
