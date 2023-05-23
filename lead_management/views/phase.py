@@ -15,7 +15,8 @@ class PhaseList(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return Phase.objects.all()
+        name = self.request.GET.get("search", "")
+        return Phase.objects.all().filter(name__icontains=name)
 
     def post(self, request):
         try:

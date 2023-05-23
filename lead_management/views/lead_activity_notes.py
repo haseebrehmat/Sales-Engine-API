@@ -31,6 +31,7 @@ class LeadActivityNotesList(APIView):
             notes_queryset = LeadActivityNotes.objects.filter(lead_activity_id__in=lead_activities_ids)
         else:
             notes_queryset = LeadActivityNotes.objects.none()
+        notes_queryset = notes_queryset.order_by("-created_at")
         serializer = LeadActivityNotesSerializer(notes_queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

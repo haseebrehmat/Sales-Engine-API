@@ -15,7 +15,8 @@ class CompanyStatusList(ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return CompanyStatus.objects.all().exclude(status__isnull=True)
+        search = self.request.GET.get("search", "")
+        return CompanyStatus.objects.all().filter(status__name__icontains=search).exclude(status__isnull=True)
 
     def post(self, request):
         serializer = CompanyStatusPhasesSerializer(data=request.data, many=False)

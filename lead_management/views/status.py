@@ -8,13 +8,17 @@ from rest_framework.generics import ListAPIView
 from rest_framework import status
 from settings.utils.helpers import serializer_errors
 
+
 class StatusList(ListAPIView):
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
     serializer_class = StatusSerializer
 
     def get_queryset(self):
-        return Status.objects.all()
+        name = self.request.GET.get('search', "")
+        queryset = Status.objects.all().filter(name__icontains=name)
+        print(queryset.count())
+        return queryset
 
     def post(self, request):
         serializer = StatusSerializer(data=request.data, many=False)
@@ -33,16 +37,20 @@ class StatusList(ListAPIView):
             return Response({'detail': msg}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             return Response({'detail': serializer_errors(serializer)}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
 class AllStatuses(APIView):
     def get(self, request):
         if request.user.profile:
             company_id = request.user.profile.company_id
-            company_statuses_ids = list(CompanyStatus.objects.filter(company_id=company_id).values_list('status_id', flat=True))
+            company_statuses_ids = list(
+                CompanyStatus.objects.filter(company_id=company_id).values_list('status_id', flat=True))
             queryset = Status.objects.exclude(id__in=company_statuses_ids)
             serializer = StatusSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"detail": "User must have company id."}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
 
 class StatusDetail(APIView):
     permission_classes = (AllowAny,)
@@ -72,13 +80,12 @@ class StatusDetail(APIView):
             msg = 'Status name is missing!'
         return Response({'detail': msg}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-
     def delete(self, request, pk):
         try:
             obj = Status.objects.get(pk=pk)
             obj.delete()
             msg = 'Status deleted successfully!'
-            status_code=status.HTTP_200_OK
+            status_code = status.HTTP_200_OK
         except Exception as e:
             msg = 'Status doest not exist!'
             status_code = status.HTTP_406_NOT_ACCEPTABLE
