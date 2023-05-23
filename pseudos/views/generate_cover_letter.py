@@ -46,10 +46,10 @@ class GenerateCoverLetter(APIView):
 
     def cover_letter_context(self, template, job, vertical):
         print("template => ", template)
-        back_side_skills = get_skills(job.job_description, backend_regex)
-        front_side_skills = get_skills(job.job_description, frontend_regex)
-        devops_side_skills = get_skills(job.job_description, devops_regex)
-        core_side_skills = get_skills(job.job_description, core_framework_regex)
+        back_side_skills = get_skills(job.job_description, backend_regex, False)
+        front_side_skills = get_skills(job.job_description, frontend_regex, False)
+        devops_side_skills = get_skills(job.job_description, devops_regex, False)
+        core_side_skills = get_skills(job.job_description, core_framework_regex, True)
 
         back_side_skills = list(dict.fromkeys(back_side_skills))
         front_side_skills = list(dict.fromkeys(front_side_skills))
@@ -80,7 +80,6 @@ class GenerateCoverLetter(APIView):
             '@devops_side_skills@': devops_skills,
             '@years_of_experience@': "5 Years"
         }
-
         for x in dynamic_keys.keys():
             if x in template:
                 template = template.replace(x, dynamic_keys[x])

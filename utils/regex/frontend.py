@@ -349,5 +349,57 @@ frontend_regex = [
         'tech_stack':'SCSS',
         'exp':'(?i)(^|\W)(SCSS)(\W|$)'
     },
+<<<<<<< HEAD
 ]
 >>>>>>> fix: update frontend and core framework dictionaries
+=======
+    {
+        'tech_stack': 'UI/UX',
+        'exp': '(?i)(^|\W)(front[-\s]?end)(\W|$)'
+    },
+    {
+        'tech_stack': 'UI/UX',
+        'exp': '(?i)(^|\W)(ux|ui|uxui|uiux|(web|user)[-\s](experience|interface)|web[-\s]designs?|(digital|graphic)[-\s]designer|InVision|canva|mockup|figma|wireframes?)(\W|$)'
+    },
+    {
+        'tech_stack': 'React',
+        'exp': '(?i)(^|\W)(babel|react([-\s]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'VueJS',
+        'exp': '(?i)(^|\W)(vue([-\s]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Angular',
+        'exp': '(?i)(^|\W)(angular([-\s]?js)?|spa)(\W|$)'
+    },
+    {
+        'tech_stack': 'Jest',
+        'exp': '(?i)(^|\W)(jest([-\s]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Jasmine',
+        'exp': '(?i)(^|\W)(jasmine([-\s]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Backbone',
+        'exp': '(?i)(^|\W)(backbone([-\s]?js)?)(\W|$)'
+    },
+    {
+        'tech_stack': 'Shopify',
+        'exp': '(?i)(^|\W)(shopify)(\W|$)'
+    },
+    {
+        'tech_stack': 'SPA',
+        'exp': '(?i)(^|\W)(spa)(\W|$)'
+    },
+    {
+        'tech_stack': 'Hook',
+        'exp': '(?i)(^|\W)(hooks?)(\W|$)'
+    },
+    {
+        'tech_stack': 'TypeScript',
+        'exp': '(?i)(^|\W)(typescript|)(\W|$)'
+    },
+]
+>>>>>>> fix : update all the dictionaries of cover letter
