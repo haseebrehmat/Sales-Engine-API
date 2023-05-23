@@ -20,7 +20,12 @@ class LeadManagement(ListAPIView):
     serializer_class = LeadManagementSerializer
 
     def get_queryset(self):
-        queryset = CompanyStatus.objects.filter(company=self.request.user.profile.company).exclude(status=None)
+        role = str(self.request.user.roles)
+        if "owner" in role.lower():
+            queryset = CompanyStatus.objects.filter(company=self.request.user.profile.company).exclude(status=None)
+        else:
+            queryset = CompanyStatus.objects.filter(company=self.request.user.profile.company).exclude(status=None)
+
         return queryset
 
     def post(self, request):
