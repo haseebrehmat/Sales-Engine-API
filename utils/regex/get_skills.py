@@ -1,10 +1,10 @@
 import re
-from utils.regex.core_framework import tech
 
 from utils.regex.devops import devops_skill_regex, devops_regex
 
 
-def get_skills(description, regex_arr, flag):
+
+def get_skills(description, regex_arr, tech):
     pattern = r"[^\w\s\\+#/]"
     skills = []
     for regex in regex_arr:
@@ -82,9 +82,8 @@ Qualifications:
 get_devops_skills(description)
 =======
     description = re.sub(pattern, "", description.replace(" ", ""))
-    if flag:
-        for x in tech:
-            if x in description:
-                skills.append(x)
+    for x in tech:
+        if x in description:
+            skills.append(x)
     return list(set(skills))
 >>>>>>> fix : update all the dictionaries of cover letter
