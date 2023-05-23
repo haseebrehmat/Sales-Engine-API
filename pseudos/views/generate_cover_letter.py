@@ -50,13 +50,14 @@ class GenerateCoverLetter(APIView):
 
     def cover_letter_context(self, template, job, vertical):
         print("template => ", template)
-        back_side_skills = get_skills(job.job_description, backend_regex, False)
-        front_side_skills = get_skills(job.job_description, frontend_regex, False)
-        devops_side_skills = get_skills(job.job_description, devops_regex, False)
+        empty = []
+        back_side_skills = get_skills(job.job_description, backend_regex, empty)
+        front_side_skills = get_skills(job.job_description, frontend_regex, empty)
+        devops_side_skills = get_skills(job.job_description, devops_regex, empty)
         core_side_skills = get_skills(job.job_description, core_framework_regex, tech)
-        database_side_skills = get_skills(job.job_description, False, database)
-        library_side_skills = get_skills(job.job_description, False, libraries)
-        tools_side_skills = get_skills(job.job_description, False, tools)
+        database_side_skills = get_skills(job.job_description, empty, database)
+        library_side_skills = get_skills(job.job_description, empty, libraries)
+        tools_side_skills = get_skills(job.job_description, empty, tools)
 
         back_side_skills = list(dict.fromkeys(back_side_skills))
         front_side_skills = list(dict.fromkeys(front_side_skills))
