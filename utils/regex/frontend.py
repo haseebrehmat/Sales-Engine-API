@@ -20,16 +20,6 @@ frontend_regex = [
         'exp':'(?i)(^|\W)(Next([-\s\_.\\]?JS)?)(\W|$)'
     },
     {
-<<<<<<< HEAD
-        'tech_stack': 'Jest',
-        'exp': '(?i)(^|\W)(jest([-\s]?js)?)(\W|$)'
-    },
-    {
-        'tech_stack': 'Jasmine',
-        'exp': '(?i)(^|\W)(jasmine([-\s]?js)?)(\W|$)'
-    },
-]
-=======
         'tech_stack':'Express JS',
         'exp':'(?i)(^|\W)(Express([-\s\_.\\]?JS)?)(\W|$)'
     },
@@ -349,10 +339,6 @@ frontend_regex = [
         'tech_stack':'SCSS',
         'exp':'(?i)(^|\W)(SCSS)(\W|$)'
     },
-<<<<<<< HEAD
-]
->>>>>>> fix: update frontend and core framework dictionaries
-=======
     {
         'tech_stack': 'UI/UX',
         'exp': '(?i)(^|\W)(front[-\s]?end)(\W|$)'
@@ -402,4 +388,3 @@ frontend_regex = [
         'exp': '(?i)(^|\W)(typescript|)(\W|$)'
     },
 ]
->>>>>>> fix : update all the dictionaries of cover letter
