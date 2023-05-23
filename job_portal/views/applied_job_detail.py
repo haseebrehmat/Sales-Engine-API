@@ -15,7 +15,7 @@ from job_portal.serializers.applied_job import AppliedJobDetailSerializer
 
 
 class AppliedJobDetailsView(ListAPIView):
-    queryset = AppliedJobStatus.objects.filter(is_deleted=False)
+    queryset = AppliedJobStatus.objects.all()
     pagination_class = AppliedJobPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     serializer_class = AppliedJobDetailSerializer

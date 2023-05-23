@@ -61,10 +61,8 @@ class AppliedJobStatus(models.Model):
     resume = models.TextField(blank=True, null=True)
     is_manual_resume = models.BooleanField(default=False)
     cover_letter = models.TextField(blank=True, null=True)
-    is_deleted = models.BooleanField(default=False)
-    deleted_at = models.DateTimeField(blank=True, null=True)
-
-
+    is_converted = models.BooleanField(default=False)
+    converted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         default_permissions = ()
