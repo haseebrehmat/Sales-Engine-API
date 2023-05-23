@@ -301,6 +301,12 @@ permissions = [
     },
     {
         "module": "Pseudos",
+        "codename": "view_vertical",
+        "name": "View Vertical",
+        "level": 2
+    },
+    {
+        "module": "Pseudos",
         "codename": "create_vertical",
         "name": "Create Vertical",
         "level": 2
