@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -13,10 +14,11 @@ class PhaseList(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PhaseSerializer
     pagination_class = CustomPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
     def get_queryset(self):
-        name = self.request.GET.get("search", "")
-        return Phase.objects.all().filter(name__icontains=name)
+        return Phase.objects.all()
 
     def post(self, request):
         try:

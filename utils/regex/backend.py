@@ -117,7 +117,7 @@ backend_regex = [
     },
     {
         'tech_stack': 'Ml Engineer',
-        'exp': '(?i)(^|\W)(ai|ml|lightgbm|gnns|core([-\s\_.\\]?ml)?|(machine|deep|Scikit)[-\s](learning|learn)|nlp|Keras|PyTorch|image[-\s]processing|Natural Language Processing|Predictive[-\s]Modeler|Computer[-\s]Vision|Open[-\s]?CV|ml[-]?pack|Text[-\s](Mining|Classification)|Artificial[-\s]Intelligence|Voice[-\s]Classification|Re[-\s]?inforcement[-\s]Learning|Artificial|Neural[-\s](Network|Networks))(\W|$)'
+        'exp': '(?i)(^|\W)(ai|ml|lightgbm|gnns|core([-\s\_.]?ml)?|(machine|deep|Scikit)[-\s](learning|learn)|nlp|Keras|PyTorch|image[-\s]processing|Natural Language Processing|Predictive[-\s]Modeler|Computer[-\s]Vision|Open[-\s]?CV|ml[-]?pack|Text[-\s](Mining|Classification)|Artificial[-\s]Intelligence|Voice[-\s]Classification|Re[-\s]?inforcement[-\s]Learning|Artificial|Neural[-\s](Network|Networks))(\W|$)'
     },
     {
         'tech_stack': 'Data Engineering/Data Engineer',
@@ -177,7 +177,7 @@ backend_regex = [
     },
     {
         'tech_stack': 'Specflow',
-        'exp': '(?i)(^|\W)(spec([-\s\_.\\]?flow)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spec([-\s\_.]?flow)?)(\W|$)'
     },
     {
         'tech_stack': 'Perl',
@@ -197,15 +197,15 @@ backend_regex = [
     },
     {
         'tech_stack': 'Objective C',
-        'exp': '(?i)(^|\W)(objective([-\s\_.\\]?c)?|object([-\s\_.\\]?c)?)(\W|$)'
+        'exp': '(?i)(^|\W)(objective([-\s\_.]?c)?|object([-\s\_.]?c)?)(\W|$)'
     },
     {
         'tech_stack': 'RXJava',
-        'exp': '(?i)(^|\W)(rx([-\s\_.\\]?java)?)(\W|$)'
+        'exp': '(?i)(^|\W)(rx([-\s\_.]?java)?)(\W|$)'
     },
     {
         'tech_stack': 'UI path',
-        'exp': '(?i)(^|\W)(ui([-\s\_.\\]?path)?)(\W|$)'
+        'exp': '(?i)(^|\W)(ui([-\s\_.]?path)?)(\W|$)'
     },
     {
         'tech_stack': 'RPA',
