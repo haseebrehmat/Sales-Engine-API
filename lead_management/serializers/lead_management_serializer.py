@@ -20,7 +20,7 @@ class LeadManagementSerializer(serializers.ModelSerializer):
         role = self.context['request'].user.roles.name
         user = [str(self.context['request'].user.id)]
         if len(Team.objects.filter(reporting_to__in=user)) > 0:
-            user.extend([str(x) for x in Team.objects.filter(reporting_to__id__in=user).values_list("members")])
+            user.extend([str(x) for x in Team.objects.filter(reporting_to__id__in=user).values_list("members__id", flat=True)])
 
         try:
             data = [
