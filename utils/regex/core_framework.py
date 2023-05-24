@@ -1,7 +1,7 @@
 core_framework_regex = [
     {
         'tech_stack': 'ReactJS',
-        'exp': '(?i)(^|\W)(react([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(react([-_.\s]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'AngularJS',
@@ -113,11 +113,11 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'ASP .net',
-        'exp': '(?i)(^|\W)(asp([-\s\_.\\]?.([-\s\_.\\]?net)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(asp([-\s\_.]?.([-\s\_.]?net)?)?)(\W|$)'
     },
     {
         'tech_stack': 'ASP DotNet',
-        'exp': '(?i)(^|\W)(asp([-\s\_.\\]?dot([-\s\_.\\]?net)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(asp([-\s\_.]?dot([-\s\_.]?net)?)?)(\W|$)'
     },
     {
         'tech_stack': 'Entity',
@@ -125,19 +125,19 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'ADO .net',
-        'exp': '(?i)(^|\W)(ado([-\s\_.\\]?.([-\s\_.\\]?net)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(ado([-\s\_.]?.([-\s\_.]?net)?)?)(\W|$)'
     },
     {
         'tech_stack': 'ADO DotNet',
-        'exp': '(?i)(^|\W)(ado([-\s\_.\\]?dot([-\s\_.\\]?net)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(ado([-\s\_.]?dot([-\s\_.]?net)?)?)(\W|$)'
     },
     {
         'tech_stack': 'VB .net',
-        'exp': '(?i)(^|\W)(vb([-\s\_.\\]?.([-\s\_.\\]?net)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(vb([-\s\_.]?.([-\s\_.]?net)?)?)(\W|$)'
     },
     {
         'tech_stack': 'VB DotNet',
-        'exp': '(?i)(^|\W)(vb([-\s\_.\\]?dot([-\s\_.\\]?net)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(vb([-\s\_.]?dot([-\s\_.]?net)?)?)(\W|$)'
     },
     {
         'tech_stack': 'Java',
@@ -145,7 +145,7 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Spring Boot',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?boot)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?boot)?)(\W|$)'
     },
     {
         'tech_stack': 'J2EE',
@@ -161,7 +161,7 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Micronaut',
-        'exp': '(?i)(^|\W)(micro([-\s\_.\\]?naut)?)(\W|$)'
+        'exp': '(?i)(^|\W)(micro([-\s\_.]?naut)?)(\W|$)'
     },
     {
         'tech_stack': 'Kotlin',
@@ -169,35 +169,35 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Struts iBATIS',
-        'exp': '(?i)(^|\W)(struts([-\s\_.\\]?ibatis)?)(\W|$)'
+        'exp': '(?i)(^|\W)(struts([-\s\_.]?ibatis)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring MVC',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?mvc)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?mvc)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring Core',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?core)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?core)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring AOP',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?aop)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?aop)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring Data',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?data)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?data)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring Security',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?security)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?security)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring Actuator',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?actuator)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?actuator)?)(\W|$)'
     },
     {
         'tech_stack': 'Core Python',
-        'exp': '(?i)(^|\W)(core([-\s\_.\\]?python)?)(\W|$)'
+        'exp': '(?i)(^|\W)(core([-\s\_.]?python)?)(\W|$)'
     },
     {
         'tech_stack': 'Django',
@@ -213,31 +213,31 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Java Spring',
-        'exp': '(?i)(^|\W)(java([-\s\_.\\]?spring)?)(\W|$)'
+        'exp': '(?i)(^|\W)(java([-\s\_.]?spring)?)(\W|$)'
     },
     {
         'tech_stack': 'Boot Spring',
-        'exp': '(?i)(^|\W)(boot([-\s\_.\\]?spring)?)(\W|$)'
+        'exp': '(?i)(^|\W)(boot([-\s\_.]?spring)?)(\W|$)'
     },
     {
         'tech_stack': 'Typescript',
-        'exp': '(?i)(^|\W)(type([-\s\_.\\]?script)?)(\W|$)'
+        'exp': '(?i)(^|\W)(type([-\s\_.]?script)?)(\W|$)'
     },
     {
         'tech_stack': 'HapiJS',
-        'exp': '(?i)(^|\W)(hapi([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(hapi([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'FastiFyJS',
-        'exp': '(?i)(^|\W)(fastify([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(fastify([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'NestJS',
-        'exp': '(?i)(^|\W)(nest([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(nest([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'MeteorJS',
-        'exp': '(?i)(^|\W)(meteor([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(meteor([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'Javascript',
@@ -249,35 +249,35 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'NextJS',
-        'exp': '(?i)(^|\W)(next([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(next([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'ECMAScript6',
-        'exp': '(?i)(^|\W)(ecma([-\s\_.\\]?script([-\s\_.\\]?6)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(ecma([-\s\_.]?script([-\s\_.]?6)?)?)(\W|$)'
     },
     {
         'tech_stack': 'ExpressJS',
-        'exp': '(?i)(^|\W)(express([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(express([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'ExtJS',
-        'exp': '(?i)(^|\W)(ext([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(ext([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'React Native',
-        'exp': '(?i)(^|\W)(react([-\s\_.\\]?native)?)(\W|$)'
+        'exp': '(?i)(^|\W)(react([-\s\_.]?native)?)(\W|$)'
     },
     {
         'tech_stack': 'BackboneJS',
-        'exp': '(?i)(^|\W)(backbone([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(backbone([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'jQuery',
-        'exp': '(?i)(^|\W)(j([-\s\_.\\]?query)?)(\W|$)'
+        'exp': '(?i)(^|\W)(j([-\s\_.]?query)?)(\W|$)'
     },
     {
         'tech_stack': 'NuxtJS',
-        'exp': '(?i)(^|\W)(nuxt([-\s\_.\\]?js)?)(\W|$)'
+        'exp': '(?i)(^|\W)(nuxt([-\s\_.]?js)?)(\W|$)'
     },
     {
         'tech_stack': 'Pyramid',
@@ -285,15 +285,15 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'NumPy',
-        'exp': '(?i)(^|\W)(num([-\s\_.\\]?py)?)(\W|$)'
+        'exp': '(?i)(^|\W)(num([-\s\_.]?py)?)(\W|$)'
     },
     {
         'tech_stack': 'PyTest',
-        'exp': '(?i)(^|\W)(py([-\s\_.\\]?test)?)(\W|$)'
+        'exp': '(?i)(^|\W)(py([-\s\_.]?test)?)(\W|$)'
     },
     {
         'tech_stack': 'PyUnit',
-        'exp': '(?i)(^|\W)(py([-\s\_.\\]?unit)?)(\W|$)'
+        'exp': '(?i)(^|\W)(py([-\s\_.]?unit)?)(\W|$)'
     },
     {
         'tech_stack': 'Falcon',
@@ -313,7 +313,7 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Python Scripting',
-        'exp': '(?i)(^|\W)(python([-\s\_.\\]?scripting)?)(\W|$)'
+        'exp': '(?i)(^|\W)(python([-\s\_.]?scripting)?)(\W|$)'
     },
     {
         'tech_stack': 'AI',
@@ -337,23 +337,23 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Microservices',
-        'exp': '(?i)(^|\W)(micro([-\s\_.\\]?services)?)(\W|$)'
+        'exp': '(?i)(^|\W)(micro([-\s\_.]?services)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring JPA',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?jpa)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?jpa)?)(\W|$)'
     },
     {
         'tech_stack': 'Ebean',
-        'exp': '(?i)(^|\W)(e([-\s\_.\\]?bean)?)(\W|$)'
+        'exp': '(?i)(^|\W)(e([-\s\_.]?bean)?)(\W|$)'
     },
     {
         'tech_stack': 'Spring Transactions',
-        'exp': '(?i)(^|\W)(spring([-\s\_.\\]?transactions)?)(\W|$)'
+        'exp': '(?i)(^|\W)(spring([-\s\_.]?transactions)?)(\W|$)'
     },
     {
         'tech_stack': 'Design Patterns',
-        'exp': '(?i)(^|\W)(Design([-\s\_.\\]?Patterns)?)(\W|$)'
+        'exp': '(?i)(^|\W)(Design([-\s\_.]?Patterns)?)(\W|$)'
     },
     {
         'tech_stack': 'Junit',
@@ -369,11 +369,11 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Appium 11',
-        'exp': '(?i)(^|\W)(Appium([-\s\_.\\]?11)?)(\W|$)'
+        'exp': '(?i)(^|\W)(Appium([-\s\_.]?11)?)(\W|$)'
     },
     {
         'tech_stack': 'TestNG 11',
-        'exp': '(?i)(^|\W)(testng([-\s\_.\\]?11)?)(\W|$)'
+        'exp': '(?i)(^|\W)(testng([-\s\_.]?11)?)(\W|$)'
     },
     {
         'tech_stack': 'Jest',
@@ -381,11 +381,11 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Craft Automation',
-        'exp': '(?i)(^|\W)(craft([-\s\_.\\]?automation)?)(\W|$)'
+        'exp': '(?i)(^|\W)(craft([-\s\_.]?automation)?)(\W|$)'
     },
     {
         'tech_stack': 'JBehave',
-        'exp': '(?i)(^|\W)(j([-\s\_.\\]?behave)?)(\W|$)'
+        'exp': '(?i)(^|\W)(j([-\s\_.]?behave)?)(\W|$)'
     },
     {
         'tech_stack': 'XCUI',
@@ -393,11 +393,11 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'NUnit',
-        'exp': '(?i)(^|\W)(n([-\s\_.\\]?unit)?)(\W|$)'
+        'exp': '(?i)(^|\W)(n([-\s\_.]?unit)?)(\W|$)'
     },
     {
         'tech_stack': 'Nightwatch JS',
-        'exp': '(?i)(^|\W)(night([-\s\_.\\]?watch([-\s\_.\\]?js)?)?)(\W|$)'
+        'exp': '(?i)(^|\W)(night([-\s\_.]?watch([-\s\_.]?js)?)?)(\W|$)'
     },
     {
         'tech_stack': 'K6',
@@ -405,7 +405,7 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Selenium Webdriver',
-        'exp': '(?i)(^|\W)(selenium([-\s\_.\\]?webdriver)?)(\W|$)'
+        'exp': '(?i)(^|\W)(selenium([-\s\_.]?webdriver)?)(\W|$)'
     },
     {
         'tech_stack': 'UFT',
@@ -413,7 +413,7 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Soap UI',
-        'exp': '(?i)(^|\W)(soap([-\s\_.\\]?ui)?)(\W|$)'
+        'exp': '(?i)(^|\W)(soap([-\s\_.]?ui)?)(\W|$)'
     },
     {
         'tech_stack': 'Cucumber',
@@ -425,15 +425,15 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'JMeter',
-        'exp': '(?i)(^|\W)(j([-\s\_.\\]?meter)?)(\W|$)'
+        'exp': '(?i)(^|\W)(j([-\s\_.]?meter)?)(\W|$)'
     },
     {
         'tech_stack': 'Selenium Grid',
-        'exp': '(?i)(^|\W)(selenium([-\s\_.\\]?grid)?)(\W|$)'
+        'exp': '(?i)(^|\W)(selenium([-\s\_.]?grid)?)(\W|$)'
     },
     {
         'tech_stack': 'Shift Left',
-        'exp': '(?i)(^|\W)(shift([-\s\_.\\]?left)?)(\W|$)'
+        'exp': '(?i)(^|\W)(shift([-\s\_.]?left)?)(\W|$)'
     },
     {
         'tech_stack': 'Katalon',
@@ -449,23 +449,23 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Swift UI',
-        'exp': '(?i)(^|\W)(swift([-\s\_.\\]?ui)?)(\W|$)'
+        'exp': '(?i)(^|\W)(swift([-\s\_.]?ui)?)(\W|$)'
     },
     {
         'tech_stack': 'Objective C',
-        'exp': '(?i)(^|\W)(objective([-\s\_.\\]?c)?)(\W|$)'
+        'exp': '(?i)(^|\W)(objective([-\s\_.]?c)?)(\W|$)'
     },
     {
         'tech_stack': 'Core Graphics',
-        'exp': '(?i)(^|\W)(core([-\s\_.\\]?graphics)?)(\W|$)'
+        'exp': '(?i)(^|\W)(core([-\s\_.]?graphics)?)(\W|$)'
     },
     {
         'tech_stack': 'RxCocoa',
-        'exp': '(?i)(^|\W)(rx([-\s\_.\\]?cocoa)?)(\W|$)'
+        'exp': '(?i)(^|\W)(rx([-\s\_.]?cocoa)?)(\W|$)'
     },
     {
         'tech_stack': 'RxSwift',
-        'exp': '(?i)(^|\W)(rx([-\s\_.\\]?swift)?)(\W|$)'
+        'exp': '(?i)(^|\W)(rx([-\s\_.]?swift)?)(\W|$)'
     },
     {
         'tech_stack': 'Combine',
@@ -473,11 +473,11 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Interface Builder',
-        'exp': '(?i)(^|\W)(interface([-\s\_.\\]?builder)?)(\W|$)'
+        'exp': '(?i)(^|\W)(interface([-\s\_.]?builder)?)(\W|$)'
     },
     {
         'tech_stack': 'Auto Layout',
-        'exp': '(?i)(^|\W)(auto([-\s\_.\\]?layout)?)(\W|$)'
+        'exp': '(?i)(^|\W)(auto([-\s\_.]?layout)?)(\W|$)'
     },
     {
         'tech_stack': 'Delegates',
@@ -485,35 +485,35 @@ core_framework_regex = [
     },
     {
         'tech_stack': 'Core Data',
-        'exp': '(?i)(^|\W)(core([-\s\_.\\]?data)?)(\W|$)'
+        'exp': '(?i)(^|\W)(core([-\s\_.]?data)?)(\W|$)'
     },
     {
         'tech_stack': 'Clean Architecture',
-        'exp': '(?i)(^|\W)(clean([-\s\_.\\]?architecture)?)(\W|$)'
+        'exp': '(?i)(^|\W)(clean([-\s\_.]?architecture)?)(\W|$)'
     },
     {
         'tech_stack': 'SOLID Principles',
-        'exp': '(?i)(^|\W)(solid([-\s\_.\\]?principles)?)(\W|$)'
+        'exp': '(?i)(^|\W)(solid([-\s\_.]?principles)?)(\W|$)'
     },
     {
         'tech_stack': 'CoreML',
-        'exp': '(?i)(^|\W)(core([-\s\_.\\]?ml)?)(\W|$)'
+        'exp': '(?i)(^|\W)(core([-\s\_.]?ml)?)(\W|$)'
     },
     {
         'tech_stack': 'XCode',
-        'exp': '(?i)(^|\W)(x([-\s\_.\\]?code)?)(\W|$)'
+        'exp': '(?i)(^|\W)(x([-\s\_.]?code)?)(\W|$)'
     },
     {
         'tech_stack': 'iOS SDKs',
-        'exp': '(?i)(^|\W)(ios([-\s\_.\\]?sdks)?)(\W|$)'
+        'exp': '(?i)(^|\W)(ios([-\s\_.]?sdks)?)(\W|$)'
     },
     {
         'tech_stack': 'Storyboard',
-        'exp': '(?i)(^|\W)(story([-\s\_.\\]?board)?)(\W|$)'
+        'exp': '(?i)(^|\W)(story([-\s\_.]?board)?)(\W|$)'
     },
     {
         'tech_stack': 'Swinject',
-        'exp': '(?i)(^|\W)(swin([-\s\_.\\]?ject)?)(\W|$)'
+        'exp': '(?i)(^|\W)(swin([-\s\_.]?ject)?)(\W|$)'
     },
     {
         'tech_stack': 'Flutter',
@@ -577,5 +577,5 @@ tech = [
 'solidity', 'nft', 'web3js', 'solana', 'golang', 'ethersjs', 'threejs', 'rust', 'haskell', 'cryptography', 'scala', 'ethereum', 'ganache', 'maticblockchain', 'walletconnect', 'polygon', 'testnets',
 'java', 'springboot', 'j2ee/jee', 'spring', 'microservices', 'springmvc', 'mvcstruts', 'ibatis', 'cucumber', 'soaflink', 'mybatis', 'log4j', 'esb', 'springdata', 'springjpa', 'ebean', 'javascript', 'typescript', 'expressjs', 'j2ee', 'designpatterns', 'mvvm', 'dropwizard', 'stenciljs', 'php', 'laravel', 'wordpress', 'yiisymfony', 'zend', 'codeigniter', 'zikula', 'li3', 'cakephp', 'fuelphp', 'phpixie', 'fatfree', 'drupal', 'kohana', 'phalcon', 'nette', 'python', 'django', 'pyramid', 'drf', 'graphql', 'solidity', 'nft', 'web3solana', 'flaskgolang', 'ethersjs', 'nextjs', 'threejs', 'rusthaskell', 'swift', 'objectivec', 'swiftui', 'coregraphics', 'rxcocoa', 'mvc/mvvm', 'reactnative', 'restfastapi', 'statemanagement', 'android', 'ios', 'nodejs', 'objectivec', 'c#', 'aspnet', 'ror', 'expressnest', 'liquid', 'slim', 'designspatterns', 'rest/soap', 'flutter', 'kotlin', 'dart', 'designswift', 'cms', 'ecommerce', 'corephp', 'websitebuilder', 'websitearhitecure', 'themecustomization', 'plugincustomization', 'bertmachinelearning', 'deeplearning', 'conversationalai', 'go', 'c++', 'cuda', 'pytorch', 'tenserflow', 'opencv', 'guicore', 'erlang', 'cnn', 'lstm', 'rnn', 'computervision', 'detectron', 'basicr', 'dialogflow', 'nlp', 'nlu', 'fluxjl', 'bashscript', 'snowflake', 'hapijs', 'fastifyjs', 'meteorjs', 'marionette', 'serverless', 'ruby', 'starlite', 'koa', 'entity', 'adonet', 'vbnet', 'springcore', 'springaop', 'springsecurity', 'springdata', 'unity', 'linq', 'aurelia', 'objectiveswiftui',
 'kotlin', 'java', 'flutter', 'designpatterns', 'mvc/mvvm', 'nativeandroid', 'springboot', 'swift', 'objectivec', 'swiftui', 'coregraphics', 'rxcocoa', 'ios', 'android', 'dart', 'statemanagement',
-'itom', 'itsm', 'itam', 'atf', 'itomsuites', 'itsm/itsmpro', 'itommodules', 'pmp', 'servicecatalog', 'tableau', 'grc', 'csa', 'hris', 'cad', 'cis', 'ui/forms', 'c2c', 'rpi', 'ssas', 'ssis', 'ssrs', 'vbnet', 'hcltech', 'updatesets', 'servicemapping', 'som', 'wsdl', 'acls', 'siem', 'appengine', 'emr', 'informatica', 'hrsd', 'onboardingandtransitionsmodules', 'itil', 'sam', 'ham', 'iwms', 'nuvolo'
+'itom', 'itsm', 'itam', 'itomsuites', 'itsm/itsmpro', 'itommodules', 'pmp', 'servicecatalog', 'tableau', 'grc', 'csa', 'hris', 'cad', 'cis', 'ui/forms', 'c2c', 'rpi', 'ssas', 'ssis', 'ssrs', 'vbnet', 'hcltech', 'updatesets', 'servicemapping', 'wsdl', 'acls', 'siem', 'appengine', 'emr', 'informatica', 'hrsd', 'onboardingandtransitionsmodules', 'itil', 'sam', 'ham', 'iwms', 'nuvolo'
 ]

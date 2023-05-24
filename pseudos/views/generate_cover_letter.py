@@ -1,3 +1,5 @@
+import pdb
+
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -39,25 +41,50 @@ class GenerateCoverLetter(APIView):
             else:
                 template = cover_letter.template
                 cover_letter = self.cover_letter_context(template, job_data, vertical)
-                data = {
-                    "cover_letter": cover_letter,
-                    "vertical_id": vertical_id
-                }
-
-            status_code = status.HTTP_200_OK
+                if cover_letter:
+                    data = {
+                        "cover_letter": cover_letter,
+                        "vertical_id": vertical_id
+                    }
+                    status_code = status.HTTP_200_OK
+                else:
+                    data = {"detail": "Failed to create cover letter"}
+                    status_code = status.HTTP_406_NOT_ACCEPTABLE
 
         return Response(data, status=status_code)
 
     def cover_letter_context(self, template, job, vertical):
+        print(f"Job description is : {job.job_description} \n")
         print("template => ", template)
         empty = []
         back_side_skills = get_skills(job.job_description, backend_regex, empty)
+        # if not back_side_skills:
+        #     return False
+        print(f"Back side skills are: {back_side_skills}\n")
         front_side_skills = get_skills(job.job_description, frontend_regex, empty)
+        # if not front_side_skills:
+        #     return False
+        print(f"Front side skills are : {front_side_skills} \n")
         devops_side_skills = get_skills(job.job_description, devops_regex, empty)
+        # if not devops_side_skills:
+        #     return False
+        print(f"Devops skills are : {devops_side_skills} \n")
         core_side_skills = get_skills(job.job_description, core_framework_regex, tech)
+        # if not core_side_skills:
+        #     return False
+        print(f"Core skills are : {core_side_skills} \n")
         database_side_skills = get_skills(job.job_description, empty, database)
+        # if not database_side_skills:
+        #     return False
+        print(f"Data base skills are : {database_side_skills}\n")
         library_side_skills = get_skills(job.job_description, empty, libraries)
+        # if not library_side_skills:
+        #     return False
+        print(f"Library skills are : {library_side_skills}\n")
         tools_side_skills = get_skills(job.job_description, empty, tools)
+        # if not tools_side_skills:
+        #     return False
+        print(f"Tools side skills are : {tools_side_skills}\n")
 
         back_side_skills = list(dict.fromkeys(back_side_skills))
         front_side_skills = list(dict.fromkeys(front_side_skills))
@@ -76,15 +103,6 @@ class GenerateCoverLetter(APIView):
         tools_side_skills = f"{', '.join(tools_side_skills)}\n"
 
 
-        # if len(front_side_skills) > 0:
-        #     front_side_skills += frontend_skills
-        #
-        # if len(back_side_skills) > 0:
-        #     back_side_skills += backend_skills
-        #
-        # if len(devops_side_skills) > 0:
-        #     devops_side_skills += devops_skills
-
         dynamic_keys = {
             '@name@': vertical.name,
             '@job_title@': job.job_title,
@@ -98,6 +116,7 @@ class GenerateCoverLetter(APIView):
             '@tools_side_skills@': tools_side_skills,
             '@years_of_experience@': "5 Years"
         }
+
         for x in dynamic_keys.keys():
             if x in template:
                 template = template.replace(x, dynamic_keys[x])
