@@ -7,7 +7,7 @@ devops_regex = [
     },
     {
         'tech_stack': 'ServiceNow',
-        'exp': '(?i)(^|\W)(service([-\s\_.\\]?now)?)(\W|$)'
+        'exp': '(?i)(^|\W)(service([-\s\_.]?now)?)(\W|$)'
     },
     {
             'tech_stack': 'Devops',
