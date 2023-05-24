@@ -1,14 +1,15 @@
 try:
     import os
-    from scraper.models import AllSyncConfig
-    from scraper.models import SchedulerSync
-    # from scraper.schedulers.job_upload_scheduler import upload_jobs, remove_files
-    #
-    # upload_jobs()
-    # remove_files(job_source="all")
+    import shutil
+    from scraper.models import AllSyncConfig, SchedulerSync
+    from scraper.views.sync_scheduler import run_scrapers_manually
     SchedulerSync.objects.all().update(running=False)
-    AllSyncConfig.objects.all().update(status=False)
-    if not os.path.exists('scraper/job_data'):
+    if AllSyncConfig.objects.filter(status=True).exists():
+        run_scrapers_manually()
+    if os.path.exists('scraper/job_data'):
+        shutil.rmtree('scraper/job_data')
+        os.makedirs('scraper/job_data')
+    else:
         os.makedirs('scraper/job_data')
 except Exception as e:
     print("Error in job_upload_scheduler init - file", str(e))

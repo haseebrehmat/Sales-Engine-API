@@ -47,9 +47,9 @@ def find_jobs(driver, scrapped_data, job_type, page_no):
             job_description = driver.find_element(By.CLASS_NAME, "css-cxpe4v")
             append_data(data, job_description.text)
             append_data(data, job.get_attribute('href'))
-            if context[4].text:
+            try:
                 job_posted_date = context[4].text
-            else:
+            except Exception as e:
                 job_posted_date = 'Today'
             append_data(data, job_posted_date)
             append_data(data, "Simplyhired")
@@ -116,6 +116,7 @@ def simply_hired(link, job_type):
                     scrapped_data = []
                     request_url(driver, url)
                     while find_jobs(driver, scrapped_data, job_type[count], page_no):
+                        page_no += 1
                         print("Fetching...")
                     count += 1
                 print(SCRAPING_ENDED)
