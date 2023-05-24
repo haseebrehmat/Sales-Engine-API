@@ -95,4 +95,5 @@ class BlacklistJobs(TimeStamped):
         default_permissions = ()
 
 
-# class UserAppliedJobs(TimeStamped):
+class SalesEngineJobsStats(TimeStamped):
+    jobs_count = models.IntegerField()
