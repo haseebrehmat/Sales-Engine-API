@@ -74,7 +74,7 @@ def transform_data(df):
             df['job_source_url'].astype(str)
         df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
         df['job_source'] = 'Adzuna'
-        df['job_type'] = 'Remote'
+        df['job_type'] = 'Full Time Remote'
         return df
     except Exception as e:
         print(e)

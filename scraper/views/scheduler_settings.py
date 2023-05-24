@@ -62,6 +62,8 @@ class SchedulerView(ListAPIView):
             'glassdoor': 'Glassdoor',
             'monster': 'Monster',
             'simplyhired': 'Simply Hired',
+            'googlecareers': 'Google Careers',
+            'jooble': 'Jooble'
         }
 
         if request.data.get('job_source') not in my_dict:

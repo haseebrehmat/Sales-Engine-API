@@ -16,22 +16,26 @@ total_job = 0
 
 
 def login(driver):
-    time.sleep(2)
-    driver.find_element(By.CLASS_NAME, "email-input").click()
-    driver.find_element(By.ID, "inlineUserEmail").clear()
-    driver.find_element(By.ID, "inlineUserEmail").send_keys(GLASSDOOR_USERNAME)
-    driver.find_element(By.CLASS_NAME, "email-button").click()
-    time.sleep(1)
-    driver.find_element(By.CLASS_NAME, "password-input").click()
-    driver.find_element(By.ID, "inlineUserPassword").clear()
-    driver.find_element(By.ID, "inlineUserPassword").send_keys(
-        GLASSDOOR_PASSWORD)
-    driver.find_element(By.CLASS_NAME, "css-1dqhu4c").click()
-    login = driver.find_elements(By.CLASS_NAME, "iconContainer")
-    if len(login) > 0:
+    try:
+        time.sleep(2)
+        driver.find_element(By.CLASS_NAME, "email-input").click()
+        driver.find_element(By.ID, "inlineUserEmail").clear()
+        driver.find_element(By.ID, "inlineUserEmail").send_keys(GLASSDOOR_USERNAME)
+        driver.find_element(By.CLASS_NAME, "email-button").click()
+        time.sleep(1)
+        driver.find_element(By.CLASS_NAME, "password-input").click()
+        driver.find_element(By.ID, "inlineUserPassword").clear()
+        driver.find_element(By.ID, "inlineUserPassword").send_keys(
+            GLASSDOOR_PASSWORD)
+        driver.find_element(By.CLASS_NAME, "css-1dqhu4c").click()
+        login = driver.find_elements(By.CLASS_NAME, "iconContainer")
+        if len(login) > 0:
+            return False
+        time.sleep(5)
+        return True
+    except Exception as e:
+        print(e)
         return False
-    time.sleep(5)
-    return True
 
 
 # calls url
@@ -52,30 +56,37 @@ def find_jobs(driver, scrapped_data, job_type):
     date_time = str(datetime.now())
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "react-job-listing")
-        company_name = driver.find_elements(By.CLASS_NAME, "css-l2wjgv")
+        company_name = driver.find_elements(By.CLASS_NAME, "job-search-1bgdn7m")
         for job in jobs:
-            data = []
-            job.click()
-            time.sleep(2)
-            job_title = driver.find_elements(By.CLASS_NAME, "css-1vg6q84")
-            if job_title:
-                append_data(data, job_title[0].text)
-                append_data(data, company_name[count].text)
-                address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
-                append_data(data, address.text)
-                job_description = driver.find_element(
-                    By.CLASS_NAME, "jobDescriptionContent")
-                append_data(data, job_description.text)
-                url = driver.find_elements(By.CLASS_NAME, "css-1rd3saf")
-                append_data(data, url[count].get_attribute('href'))
-                job_posted_date = driver.find_elements(
-                    By.CLASS_NAME, "css-1vfumx3")
-                append_data(data, job_posted_date[count].text)
-                append_data(data, "Glassdoor")
-                append_data(data, job_type)
-            scrapped_data.append(data)
-            count += 1
-            total_job += 1
+            try:
+                data = []
+                job.click()
+                time.sleep(2)
+                job_title = driver.find_elements(By.CLASS_NAME, "css-1vg6q84")
+                if job_title:
+                    append_data(data, job_title[0].text)
+                    append_data(data, company_name[count].text)
+                    address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
+                    append_data(data, address.text)
+                    job_description = driver.find_element(
+                        By.CLASS_NAME, "jobDescriptionContent")
+                    append_data(data, job_description.text)
+                    url = driver.find_elements(By.CLASS_NAME, "jobCard")
+                    append_data(data, url[count].get_attribute('href'))
+                    try:
+                        job_posted_date = driver.find_elements(
+                            By.CLASS_NAME, "listing-age")
+                        append_data(data, job_posted_date[count].text)
+                    except Exception as e:
+                        print(e)
+                        append_data(data, "24h")
+                    append_data(data, "Glassdoor")
+                    append_data(data, job_type)
+                scrapped_data.append(data)
+                count += 1
+                total_job += 1
+            except Exception as e:
+                print(e)
 
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                         "job_source", "job_type"]
@@ -85,10 +96,14 @@ def find_jobs(driver, scrapped_data, job_type):
         saveLogs(e)
         print(e)
 
-    if driver.find_element(By.CLASS_NAME, "nextButton").is_enabled():
-        driver.find_element(By.CLASS_NAME, "nextButton").click()
-        return True
-    return False
+    try:
+        if driver.find_element(By.CLASS_NAME, "nextButton").is_enabled():
+            driver.find_element(By.CLASS_NAME, "nextButton").click()
+            return True
+        return False
+    except Exception as e:
+        print(e)
+        return False
 
 
 # code starts from here
