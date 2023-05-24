@@ -53,35 +53,38 @@ def find_jobs(driver, scrapped_data, job_type):
         By.CLASS_NAME, "job-search-resultsstyle__JobCardWrapNew-sc-1wpt60k-6")
 
     for job in jobs:
-        data = []
-        job.click()
-        WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (By.CLASS_NAME, "descriptionstyles__DescriptionContainer-sc-13ve12b-0"))
-        )
-        job_title = driver.find_element(
-            By.CLASS_NAME, "headerstyle__JobViewHeaderTitle-sc-1ijq9nh-5")
-        append_data(data, job_title.text)
-        company_name = driver.find_element(
-            By.CLASS_NAME, "headerstyle__JobViewHeaderCompany-sc-1ijq9nh-6")
-        append_data(data, company_name.text)
-        address = driver.find_element(
-            By.CLASS_NAME, "headerstyle__JobViewHeaderLocation-sc-1ijq9nh-4")
-        append_data(data, address.text)
-        job_description = driver.find_element(
-            By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
-        append_data(data, job_description.text)
-        url = driver.find_elements(
-            By.CLASS_NAME, "sc-kszsFN")
-        append_data(data, url[count].get_attribute('href'))
-        job_posted_date = driver.find_element(
-            By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
-        append_data(data, job_posted_date.text)
-        append_data(data, "Monster")
-        append_data(data, job_type)
-        scrapped_data.append(data)
-        count += 1
-        total_job += 1
+        try:
+            data = []
+            job.click()
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "descriptionstyles__DescriptionContainer-sc-13ve12b-0"))
+            )
+            job_title = driver.find_element(
+                By.CLASS_NAME, "headerstyle__JobViewHeaderTitle-sc-1ijq9nh-5")
+            append_data(data, job_title.text)
+            company_name = driver.find_element(
+                By.CLASS_NAME, "headerstyle__JobViewHeaderCompany-sc-1ijq9nh-6")
+            append_data(data, company_name.text)
+            address = driver.find_element(
+                By.CLASS_NAME, "headerstyle__JobViewHeaderLocation-sc-1ijq9nh-4")
+            append_data(data, address.text)
+            job_description = driver.find_element(
+                By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
+            append_data(data, job_description.text)
+            url = driver.find_elements(
+                By.CLASS_NAME, "sc-jHwEXd")
+            append_data(data, url[count].get_attribute('href'))
+            job_posted_date = driver.find_element(
+                By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
+            append_data(data, job_posted_date.text)
+            append_data(data, "Monster")
+            append_data(data, job_type)
+            scrapped_data.append(data)
+            count += 1
+            total_job += 1
+        except Exception as e:
+            print(e)
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type"]
@@ -100,6 +103,7 @@ def monster(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
+        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                               options=options) as driver:  # modified
             scrapped_data = []
@@ -127,6 +131,3 @@ def monster(link, job_type):
     except Exception as e:
         saveLogs(e)
         print(e)
-
-
-# monster()
