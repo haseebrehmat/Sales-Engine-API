@@ -15,7 +15,7 @@ class PhaseList(ListAPIView):
     serializer_class = PhaseSerializer
     pagination_class = CustomPagination
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'company_status__company__name']
+    search_fields = ['name']
 
     def get_queryset(self):
         return Phase.objects.all()
