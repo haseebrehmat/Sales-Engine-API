@@ -59,7 +59,6 @@ def ziprecruiter_scraping():
                         continue
 
                     for job in job_search.find_elements(By.TAG_NAME, 'article'):
-                        print("zip")
                         driver.switch_to.window(original_window)
                         job_detail = {'job_title': job.get_attribute('data-job-title'),
                                       'company_name': job.get_attribute('data-company-name'),

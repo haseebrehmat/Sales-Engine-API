@@ -20,7 +20,6 @@ class LeadList(ListAPIView):
         return Lead.objects.all()
 
 
-
 class LeadDetail(APIView):
     permission_classes = (AllowAny,)
 

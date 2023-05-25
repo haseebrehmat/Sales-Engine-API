@@ -8,7 +8,7 @@ class VerticalPermissions(BasePermission):
 
     def has_permission(self, request, view):
         permissions = {
-            'GET': ['view_vertical'],
+            'GET': ['edit_vertical'],
             'POST': ['create_vertical'],
             'PUT': ['edit_vertical'],
             'DELETE': ['delete_vertical']

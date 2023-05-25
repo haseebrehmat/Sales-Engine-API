@@ -49,8 +49,7 @@ def find_jobs(driver, scrapped_data, job_type):
       try:
         append_data(data, address[count].text.split('\n')[1])
       except Exception as e:
-        saveLogs(e)
-        append_data(data, "USA")
+        append_data(data, address[count].text.split('\n')[0])
       job_description = driver.find_elements(By.CLASS_NAME,"gc-card__content")
       append_data(data, job_description[0].text)
       append_data(data, job.get_attribute('href'))
@@ -66,27 +65,26 @@ def find_jobs(driver, scrapped_data, job_type):
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/google_careers - {date_time}.csv', index=False)
+    df.to_csv(f'scraper/job_data/googlecareers - {date_time}.csv', index=False)
 
     cookie = driver.find_elements(By.CLASS_NAME, "gc-cookie-bar__buttons")
     if len(cookie) > 0:
       c_button = cookie[0].find_elements(By.CLASS_NAME, "gc-button--raised")
       c_button[0].click()
 
-
   except Exception as e:
     saveLogs(e)
     print(e)
 
-  time.sleep(2)
-  next_page = driver.find_elements(By.CLASS_NAME, "gc-link--on-grey")
-  try:
-    next_page[1].location_once_scrolled_into_view
-    next_page[1].click()
-    time.sleep(2)
-    return True
-  except Exception as e:
-    saveLogs(e)
+  # time.sleep(2)
+  # next_page = driver.find_elements(By.CLASS_NAME, "gc-link--on-grey")
+  # try:
+  #   next_page[1].location_once_scrolled_into_view
+  #   next_page[1].click()
+  #   time.sleep(2)
+  #   return True
+  # except Exception as e:
+  #   saveLogs(e)
     return False
 
 def job_display(driver):

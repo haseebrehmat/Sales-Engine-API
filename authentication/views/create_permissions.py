@@ -20,4 +20,5 @@ class CreatePermissions(APIView):
     def create_permissions(self):
         codenames = CustomPermission.objects.all().values_list("codename", flat=True)
         data = [CustomPermission(**permission) for permission in permissions if permission["codename"] not in codenames]
+        data = set(data)
         CustomPermission.objects.bulk_create(data, ignore_conflicts=True)

@@ -39,25 +39,28 @@ def find_jobs(driver, scrapped_data, job_type):
 
     job_title = driver.find_elements(By.CLASS_NAME, "card-title-link")
     for job in jobs:
-        data = []
+        try:
+            data = []
 
-        append_data(data, job_title[count].text)
-        c_name = driver.find_elements(By.CLASS_NAME, "card-company")
-        company_name = c_name[count].find_elements(By.TAG_NAME, "a")
-        for company in company_name:
-            append_data(data, company.text)
-        address = driver.find_elements(By.CLASS_NAME, "search-result-location")
-        append_data(data, address[count].text)
-        job_description = driver.find_elements(By.CLASS_NAME, "card-description")
-        append_data(data, job_description[count].text)
-        append_data(data, job_title[count].get_attribute('href'))
-        job_posted_date = driver.find_elements(By.CLASS_NAME, "posted-date")
-        append_data(data, job_posted_date[count].text)
-        append_data(data, "Dice")
-        append_data(data, job_type)
-        count += 1
-        total_job += 1
-        scrapped_data.append(data)
+            append_data(data, job_title[count].text)
+            c_name = driver.find_elements(By.CLASS_NAME, "card-company")
+            company_name = c_name[count].find_elements(By.TAG_NAME, "a")
+            for company in company_name:
+                append_data(data, company.text)
+            address = driver.find_elements(By.CLASS_NAME, "search-result-location")
+            append_data(data, address[count].text)
+            job_description = driver.find_elements(By.CLASS_NAME, "card-description")
+            append_data(data, job_description[count].text)
+            append_data(data, job_title[count].get_attribute('href'))
+            job_posted_date = driver.find_elements(By.CLASS_NAME, "posted-date")
+            append_data(data, job_posted_date[count].text)
+            append_data(data, "Dice")
+            append_data(data, job_type)
+            count += 1
+            total_job += 1
+            scrapped_data.append(data)
+        except Exception as e:
+            print(e)
 
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type"]
@@ -66,21 +69,23 @@ def find_jobs(driver, scrapped_data, job_type):
 
     finished = "disabled"
     pagination = driver.find_elements(By.CLASS_NAME, "pagination-next")
-    next_page = pagination[0].get_attribute('class')
-    if finished in next_page:
+    try:
+        next_page = pagination[0].get_attribute('class')
+        if finished in next_page:
+            return False
+        else:
+            pagination[0].click()
+            time.sleep(5)
+        return True
+    except Exception as e:
+        print(e)
         return False
-    else:
-        pagination[0].click()
-        time.sleep(5)
-
-    return True
 
 
 # code starts from here
 def dice(link, job_type):
     print("Dice")
     try:
-        count = 0
         scrapped_data = []
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -89,9 +94,10 @@ def dice(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
+        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+            driver.maximize_window()
             types = [link]
-            job_type = [job_type]
             try:
                 # query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True))[0]
                 # for c in range(len(query)):
@@ -99,9 +105,8 @@ def dice(link, job_type):
                 #     job_type.append(query[c]['job_type'])
                 for url in types:
                     request_url(driver, url)
-                    while find_jobs(driver, scrapped_data, job_type[count]):
+                    while find_jobs(driver, scrapped_data, job_type):
                         print("Fetching...")
-                    count += 1
                 ScraperLogs.objects.create(total_jobs=total_job, job_source="Dice")
                 print(SCRAPING_ENDED)
             except Exception as e:

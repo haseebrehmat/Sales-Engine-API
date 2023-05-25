@@ -9,9 +9,13 @@ from rest_framework.views import APIView
 from job_portal.classifier.job_classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.exceptions import InvalidFileException
-from job_portal.models import JobDetail
+from job_portal.models import JobDetail, SalesEngineJobsStats
 from job_portal.serializers.job_detail import JobDataUploadSerializer
 from scraper.utils.thread import start_new_thread
+import requests
+import json
+
+from utils.helpers import saveLogs
 
 
 class JobDataUploadView(CreateAPIView):
@@ -21,8 +25,7 @@ class JobDataUploadView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         job_file = request.FILES.getlist('file_upload', [])
         if not job_file:
-            return Response({'detail': 'Files are not selected'},
-                            status=404)
+            return Response({'detail': 'Files are not selected'}, status=404)
 
         job_parser = JobParser(job_file)
         # validate files first
@@ -45,22 +48,39 @@ class JobDataUploadView(CreateAPIView):
         classify_data.classify()
 
         model_instances = [
-            JobDetail(
-                job_title=job_item.job_title,
-                company_name=job_item.company_name,
-                job_source=job_item.job_source,
-                job_type=job_item.job_type,
-                address=job_item.address,
-                job_description=job_item.job_description,
-                tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
-                job_posted_date=job_item.job_posted_date,
-                job_source_url=job_item.job_source_url,
-            ) for job_item in classify_data.data_frame.itertuples()
-            if job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)
-        ]
+            JobDetail(job_title=job_item.job_title, company_name=job_item.company_name, job_source=job_item.job_source,
+                      job_type=job_item.job_type, address=job_item.address, job_description=job_item.job_description,
+                      tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
+                      job_posted_date=job_item.job_posted_date, job_source_url=job_item.job_source_url, ) for job_item
+            in classify_data.data_frame.itertuples() if
+            job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)]
 
-        JobDetail.objects.bulk_create(
-            model_instances, ignore_conflicts=True, batch_size=1000)
+        jobs_data = JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True, batch_size=1000)
+
+        self.upload_jobs_in_sales_engine(model_instances)
+
+    def upload_jobs_in_sales_engine(self, jobs_data):
+        try:
+            url = "https://sales-test.devsinc.com/job_portal/api/v1/jobs"
+
+            payload = json.dumps({"jobs": [
+                {"job_title": job.job_title, "job_source_url": job.job_source_url, "job_type": job.job_type,
+                 "job_posted_date": job.job_posted_date.strftime('%Y-%m-%d'), "job_source": job.job_source,
+                 "job_description": job.job_description, "company_name": job.company_name, "address": job.address} for job
+                in jobs_data]})
+
+            headers = {
+                'Authorization': '445f188bsk3423dsd1342jj434hjkn43j43n43j4d875ee0995ac1e89de6fc1d0252aabc5f2b24a4928',
+                'Content-Type': 'application/json'}
+
+            response = requests.request("POST", url, headers=headers, data=payload)
+
+            # print(response.text)
+            if response.ok:
+                obj = SalesEngineJobsStats.objects.create(jobs_count=len(jobs_data))
+        except Exception as e:
+            saveLogs(e)
+
 
 
 class JobCleanerView(APIView):
