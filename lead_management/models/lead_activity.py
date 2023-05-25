@@ -13,6 +13,7 @@ class LeadActivity(TimeStamped):
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
     effect_date = models.DateField(auto_now_add=True)
     due_date = models.DateField(auto_now_add=True)
+    # candidate = models.ForeignKey(Candidate, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         unique_together = ('lead', 'company_status', 'phase')

@@ -45,14 +45,14 @@ class LeadManagement(ListAPIView):
             effect_date = request.data.get('effect_date')
             due_date = request.data.get('due_date')
             notes = request.data.get('notes')
-
+            candidate = request.data.get('candidate')
             lead = Lead.objects.create(applied_job_status_id=applied_job_status, company_status_id=company_status,
-                                       phase_id=phase)
+                                       phase_id=phase, candidate_id=candidate)
             AppliedJobStatus.objects.filter(id=applied_job_status)\
                 .update(is_converted=True, converted_at=datetime.datetime.now())
 
             lead_activity = LeadActivity.objects.create(lead_id=lead.id, company_status_id=company_status,
-                                                        phase_id=phase)
+                                                        phase_id=phase, candidate_id=candidate)
             if effect_date:
                 lead_activity.effect_date = effect_date
             if due_date:

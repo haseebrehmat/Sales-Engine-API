@@ -15,7 +15,7 @@ class Lead(TimeStamped):
     company_status = models.ForeignKey(CompanyStatus, on_delete=models.SET_NULL, null=True)
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
-
+    # candidate = models.ForeignKey(Candidate, on_delete=models.SET_NULL, null=True)
     class Meta:
         default_permissions = ()
         db_table = "lead"
