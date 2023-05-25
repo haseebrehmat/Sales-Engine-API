@@ -7,8 +7,10 @@ from utils.model_fields.timestamped import TimeStamped
 
 
 class CandidateLogs(TimeStamped):
-    company = models.ForeignKey(Company, on_delete=models.SET_NULL)
-    user_id = models.ForeignKey(User, on_delete=models.SET_NULL)
-    exposed_user = models.ForeignKey(Candidate, on_delete=models.SET_NULL)
-    exposed_to = models.ForeignKey(Company, on_delete=models.SET_NULL)
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True,
+                                related_name="candidate_company")
+    user_id = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    exposed_user = models.ForeignKey(Candidate, on_delete=models.SET_NULL, blank=True, null=True)
+    exposed_to = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True,
+                                   related_name="candidate_exposed_to")
 

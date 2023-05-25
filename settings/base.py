@@ -30,6 +30,7 @@ CUSTOM_APPS = [
     'pseudos',
     'error_logger',
     'lead_management',
+    'candidate'
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',

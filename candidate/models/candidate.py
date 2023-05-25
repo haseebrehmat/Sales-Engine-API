@@ -2,7 +2,6 @@ from django.db import models
 
 from authentication.models.company import Company
 from candidate.models.designation import Designation
-from candidate.models.skills import CandidateSkills
 from utils.model_fields.timestamped import TimeStamped
 
 
@@ -13,7 +12,7 @@ class Candidate(TimeStamped):
     phone = models.CharField(max_length=12, blank=True, null=True)
     experience = models.CharField(max_length=12, blank=True, null=True)
     email = models.CharField(max_length=30, blank=True, null=True)
-    designation = models.ForeignKey(Designation, on_delete=models.SET_NULL)
+    designation = models.ForeignKey(Designation, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 
