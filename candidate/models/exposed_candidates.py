@@ -15,6 +15,9 @@ class ExposedCandidate(TimeStamped):
         unique_together = ("candidate", "company")
         default_permissions = ()
 
+<<<<<<< HEAD
     def __str__(self):
         return f'{self.candidate} - {self.company}'
 
+=======
+>>>>>>> fix: circular imports
