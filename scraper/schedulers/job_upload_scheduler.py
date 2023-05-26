@@ -21,6 +21,7 @@ from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
 from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
+from scraper.jobs.jooble_scraping import jooble
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
@@ -65,6 +66,9 @@ scraper_functions = {
     ],
     "googlecareers": [
         google_careers,
+    ],
+    "jooble": [
+        jooble,
     ]
 }
 
@@ -183,7 +187,7 @@ def get_scrapers_list(job_source):
 
 
 def run_scrapers(scrapers):
-    scrapers_without_links = ['adzuna', 'googlecareers', 'ziprecruiter']
+    scrapers_without_links = ['adzuna', 'googlecareers', 'ziprecruiter', 'jooble']
     try:
         is_completed = False
         i = 0
@@ -297,6 +301,7 @@ zip_recruiter_scheduler = BackgroundScheduler()
 adzuna_scheduler = BackgroundScheduler()
 simply_hired_scheduler = BackgroundScheduler()
 google_careers_scheduler = BackgroundScheduler()
+jooble_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -346,6 +351,11 @@ def scheduler_settings():
                 google_careers_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["google_careers"])
 
+            elif scheduler.job_source.lower() == "jooble":
+                jooble_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["jooble"])
+
+
         elif scheduler.time_based:
             now = datetime.datetime.now()
             dat = str(now).split(' ')
@@ -389,6 +399,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "google_careers":
                 google_careers_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                                  args=["google_careers"])
+
+            elif scheduler.job_source.lower() == "jooble":
+                jooble_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                                 args=["jooble"])
 
 
 # scheduler_settings()

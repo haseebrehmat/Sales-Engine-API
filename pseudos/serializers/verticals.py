@@ -9,6 +9,7 @@ class VerticalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Verticals
         fields = "__all__"
+        depth = 1
 
     def get_hobbies(self, obj):
         queryset = Verticals.objects.filter(id=obj.id).first()

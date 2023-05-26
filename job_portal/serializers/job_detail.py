@@ -76,3 +76,10 @@ class JobDataUploadSerializer(serializers.Serializer):
                                     use_url=False)
     )
     upload_by = serializers.CharField(max_length=500)
+
+
+
+class SalesEngineJobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobDetail
+        fields = '__all__'

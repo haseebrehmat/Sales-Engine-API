@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from authentication.serializers.users import UserDetailSerializer
-from job_portal.serializers.applied_job_serializer import AppliedJobStatusSerializer
+from job_portal.serializers.applied_job_serializer import AppliedJobStatusSerializer, AppliedJobStatusCustomSerializer
 from lead_management.models import Lead, LeadActivity, LeadActivityNotes
 from lead_management.serializers import CompanyStatusSerializer, LeadActivityNotesSerializer
 
@@ -15,7 +15,7 @@ class LeadSerializer(serializers.ModelSerializer):
 
 class LeadDetailSerializer(serializers.ModelSerializer):
     # lead_activities = serializers.SerializerMethodField()
-    applied_job_status = AppliedJobStatusSerializer()
+    applied_job_status = AppliedJobStatusCustomSerializer()
     company_status = CompanyStatusSerializer()
     notes = serializers.SerializerMethodField(default=[])
 

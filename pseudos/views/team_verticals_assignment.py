@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from itertools import chain
 from authentication.models import Profile
 from authentication.serializers.team_management import TeamManagementSerializer
-from job_portal.models import JobDetail, AppliedJobStatus
+from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
 from job_portal.serializers.job_detail import JobDetailSerializer
 from pseudos.models.verticals import Verticals
 from authentication.models.team_management import Team
@@ -19,7 +19,8 @@ from pseudos.serializers.pseudos import PseudoSerializer
 from pseudos.serializers.verticals import VerticalSerializer
 
 
-class TeamVerticalsAssignView(ListAPIView):  # class for assignment verticals to team
+# class for assignment verticals to team
+class TeamVerticalsAssignView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PseudoSerializer
 
@@ -44,7 +45,8 @@ class TeamVerticalsAssignView(ListAPIView):  # class for assignment verticals to
         return Response(message, status=status_code)
 
 
-class UserVerticalsAssignView(APIView):  # class for assignment verticals to team members
+# class for assignment verticals to team members
+class UserVerticalsAssignView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = PseudoSerializer
 
@@ -59,10 +61,8 @@ class UserVerticalsAssignView(APIView):  # class for assignment verticals to tea
             for x in data["members"]:
                 verticals = Verticals.objects.filter(vertical__user__id=x["id"], id__in=vertical_id)
                 if verticals.count() > 0:
-                    temp = [
-                        {"id": vertical.id, "name": vertical.name, "identity": vertical.identity,
-                         "pseudo": vertical.pseudo.name}
-                        for vertical in verticals]
+                    temp = [{"id": vertical.id, "name": vertical.name, "identity": vertical.identity,
+                             "pseudo": vertical.pseudo.name} for vertical in verticals]
                     x["verticals"] = temp
 
         else:
@@ -106,41 +106,32 @@ class UserVerticalsAssignView(APIView):  # class for assignment verticals to tea
 
 class UserVerticals(APIView):
     def get(self, request):
-        user_id = request.user.id
-        job_id = request.GET.get("job_id")
-        user_applied = AppliedJobStatus.objects.filter(applied_by=user_id, job_id=job_id)
+        try:
+            user_id = request.user.id
+            job_id = request.GET.get("job_id")
+            user_applied = AppliedJobStatus.objects.filter(applied_by=user_id, job_id=job_id)
 
-        job = JobDetail.objects.filter(pk=job_id).first()
-        profile = Profile.objects.filter(user_id=user_id).first()
-        verticals = list(profile.vertical.values_list('id', flat=True))
-        teams = Team.objects.filter(members__id=user_id).all()
-        if len(verticals) == 0 or len(teams) == 0:
-            data = []
-        else:
-            data = {"assigned": [{
-                'id': team.id,
-                'name': team.name,
-                'verticals': [{"id": vertical.id, "name": vertical.name, "identity": vertical.identity}
-                              for vertical in team.verticals.filter(id__in=verticals)]
-            } for team in teams],
-                "job": {
-                    'id': job.id,
-                    'name': job.job_title,
-                    'company': job.company_name,
-                    'type': job.job_type,
-                    'description': job.job_description,
-                    'source': job.job_source,
-                    'link': job.job_source_url,
-                    'posted_at': job.job_posted_date,
-                },
-                "history": [{
-                    'vertical': apply.vertical.name,
-                    "pseudo": apply.vertical.pseudo.name,
-                    'time': apply.applied_date.strftime('%Y-%m-%d %H:%M:%S'),
-                    'team': apply.team.name,
-                } for apply in user_applied]
-            }
-        return Response(data, status=status.HTTP_200_OK)
+            job = JobDetail.objects.filter(pk=job_id).first()
+            profile = Profile.objects.filter(user_id=user_id).first()
+            verticals = list(profile.vertical.values_list('id', flat=True))
+            teams = Team.objects.filter(members__id=user_id).all()
+            if len(verticals) == 0 or len(teams) == 0:
+                data = []
+            else:
+                data = {"assigned": [{'id': team.id, 'name': team.name, 'verticals': [
+                    {"id": vertical.id, "name": vertical.name, "identity": vertical.identity} for vertical in
+                    team.verticals.filter(id__in=verticals)]} for team in teams],
+                        "job": {'id': job.id, 'name': job.job_title, 'company': job.company_name, 'type': job.job_type,
+                                'description': job.job_description, 'source': job.job_source,
+                                'link': job.job_source_url, 'posted_at': job.job_posted_date, }, "history": [
+                        {'vertical': apply.vertical.name, "pseudo": apply.vertical.pseudo.name,
+                         'time': apply.applied_date.strftime('%Y-%m-%d %H:%M:%S'), 'team': apply.team.name, } for apply
+                        in user_applied]}
+            status_code = status.HTTP_200_OK
+        except Exception as e:
+            data = {'detail': str(e)}
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return Response(data, status=status_code)
 
 
 class JobVerticals(APIView):
@@ -149,17 +140,29 @@ class JobVerticals(APIView):
         user_id = request.GET.get("user_id")
         job_id = request.GET.get("job_id")
         job = JobDetail.objects.filter(id=job_id).first()
+        job.block = self.is_job_block(request, job)
         serializer = JobDetailSerializer(job, many=False)
-
         user = User.objects.filter(id=user_id).first()
         verticals = user.profile.vertical.all()
         data = {"total_verticals": [{"name": x.name, "identity": x.identity, "id": x.id} for x in verticals]}
         data["total_verticals_count"] = len(data["total_verticals"])
         jobs = AppliedJobStatus.objects.filter(job_id=job_id, vertical__in=verticals)
-        data["applied_verticals"] = [
-            {"name": x.vertical.name, "identity": x.vertical.identity, "id": x.vertical.id}
-            for x in jobs
-        ]
+        data["applied_verticals"] = [{"name": x.vertical.name, "identity": x.vertical.identity, "id": x.vertical.id} for
+                                     x in jobs]
         data["job_details"] = serializer.data
         data["total_applied_count"] = len(data["applied_verticals"])
         return Response(data, status=status.HTTP_200_OK)
+
+    def get_blacklist_companies(self, request):
+        if request.user.profile.company:
+            company = request.user.profile.company
+            blacklist_companies = list(
+                BlacklistJobs.objects.filter(company_id=company.id).values_list("company_name", flat=True))
+        else:
+            blacklist_companies = list(BlacklistJobs.objects.all().values_list("company_name", flat=True))
+        blacklist_companies = [c.lower() for c in blacklist_companies if c]
+        return blacklist_companies
+
+    def is_job_block(self, request, job):
+        flag = job.company_name in self.get_blacklist_companies(request)
+        return flag
