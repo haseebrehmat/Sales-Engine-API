@@ -25,8 +25,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, page_no):
-    global total_job
+def find_jobs(driver, scrapped_data, job_type, page_no, total_job):
     count = 0
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "css-12bkbc3")
@@ -71,7 +70,7 @@ def find_jobs(driver, scrapped_data, job_type, page_no):
     df.to_csv(f'scraper/job_data/simply_hired - {date_time}.csv', index=False)
 
     if not data_exists(driver):
-        return False
+        return False, total_job
 
     next_page = driver.find_elements(By.CLASS_NAME, "css-1wxsdwr")
     for i in next_page:
@@ -79,7 +78,7 @@ def find_jobs(driver, scrapped_data, job_type, page_no):
             i.click()
             break
 
-    return True
+    return True, total_job
 
 
 # check if there is more jobs available or not
@@ -90,6 +89,7 @@ def data_exists(driver):
 
 # code starts from here
 def simply_hired(link, job_type):
+    total_job = 0
     print("Simply hired")
     try:
         count = 0
@@ -107,6 +107,7 @@ def simply_hired(link, job_type):
             types = [link]
             job_type = [job_type]
             try:
+                flag = True
                 # query = list(JobSourceQuery.objects.filter(job_source='simplyhired').values_list("queries", flat=True))[0]
                 # for c in range(len(query)):
                 #     types.append(query[c]['link'])
@@ -115,7 +116,8 @@ def simply_hired(link, job_type):
                     page_no = 2
                     scrapped_data = []
                     request_url(driver, url)
-                    while find_jobs(driver, scrapped_data, job_type[count], page_no):
+                    while flag:
+                        flag, total_job = find_jobs(driver, scrapped_data, job_type[count], page_no, total_job)
                         page_no += 1
                         print("Fetching...")
                     count += 1

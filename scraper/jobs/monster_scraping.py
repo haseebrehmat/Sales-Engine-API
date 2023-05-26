@@ -35,9 +35,8 @@ def load_jobs(driver):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type):
+def find_jobs(driver, scrapped_data, job_type, total_job):
     count = 0
-    global total_job
     time.sleep(7)
     while load_jobs(driver):
         try:
@@ -90,10 +89,12 @@ def find_jobs(driver, scrapped_data, job_type):
                     'job_source_url', "job_posted_date", "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/monster - {date_time}.csv', index=False)
+    return total_job
 
 
 # code starts from here
 def monster(link, job_type):
+    total_job = 0
     print("Monster")
     try:
         options = webdriver.ChromeOptions()  # newly added
@@ -120,7 +121,7 @@ def monster(link, job_type):
                 for url in types:
                     driver.get(url)
                     driver.maximize_window()
-                    find_jobs(driver, scrapped_data, job_type[count])
+                    total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
                     count += 1
                 print("SCRAPING_ENDED")
                 ScraperLogs.objects.create(

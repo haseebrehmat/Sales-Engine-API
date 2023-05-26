@@ -16,7 +16,6 @@ from utils.helpers import saveLogs
 
 total_job = 0
 
-
 # calls url
 def request_url(driver, url):
     driver.get(url)
@@ -28,8 +27,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type):
-    global total_job
+def find_jobs(driver, scrapped_data, job_type, total_job):
     date_time = str(datetime.now())
     count = 0
     WebDriverWait(driver, 30).until(
@@ -72,18 +70,19 @@ def find_jobs(driver, scrapped_data, job_type):
     try:
         next_page = pagination[0].get_attribute('class')
         if finished in next_page:
-            return False
+            return False, total_job
         else:
             pagination[0].click()
             time.sleep(5)
-        return True
+        return True, total_job
     except Exception as e:
         print(e)
-        return False
+        return False, total_job
 
 
 # code starts from here
 def dice(link, job_type):
+    total_job = 0
     print("Dice")
     try:
         scrapped_data = []
@@ -94,24 +93,26 @@ def dice(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
-        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-            driver.maximize_window()
-            types = [link]
-            try:
-                # query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True))[0]
-                # for c in range(len(query)):
-                #     types.append(query[c]['link'])
-                #     job_type.append(query[c]['job_type'])
-                for url in types:
-                    request_url(driver, url)
-                    while find_jobs(driver, scrapped_data, job_type):
-                        print("Fetching...")
-                ScraperLogs.objects.create(total_jobs=total_job, job_source="Dice")
-                print(SCRAPING_ENDED)
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
+        driver = webdriver.Chrome('/home/dev/Desktop/selenium')
+        # with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+        driver.maximize_window()
+        types = [link]
+        flag = True
+        try:
+            # query = list(JobSourceQuery.objects.filter(job_source='dice').values_list("queries", flat=True))[0]
+            # for c in range(len(query)):
+            #     types.append(query[c]['link'])
+            #     job_type.append(query[c]['job_type'])
+            for url in types:
+                request_url(driver, url)
+                while flag:
+                    flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+                    print("Fetching...")
+            ScraperLogs.objects.create(total_jobs=total_job, job_source="Dice")
+            print(SCRAPING_ENDED)
+        except Exception as e:
+            saveLogs(e)
+            print(LINK_ISSUE)
     except Exception as e:
         saveLogs(e)
         print(e)
