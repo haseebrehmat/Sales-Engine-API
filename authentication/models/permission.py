@@ -21,4 +21,4 @@ class CustomPermission(TimeStamped):
         unique_together = ('module', 'codename', 'name')
 
     def __str__(self):
-        return f"{self.module} - {self.name} - {self.codename}"
+        return f"{self.module} - {self.name} - {self.codename}- {self.level}"
