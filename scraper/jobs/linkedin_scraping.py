@@ -174,6 +174,7 @@ def jobs_types(driver, url, job_type, scrapped_data, total_job):
 # code starts from here
 def linkedin(link, job_type):
     print("linkedin")
+    total_job = 0
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -198,7 +199,6 @@ def linkedin(link, job_type):
                 if logged_in:
                     count = 0
                     scrapped_data = []
-                    total_job = 0
                     for url in types:
                         total_job = jobs_types(driver, url, job_type[count], scrapped_data, total_job)
                         count += 1
