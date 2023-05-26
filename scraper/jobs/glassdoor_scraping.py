@@ -49,8 +49,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type):
-    global total_job
+def find_jobs(driver, scrapped_data, job_type, total_job):
     count = 0
     time.sleep(3)
     date_time = str(datetime.now())
@@ -99,11 +98,11 @@ def find_jobs(driver, scrapped_data, job_type):
     try:
         if driver.find_element(By.CLASS_NAME, "nextButton").is_enabled():
             driver.find_element(By.CLASS_NAME, "nextButton").click()
-            return True
-        return False
+            return True, total_job
+        return False, total_job
     except Exception as e:
         print(e)
-        return False
+        return False, total_job
 
 
 # code starts from here
@@ -111,6 +110,7 @@ def glassdoor(link, job_type):
     print("Glassdoor")
     try:
         scrapped_data = []
+        total_job = 0
         count = 0
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -130,12 +130,12 @@ def glassdoor(link, job_type):
                 #     types.append(query[c]['link'])
                 #     job_type.append(query[c]['job_type'])
                 if logged_in:
+                    flag = True
                     for url in types:
                         request_url(driver, url)
                         driver.maximize_window()
-                        while find_jobs(driver, scrapped_data, job_type[count]):
-                            print("Fetching...")
-                        print(job_type[count], "is done")
+                        while flag:
+                            flag, total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
                         count += 1
                     ScraperLogs.objects.create(
                         total_jobs=total_job, job_source="GlassDoor")
