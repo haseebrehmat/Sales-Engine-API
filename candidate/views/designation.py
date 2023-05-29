@@ -19,7 +19,9 @@ class DesignationListView(ListAPIView):
         return queryset
 
     def post(self, request):
-        serializer = DesignationSerializer(data=request.data, many=False)
+        data=request.data
+        data['title']=data['title'].lower()
+        serializer = DesignationSerializer(data=data, many=False)
         if serializer.is_valid():
             data = serializer.validated_data
             serializer.create(data)
@@ -41,8 +43,10 @@ class DesignationDetailView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
+        data=request.data
+        data['title']=data['title'].lower()
         queryset = Designation.objects.filter(pk=pk).first()
-        serializer = DesignationSerializer(instance=queryset, data=request.data)
+        serializer = DesignationSerializer(instance=queryset, data=data)
         if serializer.is_valid():
             serializer.save()
             message = "Designaton updated successfully"
