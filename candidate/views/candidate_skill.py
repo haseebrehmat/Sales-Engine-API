@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-from candidate.models import CandidateSkills
+from candidate.models import CandidateSkills, Skills
 from candidate.serializers.skills import CandidateSkillsSerializer
 from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
@@ -22,7 +22,10 @@ class CandidateSkillsListView(ListAPIView):
         serializer = CandidateSkillsSerializer(data=request.data, many=False)
         if serializer.is_valid():
             data = serializer.validated_data
+            
+            # Skills.objects
             serializer.create(data)
+
             message = "CandidateSkills created successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
