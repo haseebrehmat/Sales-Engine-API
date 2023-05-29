@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-from candidate.models import Candidate
+from candidate.models import Candidate, Skills
 from candidate.serializers.candidate import CandidateSerializer
 from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
@@ -15,7 +15,8 @@ class CandidateListView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        queryset = Candidate.objects.filter(company=self.request.user.profile.company)
+        queryset = Candidate.objects.filter(
+            company=self.request.user.profile.company)
         return queryset
 
     def post(self, request):
@@ -23,6 +24,9 @@ class CandidateListView(ListAPIView):
         if serializer.is_valid():
             data = serializer.validated_data
             data["company_id"] = request.user.profile.company.id
+            data["designation_id"] = request.data.get("designation")
+            skills = request.data.get("skills")
+            data['skills'] = skills
             serializer.create(data)
             message = "Candidate created successfully"
             status_code = status.HTTP_201_CREATED
@@ -45,7 +49,8 @@ class CandidateDetailView(APIView):
         queryset = Candidate.objects.filter(pk=pk).first()
         serializer = CandidateSerializer(instance=queryset, data=request.data)
         if serializer.is_valid():
-            serializer.save(company_id=request.user.profile.company.id)
+            skills = request.data.get("skills")
+            serializer.save(company_id=request.user.profile.company.id, skills=skills)
             message = "Candidate updated successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
@@ -55,8 +60,3 @@ class CandidateDetailView(APIView):
     def delete(self, request, pk):
         Candidate.objects.filter(pk=pk).delete()
         return Response({"detail": "Candidate deleted successfully"}, status.HTTP_200_OK)
-
-
-
-
-
