@@ -26,8 +26,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type):
-    global total_job
+def find_jobs(driver, scrapped_data, job_type, total_job):
     c = 0
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "slider_container")
@@ -74,13 +73,13 @@ def find_jobs(driver, scrapped_data, job_type):
     df.to_csv(f'scraper/job_data/indeed - {date_time}.csv', index=False)
 
     if not data_exists(driver):
-        return False
+        return False, total_job
 
     next_page = driver.find_element(
         By.CSS_SELECTOR, "a[aria-label='Next Page']")
     next_page.click()
 
-    return True
+    return True, total_job
 
 
 # check if there is more jobs available or not
@@ -94,6 +93,7 @@ def data_exists(driver):
 def indeed(link, job_type):
     print("Indeed")
     try:
+        total_job = 0
         count = 0
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -109,6 +109,7 @@ def indeed(link, job_type):
             types = [link]
             job_type = [job_type]
             try:
+                flag = True
                 # query = list(JobSourceQuery.objects.filter(job_source='indeed').values_list("queries", flat=True))[0]
                 # for c in range(len(query)):
                 #     types.append(query[c]['link'])
@@ -117,7 +118,8 @@ def indeed(link, job_type):
                     scrapped_data = []
                     request_url(driver, url)
                     driver.maximize_window()
-                    while find_jobs(driver, scrapped_data, job_type[count]):
+                    while flag:
+                        flag, total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
                         print("Fetching...")
                     count += 1
                 print(SCRAPING_ENDED)

@@ -14,9 +14,7 @@ from scraper.models.scraper_logs import ScraperLogs
 
 total_job = 0
 
-def find_jobs(driver, scrapped_data, job_type):
-    print("Entered in function")
-    global total_job
+def find_jobs(driver, scrapped_data, job_type, total_job):
     date_time = str(datetime.now())
     count = 0
     WebDriverWait(driver, 30).until(
@@ -75,7 +73,7 @@ def find_jobs(driver, scrapped_data, job_type):
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/jooble - {date_time}.csv', index=False)
-    return False
+    return False, total_job
 
 def append_data(data, field):
     data.append(str(field).strip("+"))
@@ -83,6 +81,7 @@ def append_data(data, field):
 # Create your views here.
 def jooble():
   try:
+    total_job = 0
     # import pdb
     # pdb.set_trace()
     print("Start in try portion. \n")
@@ -99,10 +98,12 @@ def jooble():
       types = "https://jooble.org/SearchResult?date=8&jt=1&loc=2&p=7&rgns=United%20States&ukw=developer"
       job_type = "full time remote"
       try:
+          flag = True
           driver.get(types)
           # import pdb
           # pdb.set_trace()
-          while find_jobs(driver, scrapped_data, job_type):
+          while flag:
+              flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
               print("Fetching...")
       except Exception as e:
           print("out from for loop")

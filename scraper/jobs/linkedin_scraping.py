@@ -156,8 +156,7 @@ def data_exists(driver):
         return True
 
 
-def jobs_types(driver, url, job_type, scrapped_data):
-    global total_job
+def jobs_types(driver, url, job_type, scrapped_data, total_job):
     count = 0
     request_url(driver, url)  # select type from the const file
     if find_jobs(driver, scrapped_data, job_type):
@@ -166,13 +165,16 @@ def jobs_types(driver, url, job_type, scrapped_data):
         while find_jobs(driver, scrapped_data, job_type, "&start=" + str(count)):
             count += 25
             total_job += 25
+        return total_job
     else:
         print(NO_JOB_RESULT)
+        return total_job
 
 
 # code starts from here
 def linkedin(link, job_type):
     print("linkedin")
+    total_job = 0
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -198,8 +200,7 @@ def linkedin(link, job_type):
                     count = 0
                     scrapped_data = []
                     for url in types:
-                        jobs_types(driver, url, job_type[count], scrapped_data)
-                        print(job_type[count], "is done")
+                        total_job = jobs_types(driver, url, job_type[count], scrapped_data, total_job)
                         count += 1
                     print(SCRAPING_ENDED)
                 else:

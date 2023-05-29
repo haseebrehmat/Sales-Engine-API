@@ -15,7 +15,6 @@ from utils.helpers import saveLogs
 
 total_jobs = 0
 
-
 # calls url
 def request_url(driver, url):
     driver.get(url)
@@ -43,8 +42,7 @@ def data_exists(driver):
         return False
 
 
-def find_jobs(driver, scrapped_data, job_type):
-    global total_jobs
+def find_jobs(driver, scrapped_data, job_type, total_jobs):
     count = 0
     c_count = 4
     try:
@@ -82,6 +80,7 @@ def find_jobs(driver, scrapped_data, job_type):
                 scrapped_data.append(data)
                 count += 1
                 c_count += 1
+                total_jobs += 1
             except Exception as e:
                 print(e)
                 saveLogs(e)
@@ -93,6 +92,8 @@ def find_jobs(driver, scrapped_data, job_type):
                     "job_source", "job_type"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/career_builder - {date_time}.csv', index=False)
+
+    return total_jobs
 
 
 # find's job name
@@ -124,6 +125,7 @@ def accept_cookie(driver):
 
 # code starts from here
 def career_builder(link, job_type):
+    total_job = 0
     print("Career builder")
     try:
         print("career_builder started ... ")
@@ -151,10 +153,10 @@ def career_builder(link, job_type):
                     accept_cookie(driver)
                     while load_jobs(driver):
                         print("Loading...")
-                    find_jobs(driver, scrapped_data, job_type[count])
+                    total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
                     count += 1
                 ScraperLogs.objects.create(
-                    total_jobs=total_jobs, job_source="Career Builder")
+                    total_jobs=total_job, job_source="Career Builder")
                 print(SCRAPING_ENDED)
             except Exception as e:
                 saveLogs(e)

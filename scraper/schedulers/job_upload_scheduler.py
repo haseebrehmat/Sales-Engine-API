@@ -222,10 +222,10 @@ def run_scrapers(scrapers):
 
                     try:
                         upload_jobs()
+                        remove_files(key)
                     except Exception as e:
                         print("Error in uploading jobs", e)
                         saveLogs(e)
-                    remove_files(key)
             i += 1
             if not flag:
                 is_completed = True

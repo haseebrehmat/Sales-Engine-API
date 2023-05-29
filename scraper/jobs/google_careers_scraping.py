@@ -23,8 +23,7 @@ def append_data(data, field):
   data.append(str(field).strip("+"))
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type):
-  global total_job
+def find_jobs(driver, scrapped_data, job_type, total_job):
   count = 0
   try:
     jobs = driver.find_elements(By.CLASS_NAME, "gc-card")
@@ -85,7 +84,7 @@ def find_jobs(driver, scrapped_data, job_type):
   #   return True
   # except Exception as e:
   #   saveLogs(e)
-    return False
+    return False, total_job
 
 def job_display(driver):
   time.sleep(3)
@@ -93,15 +92,16 @@ def job_display(driver):
   try:
     expand[0].click()
     time.sleep(3)
-    return True
+    return True, total_job
   except Exception as e:
     saveLogs(e)
     print("No jobs to display")
-    return False
+    return False, total_job
 
 # code starts from here
 def google_careers():
   print("Google Careers")
+  total_job = 0
   count = 0
   scrapped_data = []
   options = webdriver.ChromeOptions()  # newly added
@@ -119,12 +119,14 @@ def google_careers():
   # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
     driver.maximize_window()
     try:
+      flag = True
       types = [GOOGLE_FULL_TIME, GOOGLE_FULL_TIME_REMOTE]
       job_type = ["Full Time on Site", "Full Time Remote"]
       for url in types:
         request_url(driver, url)
         if job_display(driver):
-          while find_jobs(driver, scrapped_data, job_type[count]):
+          while flag:
+            flag, total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
             print("Fetching...")
           count = count + 1
       ScraperLogs.objects.create(total_jobs=total_job, job_source="GoogleCareers")
