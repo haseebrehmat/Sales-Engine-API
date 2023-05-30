@@ -18,6 +18,6 @@ urlpatterns = [
     path('logs/', ScraperLogView.as_view()),
     path('group_scheduler/', GroupScraperView.as_view()),
     path('group_scheduler/<int:pk>/', GroupScraperDetailView.as_view()),
-    path('group_scheduler/<int:group_id>/links/', GroupScraperQueriesView.as_view()),
+    path('group_scheduler_link/', GroupScraperQueriesView.as_view()),
 
 ]

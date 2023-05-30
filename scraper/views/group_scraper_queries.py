@@ -13,8 +13,8 @@ from settings.utils.helpers import serializer_errors
 class GroupScraperQueriesView(APIView):
     permission_classes = (AllowAny,)
 
-    def get(self, request, group_id):
-        queryset = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
+    def get(self, request):
+        queryset = GroupScraperQuery.objects.all()
         serializer = GroupScraperQuerySerializer(queryset, many=True)
         return Response({"detail": serializer.data}, status=status.HTTP_200_OK)
 
@@ -31,15 +31,26 @@ class GroupScraperQueriesDetailView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, pk):
-        queryset = JobSourceQuery.objects.filter(pk=pk).first()
-        serializer = JobQuerySerializer(queryset, many=False)
+        queryset = GroupScraperQuery.objects.filter(pk=pk).first()
+        serializer = GroupScraperQuerySerializer(queryset, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
-        queryset = JobSourceQuery.objects.filter(pk=pk).first()
-        serializer = JobQuerySerializer(queryset, request.data)
+        queryset = GroupScraperQuery.objects.filter(pk=pk).first()
+        serializer = GroupScraperQuerySerializer(queryset, request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"detail": "Settings updated successfully"})
+            return Response({"detail": "Group scraper query updated successfully"})
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
+
+    def delete(self, request, pk):
+        queryset = GroupScraperQuery.objects.filter(pk=pk).first()
+        if queryset:
+            queryset.delete()
+            msg = 'Group Scraper Query delete successfully!'
+            status_code = status.HTTP_200_OK
+        else:
+            msg = 'Group Scraper Query does not exist!'
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return Response({"detail": msg}, status=status_code)

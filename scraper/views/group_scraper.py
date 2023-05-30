@@ -1,12 +1,12 @@
 from rest_framework import status
 from rest_framework.generics import ListAPIView
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from authentication.exceptions import InvalidUserException
-from scraper.models import SchedulerSettings, GroupScraper
-from scraper.schedulers.job_upload_scheduler import scheduler_settings
-from scraper.serializers.scheduler_settings import SchedulerSerializer
+from scraper.models import GroupScraper, GroupScraperQuery
 from scraper.serializers.group_scraper_scheduler import GroupScraperSerializer
+from scraper.serializers.scheduler_settings import SchedulerSerializer
 # from settings.celery import restart_server
 from settings.utils.helpers import serializer_errors
 
@@ -81,32 +81,46 @@ class GroupScraperDetailView(APIView):
         else:
             return Response({"detail": "Group Scraper Not Available"}, status=status.HTTP_404_NOT_FOUND)
 
-    # def put(self, request, pk):
-    #     queryset = SchedulerSettings.objects.filter(pk=pk).first()
-    #     query_dict = request.data.copy()
-    #     flag = request.data.get('time_based')
-    #     if flag is True:
-    #         query_dict['interval'] = None
-    #         query_dict['interval_type'] = None
-    #     if flag is False:
-    #         query_dict['time'] = None
-    #     serializer = SchedulerSerializer(queryset, query_dict)
-    #
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         status_code = status.HTTP_200_OK
-    #         message = {"detail": "Scheduler updated successfully"}
-    #         scheduler_settings()
-    #         return Response(message, status=status_code)
-    #
-    #     data = serializer_errors(serializer)
-    #     raise InvalidUserException(data)
-    #
+    def put(self, request, pk):
+        obj = GroupScraper.objects.filter(pk=pk).first()
+        name = request.data.get('name', '')
+        if obj:
+            msg, is_valid = self.validate_group(request)
+            if obj.name != name.lower() and not is_valid:
+                return Response({"detail": msg}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            queryset = obj.scheduler_settings
+            query_dict = request.data.copy()
+            flag = request.data.get('time_based')
+            if flag is True:
+                query_dict['interval'] = None
+                query_dict['interval_type'] = None
+            if flag is False:
+                query_dict['time'] = None
+            serializer = SchedulerSerializer(queryset, query_dict)
+
+            if serializer.is_valid():
+                serializer.save()
+                if obj.name != name.lower():
+                    obj.name = name
+                    obj.save()
+                status_code = status.HTTP_200_OK
+                message = {"detail": "Group Scheduler setting updated successfully"}
+                # scheduler_settings()
+                return Response(message, status=status_code)
+
+            data = serializer_errors(serializer)
+            raise InvalidUserException(data)
+        else:
+            return Response({'detail': 'Group scheduler does not exist'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def delete(self, request, pk):
         group_scraper = GroupScraper.objects.filter(pk=pk).first()
         if group_scraper:
-            group_scraper.scheduler_settings.delete()
+            group_scraper_qeury = GroupScraperQuery.objects.filter(group_scraper=group_scraper).first()
+            if group_scraper_qeury:
+                group_scraper_qeury.delete()
+            if group_scraper.scheduler_settings:
+                group_scraper.scheduler_settings.delete()
             group_scraper.delete()
             message = {"detail": "Group Scraper deleted successfully!"}
             status_code = status.HTTP_200_OK
@@ -114,3 +128,16 @@ class GroupScraperDetailView(APIView):
             message = {"detail": "Group Scraper does not exist!"}
             status_code = status.HTTP_200_OK
         return Response(message, status_code)
+
+    def validate_group(self, request):
+        is_valid = True
+        name = request.data.get('name', '').lower()
+        group = GroupScraper.objects.filter(name=name).first()
+        msg = ''
+        if not name:
+            is_valid = False
+            msg = 'Group name should not be empty.'
+        elif group:
+            msg = f'Group \'{name}\' already exists'
+            is_valid = False
+        return msg, is_valid
