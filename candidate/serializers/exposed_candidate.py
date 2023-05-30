@@ -8,4 +8,6 @@ class ExposedCandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExposedCandidate
         fields = "__all__"
-        depth = 2
+        depth = 1
+
+

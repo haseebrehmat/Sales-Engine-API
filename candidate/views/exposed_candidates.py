@@ -11,29 +11,52 @@ from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
-class ExposedCandidateListAPIView(ListAPIView):
+class ExposedCandidateListAPIView(APIView):
     serializer_class = ExposedCandidateSerializer
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
+    def get(self, request):
         #queryset = ExposedCandidate.objects.filter(company_id=self.request.user.profile.company.id)
-        queryset = ExposedCandidate.objects.filter(candidate__company_id=self.request.user.profile.company.id)
-        return queryset
+        queryset = ExposedCandidate.objects.filter(candidate__company_id=request.user.profile.company.id)
+        data = []
+        if len(queryset) > 0:
+            serializer = ExposedCandidateSerializer(queryset, many=True)
+            data = serializer.data
+        return Response(data)
 
     def post(self, request):
-        serializer = ExposedCandidateSerializer(data=request.data, many=False)
+        company_ids = request.data.get("company_ids", [])
+        candidate_ids = request.data.get("candidate_ids", [])
+        if company_ids == [] or candidate_ids == []:
+            message = "Candidate or Company should not be empty"
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+            return Response({"detail": message}, status_code)
+        data = []
+        for candidate_id in candidate_ids:
+            for company_id in company_ids:
+                data.append(
+                    {
+                        "company_id": company_id,
+                        "candidate_id": candidate_id,
+                        "allowed_status": request.data.get("allowed_status", False)
+                    }
+                )
+
+        serializer = ExposedCandidateSerializer(data=data, many=True)
         if serializer.is_valid():
             try:
-                serializer.validated_data["candidate_id"] = request.data.get("candidate_id")
-                serializer.validated_data["company_id"] = request.data.get("company_id")
-                
-                serializer.create(serializer.validated_data)
+                serializer.create(data)
                 message = "Candidate Exposed successfully"
                 status_code = status.HTTP_201_CREATED
-                return Response({"detail": message}, status_code)
             except Exception as e:
-                return Response({"detail": "Candidate already exposed"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                status_code = status.HTTP_406_NOT_ACCEPTABLE
+                if "unique constraint" in str(e):
+                    message = "Candidate already exposed"
+                else:
+                    message = str(e)
+            return Response({"detail": message}, status_code)
+
         else:
             data = serializer_errors(serializer)
             raise InvalidUserException(data)
