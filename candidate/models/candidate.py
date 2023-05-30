@@ -14,6 +14,9 @@ class Candidate(TimeStamped):
     email = models.CharField(max_length=100)
     designation = models.ForeignKey(Designation, on_delete=models.SET_NULL, blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.name} - {self.company.name}"
+
 
 
 

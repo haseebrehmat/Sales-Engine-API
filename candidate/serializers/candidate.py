@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from candidate.models import Candidate, CandidateSkills, Skills
 
+
 class CandidateSerializer(serializers.ModelSerializer):
     skills = serializers.SerializerMethodField(default=[])
 
@@ -31,7 +32,6 @@ class CandidateSerializer(serializers.ModelSerializer):
         qs = Candidate.objects.create(**validated_data)
         data = [CandidateSkills(candidate_id=qs.id, skill_id=skill, level=1) for skill in skills]
         CandidateSkills.objects.bulk_create(data, ignore_conflicts=True)
-
 
     def update(self, instance, validated_data):
         skills = validated_data.pop("skills")
