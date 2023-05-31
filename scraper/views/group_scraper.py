@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from scraper.models import GroupScraper, GroupScraperQuery
+from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
 from scraper.serializers.group_scraper_scheduler import GroupScraperSerializer
 from scraper.serializers.scheduler_settings import SchedulerSerializer
 # from settings.celery import restart_server
@@ -28,7 +29,8 @@ class GroupScraperView(ListAPIView):
             "interval": request.data.get("interval", ""),
             "interval_type": request.data.get("interval_type", ""),
             "time": None if request.data.get("time", "") == "" else request.data.get("time"),
-            "is_group": True
+            "is_group": True,
+            "week_days": request.data.get('week_days', "")
         }
 
         name = request.data.get("name", "").lower()
@@ -48,9 +50,8 @@ class GroupScraperView(ListAPIView):
             GroupScraper.objects.create(
                 scheduler_settings=scheduler_settings_obj, name=name)
             data = "Group Scheduler created successfully"
-            # scheduler_settings()  # This will update current schedulers
             status_code = status.HTTP_201_CREATED
-
+            start_group_scraper_scheduler()
             return Response({"detail": data}, status_code)
         else:
             data = serializer_errors(serializer)
@@ -76,7 +77,6 @@ class GroupScraperDetailView(APIView):
         if obj:
             serializer = GroupScraperSerializer(obj, many=False)
             data = serializer.data
-
             return Response(data, status=status.HTTP_200_OK)
         else:
             return Response({"detail": "Group Scraper Not Available"}, status=status.HTTP_404_NOT_FOUND)
@@ -96,6 +96,7 @@ class GroupScraperDetailView(APIView):
                 query_dict['interval_type'] = None
             if flag is False:
                 query_dict['time'] = None
+            queryset.week_days = request.data.get("week_days", "")
             serializer = SchedulerSerializer(queryset, query_dict)
 
             if serializer.is_valid():
@@ -104,8 +105,9 @@ class GroupScraperDetailView(APIView):
                     obj.name = name
                     obj.save()
                 status_code = status.HTTP_200_OK
-                message = {"detail": "Group Scheduler setting updated successfully"}
-                # scheduler_settings()
+                message = {
+                    "detail": "Group Scheduler setting updated successfully"}
+                start_group_scraper_scheduler()
                 return Response(message, status=status_code)
 
             data = serializer_errors(serializer)
@@ -116,7 +118,8 @@ class GroupScraperDetailView(APIView):
     def delete(self, request, pk):
         group_scraper = GroupScraper.objects.filter(pk=pk).first()
         if group_scraper:
-            group_scraper_qeury = GroupScraperQuery.objects.filter(group_scraper=group_scraper).first()
+            group_scraper_qeury = GroupScraperQuery.objects.filter(
+                group_scraper=group_scraper).first()
             if group_scraper_qeury:
                 group_scraper_qeury.delete()
             if group_scraper.scheduler_settings:
@@ -125,6 +128,7 @@ class GroupScraperDetailView(APIView):
             message = {"detail": "Group Scraper deleted successfully!"}
             status_code = status.HTTP_200_OK
         else:
+            start_group_scraper_scheduler()
             message = {"detail": "Group Scraper does not exist!"}
             status_code = status.HTTP_200_OK
         return Response(message, status_code)

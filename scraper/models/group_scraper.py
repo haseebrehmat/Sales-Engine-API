@@ -1,4 +1,5 @@
 from django.db import models
+
 from scraper.models.scheduler_settings import SchedulerSettings
 from utils.model_fields.timestamped import TimeStamped
 

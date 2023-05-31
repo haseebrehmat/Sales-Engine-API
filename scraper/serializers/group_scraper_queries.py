@@ -6,3 +6,4 @@ class GroupScraperQuerySerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupScraperQuery
         fields = '__all__'
+        depth = 1
