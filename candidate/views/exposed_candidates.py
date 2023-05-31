@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -5,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
+from authentication.models.company import Company
 from candidate.models.exposed_candidates import ExposedCandidate
 from candidate.serializers.exposed_candidate import ExposedCandidateSerializer
 from settings.utils.custom_pagination import CustomPagination
@@ -17,13 +19,16 @@ class ExposedCandidateListAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        # queryset = ExposedCandidate.objects.filter(company_id=self.request.user.profile.company.id)
-        print("company => ", request.user.profile.company.id)
-        queryset = ExposedCandidate.objects.filter(candidate__company_id=request.user.profile.company.id)
+        queryset = ExposedCandidate.objects.filter(candidate__company_id=request.user.profile.company.id)\
+            .distinct("candidate_id")
         data = []
+
         if len(queryset) > 0:
             serializer = ExposedCandidateSerializer(queryset, many=True)
-            data = serializer.data
+            data = {"candidates": serializer.data}
+            queryset = Company.objects.filter(status=True).exclude(id=request.user.profile.company.id)
+            companies = [{"id": x.id, "name": x.name} for x in queryset]
+            data['companies'] = companies
         return Response(data)
 
     def post(self, request):
@@ -40,27 +45,36 @@ class ExposedCandidateListAPIView(APIView):
                     {
                         "company_id": company_id,
                         "candidate_id": candidate_id,
-                        "allowed_status": request.data.get("allowed_status", False)
+                        "company": company_id,
+                        "candidate": candidate_id,
                     }
                 )
 
         serializer = ExposedCandidateSerializer(data=data, many=True)
         if serializer.is_valid():
-            try:
-                serializer.create(serializer.validated_data)
-                message = "Candidate Exposed successfully"
-                status_code = status.HTTP_201_CREATED
-            except Exception as e:
-                status_code = status.HTTP_406_NOT_ACCEPTABLE
-                if "unique constraint" in str(e):
-                    message = "Candidate already exposed"
-                else:
-                    message = str(e)
+            message, status_code = self.save_exposed_candidate(request, data, serializer)
             return Response({"detail": message}, status_code)
 
         else:
             data = serializer_errors(serializer)
             raise InvalidUserException(data)
+
+    @transaction.atomic
+    def save_exposed_candidate(self, request, data, serializer):
+        try:
+            for x in data:
+                ExposedCandidate.objects.filter(candidate_id=x["candidate_id"],
+                                                candidate__company=request.user.profile.company).delete()
+            serializer.create(serializer.validated_data)
+            message = "Candidate Exposed successfully"
+            status_code = status.HTTP_201_CREATED
+        except Exception as e:
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+            if "unique constraint" in str(e):
+                message = "Candidate already exposed"
+            else:
+                message = str(e)
+        return message, status_code
 
 
 class CandidateExposedDetailView(APIView):
@@ -111,10 +125,18 @@ class CandidateExposedDetailView(APIView):
 
     def delete(self, request, pk):
         try:
-            ExposedCandidate.objects.filter(pk=pk, candidate__company_id=self.request.user.profile.company.id).delete()
+            company = request.user.profile.company
+            queryset = ExposedCandidate.objects.filter(pk=pk, candidate__company=company)
+            candidate = queryset.first().candidate
+            if ExposedCandidate.objects.filter(candidate=candidate, candidate__company=company).count() == 1:
+                queryset.delete()
+                ExposedCandidate.objects.create(candidate=candidate)
+            else:
+                queryset.delete()
+
             return Response({"detail": "Candidate Unexposed successfully"}, status.HTTP_200_OK)
         except Exception as e:
-            return Response({"detail": "You dnt have permission to unexposed this candidate"},
+            return Response({"detail": "You dont have permission to unexposed this candidate"},
                             status=status.HTTP_406_NOT_ACCEPTABLE)
 
 

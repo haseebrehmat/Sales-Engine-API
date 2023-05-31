@@ -23,7 +23,10 @@ def validate_password(password):
 
 
 def serializer_errors(serializer):
-    fields = list(serializer.errors.keys())
-    data = [x + ": " + serializer.errors[x][0] for x in fields]
-    data = "\n".join(data)
-    return data
+    try:
+        fields = list(serializer.errors.keys())
+        data = [x + ": " + serializer.errors[x][0] for x in fields]
+        data = "\n".join(data)
+        return data
+    except:
+        return serializer.errors

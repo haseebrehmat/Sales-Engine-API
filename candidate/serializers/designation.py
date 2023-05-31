@@ -7,4 +7,4 @@ class DesignationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Designation
-        fields = "__all__"
+        exclude = ["company"]

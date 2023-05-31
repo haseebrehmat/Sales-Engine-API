@@ -15,18 +15,28 @@ class DesignationListView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        queryset = Designation.objects.all()
+        queryset = Designation.objects.filter(company=self.request.user.profile.company)
         return queryset
 
     def post(self, request):
-        data=request.data
-        data['title']=data['title'].lower()
+        data = request.data
+        if not validate_title(request):
+            return Response({"detail": "Title already exists"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         serializer = DesignationSerializer(data=data, many=False)
         if serializer.is_valid():
-            data = serializer.validated_data
-            serializer.create(data)
-            message = "Designation created successfully"
-            status_code = status.HTTP_201_CREATED
+            try:
+                data = serializer.validated_data
+                data["company_id"] = request.user.profile.company.id
+                serializer.create(data)
+                message = "Designation created successfully"
+                status_code = status.HTTP_201_CREATED
+            except Exception as e:
+                status_code = status.HTTP_406_NOT_ACCEPTABLE
+                if "unique constraint" in str(e):
+                    message = "Designation already exist"
+                else:
+                    message = str(e)
+                    print(e)
             return Response({"detail": message}, status_code)
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
@@ -43,13 +53,15 @@ class DesignationDetailView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
-        data=request.data
-        data['title']=data['title'].lower()
+        data = request.data
+        if not validate_title(request):
+            return Response({"detail": "Title already exists"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         queryset = Designation.objects.filter(pk=pk).first()
         serializer = DesignationSerializer(instance=queryset, data=data)
         if serializer.is_valid():
-            serializer.save()
-            message = "Designaton updated successfully"
+            serializer.save(company_id=request.user.profile.company.id)
+            message = "Designation updated successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
         data = serializer_errors(serializer)
@@ -57,9 +69,9 @@ class DesignationDetailView(APIView):
 
     def delete(self, request, pk):
         Designation.objects.filter(pk=pk).delete()
-        return Response({"detail": "Designaton deleted successfully"}, status.HTTP_200_OK)
+        return Response({"detail": "Designation deleted successfully"}, status.HTTP_200_OK)
 
 
-
-
-
+def validate_title(request):
+    return not Designation.objects.filter(title__iexact=request.data.get("title"),
+                                          company=request.user.profile.company).exists()

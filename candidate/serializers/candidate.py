@@ -1,10 +1,14 @@
+from django.contrib.auth.hashers import make_password
+from django.db import transaction
 from rest_framework import serializers
 
-from candidate.models import Candidate, CandidateSkills, Skills
+from authentication.models import User, Profile, Role
+from candidate.models import Candidate, CandidateSkills, Skills, ExposedCandidate
 
 
 class CandidateSerializer(serializers.ModelSerializer):
     skills = serializers.SerializerMethodField(default=[])
+    designation = serializers.SerializerMethodField(default=[])
 
     class Meta:
         model = Candidate
@@ -17,8 +21,13 @@ class CandidateSerializer(serializers.ModelSerializer):
 
         return data
 
+    def get_designation(self, obj):
+        return "" if obj.designation is None else obj.designation.title
+
+    @transaction.atomic
     def create(self, validated_data):
         skills = validated_data.pop("skills")
+        password = validated_data.pop("password")
         temp = []
         for skill in skills:
             qs = Skills.objects.filter(name__iexact=skill).first()
@@ -32,6 +41,11 @@ class CandidateSerializer(serializers.ModelSerializer):
         qs = Candidate.objects.create(**validated_data)
         data = [CandidateSkills(candidate_id=qs.id, skill_id=skill, level=1) for skill in skills]
         CandidateSkills.objects.bulk_create(data, ignore_conflicts=True)
+        ExposedCandidate.objects.create(candidate=qs)
+        user = User.objects.create(password=make_password(password), email=validated_data["email"])
+        Profile.objects.create(user=user, company_id=validated_data["company_id"])
+        user.roles = Role.objects.filter(name="candidate").first()
+        user.save()
 
     def update(self, instance, validated_data):
         skills = validated_data.pop("skills")
@@ -55,7 +69,6 @@ class CandidateSerializer(serializers.ModelSerializer):
         instance.designation = validated_data.get(
             "designation", instance.designation)
         instance.save()
-        print(skills)
         CandidateSkills.objects.filter(candidate_id=instance.id).delete()
         data = [CandidateSkills(candidate_id=instance.id, skill_id=skill, level=1) for skill in skills]
         CandidateSkills.objects.bulk_create(data, ignore_conflicts=True)

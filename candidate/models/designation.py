@@ -1,7 +1,16 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+
+from authentication.models.company import Company
 from utils.model_fields import TimeStamped
 
 
 class Designation(TimeStamped):
-    title = models.CharField(max_length=200, unique=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
+    title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('company', 'title')
+
+

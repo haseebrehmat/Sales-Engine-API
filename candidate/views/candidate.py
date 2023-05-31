@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-from candidate.models import Candidate, Skills
+from candidate.models import Candidate, Skills, ExposedCandidate
 from candidate.serializers.candidate import CandidateSerializer
 from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
@@ -15,8 +15,13 @@ class CandidateListView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
+        company = self.request.user.profile.company
         queryset = Candidate.objects.filter(
-            company=self.request.user.profile.company)
+            company=company)
+        candidates = ExposedCandidate.objects.filter(company=company).values_list("candidate_id", flat=True)
+
+        queryset |= Candidate.objects.filter(id__in=candidates)
+
         return queryset
 
     def post(self, request):
@@ -27,6 +32,8 @@ class CandidateListView(ListAPIView):
             data["designation_id"] = request.data.get("designation")
             skills = request.data.get("skills")
             data['skills'] = skills
+            data['password'] = request.data.get("password", "User@123")
+            data['email'] = request.data.get("email", "")
             serializer.create(data)
             message = "Candidate created successfully"
             status_code = status.HTTP_201_CREATED
