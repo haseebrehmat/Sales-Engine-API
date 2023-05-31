@@ -195,7 +195,7 @@ def get_scrapers_list(job_source):
 
 def run_scrapers(scrapers):
     scrapers_without_links = [
-        'adzuna', 'googlecareers', 'ziprecruiter', 'jooble']
+        'adzuna', 'googlecareers', 'ziprecruiter']
     try:
         is_completed = False
         i = 0
