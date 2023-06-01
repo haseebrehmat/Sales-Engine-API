@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import transaction
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,6 +18,8 @@ class LeadManagement(ListAPIView):
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomPagination
     serializer_class = LeadManagementSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['company__name', 'status__name']
 
     def get_queryset(self):
         role = str(self.request.user.roles)
