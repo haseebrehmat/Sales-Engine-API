@@ -24,9 +24,15 @@ def request_url(driver, url):
 
 # login method
 def login(driver):
-    WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.ID, "username"))
-    )
+    try:
+        WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located((By.ID, "username"))
+        )
+    except Exception as e:
+        print(e)
+        saveLogs(e)
+        return False
+
     try:
         driver.find_element(By.ID, "username").click()
         driver.find_element(By.ID, "username").clear()
@@ -174,6 +180,7 @@ def jobs_types(driver, url, job_type, scrapped_data, total_job):
 # code starts from here
 def linkedin(link, job_type):
     print("linkedin")
+    total_job = 0
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
@@ -198,7 +205,6 @@ def linkedin(link, job_type):
                 if logged_in:
                     count = 0
                     scrapped_data = []
-                    total_job = 0
                     for url in types:
                         total_job = jobs_types(driver, url, job_type[count], scrapped_data, total_job)
                         count += 1

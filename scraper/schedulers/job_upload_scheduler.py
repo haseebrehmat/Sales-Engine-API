@@ -1,40 +1,36 @@
 import datetime
 import os
 import traceback
+
 import pandas as pd
-import logging
-from scraper.models import JobSourceQuery
 from apscheduler.schedulers.background import BackgroundScheduler
+
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail
+from scraper.jobs import single_scrapers_functions
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.dice_scraping import dice
 from scraper.jobs.glassdoor_scraping import glassdoor
 from scraper.jobs.google_careers_scraping import google_careers
 from scraper.jobs.indeed_scraping import indeed
-from scraper.jobs.jobs_create import linkedin_job_create, monster_job_create, glassdoor_job_create, \
-    career_builder_job_create, dice_job_create, indeed_job_create, simply_hired_job_create, zip_recruiter_job_create, \
-    adzuna_job_create
+from scraper.jobs.jooble_scraping import jooble
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
 from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
-from scraper.jobs.jooble_scraping import jooble
+from scraper.models import JobSourceQuery, GroupScraper
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
+from scraper.utils.thread import start_new_thread
+from utils.helpers import saveLogs
+
 # from error_logger.models import Log
 # from scraper.utils.thread import start_new_thread
 # from celery import shared_task
-
-from utils.helpers import saveLogs
-
-from scraper.utils.thread import start_new_thread
-
 # logger = logging.getLogger(__name__)
-
 
 scraper_functions = {
     "linkedin": [
@@ -75,19 +71,24 @@ scraper_functions = {
 
 def upload_jobs():
     try:
+        print("Start uploading files ... ")
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
-        for file in files:
-            if not is_file_empty(file):
-                job_parser = JobParser([file])
-                # validate files first
-                is_valid, message = job_parser.validate_file()
-                if is_valid:
-                    job_parser.parse_file()
-                upload_file(job_parser)
+        valid_files = [file in files for file in files if not is_file_empty(file)]
+        if valid_files:
+            job_parser = JobParser(valid_files)
+            # validate files first
+            is_valid, message = job_parser.validate_file()
+            if is_valid:
+                job_parser.parse_file()
+            upload_file(job_parser)
+            print("File uploaded successfully!")
+        else:
+            print("No valid files for uploading.")
     except Exception as e:
-        print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
+        print(
+            f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
         saveLogs(e)
 
 
@@ -108,8 +109,13 @@ def is_file_empty(file):
 
 def remove_files(job_source="all"):
     try:
+        print("removing files ...")
         if "simply" in job_source:
             job_source = "simply"
+        if "career" in job_source:
+            job_source = "career"
+        if "google" in job_source:
+            job_source = "google"
         folder_path = 'scraper/job_data'
         files = os.listdir(folder_path)
 
@@ -124,6 +130,7 @@ def remove_files(job_source="all"):
                     msg = f"Failed to remove {file_path}. Error: {str(e)}"
                     print(msg)
                     saveLogs(e)
+        print("Files removed successfully ...")
     except Exception as e:
         saveLogs(e)
         print(e)
@@ -187,7 +194,8 @@ def get_scrapers_list(job_source):
 
 
 def run_scrapers(scrapers):
-    scrapers_without_links = ['adzuna', 'googlecareers', 'ziprecruiter', 'jooble']
+    scrapers_without_links = [
+        'adzuna', 'googlecareers', 'ziprecruiter']
     try:
         is_completed = False
         i = 0
@@ -222,10 +230,10 @@ def run_scrapers(scrapers):
 
                     try:
                         upload_jobs()
+                        remove_files(key)
                     except Exception as e:
                         print("Error in uploading jobs", e)
                         saveLogs(e)
-                    remove_files(key)
             i += 1
             if not flag:
                 is_completed = True
@@ -305,7 +313,7 @@ jooble_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
-    schedulers = SchedulerSettings.objects.all()
+    schedulers = SchedulerSettings.objects.filter(is_group=False)
     for scheduler in schedulers:
         if scheduler.interval_based:
             interval = convert_time_into_minutes(
@@ -355,7 +363,6 @@ def scheduler_settings():
                 jooble_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["jooble"])
 
-
         elif scheduler.time_based:
             now = datetime.datetime.now()
             dat = str(now).split(' ')
@@ -402,7 +409,71 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "jooble":
                 jooble_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                                 args=["jooble"])
+                                         args=["jooble"])
 
 
 # scheduler_settings()
+
+group_scraper_background_jobs = []
+
+
+def group_scraper_job(group_scraper):
+    try:
+        print(f'starting group scraper - {group_scraper.name}')
+        group_scraper_query = group_scraper.groupscraperquery
+        if group_scraper_query:
+            queries = group_scraper_query.queries
+            for query in queries:
+                job_source = query['job_source'].lower()
+                print(job_source)
+                if job_source in list(single_scrapers_functions.keys()):
+                    scraper_func = single_scrapers_functions[job_source]
+                    try:
+                        scraper_func(query['link'], query['job_type'])
+                        upload_jobs()
+                        remove_files(job_source)
+                    except Exception as e:
+                        print(e)
+                        saveLogs(e)
+    except Exception as e:
+        print(str(e))
+        saveLogs(e)
+
+
+def stop_group_scraper_jobs():
+    print("Stopping group scrapper jobs ...")
+    for job in group_scraper_background_jobs:
+        job.shutdown()
+
+
+def run_group_scraper_jobs():
+    print("Running group scraper jobs ... ")
+    for job in group_scraper_background_jobs:
+        job.start()
+
+
+def start_group_scraper_scheduler():
+    stop_group_scraper_jobs()
+    global group_scraper_background_jobs
+    group_scraper_background_jobs = []
+    group_scrapers = GroupScraper.objects.select_related()
+    for group_scraper in group_scrapers:
+        scheduler = group_scraper.scheduler_settings
+        group_scraper_scheduler = BackgroundScheduler()
+        if scheduler:
+            if scheduler.interval_based:
+                interval = convert_time_into_minutes(
+                    scheduler.interval, scheduler.interval_type)
+                group_scraper_scheduler.add_job(
+                    group_scraper_job, 'interval', minutes=interval, args=[group_scraper])
+                group_scraper_background_jobs.append(group_scraper_scheduler)
+            elif scheduler.time_based:
+                group_scraper_scheduler.add_job(group_scraper_job, 'cron',
+                                                day_of_week='*' if not scheduler.week_days else scheduler.week_days,
+                                                hour=scheduler.time.hour, minute=scheduler.time.minute,
+                                                args=[group_scraper])
+                group_scraper_background_jobs.append(group_scraper_scheduler)
+    run_group_scraper_jobs()
+
+
+start_group_scraper_scheduler()

@@ -118,9 +118,6 @@ class JobDetailsView(ModelViewSet):
     @start_new_thread
     def export_csv(self, queryset, request):
         try:
-
-            # columns = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-            #             "job_source", "job_type"]
             values_list = [
                 "job_title",
                 "company_name",

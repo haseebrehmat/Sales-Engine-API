@@ -14,7 +14,7 @@ class SchedulerView(ListAPIView):
     serializer_class = SchedulerSerializer
 
     def get_queryset(self):
-        return SchedulerSettings.objects.all()
+        return SchedulerSettings.objects.filter(is_group=False)
 
     def post(self, request):
         message, is_valid = self.validate_job_source(request)
