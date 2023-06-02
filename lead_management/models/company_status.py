@@ -1,10 +1,11 @@
 from django.db import models
 
 from authentication.models.company import Company
+from utils.model_fields.timestamped import TimeStamped
 from .status import Status
 
 
-class CompanyStatus(models.Model):
+class CompanyStatus(TimeStamped):
     company = models.ForeignKey(
         Company, on_delete=models.SET_NULL, null=True)
     status = models.ForeignKey(
