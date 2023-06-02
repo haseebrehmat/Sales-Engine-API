@@ -444,6 +444,7 @@ def group_scraper_job(group_scraper):
                         saveLogs(e)
     except Exception as e:
         upload_jobs()
+        current_scraper = ''
         print(str(e))
         saveLogs(e)
 
