@@ -475,7 +475,6 @@ def start_group_scraper_scheduler():
                 group_scraper_background_jobs.append(group_scraper_scheduler)
     run_group_scraper_jobs()
 
-
 try:
     start_group_scraper_scheduler()
 except Exception as e:

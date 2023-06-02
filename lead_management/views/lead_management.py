@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import transaction
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -23,10 +24,21 @@ class LeadManagement(ListAPIView):
 
     def get_queryset(self):
         role = str(self.request.user.roles)
+        start_date = self.request.GET.get("start_date", False)
+        end_date = self.request.GET.get("end_date", False)
         if "owner" in role.lower():
             queryset = CompanyStatus.objects.filter(company=self.request.user.profile.company).exclude(status=None)
         else:
             queryset = CompanyStatus.objects.filter(company=self.request.user.profile.company).exclude(status=None)
+        if start_date and end_date:
+            format_string = "%Y-%m-%d"  # Replace with the format of your date string
+
+            # Convert the date string into a datetime object
+            start_date = datetime.datetime.strptime(start_date, format_string)
+            end_date = datetime.datetime.strptime(end_date, format_string) - datetime.timedelta(seconds=1)
+            print(start_date, end_date)
+            queryset = queryset.filter(updated_at__range=[start_date, end_date])
+        queryset = queryset.order_by("updated_at")
 
         return queryset
 
