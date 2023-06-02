@@ -9,7 +9,6 @@ class Candidate(TimeStamped): # company // all
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True)
     employee_id = models.CharField(max_length=100, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-<<<<<<< HEAD
     phone = models.CharField(max_length=30)
     experience = models.CharField(max_length=200, blank=True, null=True)
     email = models.CharField(max_length=100)
@@ -17,12 +16,6 @@ class Candidate(TimeStamped): # company // all
 
     def __str__(self):
         return f"{self.name} - {self.company.name}"
-=======
-    phone = models.CharField(max_length=12, blank=True, null=True)
-    experience = models.CharField(max_length=12, blank=True, null=True)
-    email = models.CharField(max_length=30, blank=True, null=True)
-    designation = models.ForeignKey(Designation, on_delete=models.SET_NULL, blank=True, null=True)
->>>>>>> fix: circular imports
 
 
 
