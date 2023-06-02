@@ -75,7 +75,7 @@ def upload_jobs():
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
-        valid_files = [file in files for file in files if not is_file_empty(file)]
+        valid_files = [file for file in files if not is_file_empty(file)]
         if valid_files:
             job_parser = JobParser(valid_files)
             # validate files first

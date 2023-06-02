@@ -1,5 +1,6 @@
 from django.db import models
 
+from candidate.models import Candidate
 from settings.utils.model_fields import TimeStamped
 from .company_status import CompanyStatus
 from .lead import Lead
@@ -13,9 +14,10 @@ class LeadActivity(TimeStamped):
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
     effect_date = models.DateField(auto_now_add=True)
     due_date = models.DateField(auto_now_add=True)
+    candidate = models.ForeignKey(Candidate, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        unique_together = ('lead', 'company_status', 'phase')
+        unique_together = ('lead', 'company_status', 'phase', 'candidate')
         default_permissions = ()
         db_table = "lead_activity"
 
