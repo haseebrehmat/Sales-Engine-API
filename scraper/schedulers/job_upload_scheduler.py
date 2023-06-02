@@ -75,7 +75,7 @@ def upload_jobs():
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
-        valid_files = [file in files for file in files if not is_file_empty(file)]
+        valid_files = [file for file in files if not is_file_empty(file)]
         if valid_files:
             job_parser = JobParser(valid_files)
             # validate files first
@@ -415,15 +415,22 @@ def scheduler_settings():
 # scheduler_settings()
 
 group_scraper_background_jobs = []
+current_scraper = ''
 
 
 def group_scraper_job(group_scraper):
+    global current_scraper
+    if group_scraper.name != current_scraper:
+        current_scraper = group_scraper.name
     try:
         print(f'starting group scraper - {group_scraper.name}')
         group_scraper_query = group_scraper.groupscraperquery
         if group_scraper_query:
             queries = group_scraper_query.queries
             for query in queries:
+                if current_scraper != '' and current_scraper != group_scraper.name:
+                    upload_jobs()
+                    return
                 job_source = query['job_source'].lower()
                 print(job_source)
                 if job_source in list(single_scrapers_functions.keys()):
@@ -436,6 +443,7 @@ def group_scraper_job(group_scraper):
                         print(e)
                         saveLogs(e)
     except Exception as e:
+        upload_jobs()
         print(str(e))
         saveLogs(e)
 
@@ -448,6 +456,7 @@ def stop_group_scraper_jobs():
 
 def run_group_scraper_jobs():
     print("Running group scraper jobs ... ")
+
     for job in group_scraper_background_jobs:
         job.start()
 
@@ -476,4 +485,15 @@ def start_group_scraper_scheduler():
     run_group_scraper_jobs()
 
 
-start_group_scraper_scheduler()
+@start_new_thread
+def run_group_scraper_scheduler_job():
+    group_scrapers = GroupScraper.objects.all()
+    for group_scraper in group_scrapers:
+        group_scraper_job(group_scraper)
+
+
+try:
+    start_group_scraper_scheduler()
+    run_group_scraper_scheduler_job()
+except Exception as e:
+    print(e)

@@ -42,16 +42,17 @@ class LeadDetail(APIView):
             company_status = request.data.get('status')
             phase = request.data.get('phase')
             notes = request.data.get('notes')
+            candidate = request.data.get('candidate')
             if company_status:
-                lead.update(company_status_id=company_status, phase_id=phase)
+                lead.update(company_status_id=company_status, phase_id=phase, candidate_id=candidate)
                 lead = lead.first()
-                lead_activity = LeadActivity.objects.filter(lead=lead, company_status_id=company_status).first()
+                lead_activity = LeadActivity.objects.filter(lead=lead, company_status_id=company_status, candidate_id=candidate).first()
                 if lead_activity:
                     lead_activity.phase_id = phase
                     lead_activity.save()
                 else:
                     lead_activity = LeadActivity.objects.create(lead=lead, company_status_id=company_status,
-                                                                phase_id=phase)
+                                                                phase_id=phase, candidate_id=candidate)
                 effect_date = request.data.get('effect_date')
                 due_date = request.data.get('due_date')
                 if effect_date:

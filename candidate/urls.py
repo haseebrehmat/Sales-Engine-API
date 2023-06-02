@@ -6,6 +6,7 @@ from candidate.views.candidate_skill import CandidateSkillsListView, CandidateSk
 from candidate.views.skill import SkillsDetailView, SkillsListView
 from candidate.views.designation import DesignationDetailView, DesignationListView
 from candidate.views.exposed_candidates import CandidateExposedDetailView, ExposedCandidateListAPIView, PoolCandidateDetailView, PoolCandidateListAPIView
+from candidate.views.selected_candidate import SelectedCandidateListView
 
 urlpatterns = [
    path("candidate/<str:pk>/", CandidateDetailView.as_view()),
@@ -22,4 +23,5 @@ urlpatterns = [
    path("pool_candidate/<str:pk>/", PoolCandidateDetailView.as_view()),
    path("candidate_company/", CandidateCompanyListView.as_view()),
    path("candidate_company/<str:pk>/", CandidateCompanyDetailView.as_view()),
+   path("selected_candidate/", SelectedCandidateListView.as_view()),
 ]
