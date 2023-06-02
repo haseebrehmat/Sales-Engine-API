@@ -28,10 +28,11 @@ class LeadActivityList(ListAPIView):
                 if obj.first():
                     company_status = request.data.get('status')
                     phase = request.data.get('phase')
-                    obj.update(phase_id=phase, company_status_id=company_status)
+                    candidate = request.data.get('candidate')
+                    obj.update(phase_id=phase, company_status_id=company_status, candidate_id=candidate)
                     lead = obj.first()
                     lead_activity = LeadActivity.objects.create(lead=lead, company_status_id=company_status,
-                                                                phase_id=phase)
+                                                                phase_id=phase, candidate_id=candidate)
                     effect_date = request.data.get('effect_date')
                     due_date = request.data.get('due_date')
                     if effect_date:
