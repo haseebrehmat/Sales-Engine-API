@@ -8,6 +8,7 @@ from scraper.models import GroupScraper, GroupScraperQuery
 from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
 from scraper.serializers.group_scraper_scheduler import GroupScraperSerializer
 from scraper.serializers.scheduler_settings import SchedulerSerializer
+from scraper.utils.helpers import is_valid_group_scraper_time
 # from settings.celery import restart_server
 from settings.utils.helpers import serializer_errors
 
@@ -32,6 +33,13 @@ class GroupScraperView(ListAPIView):
             "is_group": True,
             "week_days": request.data.get('week_days', "")
         }
+
+        if data['time_based']:
+            time = data['time'] + ":00"
+            if is_valid_group_scraper_time(time, data['week_days']):
+                data['time'] = time
+            else:
+                return Response({'detail': 'Group scraper time is not valid.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         name = request.data.get("name", "").lower()
 
@@ -90,8 +98,14 @@ class GroupScraperDetailView(APIView):
                 return Response({"detail": msg}, status=status.HTTP_406_NOT_ACCEPTABLE)
             queryset = obj.scheduler_settings
             query_dict = request.data.copy()
+
             flag = request.data.get('time_based')
             if flag is True:
+                time = query_dict['time'] + ":00"
+                if not is_valid_group_scraper_time(time, request.data.get("week_days", "")):
+                    return Response({"detail": "Group setting cannot be updated. Scraper timing is overlapping."},
+                                    status=status.HTTP_406_NOT_ACCEPTABLE)
+                query_dict['time'] = time
                 query_dict['interval'] = None
                 query_dict['interval_type'] = None
             if flag is False:
