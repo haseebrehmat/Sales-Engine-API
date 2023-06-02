@@ -1,11 +1,12 @@
 from rest_framework import status
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from scraper.models import GroupScraper, GroupScraperQuery
-from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
+from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler, run_group_scraper_scheduler_job
 from scraper.serializers.group_scraper_scheduler import GroupScraperSerializer
 from scraper.serializers.scheduler_settings import SchedulerSerializer
 from scraper.utils.helpers import is_valid_group_scraper_time
@@ -159,3 +160,10 @@ class GroupScraperDetailView(APIView):
             msg = f'Group \'{name}\' already exists'
             is_valid = False
         return msg, is_valid
+
+
+class RunGroupScraper(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        run_group_scraper_scheduler_job()
+        return Response({'detail': 'Group Scraper Started'}, status=status.HTTP_200_OK)
