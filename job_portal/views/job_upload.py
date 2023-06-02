@@ -66,7 +66,8 @@ class JobDataUploadView(CreateAPIView):
             payload = json.dumps({"jobs": [
                 {"job_title": job.job_title, "job_source_url": job.job_source_url, "job_type": job.job_type,
                  "job_posted_date": job.job_posted_date.strftime('%Y-%m-%d'), "job_source": job.job_source,
-                 "job_description": job.job_description, "company_name": job.company_name, "address": job.address} for job
+                 "job_description": job.job_description, "company_name": job.company_name, "address": job.address} for
+                job
                 in jobs_data]})
 
             headers = {
@@ -80,7 +81,6 @@ class JobDataUploadView(CreateAPIView):
                 obj = SalesEngineJobsStats.objects.create(jobs_count=len(jobs_data))
         except Exception as e:
             saveLogs(e)
-
 
 
 class JobCleanerView(APIView):
