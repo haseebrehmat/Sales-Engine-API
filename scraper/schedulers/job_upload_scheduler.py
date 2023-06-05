@@ -19,6 +19,7 @@ from scraper.jobs.jooble_scraping import jooble
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
 from scraper.jobs.simply_hired_scraping import simply_hired
+from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.models import JobSourceQuery, GroupScraper
 from scraper.models import SchedulerSettings, AllSyncConfig
@@ -65,6 +66,9 @@ scraper_functions = {
     ],
     "jooble": [
         jooble,
+    ],
+    "talent": [
+        talent,
     ]
 }
 
@@ -311,6 +315,7 @@ adzuna_scheduler = BackgroundScheduler()
 simply_hired_scheduler = BackgroundScheduler()
 google_careers_scheduler = BackgroundScheduler()
 jooble_scheduler = BackgroundScheduler()
+talent_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -364,6 +369,10 @@ def scheduler_settings():
                 jooble_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["jooble"])
 
+            elif scheduler.job_source.lower() == "talent":
+                talent_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["talent"])
+
         elif scheduler.time_based:
             now = datetime.datetime.now()
             dat = str(now).split(' ')
@@ -411,6 +420,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "jooble":
                 jooble_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["jooble"])
+
+            elif scheduler.job_source.lower() == "talent":
+                talent_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["talent"])
 
 
 # scheduler_settings()
