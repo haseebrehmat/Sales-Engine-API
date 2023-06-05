@@ -99,7 +99,7 @@ def job_display(driver):
     return False, total_job
 
 # code starts from here
-def google_careers():
+def google_careers(links, job_type):
   print("Google Careers")
   total_job = 0
   count = 0
@@ -120,15 +120,12 @@ def google_careers():
     driver.maximize_window()
     try:
       flag = True
-      types = [GOOGLE_FULL_TIME, GOOGLE_FULL_TIME_REMOTE]
-      job_type = ["Full Time on Site", "Full Time Remote"]
-      for url in types:
-        request_url(driver, url)
-        if job_display(driver):
-          while flag:
-            flag, total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
-            print("Fetching...")
-          count = count + 1
+      request_url(driver, links)
+      if job_display(driver):
+        while flag:
+          flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+          print("Fetching...")
+        count = count + 1
       ScraperLogs.objects.create(total_jobs=total_job, job_source="GoogleCareers")
       print(SCRAPING_ENDED)
     except Exception as e:
