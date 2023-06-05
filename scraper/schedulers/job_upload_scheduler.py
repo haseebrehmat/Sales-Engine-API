@@ -534,7 +534,6 @@ def start_group_scraper_scheduler():
 
 
 try:
-    upload_jobs()
     start_group_scraper_scheduler()
     group_scraper_job()
 except Exception as e:
