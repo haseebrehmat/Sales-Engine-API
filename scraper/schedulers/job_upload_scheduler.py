@@ -71,6 +71,8 @@ scraper_functions = {
 
 def upload_jobs():
     try:
+        import pdb
+        pdb.set_trace()
         print("Start uploading files ... ")
         path = 'scraper/job_data/'
         temp = os.listdir(path)
@@ -194,8 +196,7 @@ def get_scrapers_list(job_source):
 
 
 def run_scrapers(scrapers):
-    scrapers_without_links = [
-        'adzuna', 'googlecareers', 'ziprecruiter']
+    # scrapers_without_links = []
     try:
         is_completed = False
         i = 0
@@ -206,24 +207,24 @@ def run_scrapers(scrapers):
                 scraper_function = scraper['function']
                 if not scraper['stop_status']:
                     try:
-                        if key in scrapers_without_links:
-                            scraper_function()
-                            scraper['stop_status'] = True
+                        # if key in scrapers_without_links:
+                        #     scraper_function()
+                        #     scraper['stop_status'] = True
+                        #     flag = True
+                        # else:
+                        job_source_queries = scraper['job_source_queries']
+                        if i < len(job_source_queries):
+                            link = job_source_queries[i]['link']
+                            job_type = job_source_queries[i]['job_type']
+                            scraper_function(link, job_type)
                             flag = True
-                        else:
-                            job_source_queries = scraper['job_source_queries']
-                            if i < len(job_source_queries):
-                                link = job_source_queries[i]['link']
-                                job_type = job_source_queries[i]['job_type']
-                                scraper_function(link, job_type)
-                                flag = True
-                            elif not scraper['stop_status']:
-                                if i == 0:
-                                    try:
-                                        raise Exception(f'No link for {key}')
-                                    except Exception as e:
-                                        saveLogs(e)
-                                scraper['stop_status'] = True
+                        elif not scraper['stop_status']:
+                            if i == 0:
+                                try:
+                                    raise Exception(f'No link for {key}')
+                                except Exception as e:
+                                    saveLogs(e)
+                            scraper['stop_status'] = True
                     except Exception as e:
                         print(e)
                         saveLogs(e)
