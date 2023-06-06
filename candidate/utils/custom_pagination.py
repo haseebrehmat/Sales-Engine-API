@@ -2,8 +2,9 @@ from django.db.models.functions import Lower
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from authentication.models import Team
-from candidate.models import CandidateSkills, Skills, Designation, Candidate, ExposedCandidate
+from authentication.models import Team, Profile
+from candidate.models import CandidateSkills, Designation, Candidate, ExposedCandidate
+from job_portal.models import JobDetail, AppliedJobStatus
 
 
 class CustomPagination(PageNumberPagination):
@@ -69,6 +70,7 @@ class LeadManagementPagination(PageNumberPagination):
             response['members'] = self.get_members()
         elif Team.objects.filter(reporting_to=self.request.GET.get("team")).exists():
             response['members'] = self.get_members()
+        response['tech_stack'] = self.get_tech_stack()
         return Response(response)
 
     def get_team(self):
@@ -79,11 +81,11 @@ class LeadManagementPagination(PageNumberPagination):
         if "owner" in str(self.request.user.roles).lower():
             qs = Team.objects.filter(reporting_to__profile__company=self.request.user.profile.company)
         else:
-            qs = Team.objects.filter(id=self.request.GET.get("team", "799af7cd-51db-4b8f-8bfb-279cbd9491ea"))
+            qs = Team.objects.filter(id=self.request.GET.get("team", ""))
         data = []
         for i in qs:
             members = i.members.all()
-            data.extend([{'value': str(x.id), 'label': x.username, "email": x.email} for x in members])
+            data.extend([{'value': str(x.id), 'label': x.username.lower()} for x in members])
         return data
 
     def get_companies_options(self):
@@ -97,3 +99,20 @@ class LeadManagementPagination(PageNumberPagination):
         ]
         return data
 
+    def get_applied_job_ids(self):
+        company_user_ids = list(
+            Profile.objects.filter(company=self.request.user.profile.company).values_list('user__id', flat=True))
+        return list(AppliedJobStatus.objects.filter(applied_by__in=company_user_ids).values_list('job__id', flat=True))
+
+    def get_tech_stack(self):
+        tech_stack = list(dict.fromkeys(stack.lower() for stack in list(
+            JobDetail.objects.filter(id__in=self.get_applied_job_ids()).values_list('tech_keywords', flat=True))))
+        return self.format_list(tech_stack)
+
+    def get_companies(self):
+        company_names = list(dict.fromkeys(company.lower() for company in list(
+            JobDetail.objects.filter(id__in=self.get_applied_job_ids()).values_list('company_name', flat=True))))
+        return self.format_list(company_names)
+
+    def format_list(self, list_items):
+        return [{'label': item, 'value': item} for item in list_items]

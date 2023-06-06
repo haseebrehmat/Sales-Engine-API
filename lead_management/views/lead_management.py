@@ -38,7 +38,14 @@ class LeadManagement(ListAPIView):
             queryset = queryset.filter(updated_at__range=[start_date, end_date])
         queryset = queryset.order_by("updated_at")
 
+
         return queryset
+
+    # def filter_queryset(self, queryset):
+    #     skills = self.request.GET.get("stacks", "")
+
+
+
 
     def post(self, request):
         data, status_code = self.convert_to_lead(request)
