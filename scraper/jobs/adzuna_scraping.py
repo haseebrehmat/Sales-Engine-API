@@ -1,5 +1,5 @@
 from datetime import datetime
-from scraper.constants.const import ADZUNA_FULL, SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, \
+from scraper.constants.const import SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, \
     ADZUNA_PAGE_CAP
 import urllib3
 from bs4 import BeautifulSoup
@@ -61,7 +61,7 @@ def fetch_results(soup):
         print(e)
 
 
-def transform_data(df):
+def transform_data(df, job_type):
     try:
         df.rename(columns={'title': 'job_title', 'company': 'company_name', 'contract_type': 'job_type',
                         'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
@@ -74,16 +74,16 @@ def transform_data(df):
             df['job_source_url'].astype(str)
         df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
         df['job_source'] = 'Adzuna'
-        df['job_type'] = 'Full Time Remote'
+        df['job_type'] = job_type
         return df
     except Exception as e:
         print(e)
 
 
-def adzuna_scraping():
+def adzuna_scraping(links, job_type):
     print("Adzuna")
     try:
-        r = http.request('GET', ADZUNA_FULL)
+        r = http.request('GET', links)
         soup = BeautifulSoup(r.data, 'html.parser')
         total_results = ceil(
             int(soup.select('[data-cy-count]')[0]['data-cy-count']) / 500)
@@ -93,10 +93,10 @@ def adzuna_scraping():
         for i in tqdm(range(len(salary_ranges))):
             try:
                 # types = JobSourceQuery.objects.filter(job_source='adzuna').first()
-                link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}&st={salary_ranges[i + 1]}'
+                link = f'{links}&sf={salary_ranges[i]}&st={salary_ranges[i + 1]}'
             except:
                 # types = JobSourceQuery.objects.filter(job_source='adzuna').first()
-                link = f'{ADZUNA_FULL}&sf={salary_ranges[i]}'
+                link = f'{links}&sf={salary_ranges[i]}'
             r = http.request('GET', link)
             soup = BeautifulSoup(r.data, 'html.parser')
             try:
@@ -125,7 +125,7 @@ def adzuna_scraping():
                         saveLogs(e)
                         raise e
                 per_link_data = pd.concat(
-                    [per_link_data, transform_data(df)], axis=0, ignore_index=True)
+                    [per_link_data, transform_data(df, job_type)], axis=0, ignore_index=True)
 
             all_data = pd.concat([all_data, per_link_data],
                                  axis=0, ignore_index=True)
