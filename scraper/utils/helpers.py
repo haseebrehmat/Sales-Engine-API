@@ -1,5 +1,7 @@
-from scraper.models import GroupScraper, GroupScraperQuery
 import datetime
+
+from scraper.models import GroupScraper, GroupScraperQuery
+
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -12,8 +14,7 @@ def convert_time_into_minutes(interval, interval_type):
     return interval
 
 
-
-def is_valid_group_scraper_time(time, week_days):
+def is_valid_group_scraper_time(time, week_days, group_scraper=None):
     estimated_query_time = 15
     groups = GroupScraper.objects.exclude(scheduler_settings__time=None)
     days = week_days.lower().split(',')
@@ -25,12 +26,14 @@ def is_valid_group_scraper_time(time, week_days):
         group_scraper_query = GroupScraperQuery.objects.filter(group_scraper=x).first()
 
         if group_scraper_query:
+            if group_scraper_query.group_scraper == group_scraper:
+                continue
             queries_count = len(group_scraper_query.queries)
             estimated_time = queries_count * estimated_query_time
             scraper_start_time = datetime.datetime.strptime(str(x.scheduler_settings.time), "%H:%M:%S")
             estimated_scraper_end_time = scraper_start_time + datetime.timedelta(minutes=estimated_time)
             estimated_scraper_end_time = estimated_scraper_end_time.strftime("%H:%M:%S")
 
-            if str(scraper_start_time) <= str(time) >= str(estimated_scraper_end_time):
+            if str(scraper_start_time.time()) <= str(time.time()) <= str(estimated_scraper_end_time):
                 return False
     return True

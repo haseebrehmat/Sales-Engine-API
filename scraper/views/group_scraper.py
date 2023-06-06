@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from scraper.models import GroupScraper, GroupScraperQuery
-from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler, run_group_scraper_scheduler_job
+from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
 from scraper.serializers.group_scraper_scheduler import GroupScraperSerializer
 from scraper.serializers.scheduler_settings import SchedulerSerializer
 from scraper.utils.helpers import is_valid_group_scraper_time
@@ -103,7 +103,7 @@ class GroupScraperDetailView(APIView):
             flag = request.data.get('time_based')
             if flag is True:
                 time = query_dict['time'] + ":00"
-                if not is_valid_group_scraper_time(time, request.data.get("week_days", "")):
+                if not is_valid_group_scraper_time(time, request.data.get("week_days", ""), obj):
                     return Response({"detail": "Group setting cannot be updated. Scraper timing is overlapping."},
                                     status=status.HTTP_406_NOT_ACCEPTABLE)
                 query_dict['time'] = time
@@ -165,5 +165,4 @@ class GroupScraperDetailView(APIView):
 class RunGroupScraper(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
-        run_group_scraper_scheduler_job()
         return Response({'detail': 'Group Scraper Started'}, status=status.HTTP_200_OK)
