@@ -11,6 +11,7 @@ from job_portal.models import JobDetail
 from scraper.jobs import single_scrapers_functions
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
+from scraper.jobs.careerjet_scraping import careerjet
 from scraper.jobs.dice_scraping import dice
 from scraper.jobs.glassdoor_scraping import glassdoor
 from scraper.jobs.google_careers_scraping import google_careers
@@ -69,6 +70,9 @@ scraper_functions = {
     ],
     "talent": [
         talent,
+    ],
+    "careerjet": [
+        careerjet,
     ]
 }
 
@@ -310,6 +314,7 @@ simply_hired_scheduler = BackgroundScheduler()
 google_careers_scheduler = BackgroundScheduler()
 jooble_scheduler = BackgroundScheduler()
 talent_scheduler = BackgroundScheduler()
+careerjet_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -367,6 +372,10 @@ def scheduler_settings():
                 talent_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["talent"])
 
+            elif scheduler.job_source.lower() == "careerjet":
+                careerjet_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["careerjet"])
+
         elif scheduler.time_based:
             now = datetime.datetime.now()
             dat = str(now).split(' ')
@@ -418,6 +427,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "talent":
                 talent_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["talent"])
+
+            elif scheduler.job_source.lower() == "careerjet":
+                careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["careerjet"])
 
 
 # scheduler_settings()
