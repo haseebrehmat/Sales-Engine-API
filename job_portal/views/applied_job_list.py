@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.db.models import Count
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
@@ -31,28 +32,28 @@ class ListAppliedJobView(ListAPIView):
     ordering_fields = ['applied_date', 'job__job_posted_date']
     permission_classes = (TeamAppliedJobPermission,)
 
-    # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: TeamAppliedJobDetailSerializer(many=True)})
     def get(self, request, *args, **kwargs):
         try:
             bd_id_list = []
-            # if request.user.is_superuser:
-            #     queryset =
-            #     bd_users = User.objects.all()
 
             if request.user.roles.name.lower() == "owner":
-                queryset = Team.objects.filter(reporting_to__profile__company=request.user.profile.company).select_related()
-                # bd_users = User.objects.filter(profile__company=request.user.profile.company)
+                queryset = Team.objects.filter(
+                    reporting_to__profile__company=request.user.profile.company).select_related()
                 for x in queryset:
                     members = [i for i in x.members.values_list("id", flat=True)]
                     bd_id_list.extend(members)
 
             else:
-                bd_id_list = Team.objects.get(reporting_to=self.request.user).members.values_list('id', flat=True)
+                bd_id_list = Team.objects.get(
+                    reporting_to=self.request.user).members.values_list('id', flat=True)
+                
 
             bd_users = User.objects.filter(id__in=bd_id_list).select_related()
             bd_query = UserSerializer(bd_users, many=True)
-            job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list).select_related()
+            job_list = AppliedJobStatus.objects.filter(
+                applied_by__id__in=bd_id_list).select_related()
+            
             queryset = self.filter_queryset(job_list)
             page = self.paginate_queryset(queryset)
             if page is not None:
@@ -61,7 +62,10 @@ class ListAppliedJobView(ListAPIView):
                 data.data['team_members'] = bd_query.data
                 end_time = datetime.now()
                 start_time = end_time - timedelta(hours=12)
-                data.data['last_12_hours_count'] = queryset.filter(applied_date__range=[start_time, end_time]).count()
+                data.data['last_12_hours_count'] = queryset.filter(
+                    applied_date__range=[start_time, end_time]).count()
+                data.data['job_analytics'] = self.get_job_source_count(bd_id_list)
+                
 
                 return data
 
@@ -69,3 +73,12 @@ class ListAppliedJobView(ListAPIView):
             return Response(serializer.data)
         except Team.DoesNotExist:
             return Response({"detail": "BD list is empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    def get_job_source_count(self, bd_ids):
+        if self.request.GET.get("applied_by", "") != "":
+            bd_ids = [self.request.GET.get("applied_by")]
+
+        job_source_count = list(AppliedJobStatus.objects.filter(applied_by_id__in=bd_ids).values(
+            'job__job_source').annotate(total_applied_jobs=Count('job__job_source')))
+        
+        return job_source_count
