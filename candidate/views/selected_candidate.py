@@ -24,11 +24,10 @@ class SelectedCandidateListView(ListAPIView):
         queryset = Candidate.objects.filter(company=company)
         candidates = ExposedCandidate.objects.filter(company=company).values_list("candidate_id", flat=True)
         queryset |= Candidate.objects.filter(id__in=candidates)
-
         if len(skills) > 0:
             queryset = queryset.filter(candidateskills__skill_id__in=skills.split(','))
         if len(designations) > 0:
             queryset = queryset.filter(designation_id__in=designations.split(','))
-        return queryset
+        return queryset.distinct("id")
 
 
