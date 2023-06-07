@@ -59,7 +59,6 @@ class DashboardAnalyticsView(ListAPIView):
         unique_count_data = json.loads(unique_count_dic)
         return sorted(unique_count_data, key=lambda x: x["value"], reverse=True)
 
-    # @method_decorator(cache_page(60*2))
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         try:
@@ -108,7 +107,7 @@ class DashboardAnalyticsView(ListAPIView):
             'tech_keywords_count_list': self.keyword_count(),
             'weekly_leads': []
         }
-        serializer = self.get_serializer(queryset, many=False)
+        # serializer = self.get_serializer(queryset, many=False)
         return Response(final_dictionary)
 
     def map_status(self, status_count_data):
@@ -132,9 +131,5 @@ class DashboardAnalyticsView(ListAPIView):
         for i in status_count_data:
             if i['job_status'] in job_status_keys:
                 result_data[job_status_keys[i['job_status']]] += i['count']
-                # data[job_status_keys[i['job__job_status']]] = i['count']
-        # calculate total, prospects
-        # result_data['prospects'] = (result_data['total']) - (result_data['hired']+result_data['rejected']+result_data['cold'] + result_data['warm'] + result_data['rejected'])
         result_data['total'] = len(status_count_data)
         return copy.deepcopy(result_data)
-        # return result_data
