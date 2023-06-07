@@ -1,17 +1,15 @@
 from datetime import datetime, timedelta
+
 from django.db.models import Count
-
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticated
-
-from authentication.models import User
-from authentication.models.team_management import Team
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
+from authentication.models import User
+from authentication.models.team_management import Team
 from authentication.serializers.users import UserSerializer
 from job_portal.filters.applied_job import TeamBasedAppliedJobFilter
 from job_portal.models import AppliedJobStatus
@@ -47,13 +45,12 @@ class ListAppliedJobView(ListAPIView):
             else:
                 bd_id_list = Team.objects.get(
                     reporting_to=self.request.user).members.values_list('id', flat=True)
-                
 
             bd_users = User.objects.filter(id__in=bd_id_list).select_related()
             bd_query = UserSerializer(bd_users, many=True)
             job_list = AppliedJobStatus.objects.filter(
                 applied_by__id__in=bd_id_list).select_related()
-            
+
             queryset = self.filter_queryset(job_list)
             page = self.paginate_queryset(queryset)
             if page is not None:
@@ -64,8 +61,9 @@ class ListAppliedJobView(ListAPIView):
                 start_time = end_time - timedelta(hours=12)
                 data.data['last_12_hours_count'] = queryset.filter(
                     applied_date__range=[start_time, end_time]).count()
-                data.data['job_analytics'] = self.get_job_source_count(bd_id_list)
-                
+
+                data.data['job_source_analytics'] = self.get_job_source_count(bd_id_list)
+                data.data['job_type_analytics'] = self.get_job_type_count(bd_id_list)
 
                 return data
 
@@ -79,6 +77,15 @@ class ListAppliedJobView(ListAPIView):
             bd_ids = [self.request.GET.get("applied_by")]
 
         job_source_count = list(AppliedJobStatus.objects.filter(applied_by_id__in=bd_ids).values(
-            'job__job_source').annotate(total_applied_jobs=Count('job__job_source')))
-        
+            'job__job_source').annotate(total_job_source=Count('job__job_source')))
+
         return job_source_count
+
+    def get_job_type_count(self, bd_ids):
+        if self.request.GET.get("applied_by", "") != "":
+            bd_ids = [self.request.GET.get("applied_by")]
+
+        job_type_count = list(AppliedJobStatus.objects.filter(applied_by_id__in=bd_ids).values(
+            'job__job_type').annotate(total_job_type=Count('job__job_type')))
+
+        return job_type_count
