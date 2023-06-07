@@ -454,7 +454,6 @@ def group_scraper_job():
             continue
 
         try:
-            print(last_scraper_running_time, current_group_scraper_running_time, current_group_scraper_id)
             group_scraper = GroupScraper.objects.get(
                 pk=current_group_scraper_id)
             current_scraper = group_scraper.name
@@ -469,23 +468,24 @@ def group_scraper_job():
             group_scraper_query = group_scraper.groupscraperquery
             if group_scraper_query:
                 queries = group_scraper_query.queries
-                for query in queries:
-                    if last_scraper_running_time != current_group_scraper_running_time:
-                        upload_jobs()
-                        remove_files('all')
-                        current_scraper = ''
-                        break
-                    job_source = query['job_source'].lower()
-                    print(job_source)
-                    if job_source in list(single_scrapers_functions.keys()):
-                        scraper_func = single_scrapers_functions[job_source]
-                        try:
-                            scraper_func(query['link'], query['job_type'])
+                while True:
+                    for query in queries:
+                        if last_scraper_running_time != current_group_scraper_running_time:
                             upload_jobs()
-                            remove_files(job_source)
-                        except Exception as e:
-                            print(e)
-                            saveLogs(e)
+                            remove_files('all')
+                            current_scraper = ''
+                            break
+                        job_source = query['job_source'].lower()
+                        print(job_source)
+                        if job_source in list(single_scrapers_functions.keys()):
+                            scraper_func = single_scrapers_functions[job_source]
+                            try:
+                                scraper_func(query['link'], query['job_type'])
+                                upload_jobs()
+                                remove_files(job_source)
+                            except Exception as e:
+                                print(e)
+                                saveLogs(e)
             current_scraper = ''
         except Exception as e:
             upload_jobs()
@@ -537,13 +537,6 @@ def start_group_scraper_scheduler():
                                                 args=[group_scraper.id])
                 group_scraper_background_jobs.append(group_scraper_scheduler)
     run_group_scraper_jobs()
-
-
-# @start_new_thread
-# def run_group_scraper_scheduler_job():
-#     group_scrapers = GroupScraper.objects.all()
-#     for group_scraper in group_scrapers:
-#         group_scraper_job(group_scraper)
 
 
 try:
