@@ -41,11 +41,6 @@ class LeadManagement(ListAPIView):
 
         return queryset
 
-    # def filter_queryset(self, queryset):
-    #     skills = self.request.GET.get("stacks", "")
-
-
-
 
     def post(self, request):
         data, status_code = self.convert_to_lead(request)
