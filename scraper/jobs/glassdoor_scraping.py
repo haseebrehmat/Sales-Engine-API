@@ -81,6 +81,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
                         append_data(data, "24h")
                     append_data(data, "Glassdoor")
                     append_data(data, job_type)
+                    append_data(data, job_description.get_attribute('innerHTML'))
                 scrapped_data.append(data)
                 count += 1
                 total_job += 1
@@ -88,7 +89,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
                 print(e)
 
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "job_source", "job_type"]
+                        "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
         df.to_csv(f'scraper/job_data/glassdoor - {date_time}.csv', index=False)
     except Exception as e:
