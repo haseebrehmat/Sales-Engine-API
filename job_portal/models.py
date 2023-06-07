@@ -39,6 +39,35 @@ class JobDetail(TimeStamped):
         return self.job_title
 
 
+class JobArchive(TimeStamped):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
+    job_title = models.CharField(max_length=2000)
+    company_name = models.CharField(max_length=2000, null=True, blank=True)
+    job_source = models.CharField(max_length=2000)
+    job_type = models.CharField(max_length=2000, null=True, blank=True)
+    address = models.CharField(max_length=2000)
+    job_description = models.TextField(null=True, blank=True)
+    tech_keywords = models.TextField(null=True, blank=True)
+    job_posted_date = models.DateTimeField(null=True, blank=True)
+    job_source_url = models.CharField(max_length=2000, null=True, blank=True)
+    block = models.BooleanField(default=False)
+    is_manual = models.BooleanField(default=False)
+
+    class Meta:
+        default_permissions = ()
+        db_table = "job_archive"
+        unique_together = (('company_name', 'job_title'),)
+        ordering = ['-job_posted_date']
+        indexes = [models.Index(fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
+        index_together = ['company_name', 'job_title']
+
+    def __str__(self):
+        return self.job_title
+
+
 class AppliedJobStatus(models.Model):
     vertical = models.ForeignKey(Verticals, on_delete=models.SET_NULL, blank=True, null=True)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, blank=True, null=True)

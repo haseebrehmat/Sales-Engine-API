@@ -11,6 +11,7 @@ from job_portal.models import JobDetail
 from scraper.jobs import single_scrapers_functions
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
+from scraper.jobs.careerjet_scraping import careerjet
 from scraper.jobs.dice_scraping import dice
 from scraper.jobs.glassdoor_scraping import glassdoor
 from scraper.jobs.google_careers_scraping import google_careers
@@ -69,6 +70,9 @@ scraper_functions = {
     ],
     "talent": [
         talent,
+    ],
+    "careerjet": [
+        careerjet,
     ]
 }
 
@@ -310,6 +314,7 @@ simply_hired_scheduler = BackgroundScheduler()
 google_careers_scheduler = BackgroundScheduler()
 jooble_scheduler = BackgroundScheduler()
 talent_scheduler = BackgroundScheduler()
+careerjet_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -367,6 +372,10 @@ def scheduler_settings():
                 talent_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["talent"])
 
+            elif scheduler.job_source.lower() == "careerjet":
+                careerjet_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["careerjet"])
+
         elif scheduler.time_based:
             now = datetime.datetime.now()
             dat = str(now).split(' ')
@@ -419,6 +428,10 @@ def scheduler_settings():
                 talent_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["talent"])
 
+            elif scheduler.job_source.lower() == "careerjet":
+                careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["careerjet"])
+
 
 # scheduler_settings()
 
@@ -441,7 +454,6 @@ def group_scraper_job():
             continue
 
         try:
-            print(last_scraper_running_time, current_group_scraper_running_time, current_group_scraper_id)
             group_scraper = GroupScraper.objects.get(
                 pk=current_group_scraper_id)
             current_scraper = group_scraper.name
@@ -456,23 +468,24 @@ def group_scraper_job():
             group_scraper_query = group_scraper.groupscraperquery
             if group_scraper_query:
                 queries = group_scraper_query.queries
-                for query in queries:
-                    if last_scraper_running_time != current_group_scraper_running_time:
-                        upload_jobs()
-                        remove_files('all')
-                        current_scraper = ''
-                        break
-                    job_source = query['job_source'].lower()
-                    print(job_source)
-                    if job_source in list(single_scrapers_functions.keys()):
-                        scraper_func = single_scrapers_functions[job_source]
-                        try:
-                            scraper_func(query['link'], query['job_type'])
+                while True:
+                    for query in queries:
+                        if last_scraper_running_time != current_group_scraper_running_time:
                             upload_jobs()
-                            remove_files(job_source)
-                        except Exception as e:
-                            print(e)
-                            saveLogs(e)
+                            remove_files('all')
+                            current_scraper = ''
+                            break
+                        job_source = query['job_source'].lower()
+                        print(job_source)
+                        if job_source in list(single_scrapers_functions.keys()):
+                            scraper_func = single_scrapers_functions[job_source]
+                            try:
+                                scraper_func(query['link'], query['job_type'])
+                                upload_jobs()
+                                remove_files(job_source)
+                            except Exception as e:
+                                print(e)
+                                saveLogs(e)
             current_scraper = ''
         except Exception as e:
             upload_jobs()
@@ -524,13 +537,6 @@ def start_group_scraper_scheduler():
                                                 args=[group_scraper.id])
                 group_scraper_background_jobs.append(group_scraper_scheduler)
     run_group_scraper_jobs()
-
-
-# @start_new_thread
-# def run_group_scraper_scheduler_job():
-#     group_scrapers = GroupScraper.objects.all()
-#     for group_scraper in group_scrapers:
-#         group_scraper_job(group_scraper)
 
 
 try:
