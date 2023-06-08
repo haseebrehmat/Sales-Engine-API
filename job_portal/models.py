@@ -126,3 +126,7 @@ class BlacklistJobs(TimeStamped):
 
 class SalesEngineJobsStats(TimeStamped):
     jobs_count = models.IntegerField()
+
+
+class JobUploadLogs(TimeStamped):
+    jobs_count = models.IntegerField()

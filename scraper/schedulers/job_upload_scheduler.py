@@ -7,7 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
-from job_portal.models import JobDetail
+from job_portal.models import JobDetail, JobUploadLogs
 from scraper.jobs import single_scrapers_functions
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
@@ -158,8 +158,9 @@ def upload_file(job_parser):
             job_source_url=job_item.job_source_url,
         ) for job_item in classify_data.data_frame.itertuples()]
 
-    JobDetail.objects.bulk_create(
+    job_data = JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
+    JobUploadLogs.objects.create(jobs_count=len(job_data))
 
 
 def get_job_source_quries(job_source):

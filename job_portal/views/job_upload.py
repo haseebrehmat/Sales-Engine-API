@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from job_portal.classifier.job_classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.exceptions import InvalidFileException
-from job_portal.models import JobDetail, SalesEngineJobsStats
+from job_portal.models import JobDetail, SalesEngineJobsStats, JobUploadLogs
 from job_portal.serializers.job_detail import JobDataUploadSerializer
 from scraper.utils.thread import start_new_thread
 import requests
@@ -56,6 +56,7 @@ class JobDataUploadView(CreateAPIView):
             job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)]
 
         jobs_data = JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True, batch_size=1000)
+        JobUploadLogs.objects.create(jobs_count=len(jobs_data))
 
         self.upload_jobs_in_sales_engine(model_instances)
 

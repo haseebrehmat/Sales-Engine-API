@@ -50,7 +50,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             job_description = driver.find_elements(By.CLASS_NAME, "card-description")
             append_data(data, job_description[count].text)
             append_data(data, job_title[count].get_attribute('href'))
-            job_posted_date = driver.find_elements(By.CLASS_NAME, "posted-date")
+            job_posted_date = driver.find_element(By.CLASS_NAME, "posted-date")
             append_data(data, job_posted_date[count].text)
             append_data(data, "Dice")
             append_data(data, job_type)
