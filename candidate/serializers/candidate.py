@@ -3,12 +3,13 @@ from django.db import transaction
 from rest_framework import serializers
 
 from authentication.models import User, Profile, Role
-from candidate.models import Candidate, CandidateSkills, Skills, ExposedCandidate
+from candidate.models import Candidate, CandidateSkills, Skills, ExposedCandidate, SelectedCandidate
 
 
 class CandidateSerializer(serializers.ModelSerializer):
     skills = serializers.SerializerMethodField(default=[])
     designation = serializers.SerializerMethodField(default=[])
+    allowed_status = serializers.SerializerMethodField(default=False)
 
     class Meta:
         model = Candidate
@@ -23,6 +24,14 @@ class CandidateSerializer(serializers.ModelSerializer):
 
     def get_designation(self, obj):
         return "" if obj.designation is None else obj.designation.title
+
+    def get_allowed_status(self, obj):
+        try:
+            qs = SelectedCandidate.objects.filter(candidate=obj, company=self.context['request'].user.profile.company)
+            return False if not qs.exists() else qs.first().status
+        except Exception as e:
+            print("Error => ", str(e))
+            return False
 
     @transaction.atomic
     def create(self, validated_data):
