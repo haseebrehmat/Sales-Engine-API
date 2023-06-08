@@ -56,13 +56,14 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
       append_data(data, "Today")
       append_data(data, "Google Careers")
       append_data(data, job_type)
+      append_data(data, job_description[0].get_attribute('innerHTML'))
 
       count += 1
       total_job += 1
       scrapped_data.append(data)
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "job_source", "job_type"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/googlecareers - {date_time}.csv', index=False)
 

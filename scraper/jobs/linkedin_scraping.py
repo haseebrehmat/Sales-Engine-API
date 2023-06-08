@@ -137,6 +137,7 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
                 append_data(data, job_posted_date[0].text)
                 append_data(data, "Linkedin")
                 append_data(data, job_type)
+                append_data(data, job_description.get_attribute('innerHTML'))
 
                 scrapped_data.append(data)
         except Exception as e:
@@ -145,9 +146,11 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
-                    'job_source_url', "job_posted_date", "job_source", "job_type"]
+                    'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/linkedin - {date_time}.csv', index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Linkedin")
     return True
 
 
@@ -215,8 +218,6 @@ def linkedin(link, job_type):
                 print(e)
                 saveLogs(e)
                 print(LINK_ISSUE)
-            ScraperLogs.objects.create(
-                total_jobs=total_job, job_source="Linkedin")
     except Exception as e:
         saveLogs(e)
         print(e)

@@ -46,13 +46,18 @@ def run_scrapers_manually(job_source='all'):
     else:
         return {"detail": f'Scheduler setting is missing for {job_source}.'}, status.HTTP_400_BAD_REQUEST
 
+
 class SyncScheduler(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        job_source = request.GET.get("job_source", "all")
-        data, status_code = run_scrapers_manually(job_source) # running on separate thread
-        return Response(data, status_code)
+        try:
+            job_source = request.GET.get("job_source", "all")
+            data, status_code = run_scrapers_manually(job_source) # running on separate thread
+            return Response(data, status_code)
+        except Exception as e:
+            return Response(str(e), 400)
+
 
 class SyncAllScrapersView(APIView):
     permission_classes = (ScraperPermissions,)

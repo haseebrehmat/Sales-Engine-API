@@ -9,6 +9,9 @@ class JobParser(object):
         self.filelist = filelist
         self.job_desc_cols = ['job_title', 'company_name', 'job_source', 'job_type', 'address', 'job_description',
                               'job_posted_date', 'job_source_url']
+        if "scraper/job_data/" in self.filelist[0]:
+            self.job_desc_cols = ['job_title', 'company_name', 'job_source', 'job_type', 'address', 'job_description',
+                                  'job_posted_date', 'job_source_url', 'job_description_tags']
 
     def validate_file(self):
         # file check extensions validation
