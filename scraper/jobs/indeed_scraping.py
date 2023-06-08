@@ -42,8 +42,6 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             job_title = driver.find_element(
                 By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
             append_data(data, job_title.text.replace('- job post', ''))
-            # import pdb
-            # pdb.set_trace()
             append_data(data, company_name[c].text)
             address = driver.find_element(By.CLASS_NAME, "css-6z8o9s")
             append_data(data, address.text.replace('•Remote', ''))
@@ -58,6 +56,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
                 append_data(data, 'Posted Today')
             append_data(data, "Indeed")
             append_data(data, job_type)
+            append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
             c += 1
@@ -68,7 +67,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type"]
+                    "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/indeed - {date_time}.csv', index=False)
 

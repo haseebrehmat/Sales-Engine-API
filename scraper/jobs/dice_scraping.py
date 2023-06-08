@@ -50,10 +50,11 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             job_description = driver.find_elements(By.CLASS_NAME, "card-description")
             append_data(data, job_description[count].text)
             append_data(data, job_title[count].get_attribute('href'))
-            job_posted_date = driver.find_elements(By.CLASS_NAME, "posted-date")
+            job_posted_date = driver.find_element(By.CLASS_NAME, "posted-date")
             append_data(data, job_posted_date[count].text)
             append_data(data, "Dice")
             append_data(data, job_type)
+            append_data(data, job_description.get_attribute('innerHTML'))
             count += 1
             total_job += 1
             scrapped_data.append(data)
@@ -61,7 +62,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             print(e)
 
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type"]
+                    "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f"scraper/job_data/dice_results - {date_time}.csv", index=False)
 

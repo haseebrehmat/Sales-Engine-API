@@ -1,23 +1,22 @@
 import datetime
 
 from django.db import transaction
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from candidate.utils.custom_pagination import LeadManagementPagination
 from job_portal.models import AppliedJobStatus
 from lead_management.models import Lead, CompanyStatus, LeadActivity, LeadActivityNotes
 from lead_management.serializers import LeadSerializer
 from lead_management.serializers.lead_management_serializer import LeadManagementSerializer
-from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
 class LeadManagement(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    pagination_class = CustomPagination
+    pagination_class = LeadManagementPagination
     serializer_class = LeadManagementSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['company__name', 'status__name']
@@ -36,11 +35,12 @@ class LeadManagement(ListAPIView):
             # Convert the date string into a datetime object
             start_date = datetime.datetime.strptime(start_date, format_string)
             end_date = datetime.datetime.strptime(end_date, format_string) - datetime.timedelta(seconds=1)
-            print(start_date, end_date)
             queryset = queryset.filter(updated_at__range=[start_date, end_date])
         queryset = queryset.order_by("updated_at")
 
+
         return queryset
+
 
     def post(self, request):
         data, status_code = self.convert_to_lead(request)

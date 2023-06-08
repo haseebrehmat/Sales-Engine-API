@@ -16,8 +16,6 @@ def get_skills(description, regex_arr, tech):
         for x in tech:
             if x in description:
                 skills.append(x)
-        # import pdb
-        # pdb.set_trace()
         return list(set(skills))
     except Exception as e:
         print("Error in getting skills", str(e))
