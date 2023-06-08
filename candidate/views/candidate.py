@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-from candidate.models import Candidate, Skills, ExposedCandidate
+from candidate.models import Candidate, Skills, ExposedCandidate, SelectedCandidate
 from candidate.serializers.candidate import CandidateSerializer
 from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
@@ -25,6 +25,23 @@ class CandidateListView(ListAPIView):
         return queryset
 
     def post(self, request):
+        if request.data.get('candidate', False) and request.data.get('status') != None:
+            qs = SelectedCandidate.objects.filter(
+                company=request.user.profile.company,
+                candidate_id=request.data.get('candidate', False))
+
+            if qs.exists():
+                SelectedCandidate.objects.filter(
+                company=request.user.profile.company,
+                candidate_id=request.data.get('candidate')).update(status=request.data.get('status', False))
+            else:
+                SelectedCandidate.objects.create(
+                company=request.user.profile.company,
+                candidate_id=request.data.get('candidate'),
+                status = request.data.get('status', False)
+                )
+            return Response({"detail": "Candidate updated successfully"})
+
         serializer = CandidateSerializer(data=request.data, many=False)
         if serializer.is_valid():
             data = serializer.validated_data
