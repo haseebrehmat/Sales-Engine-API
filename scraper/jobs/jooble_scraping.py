@@ -63,6 +63,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             append_data(data, job_source)
             # print(f'Job type is : {job_type}')
             append_data(data, job_type)
+            append_data(data, job_description[0].get_attribute('innerHTML'))
             # print("\n")
             total_job += 1
             scrapped_data.append(data)
@@ -70,7 +71,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             print(e)
         count += 1
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type"]
+                    "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/jooble - {date_time}.csv', index=False)
     return False, total_job
