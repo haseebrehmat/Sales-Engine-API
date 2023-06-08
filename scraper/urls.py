@@ -1,5 +1,6 @@
 from django.urls import path
 
+from scraper.schedulers.job_upload_scheduler import upload_jobs
 from scraper.views.job_source_queries import JobQueriesDetailView, JobQueriesView
 from scraper.views.scheduler_settings import SchedulerView, SchedulerDetailView
 from scraper.views.sync_scheduler import SyncScheduler, SchedulerStatusView, SyncAllScrapersView

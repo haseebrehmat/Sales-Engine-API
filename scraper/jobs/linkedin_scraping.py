@@ -149,6 +149,8 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
                     'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     df.to_csv(f'scraper/job_data/linkedin - {date_time}.csv', index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Linkedin")
     return True
 
 
@@ -216,8 +218,6 @@ def linkedin(link, job_type):
                 print(e)
                 saveLogs(e)
                 print(LINK_ISSUE)
-            ScraperLogs.objects.create(
-                total_jobs=total_job, job_source="Linkedin")
     except Exception as e:
         saveLogs(e)
         print(e)

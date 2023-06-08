@@ -46,6 +46,7 @@ def run_scrapers_manually(job_source='all'):
     else:
         return {"detail": f'Scheduler setting is missing for {job_source}.'}, status.HTTP_400_BAD_REQUEST
 
+
 class SyncScheduler(APIView):
     permission_classes = (AllowAny,)
 
