@@ -27,7 +27,8 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     c = 0
     # time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "link-job-wrap")
@@ -110,12 +111,11 @@ def talent(link, job_type):
             driver.maximize_window()
             try:
                 flag = True
-                scrapped_data = []
                 request_url(driver, link)
                 driver.maximize_window()
                 while flag:
                     flag, total_job = find_jobs(
-                        driver, scrapped_data, job_type, total_job)
+                        driver, job_type, total_job)
                     print("Fetching...")
                 print(SCRAPING_ENDED)
             except Exception as e:

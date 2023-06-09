@@ -166,7 +166,8 @@ def data_exists(driver):
         return True
 
 
-def jobs_types(driver, url, job_type, scrapped_data, total_job):
+def jobs_types(driver, url, job_type, total_job):
+    scrapped_data = []
     count = 0
     request_url(driver, url)  # select type from the const file
     if find_jobs(driver, scrapped_data, job_type):
@@ -200,9 +201,8 @@ def linkedin(link, job_type):
             logged_in = login(driver)
             try:
                 if logged_in:
-                    scrapped_data = []
                     total_job = jobs_types(
-                        driver, link, job_type, scrapped_data, total_job)
+                        driver, link, job_type, total_job)
                     print(SCRAPING_ENDED)
                 else:
                     print(LOGIN_FAILED)

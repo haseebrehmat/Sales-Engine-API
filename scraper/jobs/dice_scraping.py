@@ -27,7 +27,8 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     date_time = str(datetime.now())
     count = 0
     WebDriverWait(driver, 30).until(
@@ -39,7 +40,6 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
     for job in jobs:
         try:
             data = []
-
             append_data(data, job_title[count].text)
             c_name = driver.find_elements(By.CLASS_NAME, "card-company")
             company_name = c_name[count].find_elements(By.TAG_NAME, "a")
@@ -47,11 +47,11 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
                 append_data(data, company.text)
             address = driver.find_elements(By.CLASS_NAME, "search-result-location")
             append_data(data, address[count].text)
-            job_description = driver.find_elements(By.CLASS_NAME, "card-description")
-            append_data(data, job_description[count].text)
+            job_description = driver.find_element(By.CLASS_NAME, "card-description")
+            append_data(data, job_description.text)
             append_data(data, job_title[count].get_attribute('href'))
             job_posted_date = driver.find_element(By.CLASS_NAME, "posted-date")
-            append_data(data, job_posted_date[count].text)
+            append_data(data, job_posted_date.text)
             append_data(data, "Dice")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
@@ -89,7 +89,6 @@ def dice(link, job_type):
     total_job = 0
     print("Dice")
     try:
-        scrapped_data = []
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
@@ -104,7 +103,7 @@ def dice(link, job_type):
             try:
                 request_url(driver, link)
                 while flag:
-                    flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+                    flag, total_job = find_jobs(driver, job_type, total_job)
                     print("Fetching...")
                 print(SCRAPING_ENDED)
             except Exception as e:

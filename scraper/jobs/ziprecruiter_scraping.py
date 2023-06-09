@@ -25,9 +25,9 @@ def ziprecruiter_scraping(links, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
-        with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        # with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-        #                       options=options) as driver:  # modified
+        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                              options=options) as driver:  # modified
             original_window = driver.current_window_handle
             driver.switch_to.new_window('tab')
             details_window = driver.current_window_handle

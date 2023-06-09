@@ -35,7 +35,8 @@ def load_jobs(driver):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     count = 0
     time.sleep(7)
     while load_jobs(driver):
@@ -72,7 +73,7 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
                 By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
             append_data(data, job_description.text)
             url = driver.find_elements(
-                By.CLASS_NAME, "sc-jHwEXd")
+                By.CLASS_NAME, "sc-chibGv")
             append_data(data, url[count].get_attribute('href'))
             job_posted_date = driver.find_element(
                 By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
@@ -111,12 +112,11 @@ def monster(link, job_type):
         # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                               options=options) as driver:  # modified
-            scrapped_data = []
             try:
                 driver.get(link)
                 driver.maximize_window()
                 total_job = find_jobs(
-                    driver, scrapped_data, job_type, total_job)
+                    driver, job_type, total_job)
                 print("SCRAPING_ENDED")
             except Exception as e:
                 saveLogs(e)

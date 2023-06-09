@@ -23,7 +23,8 @@ def append_data(data, field):
     data.append(str(field).strip("+"))
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     count = 0
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "gc-card")
@@ -107,7 +108,6 @@ def job_display(driver):
 def google_careers(links, job_type):
     print("Google Careers")
     total_job = 0
-    scrapped_data = []
     options = webdriver.ChromeOptions()  # newly added
     options.add_argument("--headless")
     options.add_argument("window-size=1200,1100")
@@ -127,7 +127,7 @@ def google_careers(links, job_type):
             request_url(driver, links)
             if job_display(driver):
                 while flag:
-                    flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+                    flag, total_job = find_jobs(driver, job_type, total_job)
                     print("Fetching...")
             print(SCRAPING_ENDED)
         except Exception as e:

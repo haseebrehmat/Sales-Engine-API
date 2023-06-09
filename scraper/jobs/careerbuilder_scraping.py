@@ -43,7 +43,8 @@ def data_exists(driver):
         return False
 
 
-def find_jobs(driver, scrapped_data, job_type, total_jobs):
+def find_jobs(driver, job_type, total_jobs):
+    scrapped_data = []
     count = 0
     c_count = 4
     try:
@@ -132,7 +133,6 @@ def career_builder(link, job_type):
     try:
         print("career_builder started ... ")
         count = 0
-        scrapped_data = []
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
@@ -147,7 +147,7 @@ def career_builder(link, job_type):
                 accept_cookie(driver)
                 while load_jobs(driver):
                     print("Loading...")
-                total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+                total_job = find_jobs(driver, job_type, total_job)
                 print(SCRAPING_ENDED)
             except Exception as e:
                 saveLogs(e)

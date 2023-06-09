@@ -25,7 +25,8 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, page_no, total_job):
+def find_jobs(driver, job_type, page_no, total_job):
+    scrapped_data = []
     count = 0
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "css-12bkbc3")
@@ -97,7 +98,6 @@ def simply_hired(link, job_type):
     print("Simply hired")
     try:
         count = 0
-        scrapped_data = []
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
@@ -110,11 +110,10 @@ def simply_hired(link, job_type):
             try:
                 flag = True
                 page_no = 2
-                scrapped_data = []
                 request_url(driver, link)
                 while flag:
                     flag, total_job = find_jobs(
-                        driver, scrapped_data, job_type, page_no, total_job)
+                        driver, job_type, page_no, total_job)
                     page_no += 1
                     print("Fetching...")
                 count += 1

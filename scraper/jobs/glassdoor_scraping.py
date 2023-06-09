@@ -49,23 +49,24 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     count = 0
     time.sleep(3)
     date_time = str(datetime.now())
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "react-job-listing")
-        company_name = driver.find_elements(
-            By.CLASS_NAME, "job-search-1bgdn7m")
         for job in jobs:
             try:
                 data = []
                 job.click()
                 time.sleep(2)
                 job_title = driver.find_elements(By.CLASS_NAME, "css-1vg6q84")
+                company_name = driver.find_element(
+                    By.CLASS_NAME, "e1tk4kwz1")
                 if job_title:
                     append_data(data, job_title[0].text)
-                    append_data(data, company_name[count].text)
+                    append_data(data, company_name.text)
                     address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
                     append_data(data, address.text)
                     job_description = driver.find_element(
@@ -114,7 +115,6 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
-        scrapped_data = []
         total_job = 0
         count = 0
         options = webdriver.ChromeOptions()  # newly added
@@ -134,7 +134,7 @@ def glassdoor(link, job_type):
                     driver.maximize_window()
                     while flag:
                         flag, total_job = find_jobs(
-                            driver, scrapped_data, job_type, total_job)
+                            driver, job_type, total_job)
                         count += 1
                     print(SCRAPING_ENDED)
             except Exception as e:

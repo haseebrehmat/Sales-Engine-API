@@ -14,7 +14,8 @@ from scraper.models.scraper_logs import ScraperLogs
 total_job = 0
 
 
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     date_time = str(datetime.now())
     count = 0
     WebDriverWait(driver, 30).until(
@@ -78,7 +79,6 @@ def jooble(link, job_type):
     try:
         total_job = 0
         print("Start in try portion. \n")
-        scrapped_data = []
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
@@ -93,7 +93,7 @@ def jooble(link, job_type):
                 driver.get(link)
                 while flag:
                     flag, total_job = find_jobs(
-                        driver, scrapped_data, job_type, total_job)
+                        driver, job_type, total_job)
                     print("Fetching...")
             except Exception as e:
                 print("out from for loop")

@@ -144,26 +144,28 @@ def upload_file(job_parser, filename):
     # parse, classify and upload data to database
     classify_data = JobClassifier(job_parser.data_frame)
     classify_data.classify()
-
+    old_job_urls = list(JobDetail.objects.values_list('job_source_url', flat=True))
     model_instances = [
-        JobDetail(
-            job_title=job_item.job_title,
-            company_name=job_item.company_name,
-            job_source=job_item.job_source,
-            job_type=job_item.job_type,
-            address=job_item.address,
-            job_description=job_item.job_description,
-            tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
-            job_posted_date=job_item.job_posted_date,
-            job_source_url=job_item.job_source_url,
-        ) for job_item in classify_data.data_frame.itertuples()]
+        JobDetail(job_title=job_item.job_title,
+                  company_name=job_item.company_name,
+                  job_source=job_item.job_source,
+                  job_type=job_item.job_type,
+                  address=job_item.address,
+                  job_description=job_item.job_description,
+                  tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
+                  job_posted_date=job_item.job_posted_date,
+                  job_source_url=job_item.job_source_url, )
+        for job_item in classify_data.data_frame.itertuples() if
+        job_item.job_source_url != "" and isinstance(job_item.job_source_url,
+                                                     str) and job_item.job_source_url not in old_job_urls]
 
     data = JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
     JobUploadLogs.objects.create(jobs_count=len(data))
-    scraper_log = ScraperLogs.objects.filter(filename=filename).first()
-    scraper_log.uploaded_jobs = data.count()
-    scraper_log.save()
+    scraper_log = ScraperLogs.objects.filter(filename=filename, uploaded_jobs=0).first()
+    if scraper_log:
+        scraper_log.uploaded_jobs = len(data)
+        scraper_log.save()
 
 
 def get_job_source_quries(job_source):
@@ -434,7 +436,7 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["careerjet"])
+                                            args=["careerjet"])
 
 
 group_scraper_background_jobs = []
