@@ -1,16 +1,16 @@
+import time
 from datetime import datetime
 
-from scraper.constants.const import *
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium import webdriver
 import pandas as pd
-import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
-from scraper.models import JobSourceQuery
+from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
+
 total_job = 0
 
 
@@ -68,7 +68,10 @@ def find_jobs(driver, scrapped_data, job_type, page_no, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/simply_hired - {date_time}.csv', index=False)
+    filename = f'scraper/job_data/simply_hired - {date_time}.csv'
+    df.to_csv(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Simply Hired", filename=filename)
 
     if not data_exists(driver):
         return False, total_job
@@ -104,27 +107,18 @@ def simply_hired(link, job_type):
         # options.headless = True  # newly added
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                               options=options) as driver:  # modified
-            # types = [SIMPLYHIREDCONTRACT, SIMPLYHIREDFULL, SIMPLYHIREDREMOTE]
-            types = [link]
-            job_type = [job_type]
             try:
                 flag = True
-                # query = list(JobSourceQuery.objects.filter(job_source='simplyhired').values_list("queries", flat=True))[0]
-                # for c in range(len(query)):
-                #     types.append(query[c]['link'])
-                #     job_type.append(query[c]['job_type'])
-                for url in types:
-                    page_no = 2
-                    scrapped_data = []
-                    request_url(driver, url)
-                    while flag:
-                        flag, total_job = find_jobs(driver, scrapped_data, job_type[count], page_no, total_job)
-                        page_no += 1
-                        print("Fetching...")
-                    count += 1
+                page_no = 2
+                scrapped_data = []
+                request_url(driver, link)
+                while flag:
+                    flag, total_job = find_jobs(
+                        driver, scrapped_data, job_type, page_no, total_job)
+                    page_no += 1
+                    print("Fetching...")
+                count += 1
                 print(SCRAPING_ENDED)
-                ScraperLogs.objects.create(
-                    total_jobs=total_job, job_source="Simply Hired")
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)

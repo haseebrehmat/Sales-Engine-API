@@ -1,14 +1,13 @@
+import time
 from datetime import datetime
 
-from scraper.constants.const import *
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium import webdriver
 import pandas as pd
-import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
-from scraper.models import JobSourceQuery
+from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
 
@@ -69,7 +68,11 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/indeed - {date_time}.csv', index=False)
+    filename = f'scraper/job_data/indeed - {date_time}.csv'
+    df.to_csv(filename, index=False)
+
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Indeed", filename=filename)
 
     if not data_exists(driver):
         return False, total_job
@@ -104,26 +107,17 @@ def indeed(link, job_type):
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                               options=options) as driver:  # modified
             driver.maximize_window()
-            # types = [INDEED_CONTRACT_RESULTS, INDEED_FULL_RESULTS, INDEED_REMOTE_RESULTS]
-            types = [link]
-            job_type = [job_type]
             try:
                 flag = True
-                # query = list(JobSourceQuery.objects.filter(job_source='indeed').values_list("queries", flat=True))[0]
-                # for c in range(len(query)):
-                #     types.append(query[c]['link'])
-                #     job_type.append(query[c]['job_type'])
-                for url in types:
-                    scrapped_data = []
-                    request_url(driver, url)
-                    driver.maximize_window()
-                    while flag:
-                        flag, total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
-                        print("Fetching...")
-                    count += 1
+                scrapped_data = []
+                request_url(driver, link)
+                driver.maximize_window()
+                while flag:
+                    flag, total_job = find_jobs(
+                        driver, scrapped_data, job_type, total_job)
+                    print("Fetching...")
+                count += 1
                 print(SCRAPING_ENDED)
-                ScraperLogs.objects.create(
-                    total_jobs=total_job, job_source="Indeed")
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)

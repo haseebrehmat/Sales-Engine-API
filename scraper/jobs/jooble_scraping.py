@@ -44,24 +44,13 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             job_source = "jooble"
             job_source_url = job.find_elements(By.CLASS_NAME, "jkit_ff9zU")[0].get_attribute(
                 'href')
-            # url_validator = URLValidator()
-            # print(url_validator("www.facebook.com"))
-            # print(f'Job count number is : {count}')
-            # print(f'Job Title is : {job_title[0].text}')
             append_data(data, job_title[0].text)
-            # print(f'Company Name is : {company_name[0].text}')
             append_data(data, company_name[0].text)
-            # print(f'Location is : {location[0].text}')
             append_data(data, location[0].text)
-            # print(f'Job Description is : {job_description[0].text}')
             append_data(data, job_description[0].text)
-            # print(f'Job source link is : {job_source_url}')
             append_data(data, job_source_url)
-            # print(f'Job Posted Date is : {job_posted_date[0].text}')
             append_data(data, job_posted_date[0].text)
-            # print(f'Job source is : {job_source}')
             append_data(data, job_source)
-            # print(f'Job type is : {job_type}')
             append_data(data, job_type)
             append_data(data, job_description[0].get_attribute('innerHTML'))
             # print("\n")
@@ -73,7 +62,10 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/jooble - {date_time}.csv', index=False)
+    filename = f'scraper/job_data/jooble - {date_time}.csv'
+    df.to_csv(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Jooble", filename=filename)
     return False, total_job
 
 
@@ -96,17 +88,15 @@ def jooble(link, job_type):
         # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
             driver.maximize_window()
-            types = link
-            job_type = job_type
             try:
                 flag = True
-                driver.get(types)
+                driver.get(link)
                 while flag:
-                    flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+                    flag, total_job = find_jobs(
+                        driver, scrapped_data, job_type, total_job)
                     print("Fetching...")
             except Exception as e:
                 print("out from for loop")
             print("End in try portion. \n")
     except:
         print("Error Occurs. \n")
-    ScraperLogs.objects.create(total_jobs=total_job, job_source="Jooble")

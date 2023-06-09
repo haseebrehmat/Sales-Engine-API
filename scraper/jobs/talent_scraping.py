@@ -1,20 +1,22 @@
+import time
 from datetime import datetime
 
-from scraper.constants.const import *
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium import webdriver
 import pandas as pd
-import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
-from scraper.models import JobSourceQuery
+from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
 
 total_job = 0
 
+
 # calls url
+
+
 def request_url(driver, url):
     driver.get(url)
 
@@ -43,13 +45,15 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
             company_name = driver.find_element(
                 By.CLASS_NAME, "jobPreview__header--company")
             append_data(data, company_name.text)
-            address = driver.find_element(By.CLASS_NAME, "jobPreview__header--location")
+            address = driver.find_element(
+                By.CLASS_NAME, "jobPreview__header--location")
             append_data(data, address.text)
             job_description = driver.find_element(
                 By.CLASS_NAME, "jobPreview__body--description")
             append_data(data, job_description.text)
             append_data(data, driver.current_url)
-            job_posted_date = driver.find_elements(By.CLASS_NAME, "c-card__jobDatePosted")
+            job_posted_date = driver.find_elements(
+                By.CLASS_NAME, "c-card__jobDatePosted")
             if len(job_posted_date) > 0:
                 append_data(data, job_posted_date[0].text)
             else:
@@ -69,8 +73,10 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/talent - {date_time}.csv', index=False)
-
+    filename = f'scraper/job_data/talent - {date_time}.csv'
+    df.to_csv(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Talent", filename=filename)
     pagination = driver.find_elements(
         By.CLASS_NAME, "pagination")
 
@@ -108,11 +114,10 @@ def talent(link, job_type):
                 request_url(driver, link)
                 driver.maximize_window()
                 while flag:
-                    flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+                    flag, total_job = find_jobs(
+                        driver, scrapped_data, job_type, total_job)
                     print("Fetching...")
                 print(SCRAPING_ENDED)
-                ScraperLogs.objects.create(
-                    total_jobs=total_job, job_source="Talent")
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)

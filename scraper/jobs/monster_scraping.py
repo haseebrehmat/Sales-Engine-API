@@ -1,18 +1,18 @@
+import time
 from datetime import datetime
 
-from scraper.constants.const import *
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium import webdriver
 import pandas as pd
-import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 
-from scraper.models import JobSourceQuery
+from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
+
 total_job = 0
 
 
@@ -89,7 +89,10 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/monster - {date_time}.csv', index=False)
+    filename = f'scraper/job_data/monster - {date_time}.csv'
+    df.to_csv(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Monster", filename=filename)
     return total_job
 
 
@@ -109,24 +112,12 @@ def monster(link, job_type):
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                               options=options) as driver:  # modified
             scrapped_data = []
-            count = 0
-
-            # types = [MONSTER_CONTRACT_RESULTS, MONSTER_FULL_RESULTS, MONSTER_REMOTE_RESULTS]
-            types = [link]
-            job_type = [job_type]
             try:
-                # query = list(JobSourceQuery.objects.filter(job_source='monster').values_list("queries", flat=True))[0]
-                # for c in range(len(query)):
-                #     types.append(query[c]['link'])
-                #     job_type.append(query[c]['job_type'])
-                for url in types:
-                    driver.get(url)
-                    driver.maximize_window()
-                    total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
-                    count += 1
+                driver.get(link)
+                driver.maximize_window()
+                total_job = find_jobs(
+                    driver, scrapped_data, job_type, total_job)
                 print("SCRAPING_ENDED")
-                ScraperLogs.objects.create(
-                    total_jobs=total_job, job_source="Monster")
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)
