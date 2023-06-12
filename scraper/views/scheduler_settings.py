@@ -41,7 +41,6 @@ class SchedulerView(ListAPIView):
         if serializer.is_valid():
             serializer.create(serializer.validated_data)
             data = "Scheduler created successfully"
-            scheduler_settings()  # This will update current schedulers
             status_code = status.HTTP_201_CREATED
 
             return Response({"detail": data}, status_code)
@@ -100,7 +99,6 @@ class SchedulerDetailView(APIView):
             serializer.save()
             status_code = status.HTTP_200_OK
             message = {"detail": "Scheduler updated successfully"}
-            scheduler_settings()
             return Response(message, status=status_code)
 
         data = serializer_errors(serializer)

@@ -1,19 +1,20 @@
+import time
 from datetime import datetime
+
+import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from scraper.constants.const import *
-from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import pandas as pd
-import time
 
-from scraper.models import JobSourceQuery
+from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
 
 total_jobs = 0
+
 
 # calls url
 def request_url(driver, url):
@@ -42,7 +43,8 @@ def data_exists(driver):
         return False
 
 
-def find_jobs(driver, scrapped_data, job_type, total_jobs):
+def find_jobs(driver, job_type, total_jobs):
+    scrapped_data = []
     count = 0
     c_count = 4
     try:
@@ -70,8 +72,7 @@ def find_jobs(driver, scrapped_data, job_type, total_jobs):
                 company = c_name[c_count].find_elements(By.TAG_NAME, "span")
                 append_data(data, company[0].text)
                 append_data(data, company[1].text)
-                job_description = driver.find_element(
-                    By.CLASS_NAME, "jdp-left-content")
+                job_description = driver.find_element(By.CLASS_NAME, "jdp-left-content")
                 append_data(data, job_description.text)
                 append_data(data, links[count].get_attribute("href"))
                 append_data(data, job_posted_date[count].text)
@@ -92,8 +93,9 @@ def find_jobs(driver, scrapped_data, job_type, total_jobs):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/career_builder - {date_time}.csv', index=False)
-
+    filename = f'scraper/job_data/career_builder - {date_time}.csv'
+    df.to_csv(filename, index=False)
+    ScraperLogs.objects.create(total_jobs=len(df), job_source="Career Builder", filename=filename)
     return total_jobs
 
 
@@ -131,7 +133,6 @@ def career_builder(link, job_type):
     try:
         print("career_builder started ... ")
         count = 0
-        scrapped_data = []
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
@@ -141,23 +142,12 @@ def career_builder(link, job_type):
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                               options=options) as driver:  # modified
             driver.maximize_window()
-            # types = [CAREERBUILDER_CONTRACT_RESULTS, CAREERBUILDER_FULL_RESULTS, CAREERBUILDER_REMOTE_RESULTS]
-            types = [link]
-            job_type = [job_type]
             try:
-                # query = list(JobSourceQuery.objects.filter(job_source='careerbuilder').values_list("queries", flat=True))[0]
-                # for c in range(len(query)):
-                #     types.append(query[c]['link'])
-                #     job_type.append(query[c]['job_type'])
-                for url in types:
-                    request_url(driver, url)
-                    accept_cookie(driver)
-                    while load_jobs(driver):
-                        print("Loading...")
-                    total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
-                    count += 1
-                ScraperLogs.objects.create(
-                    total_jobs=total_job, job_source="Career Builder")
+                request_url(driver, link)
+                accept_cookie(driver)
+                while load_jobs(driver):
+                    print("Loading...")
+                total_job = find_jobs(driver, job_type, total_job)
                 print(SCRAPING_ENDED)
             except Exception as e:
                 saveLogs(e)

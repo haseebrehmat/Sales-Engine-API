@@ -22,7 +22,7 @@ from scraper.jobs.monster_scraping import monster
 from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
-from scraper.models import JobSourceQuery, GroupScraper
+from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
@@ -90,7 +90,7 @@ def upload_jobs():
                 is_valid, message = job_parser.validate_file()
                 if is_valid:
                     job_parser.parse_file()
-                upload_file(job_parser)
+                upload_file(job_parser, file)
     except Exception as e:
         print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
         saveLogs(e)
@@ -140,27 +140,32 @@ def remove_files(job_source="all"):
         print(e)
 
 
-def upload_file(job_parser):
+def upload_file(job_parser, filename):
     # parse, classify and upload data to database
     classify_data = JobClassifier(job_parser.data_frame)
     classify_data.classify()
-
+    old_job_urls = list(JobDetail.objects.values_list('job_source_url', flat=True))
     model_instances = [
-        JobDetail(
-            job_title=job_item.job_title,
-            company_name=job_item.company_name,
-            job_source=job_item.job_source,
-            job_type=job_item.job_type,
-            address=job_item.address,
-            job_description=job_item.job_description,
-            tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
-            job_posted_date=job_item.job_posted_date,
-            job_source_url=job_item.job_source_url,
-        ) for job_item in classify_data.data_frame.itertuples()]
+        JobDetail(job_title=job_item.job_title,
+                  company_name=job_item.company_name,
+                  job_source=job_item.job_source,
+                  job_type=job_item.job_type,
+                  address=job_item.address,
+                  job_description=job_item.job_description,
+                  tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
+                  job_posted_date=job_item.job_posted_date,
+                  job_source_url=job_item.job_source_url, )
+        for job_item in classify_data.data_frame.itertuples() if
+        job_item.job_source_url != "" and isinstance(job_item.job_source_url,
+                                                     str) and job_item.job_source_url not in old_job_urls]
 
-    job_data = JobDetail.objects.bulk_create(
+    data = JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
-    JobUploadLogs.objects.create(jobs_count=len(job_data))
+    JobUploadLogs.objects.create(jobs_count=len(data))
+    scraper_log = ScraperLogs.objects.filter(filename=filename, uploaded_jobs=0).first()
+    if scraper_log:
+        scraper_log.uploaded_jobs = len(data)
+        scraper_log.save()
 
 
 def get_job_source_quries(job_source):
@@ -431,10 +436,8 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["careerjet"])
+                                            args=["careerjet"])
 
-
-# scheduler_settings()
 
 group_scraper_background_jobs = []
 current_scraper = ''
@@ -450,10 +453,8 @@ def group_scraper_job():
     last_scraper_running_time = current_group_scraper_running_time
 
     while True:
-
-        if last_scraper_running_time == current_group_scraper_running_time:
+        if not current_group_scraper_id:
             continue
-
         try:
             group_scraper = GroupScraper.objects.get(
                 pk=current_group_scraper_id)
@@ -469,12 +470,13 @@ def group_scraper_job():
             group_scraper_query = group_scraper.groupscraperquery
             if group_scraper_query:
                 queries = group_scraper_query.queries
-                while True:
+                new_scraper_started = False
+                while not new_scraper_started:
                     for query in queries:
                         if last_scraper_running_time != current_group_scraper_running_time:
                             upload_jobs()
                             remove_files('all')
-                            current_scraper = ''
+                            new_scraper_started = True
                             break
                         job_source = query['job_source'].lower()
                         print(job_source)
@@ -487,7 +489,6 @@ def group_scraper_job():
                             except Exception as e:
                                 print(e)
                                 saveLogs(e)
-            current_scraper = ''
         except Exception as e:
             upload_jobs()
             remove_files('all')

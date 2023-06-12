@@ -43,16 +43,26 @@ class LeadDetail(APIView):
             phase = request.data.get('phase')
             notes = request.data.get('notes')
             candidate = request.data.get('candidate')
-            if company_status:
-                lead.update(company_status_id=company_status, phase_id=phase, candidate_id=candidate)
+
+            if not company_status and not phase and candidate:
+                lead.update(candidate_id=candidate)
                 lead = lead.first()
-                lead_activity = LeadActivity.objects.filter(lead=lead, company_status_id=company_status, candidate_id=candidate).first()
+                lead_activity = LeadActivity.objects.filter(lead=lead, company_status=lead.company_status,
+                                                            phase=lead.phase, candidate_id=candidate).first()
+                if not lead_activity:
+                    lead_activity = LeadActivity.objects.create(lead=lead, company_status=lead.company_status,
+                                                                phase=lead.phase, candidate_id=candidate)
+            elif company_status:
+                lead.update(company_status_id=company_status, phase_id=phase)
+                lead = lead.first()
+                lead_activity = LeadActivity.objects.filter(lead=lead, company_status_id=company_status, phase_id=phase,
+                                                            candidate=lead.candidate).first()
                 if lead_activity:
                     lead_activity.phase_id = phase
                     lead_activity.save()
                 else:
                     lead_activity = LeadActivity.objects.create(lead=lead, company_status_id=company_status,
-                                                                phase_id=phase, candidate_id=candidate)
+                                                                phase_id=phase, candidate=lead.candidate)
                 effect_date = request.data.get('effect_date')
                 due_date = request.data.get('due_date')
                 if effect_date:

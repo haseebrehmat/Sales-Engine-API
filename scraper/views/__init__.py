@@ -7,8 +7,9 @@ try:
     # if AllSyncConfig.objects.filter(status=True).exists():
     #     run_scrapers_manually()
     if os.path.exists('scraper/job_data'):
-        shutil.rmtree('scraper/job_data')
-        os.makedirs('scraper/job_data')
+        # shutil.rmtree('scraper/job_data')
+        # os.makedirs('scraper/job_data')
+        pass
     else:
         os.makedirs('scraper/job_data')
 except Exception as e:

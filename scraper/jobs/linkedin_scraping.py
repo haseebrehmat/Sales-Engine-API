@@ -148,9 +148,10 @@ def find_jobs(driver, scrapped_data, job_type, url=None):
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/linkedin - {date_time}.csv', index=False)
+    filename = f'scraper/job_data/linkedin - {date_time}.csv'
+    df.to_csv(filename, index=False)
     ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="Linkedin")
+        total_jobs=len(df), job_source="Linkedin", filename=filename)
     return True
 
 
@@ -165,7 +166,8 @@ def data_exists(driver):
         return True
 
 
-def jobs_types(driver, url, job_type, scrapped_data, total_job):
+def jobs_types(driver, url, job_type, total_job):
+    scrapped_data = []
     count = 0
     request_url(driver, url)  # select type from the const file
     if find_jobs(driver, scrapped_data, job_type):
@@ -197,20 +199,10 @@ def linkedin(link, job_type):
                               options=options) as driver:  # modified
             request_url(driver, LOGIN_URL)
             logged_in = login(driver)
-            # types = [CONTRACT_JOB_URL, FULL_TIME_JOB_URL, REMOTE_JOB_URL]
-            types = [link]
-            job_type = [job_type]
             try:
-                # query = list(JobSourceQuery.objects.filter(job_source='linkedin').values_list("queries", flat=True))[0]
-                # for c in range(len(query)):
-                #     types.append(query[c]['link'])
-                #     job_type.append(query[c]['job_type'])
                 if logged_in:
-                    count = 0
-                    scrapped_data = []
-                    for url in types:
-                        total_job = jobs_types(driver, url, job_type[count], scrapped_data, total_job)
-                        count += 1
+                    total_job = jobs_types(
+                        driver, link, job_type, total_job)
                     print(SCRAPING_ENDED)
                 else:
                     print(LOGIN_FAILED)
