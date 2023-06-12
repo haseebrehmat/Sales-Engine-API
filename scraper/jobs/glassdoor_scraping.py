@@ -1,14 +1,13 @@
+import time
 from datetime import datetime
 
-from scraper.constants.const import *
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium import webdriver
 import pandas as pd
-import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
-from scraper.models import JobSourceQuery
+from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
 
@@ -20,7 +19,8 @@ def login(driver):
         time.sleep(2)
         driver.find_element(By.CLASS_NAME, "email-input").click()
         driver.find_element(By.ID, "inlineUserEmail").clear()
-        driver.find_element(By.ID, "inlineUserEmail").send_keys(GLASSDOOR_USERNAME)
+        driver.find_element(By.ID, "inlineUserEmail").send_keys(
+            GLASSDOOR_USERNAME)
         driver.find_element(By.CLASS_NAME, "email-button").click()
         time.sleep(1)
         driver.find_element(By.CLASS_NAME, "password-input").click()
@@ -49,22 +49,24 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     count = 0
     time.sleep(3)
     date_time = str(datetime.now())
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "react-job-listing")
-        company_name = driver.find_elements(By.CLASS_NAME, "job-search-1bgdn7m")
         for job in jobs:
             try:
                 data = []
                 job.click()
                 time.sleep(2)
                 job_title = driver.find_elements(By.CLASS_NAME, "css-1vg6q84")
+                company_name = driver.find_element(
+                    By.CLASS_NAME, "e1tk4kwz1")
                 if job_title:
                     append_data(data, job_title[0].text)
-                    append_data(data, company_name[count].text)
+                    append_data(data, company_name.text)
                     address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
                     append_data(data, address.text)
                     job_description = driver.find_element(
@@ -90,8 +92,11 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
 
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                         "job_source", "job_type", "job_description_tags"]
+        filename = f'scraper/job_data/glassdoor - {date_time}.csv'
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(f'scraper/job_data/glassdoor - {date_time}.csv', index=False)
+        df.to_csv(filename, index=False)
+        ScraperLogs.objects.create(
+            total_jobs=len(df), job_source="GlassDoor", filename=filename)
     except Exception as e:
         saveLogs(e)
         print(e)
@@ -110,7 +115,6 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
-        scrapped_data = []
         total_job = 0
         count = 0
         options = webdriver.ChromeOptions()  # newly added
@@ -123,23 +127,15 @@ def glassdoor(link, job_type):
                               options=options) as driver:  # modified
             request_url(driver, GLASSDOOR_LOGIN_URL)
             logged_in = login(driver)
-            types = [link]
-            job_type = [job_type]
             try:
-                # query = list(JobSourceQuery.objects.filter(job_source='glassdoor').values_list("queries", flat=True))[0]
-                # for c in range(len(query)):
-                #     types.append(query[c]['link'])
-                #     job_type.append(query[c]['job_type'])
                 if logged_in:
                     flag = True
-                    for url in types:
-                        request_url(driver, url)
-                        driver.maximize_window()
-                        while flag:
-                            flag, total_job = find_jobs(driver, scrapped_data, job_type[count], total_job)
+                    request_url(driver, link)
+                    driver.maximize_window()
+                    while flag:
+                        flag, total_job = find_jobs(
+                            driver, job_type, total_job)
                         count += 1
-                    ScraperLogs.objects.create(
-                        total_jobs=total_job, job_source="GlassDoor")
                     print(SCRAPING_ENDED)
             except Exception as e:
                 saveLogs(e)

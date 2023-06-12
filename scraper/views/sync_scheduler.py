@@ -95,7 +95,7 @@ class SchedulerStatusView(APIView):
         data.append({"job_source": 'all', "running": infinite_scraper_running_status, "type": 'Infinite Scrapper'})
         try:
             from scraper.schedulers.job_upload_scheduler import current_scraper
-            data.append({'job_source':  'Custom Group', "running": True if current_scraper else False, "type": 'Group Scraper'})
+            data.append({"job_source": current_scraper, "running": True if current_scraper else False, "type": 'Group Scraper'})
         except Exception as e:
             print(e)
         return Response(data, status=status.HTTP_200_OK)

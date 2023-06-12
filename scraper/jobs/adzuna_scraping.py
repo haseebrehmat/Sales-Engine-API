@@ -1,21 +1,18 @@
+import json
+import re
 from datetime import datetime
-from scraper.constants.const import SALARY_STD, SALARY_AVERAGE, ADZUNA_RESULTS_PER_PAGE, \
-    ADZUNA_PAGE_CAP
+from math import ceil
+
+import numpy as np
+import pandas as pd
 import urllib3
 from bs4 import BeautifulSoup
-from tqdm import tqdm
-import json
-from math import ceil
-import pandas as pd
-import numpy as np
 from scipy.stats import norm
-import re
-from utils.helpers import saveLogs
-
+from tqdm import tqdm
 
 from scraper.constants.const import *
-from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from utils.helpers import saveLogs
 
 CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 http = urllib3.PoolManager()
@@ -47,7 +44,7 @@ def fetch_results(soup):
     global results_div_index
     try:
         if re.search(r'results:.*\[(.|\n)*\]',
-                    soup.find_all('script', {'type': "text/javascript"})[results_div_index].text):
+                     soup.find_all('script', {'type': "text/javascript"})[results_div_index].text):
             res = re.search(r'results:.*\[(.|\n)*\]',
                             soup.find_all('script', {'type': "text/javascript"})[results_div_index].text)
         else:
@@ -64,14 +61,14 @@ def fetch_results(soup):
 def transform_data(df, job_type):
     try:
         df.rename(columns={'title': 'job_title', 'company': 'company_name', 'contract_type': 'job_type',
-                        'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
-                        'numeric_id': 'job_source_url'}, inplace=True)
+                           'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
+                           'numeric_id': 'job_source_url'}, inplace=True)
         count = 0
         for i in df['job_description']:
             df['job_description'][count] = cleanhtml(i)
             count += 1
         df['job_source_url'] = 'https://www.adzuna.com/details/' + \
-            df['job_source_url'].astype(str)
+                               df['job_source_url'].astype(str)
         df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
         df['job_source'] = 'Adzuna'
         df['job_type'] = job_type
@@ -87,7 +84,7 @@ def adzuna_scraping(links, job_type):
         soup = BeautifulSoup(r.data, 'html.parser')
         total_results = ceil(
             int(soup.select('[data-cy-count]')[0]['data-cy-count']) / 500)
-        all_data = pd.DataFrame()
+        df = pd.DataFrame()
         salary_ranges = ranges_of_salaries(
             SALARY_STD, SALARY_AVERAGE, total_results)
         for i in tqdm(range(len(salary_ranges))):
@@ -100,8 +97,9 @@ def adzuna_scraping(links, job_type):
             r = http.request('GET', link)
             soup = BeautifulSoup(r.data, 'html.parser')
             try:
-                no_of_pages = min(ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / ADZUNA_RESULTS_PER_PAGE),
-                                  ADZUNA_PAGE_CAP)
+                no_of_pages = min(
+                    ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / ADZUNA_RESULTS_PER_PAGE),
+                    ADZUNA_PAGE_CAP)
             except Exception as e:
                 saveLogs(e)
                 continue
@@ -127,13 +125,11 @@ def adzuna_scraping(links, job_type):
                 per_link_data = pd.concat(
                     [per_link_data, transform_data(df, job_type)], axis=0, ignore_index=True)
 
-            all_data = pd.concat([all_data, per_link_data],
-                                 axis=0, ignore_index=True)
+            df = pd.concat([df, per_link_data], axis=0, ignore_index=True)
         date_time = str(datetime.now())
-        all_data.to_csv(
-            f'scraper/job_data/adzuna_results - {date_time}.csv', index=False)
-        total_job = len(all_data)
-        ScraperLogs.objects.create(total_jobs=total_job, job_source="Adzuna")
+        filename = f'scraper/job_data/adzuna_results - {date_time}.csv'
+        df.to_csv(filename, index=False)
+        ScraperLogs.objects.create(total_jobs=len(df), job_source="Adzuna", filename=filename)
     except Exception as e:
         saveLogs(e)
         print(e)
