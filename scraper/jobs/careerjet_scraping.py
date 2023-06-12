@@ -1,18 +1,18 @@
+import time
 from datetime import datetime
 
-from scraper.constants.const import *
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium import webdriver
 import pandas as pd
-import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
-from scraper.models import JobSourceQuery
+from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
 
 total_job = 0
+
 
 # calls url
 def request_url(driver, url):
@@ -25,7 +25,8 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, total_job):
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
     c = 0
     # time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "clicky")
@@ -73,8 +74,10 @@ def find_jobs(driver, scrapped_data, job_type, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    df.to_csv(f'scraper/job_data/careerjet - {date_time}.csv', index=False)
-
+    filename = f'scraper/job_data/careerjet - {date_time}.csv'
+    df.to_csv(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="CareerJet", filename=filename)
     pagination = driver.find_elements(By.CLASS_NAME, "btn-primary-inverted")
 
     if len(pagination) == 0:
@@ -111,15 +114,13 @@ def careerjet(link, job_type):
             driver.maximize_window()
             try:
                 flag = True
-                scrapped_data = []
                 request_url(driver, link)
                 driver.maximize_window()
                 while flag:
-                    flag, total_job = find_jobs(driver, scrapped_data, job_type, total_job)
+                    flag, total_job = find_jobs(driver, job_type, total_job)
                     print("Fetching...")
                 print(SCRAPING_ENDED)
-                ScraperLogs.objects.create(
-                    total_jobs=total_job, job_source="CareerJet")
+
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)
