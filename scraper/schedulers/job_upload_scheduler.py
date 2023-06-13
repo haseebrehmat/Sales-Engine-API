@@ -4,6 +4,7 @@ import traceback
 
 import pandas as pd
 from apscheduler.schedulers.background import BackgroundScheduler
+from django.db import transaction
 
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
@@ -27,6 +28,7 @@ from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
 from scraper.utils.thread import start_new_thread
+from utils import upload_to_s3
 from utils.helpers import saveLogs
 
 # from error_logger.models import Log
@@ -90,6 +92,7 @@ def upload_jobs():
                 is_valid, message = job_parser.validate_file()
                 if is_valid:
                     job_parser.parse_file()
+                upload_to_s3.upload_job_files(file, file.replace(path, ""))
                 upload_file(job_parser, file)
     except Exception as e:
         print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
@@ -140,11 +143,13 @@ def remove_files(job_source="all"):
         print(e)
 
 
+@transaction.atomic
 def upload_file(job_parser, filename):
     # parse, classify and upload data to database
     classify_data = JobClassifier(job_parser.data_frame)
     classify_data.classify()
-    old_job_urls = list(JobDetail.objects.values_list('job_source_url', flat=True))
+    before_uploading_jobs = JobDetail.objects.count()
+
     model_instances = [
         JobDetail(job_title=job_item.job_title,
                   company_name=job_item.company_name,
@@ -157,15 +162,18 @@ def upload_file(job_parser, filename):
                   job_source_url=job_item.job_source_url, )
         for job_item in classify_data.data_frame.itertuples() if
         job_item.job_source_url != "" and isinstance(job_item.job_source_url,
-                                                     str) and job_item.job_source_url not in old_job_urls]
+                                                     str)]
 
     data = JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
-    JobUploadLogs.objects.create(jobs_count=len(data))
+
+    after_uploading_jobs_count = JobDetail.objects.count()
     scraper_log = ScraperLogs.objects.filter(filename=filename, uploaded_jobs=0).first()
     if scraper_log:
-        scraper_log.uploaded_jobs = len(data)
-        scraper_log.save()
+        uploaded_count = after_uploading_jobs_count - before_uploading_jobs
+        if uploaded_count > 0:
+            scraper_log.uploaded_jobs = uploaded_count
+            scraper_log.save()
 
 
 def get_job_source_quries(job_source):
