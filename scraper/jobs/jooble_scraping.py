@@ -97,6 +97,7 @@ def jooble(link, job_type):
                     print("Fetching...")
             except Exception as e:
                 print("out from for loop")
-            print("End in try portion. \n")
+
+            driver.quit()
     except:
         print("Error Occurs. \n")

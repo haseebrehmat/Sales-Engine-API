@@ -91,9 +91,8 @@ def ziprecruiter_scraping(links, job_type):
                 ScraperLogs.objects.create(total_jobs=len(
                     df), job_source="Zip Recruiter", filename=filename)
             c += 1
-
-        driver.close()
-        print("SCRAPING_ENDED")
+            driver.quit()
+            print("SCRAPING_ENDED")
 
     except Exception as e:
         saveLogs(e)
