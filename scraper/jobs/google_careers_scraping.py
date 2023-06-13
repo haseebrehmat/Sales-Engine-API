@@ -133,3 +133,4 @@ def google_careers(links, job_type):
         except Exception as e:
             saveLogs(e)
             print("Failed")
+        driver.quit()

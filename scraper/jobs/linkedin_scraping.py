@@ -66,7 +66,8 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, scrapped_data, job_type, url=None):
+def find_jobs(driver, job_type, url=None):
+    scrapped_data = []
     try:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
@@ -162,18 +163,16 @@ def data_exists(driver):
             By.CLASS_NAME, "jobs-search-no-results-banner__image")
         return True if page_exists[0].text == '' else False
     except Exception as e:
-        saveLogs(e)
         return True
 
 
 def jobs_types(driver, url, job_type, total_job):
-    scrapped_data = []
     count = 0
     request_url(driver, url)  # select type from the const file
-    if find_jobs(driver, scrapped_data, job_type):
+    if find_jobs(driver, job_type):
         count += 25
 
-        while find_jobs(driver, scrapped_data, job_type, "&start=" + str(count)):
+        while find_jobs(driver, job_type, "&start=" + str(count)):
             count += 25
             total_job += 25
         return total_job
@@ -210,6 +209,10 @@ def linkedin(link, job_type):
                 print(e)
                 saveLogs(e)
                 print(LINK_ISSUE)
+
+            driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+
+

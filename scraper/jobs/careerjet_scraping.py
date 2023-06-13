@@ -124,6 +124,8 @@ def careerjet(link, job_type):
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)
+
+            driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
