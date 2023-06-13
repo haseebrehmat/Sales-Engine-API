@@ -163,7 +163,6 @@ def data_exists(driver):
             By.CLASS_NAME, "jobs-search-no-results-banner__image")
         return True if page_exists[0].text == '' else False
     except Exception as e:
-        saveLogs(e)
         return True
 
 
@@ -210,6 +209,8 @@ def linkedin(link, job_type):
                 print(e)
                 saveLogs(e)
                 print(LINK_ISSUE)
+
+            driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
