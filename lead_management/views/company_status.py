@@ -16,7 +16,7 @@ class CompanyStatusList(ListAPIView):
 
     def get_queryset(self):
         search = self.request.GET.get("search", "")
-        return CompanyStatus.objects.all().filter(status__name__icontains=search).exclude(status__isnull=True)
+        return CompanyStatus.objects.filter(status__name__icontains=search, company=self.request.user.profile.company).exclude(status__isnull=True)
 
     def post(self, request):
         serializer = CompanyStatusPhasesSerializer(data=request.data, many=False)
