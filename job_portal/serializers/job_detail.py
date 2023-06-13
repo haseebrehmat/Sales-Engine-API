@@ -78,7 +78,6 @@ class JobDataUploadSerializer(serializers.Serializer):
     upload_by = serializers.CharField(max_length=500)
 
 
-
 class SalesEngineJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobDetail
