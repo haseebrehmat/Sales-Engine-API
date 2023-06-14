@@ -39,6 +39,7 @@ class CustomPagination(pagination.PageNumberPagination):
             'filtered_jobs': self.filtered_jobs_count,
             'recruiter_jobs': self.recruiter_jobs_count,
             'non_recruiter_jobs': self.get_non_recruiter_jobs_count(),
+            'today_uploaded_jobs': self.get_today_uploaded_jobs_count(),
             'data': data,
             'tech_keywords_count_list': self.keyword_count(),
             'job_source_count_list': self.unique_job_source(),
@@ -92,6 +93,9 @@ class CustomPagination(pagination.PageNumberPagination):
             return 0
         return self.filtered_jobs_count - self.recruiter_jobs_count
 
+    def get_today_uploaded_jobs_count(self):
+        uploaded_jobs = JobDetail.objects.filter(created_at__gte=str(datetime.datetime.today()).split(' ')[0]).count()
+        return uploaded_jobs
 
     def unique_job_source(self):
         unique_job_source = self.filtered_queryset.extra(select={'name': 'job_source'}).values('name').annotate(
