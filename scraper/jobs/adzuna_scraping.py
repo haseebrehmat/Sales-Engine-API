@@ -64,6 +64,7 @@ def transform_data(df, job_type):
                            'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
                            'numeric_id': 'job_source_url'}, inplace=True)
         count = 0
+        df['job_description_tags'] = df['job_description']
         for i in df['job_description']:
             df['job_description'][count] = cleanhtml(i)
             count += 1
