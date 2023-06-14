@@ -47,14 +47,14 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, company.text)
             address = driver.find_elements(By.CLASS_NAME, "search-result-location")
             append_data(data, address[count].text)
-            job_description = driver.find_element(By.CLASS_NAME, "card-description")
-            append_data(data, job_description.text)
+            job_description = driver.find_elements(By.CLASS_NAME, "card-description")
+            append_data(data, job_description[count].text)
             append_data(data, job_title[count].get_attribute('href'))
             job_posted_date = driver.find_element(By.CLASS_NAME, "posted-date")
             append_data(data, job_posted_date.text)
             append_data(data, "Dice")
             append_data(data, job_type)
-            append_data(data, job_description.get_attribute('innerHTML'))
+            append_data(data, job_description[count].get_attribute('innerHTML'))
             count += 1
             total_job += 1
             scrapped_data.append(data)

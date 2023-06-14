@@ -57,7 +57,7 @@ class CandidateSerializer(serializers.ModelSerializer):
             user.roles = Role.objects.filter(name="candidate").first()
             user.save()
         except:
-            raise ValidationError({ "detail" : "User already exist"}, code=406)
+            print("User Already Exit")
 
     def update(self, instance, validated_data):
         skills = validated_data.pop("skills")
