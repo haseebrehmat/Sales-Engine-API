@@ -1,5 +1,5 @@
-USERNAME = "ObaidUllah.Yousaf@devsinc.com"
-PASSWORD = "Ubaid@123"
+USERNAME = "m.abubakartariq@devsinc.com"
+PASSWORD = "Abubak@r12345...$"
 JOB_SEARCH_1 = "Software Engineer"
 JOB_SEARCH_2 = "Software Developer"
 LOCATION = "United States"
