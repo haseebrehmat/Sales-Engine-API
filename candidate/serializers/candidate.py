@@ -1,9 +1,9 @@
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import serializers
-
 from authentication.models import User, Profile, Role
-from candidate.models import Candidate, CandidateSkills, Skills, ExposedCandidate, SelectedCandidate
+from candidate.models import Candidate, CandidateSkills, Skills, ExposedCandidate, SelectedCandidate, Designation
+from rest_framework.exceptions import ValidationError
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -51,10 +51,13 @@ class CandidateSerializer(serializers.ModelSerializer):
         data = [CandidateSkills(candidate_id=qs.id, skill_id=skill, level=1) for skill in skills]
         CandidateSkills.objects.bulk_create(data, ignore_conflicts=True)
         ExposedCandidate.objects.create(candidate=qs)
-        user = User.objects.create(password=make_password(password), email=validated_data["email"])
-        Profile.objects.create(user=user, company_id=validated_data["company_id"])
-        user.roles = Role.objects.filter(name="candidate").first()
-        user.save()
+        try:
+            user = User.objects.create(password=make_password(password), email=validated_data["email"])
+            Profile.objects.create(user=user, company_id=validated_data["company_id"])
+            user.roles = Role.objects.filter(name="candidate").first()
+            user.save()
+        except:
+            print("User Already Exit")
 
     def update(self, instance, validated_data):
         skills = validated_data.pop("skills")
@@ -75,8 +78,9 @@ class CandidateSerializer(serializers.ModelSerializer):
         instance.experience = validated_data.get(
             "experience", instance.experience)
         instance.email = validated_data.get("email", instance.email)
-        instance.designation = validated_data.get(
-            "designation", instance.designation)
+        designation = validated_data.get(
+            "designation_id", instance.designation)
+        instance.designation = Designation.objects.filter(id=designation).first()
         instance.save()
         CandidateSkills.objects.filter(candidate_id=instance.id).delete()
         data = [CandidateSkills(candidate_id=instance.id, skill_id=skill, level=1) for skill in skills]
