@@ -1,6 +1,6 @@
 from django.urls import path
 
-from candidate.views.candidate import CandidateDetailView, CandidateListView
+from candidate.views.candidate import CandidateDetailView, CandidateListView, CandidateProfileDetailView
 from candidate.views.candidate_company import CandidateCompanyDetailView, CandidateCompanyListView
 from candidate.views.candidate_skill import CandidateSkillsListView, CandidateSkillsDetailView
 from candidate.views.skill import SkillsDetailView, SkillsListView
@@ -11,6 +11,7 @@ from candidate.views.selected_candidate import SelectedCandidateListView
 urlpatterns = [
    path("candidate/<str:pk>/", CandidateDetailView.as_view()),
    path("candidate/", CandidateListView.as_view()),
+   path("candidate_profile/", CandidateProfileDetailView.as_view()),
    path("skills/<str:pk>/", SkillsDetailView.as_view()),
    path("skills/", SkillsListView.as_view()),
    path("candidate_skills/<str:pk>/", CandidateSkillsDetailView.as_view()),
