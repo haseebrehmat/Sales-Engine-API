@@ -71,10 +71,11 @@ class CandidateDetailView(APIView):
 
     def put(self, request, pk):
         queryset = Candidate.objects.filter(pk=pk).first()
-        serializer = CandidateSerializer(instance=queryset, data=request.data)
+        data = request.data
+        serializer = CandidateSerializer(instance=queryset, data=data)
         if serializer.is_valid():
             skills = request.data.get("skills")
-            serializer.save(company_id=request.user.profile.company.id, skills=skills)
+            serializer.save(company_id=request.user.profile.company.id, skills=skills, designation_id=request.data.get("designation", queryset.designation_id))
             message = "Candidate updated successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
