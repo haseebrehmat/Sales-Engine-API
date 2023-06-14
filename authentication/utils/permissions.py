@@ -439,6 +439,8 @@ permissions = [
     },
     {'module': 'Candidates', 'codename': 'view_candidate', 'name': 'View Candidates', 'level': 2},
     {'module': 'Candidates', 'codename': 'create_candidate', 'name': 'Create Candidate', 'level': 2},
+    {'module': 'Candidates', 'codename': 'view_candidate_profile', 'name': 'View Candidate Profile', 'level': 2},
+    {'module': 'Candidates', 'codename': 'edit_candidate_profile', 'name': 'Edit Candidate Profile', 'level': 2},
     {'module': 'Candidates', 'codename': 'edit_candidate', 'name': 'Edit Candidate', 'level': 2},
     {'module': 'Candidates', 'codename': 'delete_candidate', 'name': 'Delete Candidate', 'level': 2},
     {'module': 'Candidates', 'codename': 'view_designation', 'name': 'View Designations', 'level': 2},

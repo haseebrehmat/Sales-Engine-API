@@ -76,7 +76,7 @@ class CandidateSerializer(serializers.ModelSerializer):
             "experience", instance.experience)
         instance.email = validated_data.get("email", instance.email)
         instance.designation = validated_data.get(
-            "designation", instance.designation)
+            "designation_id", instance.designation)
         instance.save()
         CandidateSkills.objects.filter(candidate_id=instance.id).delete()
         data = [CandidateSkills(candidate_id=instance.id, skill_id=skill, level=1) for skill in skills]
