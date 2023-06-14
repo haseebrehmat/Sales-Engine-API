@@ -37,6 +37,8 @@ class CandidateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         skills = validated_data.pop("skills")
         password = validated_data.pop("password")
+        if Candidate.objects.filter(company_id=validated_data["company_id"], email=validated_data["email"]).exists():
+            raise ValidationError({"detail": "User already exposed"}, code=406)
         temp = []
         for skill in skills:
             qs = Skills.objects.filter(name__iexact=skill).first()
@@ -46,17 +48,16 @@ class CandidateSerializer(serializers.ModelSerializer):
                 qs = Skills.objects.create(name=skill.lower())
                 temp.append(qs.id)
         skills = temp
-
         qs = Candidate.objects.create(**validated_data)
         data = [CandidateSkills(candidate_id=qs.id, skill_id=skill, level=1) for skill in skills]
         CandidateSkills.objects.bulk_create(data, ignore_conflicts=True)
         ExposedCandidate.objects.create(candidate=qs)
-        try:
+        if not User.objects.filter(password=make_password(password), email=validated_data["email"]).exists():
             user = User.objects.create(password=make_password(password), email=validated_data["email"])
             Profile.objects.create(user=user, company_id=validated_data["company_id"])
             user.roles = Role.objects.filter(name="candidate").first()
             user.save()
-        except:
+        else:
             print("User Already Exit")
 
     def update(self, instance, validated_data):
