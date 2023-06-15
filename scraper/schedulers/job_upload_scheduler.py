@@ -5,10 +5,11 @@ import traceback
 import pandas as pd
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.db import transaction
+from django.db.models import Q
 
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
-from job_portal.models import JobDetail, JobUploadLogs
+from job_portal.models import JobDetail, JobUploadLogs, JobArchive
 from scraper.jobs import single_scrapers_functions
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
@@ -149,6 +150,33 @@ def upload_file(job_parser, filename):
     classify_data = JobClassifier(job_parser.data_frame)
     classify_data.classify()
     before_uploading_jobs = JobDetail.objects.count()
+
+    last_10_days = datetime.datetime.now() - datetime.timedelta(days=10)
+
+    query = Q()
+    for item in classify_data.data_frame.itertuples():
+        query |= Q(company_name=item.company_name, job_title=item.job_title)
+
+    jobs = JobDetail.objects.filter(query, created_at__gte=last_10_days)
+
+    bulk_data = [JobArchive(
+        id=x.id,
+        job_title=x.job_title,
+        company_name=x.company_name,
+        job_source=x.job_source,
+        job_type=x.job_type,
+        address=x.address,
+        job_description=x.job_description,
+        tech_keywords=x.tech_keywords,
+        job_posted_date=x.job_posted_date,
+        job_source_url=x.job_source_url,
+        block=x.block,
+        is_manual=x.is_manual,
+        created_at=x.created_at,
+        updated_at=x.updated_at
+    ) for x in jobs]
+    JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True)
+    jobs.delete()
 
     model_instances = [
         JobDetail(job_title=job_item.job_title,
