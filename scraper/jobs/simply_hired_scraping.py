@@ -29,12 +29,11 @@ def find_jobs(driver, job_type, page_no, total_job):
     scrapped_data = []
     count = 0
     time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "css-12bkbc3")
+    jobs = driver.find_elements(By.CLASS_NAME, "css-f8dtpc")
 
     for job in jobs:
         data = []
         try:
-            job.click()
             time.sleep(5)
 
             job_title = driver.find_element(By.CLASS_NAME, "chakra-heading")
@@ -59,6 +58,10 @@ def find_jobs(driver, job_type, page_no, total_job):
             scrapped_data.append(data)
             count += 1
             total_job += 1
+            try:
+                job.click()
+            except Exception as e:
+                print("Per page scraped")
 
         except Exception as e:
             count += 1

@@ -26,11 +26,12 @@ class JobDetail(TimeStamped):
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
     block = models.BooleanField(default=False)
     is_manual = models.BooleanField(default=False)
+    job_applied = models.CharField(blank=True, null=True, max_length=300)
 
     class Meta:
         default_permissions = ()
         db_table = "job_detail"
-        unique_together = (('company_name', 'job_title'),)
+        unique_together = (('company_name', 'job_title', 'job_applied'),)
         ordering = ['-job_posted_date']
         indexes = [models.Index(fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
         index_together = ['company_name', 'job_title']
@@ -59,7 +60,6 @@ class JobArchive(TimeStamped):
     class Meta:
         default_permissions = ()
         db_table = "job_archive"
-        unique_together = (('company_name', 'job_title'),)
         ordering = ['-job_posted_date']
         indexes = [models.Index(fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
         index_together = ['company_name', 'job_title']
