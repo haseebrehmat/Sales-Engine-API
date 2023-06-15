@@ -40,7 +40,6 @@ class JobDetailsView(ModelViewSet):
     def get_paginated_response(self, data, query):
         return self.paginator.get_paginated_response(data, query)
 
-    # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
     def list(self, request, *args, **kwargs):
         if self.queryset.count() == 0:
@@ -58,11 +57,6 @@ class JobDetailsView(ModelViewSet):
         # pass the queryset to the remaining filters
         queryset = self.filter_queryset(queryset)
 
-        from_date = request.GET.get('from_date')
-        to_date = request.GET.get('to_date')
-
-        # queryset = queryset.filter(job_posted_date__range=[datetime.strptime(from_date, "%Y-%m-%d").date(),
-        #                                                    datetime.strptime(to_date, "%Y-%m-%d").date()])
         # handle job search with exact match of job title
         job_title_params = self.request.GET.get('search')
 

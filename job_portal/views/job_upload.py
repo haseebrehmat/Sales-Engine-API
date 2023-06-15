@@ -1,6 +1,8 @@
+import datetime
 from threading import Thread
 
 import pandas as pd
+from django.db import transaction
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,7 +11,7 @@ from rest_framework.views import APIView
 from job_portal.classifier.job_classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.exceptions import InvalidFileException
-from job_portal.models import JobDetail, SalesEngineJobsStats, JobUploadLogs
+from job_portal.models import JobDetail, SalesEngineJobsStats, JobUploadLogs, JobArchive
 from job_portal.serializers.job_detail import JobDataUploadSerializer
 from scraper.utils.thread import start_new_thread
 import requests
@@ -40,6 +42,7 @@ class JobDataUploadView(CreateAPIView):
             raise InvalidFileException(detail=str(e))
         return Response({'detail': 'data uploaded successfully'}, status=200)
 
+    @transaction.atomic
     def upload_file(self, job_parser):
         # parse, classify and upload data to database
         if job_parser.data_frame.empty:
