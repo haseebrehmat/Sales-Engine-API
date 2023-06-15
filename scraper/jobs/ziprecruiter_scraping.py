@@ -100,6 +100,3 @@ def ziprecruiter_scraping(links, job_type):
     except Exception as e:
         saveLogs(e)
         print(LINK_ISSUE)
-
-    import pdb
-    pdb.set_trace()
