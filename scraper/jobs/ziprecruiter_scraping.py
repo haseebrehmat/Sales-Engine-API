@@ -68,6 +68,9 @@ def ziprecruiter_scraping(links, job_type):
                         job_detail['job_description'] = driver.find_element(
                             By.CLASS_NAME, 'jobDescriptionSection').text
 
+                        job_detail['job_description_tags'] = driver.find_element(
+                            By.CLASS_NAME, 'jobDescriptionSection').get_attribute('innerHTML')
+
                         for single_job in job_data.find_elements(By.XPATH, "//p[@class='job_more']"):
                             if 'Posted date:' in single_job.text:
                                 job_detail['job_posted_date'] = single_job.text
@@ -97,3 +100,6 @@ def ziprecruiter_scraping(links, job_type):
     except Exception as e:
         saveLogs(e)
         print(LINK_ISSUE)
+
+    import pdb
+    pdb.set_trace()
