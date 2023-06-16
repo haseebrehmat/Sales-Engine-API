@@ -72,8 +72,8 @@ def find_jobs(driver, job_type, page_no, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = f'scraper/job_data/simply_hired - {date_time}.csv'
-    df.to_csv(filename, index=False)
+    filename = f'scraper/job_data/simply_hired - {date_time}.xlsx'
+    df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Simply Hired", filename=filename)
 
@@ -124,7 +124,7 @@ def simply_hired(link, job_type):
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)
-                
+
             driver.quit()
     except Exception as e:
         saveLogs(e)

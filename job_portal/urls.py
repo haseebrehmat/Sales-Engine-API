@@ -11,6 +11,7 @@ from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSources
 from job_portal.views.cover_letter.download import DownloadCoverView
 from job_portal.views.cover_letter.generate_cover import GenerateCoverView
 from job_portal.views.get_tech_keywords import get_tech_keywords
+from job_portal.views.job_detail import JobCleanerRemovedDuplicates
 from job_portal.views.job_upload import JobSourceCleanerView, JobTypeCleanerView
 from job_portal.views.manual_job_upload import ManualJobUploadView
 
@@ -37,6 +38,7 @@ urlpatterns = [
     path('clean_job_source/', JobSourceCleanerView.as_view()),
     path('clean_job_techstacks/', UpdateJobStackView.as_view()),
     path('tech_keywords/', get_tech_keywords),
+    path('delete_duplicated_jobs/', JobCleanerRemovedDuplicates.as_view())
 ]
 
 scheduler.start()
