@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from job_portal.filters.job_detail import CustomJobFilter
 from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
@@ -21,6 +22,7 @@ from scraper.utils.thread import start_new_thread
 from settings.base import FROM_EMAIL
 from settings.utils.helpers import get_host
 from utils import upload_to_s3
+from django.db import transaction
 
 
 class JobDetailsView(ModelViewSet):
@@ -152,3 +154,26 @@ class JobDetailsView(ModelViewSet):
         except Exception as e:
             print("Error in exporting csv function", e)
             return False
+
+
+
+class JobCleanerRemovedDuplicates(APIView):
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        jobs = JobDetail.objects.filter(job_applied=None).order_by('-created_at')
+        data = []
+        duplicates_jobs_ids = []
+        for job in jobs:
+            index = next((index for index, item in enumerate(data) if
+                          item.get('job_title') == job.job_title and item.get(
+                              'company_name') == job.company_name), None)
+            if not index:
+                data.append({'job_title': job.job_title, 'company_name': job.company_name})
+            else:
+                duplicates_jobs_ids.append(job.id)
+        if duplicates_jobs_ids:
+            JobDetail.objects.filter(id__in=duplicates_jobs_ids).delete()
+            msg = 'Duplicate records deleted successfully.'
+        else:
+            msg = 'No duplicate records found.'
+        return Response({'detail': msg}, status=status.HTTP_200_OK)
