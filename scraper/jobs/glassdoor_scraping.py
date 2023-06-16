@@ -92,9 +92,9 @@ def find_jobs(driver, job_type, total_job):
 
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                         "job_source", "job_type", "job_description_tags"]
-        filename = f'scraper/job_data/glassdoor - {date_time}.csv'
+        filename = f'scraper/job_data/glassdoor - {date_time}.xlsx'
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        df.to_csv(filename, index=False)
+        df.to_excel(filename, index=False)
         ScraperLogs.objects.create(
             total_jobs=len(df), job_source="GlassDoor", filename=filename)
     except Exception as e:
