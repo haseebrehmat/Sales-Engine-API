@@ -30,7 +30,6 @@ def load_jobs(driver):
             return False
         return True
     except Exception as e:
-        saveLogs(e)
         return False
 
 
@@ -42,7 +41,7 @@ def find_jobs(driver, job_type, total_job):
     while load_jobs(driver):
         try:
             jobs = driver.find_elements(
-                By.CLASS_NAME, "job-search-resultsstyle__JobCardWrapNew-sc-1wpt60k-6")
+                By.CLASS_NAME, "job-search-resultsstyle__JobCardWrap-sc-1wpt60k-4")
 
             for job in jobs:
                 job.location_once_scrolled_into_view
@@ -50,7 +49,7 @@ def find_jobs(driver, job_type, total_job):
             print(e)
 
     jobs = driver.find_elements(
-        By.CLASS_NAME, "job-search-resultsstyle__JobCardWrapNew-sc-1wpt60k-6")
+        By.CLASS_NAME, "job-search-resultsstyle__JobCardWrap-sc-1wpt60k-4")
 
     for job in jobs:
         try:
@@ -90,8 +89,8 @@ def find_jobs(driver, job_type, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = f'scraper/job_data/monster - {date_time}.csv'
-    df.to_csv(filename, index=False)
+    filename = f'scraper/job_data/monster - {date_time}.xlsx'
+    df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Monster", filename=filename)
     return total_job

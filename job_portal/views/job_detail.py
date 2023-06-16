@@ -125,8 +125,8 @@ class JobDetailsView(ModelViewSet):
             ]
             data = list(queryset.values(*values_list))
             df = pd.DataFrame(data)
-            filename = "export-" + str(uuid.uuid4())[:10] + ".csv"
-            df.to_csv(f'job_portal/{filename}', index=True)
+            filename = "export-" + str(uuid.uuid4())[:10] + ".xlsx"
+            df.to_excel(f'job_portal/{filename}', index=True)
             path = f"job_portal/{filename}"
 
             url = upload_to_s3.upload_csv(path, filename)
