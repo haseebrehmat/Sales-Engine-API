@@ -128,8 +128,8 @@ def adzuna_scraping(links, job_type):
 
             df = pd.concat([df, per_link_data], axis=0, ignore_index=True)
         date_time = str(datetime.now())
-        filename = f'scraper/job_data/adzuna_results - {date_time}.csv'
-        df.to_csv(filename, index=False)
+        filename = f'scraper/job_data/adzuna_results - {date_time}.xlsx'
+        df.to_excel(filename, index=False)
         ScraperLogs.objects.create(total_jobs=len(df), job_source="Adzuna", filename=filename)
     except Exception as e:
         saveLogs(e)
