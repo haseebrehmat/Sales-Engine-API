@@ -157,7 +157,7 @@ def upload_file(job_parser, filename):
     for item in classify_data.data_frame.itertuples():
         query |= Q(company_name=item.company_name, job_title=item.job_title)
 
-    jobs = JobDetail.objects.filter(query, created_at__gte=last_10_days)
+    jobs = JobDetail.objects.filter(query, created_at__lte=last_10_days, job_applied=None)
 
     bulk_data = [JobArchive(
         id=x.id,
@@ -175,6 +175,7 @@ def upload_file(job_parser, filename):
         created_at=x.created_at,
         updated_at=x.updated_at
     ) for x in jobs]
+
     JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True)
     jobs.delete()
 
@@ -192,7 +193,7 @@ def upload_file(job_parser, filename):
         job_item.job_source_url != "" and isinstance(job_item.job_source_url,
                                                      str)]
 
-    data = JobDetail.objects.bulk_create(
+    JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
 
     after_uploading_jobs_count = JobDetail.objects.count()
@@ -251,11 +252,6 @@ def run_scrapers(scrapers):
                 scraper_function = scraper['function']
                 if not scraper['stop_status']:
                     try:
-                        # if key in scrapers_without_links:
-                        #     scraper_function()
-                        #     scraper['stop_status'] = True
-                        #     flag = True
-                        # else:
                         job_source_queries = scraper['job_source_queries']
                         if i < len(job_source_queries):
                             link = job_source_queries[i]['link']
