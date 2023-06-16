@@ -5,4 +5,6 @@ from candidate.models.exposed_candidates import ExposedCandidate
 from candidate.models.skills import CandidateSkills, Skills
 from candidate.models.candidate_company import CandidateCompany
 from candidate.models.selected_candidates import SelectedCandidate
+from candidate.models.projects import ProjectImage, CandidateProjects
+from candidate.models.tools import Tools, CandidateTools
 

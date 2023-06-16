@@ -49,6 +49,8 @@ class CandidateListView(ListAPIView):
             data["designation_id"] = request.data.get("designation")
             skills = request.data.get("skills")
             data['skills'] = skills
+            tools = request.data.get("tools")
+            data['tools'] = tools
             data['password'] = request.data.get("password", "User@123")
             data['email'] = request.data.get("email", "")
             serializer.create(data)
@@ -72,11 +74,14 @@ class CandidateDetailView(APIView):
     def put(self, request, pk):
         queryset = Candidate.objects.filter(pk=pk).first()
         data = request.data
+        import pdb
+        pdb.set_trace()
         serializer = CandidateSerializer(instance=queryset, data=data)
         if serializer.is_valid():
             skills = request.data.get("skills")
+            tools = request.data.get("tools")
             serializer.save(company_id=request.user.profile.company.id,
-                            skills=skills, designation_id=request.data.get("designation", queryset.designation_id))
+                            skills=skills, tools=tools, designation_id=request.data.get("designation", queryset.designation_id))
             message = "Candidate updated successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
