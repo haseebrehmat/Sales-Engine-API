@@ -1,6 +1,10 @@
+import uuid
 from datetime import datetime, timedelta
 
+import pandas as pd
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -16,6 +20,9 @@ from job_portal.models import AppliedJobStatus
 from job_portal.paginations.applied_job import AppliedJobPagination
 from job_portal.permissions.team_applied_job import TeamAppliedJobPermission
 from job_portal.serializers.applied_job import TeamAppliedJobDetailSerializer
+from scraper.utils.thread import start_new_thread
+from settings.base import FROM_EMAIL
+from utils import upload_to_s3
 
 
 class ListAppliedJobView(ListAPIView):
@@ -52,6 +59,9 @@ class ListAppliedJobView(ListAPIView):
                 applied_by__id__in=bd_id_list).select_related()
 
             queryset = self.filter_queryset(job_list)
+            if request.GET.get("download", "") == "true":
+                self.export_csv(queryset, self.request)
+                return Response("Export in progress, You will be notify through email")
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = self.get_serializer(page, many=True)
@@ -89,3 +99,52 @@ class ListAppliedJobView(ListAPIView):
             'job__job_type').annotate(total_job_type=Count('job__job_type')))
 
         return job_type_count
+
+    @start_new_thread
+    def export_csv(self, queryset, request):
+        try:
+            data = [
+                {
+                    "job_title": x.job.job_title,
+                    "company_name": x.job.company_name,
+                    "job_source": x.job.job_source,
+                    "job_type": x.job.job_type,
+                    "address": x.job.address,
+                    "job_description": x.job.job_description,
+                    "tech_keywords": x.job.tech_keywords,
+                    "job_posted_date": str(x.job.job_posted_date),
+                    "job_source_url": x.job.job_source_url,
+                    "applied_by_name": x.applied_by.username,
+                    "applied_date": str(x.applied_date),
+                    "resume": x.resume,
+                } for x in queryset]
+
+            df = pd.DataFrame(data)
+            filename = "export-" + str(uuid.uuid4())[:10] + ".xlsx"
+            df.to_excel(f'job_portal/{filename}', index=True)
+            path = f"job_portal/{filename}"
+
+            url = upload_to_s3.upload_csv(path, filename)
+            context = {
+                "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
+                "username": request.user.username,
+                "company": "Octagon",
+                "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
+                "download_link": url
+            }
+
+            html_string = render_to_string("csv_email_template.html", context)
+            msg = EmailMultiAlternatives("Applied Jobs Export", "Applied Jobs Export",
+                                         FROM_EMAIL,
+                                         [request.user.email])
+
+            msg.attach_alternative(
+                html_string,
+                "text/html"
+            )
+            email_status = msg.send()
+            return email_status
+        except Exception as e:
+            print("Error in exporting csv function", e)
+            return False
+

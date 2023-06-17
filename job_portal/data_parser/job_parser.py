@@ -17,16 +17,23 @@ class JobParser(object):
         # file check extensions validation
         message = {}
         valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
+        ext = ""
         for file_item in self.filelist:
             if isinstance(file_item, str):
-                ext = ".csv"
+                for x in valid_extensions:
+                    if x in file_item:
+                        ext = x
+                        break
             else:
                 ext = os.path.splitext(file_item.name)[1]
             if not ext.lower() in valid_extensions:
                 message = {'detail': 'Unsupported file extension'}
                 return False, message
             # read and check if columns match
-            df = pd.read_csv(file_item, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file_item, nrows=1)
+            if ext == ".csv":
+                df = pd.read_csv(file_item, engine='c', nrows=1)
+            else:
+                df = pd.read_excel(file_item, nrows=1)
 
             try:
                 file_item.file.seek(0)
@@ -46,7 +53,13 @@ class JobParser(object):
             # Check whether file is in text format or not
             df = pd.DataFrame()
             if isinstance(file, str) or file.name.endswith(".csv"):
-                df = pd.read_csv(file, engine='c')
+                if isinstance(file, str):
+                    if file.endswith('xlsx'):
+                        df = self.read_xlsx(file)
+                    elif file.endswith(('.ods', 'odf', '.odt')):
+                        df = self.read_odf(file)
+                else:
+                    df = pd.read_csv(file, engine='c')
             elif file.name.endswith('xlsx'):
                 df = self.read_xlsx(file)
             elif file.name.endswith(('.ods', 'odf', '.odt')):
