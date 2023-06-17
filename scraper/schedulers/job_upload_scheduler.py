@@ -87,14 +87,18 @@ def upload_jobs():
         temp = os.listdir(path)
         files = [path + file for file in temp]
         for file in files:
-            if not is_file_empty(file):
-                job_parser = JobParser([file])
-                # validate files first
-                is_valid, message = job_parser.validate_file()
-                if is_valid:
-                    job_parser.parse_file()
-                upload_to_s3.upload_job_files(file, file.replace(path, ""))
-                upload_file(job_parser, file)
+            try:
+                if not is_file_empty(file):
+                    job_parser = JobParser([file])
+                    # validate files first
+                    is_valid, message = job_parser.validate_file()
+                    if is_valid:
+                        job_parser.parse_file()
+                    # upload_to_s3.upload_job_files(file, file.replace(path, ""))
+                    upload_file(job_parser, file)
+            except Exception as e:
+                print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
+                saveLogs(e)
     except Exception as e:
         print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
         saveLogs(e)
@@ -103,12 +107,19 @@ def upload_jobs():
 def is_file_empty(file):
     try:
         valid_extensions = ['.csv', '.xlsx', '.ods', 'odf', '.odt']
+        ext = ""
         if isinstance(file, str):
-            ext = ".csv"
+            for x in valid_extensions:
+                if x in file:
+                    ext = x
+                    break
+
         else:
             ext = os.path.splitext(file.name)[1]
-        df = pd.read_csv(
-            file, engine='c', nrows=1) if ext == '.csv' else pd.read_excel(file, nrows=1)
+        if ext == ".csv":
+            df = pd.read_csv(file, engine='c', nrows=1)
+        else:
+            df = pd.read_excel(file, nrows=1)
         return df.empty
     except Exception as e:
         saveLogs(e)
@@ -578,3 +589,5 @@ try:
     group_scraper_job()
 except Exception as e:
     print(e)
+
+# upload_jobs()
