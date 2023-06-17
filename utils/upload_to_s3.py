@@ -53,7 +53,7 @@ def upload_csv(file_path, file_name):
                       aws_secret_access_key='saFfux0N5UIrYlytWc+6crhT4++TY0iuTHkOeISW')
 
     bucket_path = 'octagon-user-profile-images'
-    s3.upload_file(file_path+file_name, bucket_path, file_name,
+    s3.upload_file(file_path, bucket_path, file_name,
                       ExtraArgs={'ContentType': 'text/csv',
                                  'ACL': 'public-read'})
 
