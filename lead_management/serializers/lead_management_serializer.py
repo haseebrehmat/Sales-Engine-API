@@ -34,12 +34,13 @@ class LeadManagementSerializer(serializers.ModelSerializer):
         to_date = request.query_params.get('to', '')
         members = request.query_params.get('members', '')
         team = request.query_params.get('team', '')
-
+        candidates = request.query_params.get('candidates', None)
         stacks_query = Q()
         from_date_query = Q()
         to_date_query = Q()
         members_query = Q()
         team_query = Q()
+        candidate_query = Q()
 
         if stacks:
             stacks_query = Q(
@@ -70,6 +71,9 @@ class LeadManagementSerializer(serializers.ModelSerializer):
             members = members.split(',')
             members_query = Q(applied_job_status__applied_by__id__in=members)
 
+        if candidates:
+            candidate_query = Q(candidate__id__in=candidates.split(','))
+
         try:
             data = [
                 {
@@ -92,7 +96,7 @@ class LeadManagementSerializer(serializers.ModelSerializer):
                                   'desigination': i.candidate.designation.title if i.candidate.designation.title else ''} if i.candidate else None,
                 }
                 for i in Lead.objects.filter(company_status=obj).filter(stacks_query, from_date_query, to_date_query,
-                                                                        members_query, team_query)
+                                                                        members_query, team_query, candidate_query)
                 if role.lower() == "owner" or str(i.applied_job_status.applied_by_id) in user
             ]
         except Exception as e:
