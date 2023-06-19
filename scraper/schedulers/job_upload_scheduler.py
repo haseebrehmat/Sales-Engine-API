@@ -1,15 +1,17 @@
 import datetime
+import json
 import os
 import traceback
 
 import pandas as pd
+import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.db import transaction
 from django.db.models import Q
 
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
-from job_portal.models import JobDetail, JobUploadLogs, JobArchive
+from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
 from scraper.jobs import single_scrapers_functions
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
@@ -31,6 +33,7 @@ from scraper.utils.helpers import convert_time_into_minutes
 from scraper.utils.thread import start_new_thread
 from utils import upload_to_s3
 from utils.helpers import saveLogs
+from utils.sales_engine import upload_jobs_in_sales_engine
 
 # from error_logger.models import Log
 # from scraper.utils.thread import start_new_thread
@@ -94,7 +97,7 @@ def upload_jobs():
                     is_valid, message = job_parser.validate_file()
                     if is_valid:
                         job_parser.parse_file()
-                    # upload_to_s3.upload_job_files(file, file.replace(path, ""))
+                    upload_to_s3.upload_job_files(file, file.replace(path, ""))
                     upload_file(job_parser, file)
             except Exception as e:
                 print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
@@ -162,33 +165,33 @@ def upload_file(job_parser, filename):
     classify_data.classify()
     before_uploading_jobs = JobDetail.objects.count()
 
-    last_10_days = datetime.datetime.now() - datetime.timedelta(days=10)
+    # last_10_days = datetime.datetime.now() - datetime.timedelta(days=10)
+    #
+    # query = Q()
+    # for item in classify_data.data_frame.itertuples():
+    #     query |= Q(company_name=item.company_name, job_title=item.job_title)
 
-    query = Q()
-    for item in classify_data.data_frame.itertuples():
-        query |= Q(company_name=item.company_name, job_title=item.job_title)
+    # jobs = JobDetail.objects.filter(query, created_at__lte=last_10_days, job_applied=None)
 
-    jobs = JobDetail.objects.filter(query, created_at__lte=last_10_days, job_applied=None)
-
-    bulk_data = [JobArchive(
-        id=x.id,
-        job_title=x.job_title,
-        company_name=x.company_name,
-        job_source=x.job_source,
-        job_type=x.job_type,
-        address=x.address,
-        job_description=x.job_description,
-        tech_keywords=x.tech_keywords,
-        job_posted_date=x.job_posted_date,
-        job_source_url=x.job_source_url,
-        block=x.block,
-        is_manual=x.is_manual,
-        created_at=x.created_at,
-        updated_at=x.updated_at
-    ) for x in jobs]
-
-    JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True)
-    jobs.delete()
+    # bulk_data = [JobArchive(
+    #     id=x.id,
+    #     job_title=x.job_title,
+    #     company_name=x.company_name,
+    #     job_source=x.job_source,
+    #     job_type=x.job_type,
+    #     address=x.address,
+    #     job_description=x.job_description,
+    #     tech_keywords=x.tech_keywords,
+    #     job_posted_date=x.job_posted_date,
+    #     job_source_url=x.job_source_url,
+    #     block=x.block,
+    #     is_manual=x.is_manual,
+    #     created_at=x.created_at,
+    #     updated_at=x.updated_at
+    # ) for x in jobs]
+    #
+    # JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True)
+    # jobs.delete()
 
     model_instances = [
         JobDetail(job_title=job_item.job_title,
@@ -206,7 +209,7 @@ def upload_file(job_parser, filename):
 
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
-
+    upload_jobs_in_sales_engine(model_instances)
     after_uploading_jobs_count = JobDetail.objects.count()
     scraper_log = ScraperLogs.objects.filter(filename=filename, uploaded_jobs=0).first()
     if scraper_log:
