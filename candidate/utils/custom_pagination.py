@@ -3,7 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from authentication.models import Team, Profile
-from candidate.models import CandidateSkills, Designation, Candidate, ExposedCandidate
+from candidate.models import CandidateSkills, Designation, Candidate, ExposedCandidate, SelectedCandidate
 from job_portal.models import JobDetail, AppliedJobStatus
 
 
@@ -52,6 +52,7 @@ class LeadManagementPagination(PageNumberPagination):
              if team:
                 response['members'] = self.get_members()
         response['tech_stack'] = self.get_tech_stack()
+        response['candidates'] = self.get_candidates()
         return Response(response)
 
     def get_team(self):
@@ -98,6 +99,11 @@ class LeadManagementPagination(PageNumberPagination):
         company_names = list(dict.fromkeys(company.lower() for company in list(
             JobDetail.objects.filter(id__in=self.get_applied_job_ids()).values_list('company_name', flat=True))))
         return self.format_list(company_names)
+
+    def get_candidates(self):
+        selected_candidates = SelectedCandidate.objects.filter(company=self.request.user.profile.company)
+        candidates_data = [{'label': obj.candidate.name, 'value': obj.candidate.id } for obj in selected_candidates]
+        return candidates_data
 
     def format_list(self, list_items):
         return [{'label': item, 'value': item} for item in list_items]
