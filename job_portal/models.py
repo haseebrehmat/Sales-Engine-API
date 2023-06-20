@@ -124,6 +124,18 @@ class BlacklistJobs(TimeStamped):
         default_permissions = ()
 
 
+class BlockJobCompany(TimeStamped):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
+    company_name = models.CharField(max_length=100, blank=True, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    class Meta:
+        default_permissions = ()
+
+
 class SalesEngineJobsStats(TimeStamped):
     jobs_count = models.IntegerField()
 

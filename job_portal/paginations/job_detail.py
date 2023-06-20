@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -6,9 +7,9 @@ from django.utils import timezone
 from rest_framework import pagination
 from rest_framework.response import Response
 
-from job_portal.models import JobDetail, BlacklistJobs
+from job_portal.models import JobDetail, BlacklistJobs, BlockJobCompany
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
-import datetime
+
 
 class CustomPagination(pagination.PageNumberPagination):
     page_size = 25
@@ -130,7 +131,8 @@ class CustomPagination(pagination.PageNumberPagination):
             queryset = queryset.filter(tech_keywords__in=keywords_list)
         if self.request.GET.get("job_visibility") != "all":
             if self.request.user.profile.company:
-                company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list("company_name", flat=True)
+                company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list(
+                    "company_name", flat=True)
             else:
                 company = BlacklistJobs.objects.all().values_list("company_name", flat=True)
             company = list(company)
@@ -138,4 +140,12 @@ class CustomPagination(pagination.PageNumberPagination):
                 queryset = queryset.filter(company_name__in=company)
             elif self.request.GET.get("job_visibility") == "non-recruiter":
                 queryset = queryset.exclude(company_name__in=company)
+        blocked = self.request.GET.get("blocked")
+        blocked_job_companies = list(
+            BlockJobCompany.objects.filter(company=self.request.user.profile.company).values_list('company_name',
+                                                                                                  flat=True))
+        if blocked == "true":
+            queryset = queryset.filter(company_name__in=blocked_job_companies)
+        elif blocked == "false":
+            queryset = queryset.exclude(company_name__in=blocked_job_companies)
         return queryset
