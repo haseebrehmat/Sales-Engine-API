@@ -19,15 +19,16 @@ class JobCompaniesList(ListAPIView):
         if search:
             search = search.lower()
             search_query = Q(company_name__icontains=search)
-        block_job_companies = list(
+        block_job_companies = [company.lower() for company in list(
             BlockJobCompany.objects.filter(company=self.request.user.profile.company).filter(search_query).values_list(
                 'company_name',
-                flat=True))
+                flat=True))]
         companies = list(JobDetail.objects.filter(search_query).values_list('company_name', flat=True))
         companies.extend(list(JobArchive.objects.filter(search_query).values_list('company_name', flat=True)))
         all_companies = [{"company": company, "is_block": True} for company in block_job_companies]
         all_companies.extend([{"company": company, "is_block": False} for company in list(
-            set(company for company in companies if company and company not in block_job_companies))])
+            set(company.lower() for company in companies if
+                company.lower() and company.lower() not in block_job_companies))])
         self.queryset = all_companies
         return all_companies
 

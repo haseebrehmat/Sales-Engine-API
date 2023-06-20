@@ -1,9 +1,8 @@
-import datetime
 import uuid
-from threading import Thread
 
 import pandas as pd
 from django.core.mail import EmailMultiAlternatives
+from django.db import transaction
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
@@ -13,16 +12,15 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+
 from job_portal.filters.job_detail import CustomJobFilter
-from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
+from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, BlockJobCompany
 from job_portal.paginations.job_detail import CustomPagination
 from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer
 from scraper.utils.thread import start_new_thread
 from settings.base import FROM_EMAIL
-from settings.utils.helpers import get_host
 from utils import upload_to_s3
-from django.db import transaction
 
 
 class JobDetailsView(ModelViewSet):
@@ -56,6 +54,9 @@ class JobDetailsView(ModelViewSet):
             queryset = self.get_queryset().exclude(id__in=excluded_jobs)
         else:
             queryset = self.get_queryset()
+        # filter blocked job company
+        queryset = self.filter_blocked_job_company(queryset)
+
         # pass the queryset to the remaining filters
         queryset = self.filter_queryset(queryset)
 
@@ -155,7 +156,16 @@ class JobDetailsView(ModelViewSet):
             print("Error in exporting csv function", e)
             return False
 
-
+    def filter_blocked_job_company(self, queryset):
+        blocked_job_companies = list(
+            BlockJobCompany.objects.filter(company=self.request.user.profile.company).values_list('company_name',
+                                                                                                  flat=True))
+        blocked = self.request.GET.get('blocked')
+        if blocked == "true":
+            queryset = queryset.filter(company_name__in=blocked_job_companies)
+        elif blocked == "false":
+            queryset = queryset.exclude(company_name__in=blocked_job_companies)
+        return queryset
 
 class JobCleanerRemovedDuplicates(APIView):
     @transaction.atomic
