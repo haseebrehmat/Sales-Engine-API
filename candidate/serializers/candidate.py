@@ -3,7 +3,7 @@ from django.db import transaction
 from rest_framework import serializers
 from authentication.models import User, Profile, Role
 from candidate.models import Candidate, CandidateSkills, Skills, ExposedCandidate, SelectedCandidate, Designation, \
-    CandidateTools, Tools, Regions, CandidateRegions
+    CandidateTools, Tools, Regions, CandidateRegions, CandidateProjects
 from rest_framework.exceptions import ValidationError
 
 
@@ -21,7 +21,7 @@ class CandidateSerializer(serializers.ModelSerializer):
 
     def get_skills(self, obj):
         queryset = CandidateSkills.objects.filter(candidate=obj)
-        data = [{'skill': x.skill.name, 'level': x.level} for x in queryset]
+        data = [{'name': x.skill.name, 'level': x.level} for x in queryset]
         return data
 
     def get_regions(self, obj):
@@ -170,3 +170,9 @@ class CandidateSerializer(serializers.ModelSerializer):
         data = [CandidateRegions(candidate_id=instance.id, region_id=re) for re in regions]
         CandidateRegions.objects.bulk_create(data, ignore_conflicts=True)
         return instance
+
+
+
+
+
+
