@@ -14,7 +14,12 @@ class Tools(TimeStamped):
 class CandidateTools(TimeStamped):
     candidate = models.ForeignKey('Candidate', on_delete=models.SET_NULL, blank=True, null=True)
     tool = models.ForeignKey('Tools', on_delete=models.CASCADE, blank=True, null=True)
-    experience_level = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    #experience_level = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
     def __str__(self):
-        return f"{self.candidate.name} - {self.tool.name}"
+        if self.candidate is not None and self.tool is not None:
+            return f"{self.candidate.name} - {self.tool.name}"
+        elif self.candidate is not None:
+            return f"{self.candidate.name} - Unassigned"
+        else:
+            return f"Unassigned - {self.tool.name}"
 

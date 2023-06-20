@@ -7,4 +7,4 @@ from candidate.models.candidate_company import CandidateCompany
 from candidate.models.selected_candidates import SelectedCandidate
 from candidate.models.projects import ProjectImage, CandidateProjects
 from candidate.models.tools import Tools, CandidateTools
-
+from candidate.models.region import Regions, CandidateRegions

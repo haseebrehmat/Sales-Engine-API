@@ -17,5 +17,9 @@ class CandidateSkills(TimeStamped):
     level = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
-        return f"{self.candidate.name} - {self.skill.name}"
-
+        if self.candidate is not None and self.skill is not None:
+            return f"{self.candidate.name} - {self.skill.name}"
+        elif self.candidate is not None:
+            return f"{self.candidate.name} - Unassigned"
+        else:
+            return f"Unassigned - {self.skill.name}"
