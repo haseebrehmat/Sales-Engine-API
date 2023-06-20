@@ -157,16 +157,6 @@ class JobDetailsView(ModelViewSet):
             print("Error in exporting csv function", e)
             return False
 
-
-class RemoveDuplicateView(APIView):
-    def post(self, request):
-        if request.user.is_superuser:
-            self.remove_duplicate()
-            message = "Duplication removal in progress"
-        else:
-            message = "Only Admin has access to this endpoint"
-        return Response({"detail": message}, status=201)
-      
     def filter_blocked_job_company(self, queryset):
         blocked_job_companies = list(
             BlockJobCompany.objects.filter(company=self.request.user.profile.company).values_list('company_name',
@@ -177,6 +167,18 @@ class RemoveDuplicateView(APIView):
         elif blocked == "false":
             queryset = queryset.exclude(company_name__in=blocked_job_companies)
         return queryset
+
+
+class RemoveDuplicateView(APIView):
+    def post(self, request):
+        if request.user.is_superuser:
+            self.remove_duplicate()
+            message = "Duplication removal in progress"
+        else:
+            message = "Only Admin has access to this endpoint"
+        return Response({"detail": message}, status=201)
+      
+
 
     @start_new_thread
     @transaction.atomic
