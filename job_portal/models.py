@@ -26,7 +26,7 @@ class JobDetail(TimeStamped):
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
     block = models.BooleanField(default=False)
     is_manual = models.BooleanField(default=False)
-    job_applied = models.CharField(blank=True, null=True, max_length=300)
+    job_applied = models.CharField(max_length=300, default="not applied")
 
     class Meta:
         default_permissions = ()
@@ -130,3 +130,5 @@ class SalesEngineJobsStats(TimeStamped):
 
 class JobUploadLogs(TimeStamped):
     jobs_count = models.IntegerField()
+
+

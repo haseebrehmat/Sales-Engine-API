@@ -4,6 +4,7 @@ from threading import Thread
 
 import pandas as pd
 from django.core.mail import EmailMultiAlternatives
+from django.db.models import Count
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
@@ -156,24 +157,30 @@ class JobDetailsView(ModelViewSet):
             return False
 
 
-
-class JobCleanerRemovedDuplicates(APIView):
-    @transaction.atomic
-    def post(self, request, *args, **kwargs):
-        jobs = JobDetail.objects.filter(job_applied=None).order_by('-created_at')
-        data = []
-        duplicates_jobs_ids = []
-        for job in jobs:
-            index = next((index for index, item in enumerate(data) if
-                          item.get('job_title') == job.job_title and item.get(
-                              'company_name') == job.company_name), None)
-            if not index:
-                data.append({'job_title': job.job_title, 'company_name': job.company_name})
-            else:
-                duplicates_jobs_ids.append(job.id)
-        if duplicates_jobs_ids:
-            JobDetail.objects.filter(id__in=duplicates_jobs_ids).delete()
-            msg = 'Duplicate records deleted successfully.'
+class RemoveDuplicateView(APIView):
+    def post(self, request):
+        if request.user.is_superuser:
+            self.remove_duplicate()
+            message = "Duplication removal in progress"
         else:
-            msg = 'No duplicate records found.'
-        return Response({'detail': msg}, status=status.HTTP_200_OK)
+            message = "Only Admin has access to this endpoint"
+        return Response({"detail": message}, status=201)
+
+    @start_new_thread
+    @transaction.atomic
+    def remove_duplicate(self):
+        print("Getting Duplicates!")
+        duplicate_values = JobDetail.objects.values('company_name', 'job_title', 'job_applied').annotate(
+            count=Count('id')).filter(count__gt=1)
+
+        for duplicate in duplicate_values:
+            # Get all the duplicate records
+            duplicate_records = JobDetail.objects.filter(company_name=duplicate['company_name'],
+                                                         job_title=duplicate['job_title'],
+                                                         job_applied=duplicate['job_applied']
+                                                         )
+
+            # Keep the first record and delete the rest
+            first_record = duplicate_records.first()
+            duplicate_records.exclude(pk=first_record.pk).delete()
+        print("Duplicates Removed!")
