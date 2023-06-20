@@ -8,6 +8,9 @@ import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.db import transaction
 from django.db.models import Q
+from django.db.models import Count
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
@@ -31,6 +34,7 @@ from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
 from scraper.utils.thread import start_new_thread
+from settings.base import env
 from utils import upload_to_s3
 from utils.helpers import saveLogs
 from utils.sales_engine import upload_jobs_in_sales_engine
@@ -171,7 +175,7 @@ def upload_file(job_parser, filename):
     # for item in classify_data.data_frame.itertuples():
     #     query |= Q(company_name=item.company_name, job_title=item.job_title)
 
-    # jobs = JobDetail.objects.filter(query, created_at__lte=last_10_days, job_applied=None)
+    # jobs = JobDetail.objects.filter(query, created_at__lte=last_10_days, job_applied="not applied")
 
     # bulk_data = [JobArchive(
     #     id=x.id,
@@ -588,9 +592,11 @@ def start_group_scraper_scheduler():
 
 
 try:
-    start_group_scraper_scheduler()
-    group_scraper_job()
+    if env("ENVIRONMENT") != "local":
+        start_group_scraper_scheduler()
+        group_scraper_job()
 except Exception as e:
     print(e)
 
 # upload_jobs()
+

@@ -26,7 +26,7 @@ class JobDetail(TimeStamped):
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
     block = models.BooleanField(default=False)
     is_manual = models.BooleanField(default=False)
-    job_applied = models.CharField(blank=True, null=True, max_length=300)
+    job_applied = models.CharField(max_length=300, default="not applied")
 
     class Meta:
         default_permissions = ()
@@ -124,9 +124,23 @@ class BlacklistJobs(TimeStamped):
         default_permissions = ()
 
 
+class BlockJobCompany(TimeStamped):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
+    company_name = models.CharField(max_length=100, blank=True, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    class Meta:
+        default_permissions = ()
+
+
 class SalesEngineJobsStats(TimeStamped):
     jobs_count = models.IntegerField()
 
 
 class JobUploadLogs(TimeStamped):
     jobs_count = models.IntegerField()
+
+
