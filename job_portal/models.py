@@ -27,6 +27,13 @@ class JobDetail(TimeStamped):
     block = models.BooleanField(default=False)
     is_manual = models.BooleanField(default=False)
     job_applied = models.CharField(max_length=300, default="not applied")
+    status = models.CharField(blank=True, null=True, max_length=50)
+    salary_max = models.CharField(max_length=50, blank=True, null=True)
+    salary_min = models.CharField(max_length=50, blank=True, null=True)
+    salary_format = models.CharField(max_length=50, blank=True, null=True)
+    estimated_salary = models.CharField(blank=True, null=True)
+    expired_at = models.DateTimeField(max_length=150, blank=True, null=True)
+    job_role = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         default_permissions = ()
