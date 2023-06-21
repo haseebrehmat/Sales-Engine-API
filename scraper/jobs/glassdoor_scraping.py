@@ -27,7 +27,7 @@ def login(driver):
         driver.find_element(By.ID, "inlineUserPassword").clear()
         driver.find_element(By.ID, "inlineUserPassword").send_keys(
             GLASSDOOR_PASSWORD)
-        driver.find_element(By.CLASS_NAME, "css-1dqhu4c").click()
+        driver.find_element(By.CLASS_NAME, "css-jbcabp").click()
         login = driver.find_elements(By.CLASS_NAME, "iconContainer")
         if len(login) > 0:
             return False
@@ -126,12 +126,12 @@ def glassdoor(link, job_type):
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
                               options=options) as driver:  # modified
             request_url(driver, GLASSDOOR_LOGIN_URL)
+            driver.maximize_window()
             logged_in = login(driver)
             try:
                 if logged_in:
                     flag = True
                     request_url(driver, link)
-                    driver.maximize_window()
                     while flag:
                         flag, total_job = find_jobs(
                             driver, job_type, total_job)
