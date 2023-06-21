@@ -97,11 +97,7 @@ def find_jobs(driver, job_type, url=None):
 
     for job in jobs:
         try:
-            job.click()
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "jobs-unified-top-card__job-title"))
-            )
+            job.location_once_scrolled_into_view
         except Exception as e:
             saveLogs(e)
             print(e)
