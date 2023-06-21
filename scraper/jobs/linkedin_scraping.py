@@ -99,7 +99,6 @@ def find_jobs(driver, job_type, url=None):
         try:
             job.location_once_scrolled_into_view
         except Exception as e:
-            saveLogs(e)
             print(e)
 
     for job in jobs:
@@ -138,7 +137,6 @@ def find_jobs(driver, job_type, url=None):
 
                 scrapped_data.append(data)
         except Exception as e:
-            saveLogs(e)
             print(e)
 
     date_time = str(datetime.now())
