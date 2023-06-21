@@ -66,7 +66,6 @@ def find_jobs(driver, job_type, total_job):
             total_job += 1
         except Exception as e:
             msg = f"Exception in CareerJet Scraping {e}"
-            saveLogs(e)
 
         driver.back()
 

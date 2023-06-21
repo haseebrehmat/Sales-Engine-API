@@ -8,7 +8,7 @@ class JobParser(object):
     def __init__(self, filelist):
         self.filelist = filelist
         self.job_desc_cols = ['job_title', 'company_name', 'job_source', 'job_type', 'address', 'job_description',
-                              'job_posted_date', 'job_source_url']
+                              'job_posted_date', 'job_source_url', 'job_description_tags']
         if "scraper/job_data/" in self.filelist[0]:
             self.job_desc_cols = ['job_title', 'company_name', 'job_source', 'job_type', 'address', 'job_description',
                                   'job_posted_date', 'job_source_url', 'job_description_tags']

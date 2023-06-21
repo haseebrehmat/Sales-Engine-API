@@ -14,5 +14,6 @@ class CustomPagination(PageNumberPagination):
                 'previous': self.get_previous_link(),
                 'num_pages': self.page.paginator.num_pages,
                 'results': data
+
         })
         return response

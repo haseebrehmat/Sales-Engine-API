@@ -68,7 +68,6 @@ def find_jobs(driver, job_type, total_job):
             total_job += 1
         except Exception as e:
             msg = f"Exception in Talent Scraping {e}"
-            saveLogs(e)
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
