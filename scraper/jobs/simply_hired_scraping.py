@@ -65,7 +65,6 @@ def find_jobs(driver, job_type, page_no, total_job):
 
         except Exception as e:
             count += 1
-            saveLogs(e)
             print(e)
 
     date_time = str(datetime.now())

@@ -36,11 +36,9 @@ def find_jobs(driver, job_type, total_job):
             try:
                 job.location_once_scrolled_into_view
                 job.click()
-                # print("Job no.", count + 1, "clicked")
             except Exception as e:
-                saveLogs(e)
                 print(e)
-                # print("Job no.", count + 1, "clicked")
+
             time.sleep(2)
             job_title = driver.find_elements(By.CLASS_NAME, "gc-card__title")
             append_data(data, job_title[count].text)
@@ -78,7 +76,6 @@ def find_jobs(driver, job_type, total_job):
             c_button[0].click()
 
     except Exception as e:
-        saveLogs(e)
         print(e)
 
     time.sleep(2)
@@ -89,7 +86,7 @@ def find_jobs(driver, job_type, total_job):
       time.sleep(2)
       return True, total_job
     except Exception as e:
-      saveLogs(e)
+      print(e)
     return False, total_job
 
 def job_display(driver):
