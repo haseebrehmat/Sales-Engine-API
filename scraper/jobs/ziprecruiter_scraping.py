@@ -10,6 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 
@@ -88,7 +89,7 @@ def ziprecruiter_scraping(links, job_type):
                 df['job_posted_date'] = df['job_posted_date'].str.replace(
                     'Posted date: ', '')
                 df['job_type'] = df['job_type'].str.replace('Type\n', '')
-                filename = f'scraper/job_data/ziprecruiter - {date_time}.xlsx'
+                filename = generate_scraper_filename(ScraperNaming.ZIP_RECRUITER)
                 df.to_excel(
                     filename, index=False)
                 ScraperLogs.objects.create(total_jobs=len(

@@ -527,4 +527,10 @@ permissions = [
         "name": "Block / Unblock Job Company",
         "level": 2
     },
+    {
+        "module": "Logger",
+        "codename": "view_api_logs",
+        "name": "View API logs",
+        "level": 1
+    },
 ]
