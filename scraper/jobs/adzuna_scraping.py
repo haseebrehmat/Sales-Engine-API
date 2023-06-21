@@ -1,136 +1,114 @@
-import json
-import re
+import time
 from datetime import datetime
-from math import ceil
 
-import numpy as np
 import pandas as pd
-import urllib3
-from bs4 import BeautifulSoup
-from scipy.stats import norm
-from tqdm import tqdm
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from utils.helpers import saveLogs
 
-CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
-http = urllib3.PoolManager()
-
-results_div_index = 3
+total_job = 0
 
 
-def cleanhtml(raw_html):
-    try:
-        return re.sub(CLEANR, '', raw_html)
-    except Exception as e:
-        print(e)
+# calls url
+def request_url(driver, url):
+    driver.get(url)
 
 
-def ranges_of_salaries(std, mu, results):
-    try:
-        ppf_func = np.vectorize(norm.ppf)
-        array = np.linspace(0, 1, results)
-        array_z = ppf_func(array[1:-1])
-        find_sample = np.vectorize(lambda z, std, mu: (z * std) + mu)
-        find_sample = np.insert(find_sample(array_z, std, mu), 0, 0)
-        find_sample = np.abs(find_sample.astype(int))
-        return find_sample
-    except Exception as e:
-        print(e)
+# append data for csv file
+def append_data(data, field):
+    data.append(str(field).strip("+"))
 
 
-def fetch_results(soup):
-    global results_div_index
-    try:
-        if re.search(r'results:.*\[(.|\n)*\]',
-                     soup.find_all('script', {'type': "text/javascript"})[results_div_index].text):
-            res = re.search(r'results:.*\[(.|\n)*\]',
-                            soup.find_all('script', {'type': "text/javascript"})[results_div_index].text)
-        else:
-            for index, result in enumerate(soup.find_all('script', {'type': "text/javascript"})):
-                if "az_wj_data" in result.text:
-                    results_div_index = index
-                    res = re.search(r'results:.*\[(.|\n)*\]', result.text)
-        results = "{" + res.group().replace("results", "\"results\"", 1) + "}"
-        return results
-    except Exception as e:
-        print(e)
+# find's job name
+def find_jobs(driver, job_type, total_job):
+    scrapped_data = []
+    date_time = str(datetime.now())
+    count = 0
 
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "gap-4"))
+    )
+    jobs = driver.find_elements(By.CLASS_NAME, "gap-2")
 
-def transform_data(df, job_type):
-    try:
-        df.rename(columns={'title': 'job_title', 'company': 'company_name', 'contract_type': 'job_type',
-                           'location_raw': 'address', 'description': 'job_description', 'created': 'job_posted_date',
-                           'numeric_id': 'job_source_url'}, inplace=True)
-        count = 0
-        df['job_description_tags'] = df['job_description']
-        for i in df['job_description']:
-            df['job_description'][count] = cleanhtml(i)
+    for job in jobs:
+        try:
+            data = []
+            job_title = job.find_element(By.CLASS_NAME, "gap-4")
+            append_data(data, job_title.text)
+            company_name = job.find_element(By.CLASS_NAME, "ui-company")
+            append_data(data, company_name.text)
+            address = job.find_element(By.CLASS_NAME, "ui-location")
+            append_data(data, address.text)
+            job_description = job.find_element(By.CLASS_NAME, "max-snippet-height")
+            append_data(data, job_description.text)
+            job_link = job_title.find_element(By.TAG_NAME, "a")
+            append_data(data, job_link.get_attribute('href'))
+            append_data(data, 'Today')
+            append_data(data, "Adzuna")
+            append_data(data, job_type)
+            append_data(data, job_description.get_attribute('innerHTML'))
             count += 1
-        df['job_source_url'] = 'https://www.adzuna.com/details/' + \
-                               df['job_source_url'].astype(str)
-        df['job_title'] = df['job_title'].str.replace('<.*?>', '', regex=True)
-        df['job_source'] = 'Adzuna'
-        df['job_type'] = job_type
-        return df
+            total_job += 1
+            scrapped_data.append(data)
+        except Exception as e:
+            print(e)
+
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                    "job_source", "job_type", "job_description_tags"]
+    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+    filename = f"scraper/job_data/adzuna - {date_time}.xlsx"
+    df.to_excel(filename, index=False)
+
+    ScraperLogs.objects.create(total_jobs=len(df), job_source="Adzuna", filename=filename)
+
+    finished = "next"
+    pagination = driver.find_elements(By.CLASS_NAME, "leading-10")
+    pagination[-1].location_once_scrolled_into_view
+    try:
+        if finished in pagination[-1].text:
+            next_page_link = pagination[-1].get_attribute('href')
+            request_url(driver, next_page_link)
+            return True, total_job
+        return False, total_job
     except Exception as e:
         print(e)
+        return False, total_job
 
 
-def adzuna_scraping(links, job_type):
+# code starts from here
+def adzuna_scraping(link, job_type):
+    total_job = 0
     print("Adzuna")
     try:
-        r = http.request('GET', links)
-        soup = BeautifulSoup(r.data, 'html.parser')
-        total_results = ceil(
-            int(soup.select('[data-cy-count]')[0]['data-cy-count']) / 500)
-        df = pd.DataFrame()
-        salary_ranges = ranges_of_salaries(
-            SALARY_STD, SALARY_AVERAGE, total_results)
-        for i in tqdm(range(len(salary_ranges))):
+        options = webdriver.ChromeOptions()  # newly added
+        options.add_argument("--headless")
+        options.add_argument("window-size=1200,1100")
+        options.add_argument(
+            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+        )
+        # options.headless = True  # newly added
+        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+            driver.maximize_window()
+            flag = True
             try:
-                # types = JobSourceQuery.objects.filter(job_source='adzuna').first()
-                link = f'{links}&sf={salary_ranges[i]}&st={salary_ranges[i + 1]}'
-            except:
-                # types = JobSourceQuery.objects.filter(job_source='adzuna').first()
-                link = f'{links}&sf={salary_ranges[i]}'
-            r = http.request('GET', link)
-            soup = BeautifulSoup(r.data, 'html.parser')
-            try:
-                no_of_pages = min(
-                    ceil(int(soup.select('[data-cy-count]')[0]['data-cy-count']) / ADZUNA_RESULTS_PER_PAGE),
-                    ADZUNA_PAGE_CAP)
+                request_url(driver, link)
+                while flag:
+                    flag, total_job = find_jobs(driver, job_type, total_job)
+                    print("Fetching...")
+                print(SCRAPING_ENDED)
             except Exception as e:
                 saveLogs(e)
-                continue
+                print(LINK_ISSUE)
 
-            per_link_data = pd.DataFrame()
-            for page_number in tqdm(range(no_of_pages)):
-                r = http.request('GET', f'{link}&p={page_number}')
-                soup = BeautifulSoup(r.data, 'html.parser')
-                results = fetch_results(soup)
-                df = pd.DataFrame(json.loads(results)['results'])
-                try:
-                    df = df[['title', 'company', 'contract_type',
-                             'location_raw', 'description', 'created', 'numeric_id']]
-                except KeyError as e:
-                    if 'None of' in e.args[0]:
-                        continue
-                    elif 'contract_type' in e.args[0]:
-                        df = df[['title', 'company', 'location_raw',
-                                 'description', 'created', 'numeric_id']]
-                    else:
-                        saveLogs(e)
-                        raise e
-                per_link_data = pd.concat(
-                    [per_link_data, transform_data(df, job_type)], axis=0, ignore_index=True)
-
-            df = pd.concat([df, per_link_data], axis=0, ignore_index=True)
-        date_time = str(datetime.now())
-        filename = f'scraper/job_data/adzuna_results - {date_time}.xlsx'
-        df.to_excel(filename, index=False)
-        ScraperLogs.objects.create(total_jobs=len(df), job_source="Adzuna", filename=filename)
+            driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
