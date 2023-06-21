@@ -11,6 +11,6 @@ class CandidateCompany(TimeStamped):
     def __str__(self):
         return f"{self.candidate.name} - {self.company.name}"
 
-class Meta:
-    unique_together = ("company", "candidate")
+    class Meta:
+        unique_together = ("company", "candidate")
 

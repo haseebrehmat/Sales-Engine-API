@@ -12,6 +12,7 @@ class CandidateProjectSerializer(serializers.ModelSerializer):
         cand = validated_data.pop("candidate")
         CandidateProjects.objects.filter(candidate_id=instance.id).delete()
         data = [CandidateProjects(candidate_id=cand.id, name=project["name"],
-                                  description=project["description"], tags=project["tags"]) for project in proj]
+                                  description=project["description"], tags=project["tags"])
+                for project in proj]
         CandidateProjects.objects.bulk_create(data, ignore_conflicts=True)
         return instance
