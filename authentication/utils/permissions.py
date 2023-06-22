@@ -533,4 +533,28 @@ permissions = [
         "name": "View API logs",
         "level": 1
     },
+    {
+        "module": "Regions",
+        "codename": "view_region",
+        "name": "View Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "create_region",
+        "name": "Create Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "edit_region",
+        "name": "Edit Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "delete_region",
+        "name": "Delete Region",
+        "level": 2
+    },
 ]
