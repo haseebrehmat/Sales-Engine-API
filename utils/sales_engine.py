@@ -5,7 +5,7 @@ from scraper.utils.thread import start_new_thread
 from utils.helpers import saveLogs
 
 @start_new_thread
-def upload_jobs_in_sales_engine(jobs_data):
+def upload_jobs_in_sales_engine(jobs_data, filename=None):
     try:
         url = "https://sales-test.devsinc.com/job_portal/api/v1/jobs"
 
@@ -24,6 +24,11 @@ def upload_jobs_in_sales_engine(jobs_data):
 
         # print(response.text)
         if response.ok:
-            obj = SalesEngineJobsStats.objects.create(jobs_count=len(jobs_data))
+            if filename:
+                job_source = filename.replace('scraper/job_data/', '').split(' ')[0]
+            else:
+                if jobs_data:
+                    job_source = jobs_data[0].job_source
+            obj = SalesEngineJobsStats.objects.create(job_source=job_source, jobs_count=len(jobs_data))
     except Exception as e:
         saveLogs(e)

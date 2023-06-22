@@ -213,7 +213,7 @@ def upload_file(job_parser, filename):
 
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
-    upload_jobs_in_sales_engine(model_instances)
+    upload_jobs_in_sales_engine(model_instances, filename)
     after_uploading_jobs_count = JobDetail.objects.count()
     scraper_log = ScraperLogs.objects.filter(filename=filename, uploaded_jobs=0).first()
     if scraper_log:

@@ -14,6 +14,7 @@ from job_portal.views.job_detail import RemoveDuplicateView
 from job_portal.views.job_company import JobCompaniesList
 from job_portal.views.job_upload import JobSourceCleanerView, JobTypeCleanerView
 from job_portal.views.manual_job_upload import ManualJobUploadView
+from job_portal.views.sales_engine_logs import SalesEngineJobsStatsView
 
 router = routers.DefaultRouter()
 router.register(r'', JobDetailsView, basename='job_details')
@@ -40,6 +41,7 @@ urlpatterns = [
     path('tech_keywords/', get_tech_keywords),
     path('delete_duplicated_jobs/', RemoveDuplicateView.as_view()),
     path('all_job_companies/', JobCompaniesList.as_view()),
+    path('sales_engine_logs/', SalesEngineJobsStatsView.as_view()),
 ]
 
 # scheduler.start()
