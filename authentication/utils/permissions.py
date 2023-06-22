@@ -228,6 +228,24 @@ permissions = [
         "level": 1
     },
     {
+        "module": "Scraper",
+        "codename": "edit_scrapper_account",
+        "name": "Edit Scraper Account",
+        "level": 1
+    },
+    {
+        "module": "Scraper",
+        "codename": "create_scrapper_account",
+        "name": "Create Scraper Account",
+        "level": 1
+    },
+    {
+        "module": "Scraper",
+        "codename": "delete_scrapper_account",
+        "name": "Delete Scraper Account",
+        "level": 1
+    },
+    {
         "module": "Team Management",
         "codename": "view_team",
         "name": "View Teams",
