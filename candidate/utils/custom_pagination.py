@@ -3,7 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from authentication.models import Team, Profile
-from candidate.models import CandidateSkills, Designation, Candidate, ExposedCandidate, SelectedCandidate
+from candidate.models import CandidateSkills, Designation, Candidate, ExposedCandidate, SelectedCandidate, Regions
 from job_portal.models import JobDetail, AppliedJobStatus
 
 
@@ -16,7 +16,7 @@ class CustomPagination(PageNumberPagination):
         response = Response(
             {'count': self.page.paginator.count, 'next': self.get_next_link(), 'previous': self.get_previous_link(),
              'num_pages': self.page.paginator.num_pages, 'results': data, 'skills': self.get_skill_options(),
-             'designations': self.get_designation_options(), })
+             'designations': self.get_designation_options(), 'regions': self.get_regions(), })
         return response
 
     def get_skill_options(self):
@@ -34,6 +34,9 @@ class CustomPagination(PageNumberPagination):
         data = [{'value': x.id, 'label': x.title.upper(), } for x in queryset]
         return data
 
+    def get_regions(self):
+        data = [{'label': obj.region, 'value': obj.id } for obj in Regions.objects.all()]
+        return data
 
 class LeadManagementPagination(PageNumberPagination):
     page_size = 50
