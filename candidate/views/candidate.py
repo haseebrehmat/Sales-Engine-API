@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-from candidate.models import Candidate, Skills, ExposedCandidate, SelectedCandidate
+from candidate.models import Candidate, Skills, ExposedCandidate, SelectedCandidate, Regions
 from candidate.serializers.candidate import CandidateSerializer
-from settings.utils.custom_pagination import CustomPagination
+from candidate.pagination.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
 
 
@@ -15,13 +15,12 @@ class CandidateListView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
+        data = dict()
         company = self.request.user.profile.company
         queryset = Candidate.objects.filter(
             company=company)
         candidates = ExposedCandidate.objects.filter(company=company).values_list("candidate_id", flat=True)
-
         queryset |= Candidate.objects.filter(id__in=candidates)
-
         return queryset
 
     def post(self, request):
@@ -46,9 +45,13 @@ class CandidateListView(ListAPIView):
         if serializer.is_valid():
             data = serializer.validated_data
             data["company_id"] = request.user.profile.company.id
-            data["designation_id"] = request.data.get("designation")
-            skills = request.data.get("skills")
+            data["designation_id"] = request.data.get("designation", "")
+            skills = request.data.get("skills", "")
             data['skills'] = skills
+            regions = request.data.get("regions", "")
+            data['regions'] = regions
+            tools = request.data.get("tools", "")
+            data['tools'] = tools
             data['password'] = request.data.get("password", "User@123")
             data['email'] = request.data.get("email", "")
             serializer.create(data)
@@ -63,10 +66,11 @@ class CandidateDetailView(APIView):
 
     def get(self, request, pk):
         queryset = Candidate.objects.filter(pk=pk).first()
-        data = []
+        data = dict()
         if queryset is not None:
             serializer = CandidateSerializer(queryset, many=False)
-            data = serializer.data
+            data["candidate"] = serializer.data
+            data["all_regions"] = [{"id": x.id, "name": x.region} for x in Regions.objects.all()]
         return Response(data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
@@ -74,9 +78,12 @@ class CandidateDetailView(APIView):
         data = request.data
         serializer = CandidateSerializer(instance=queryset, data=data)
         if serializer.is_valid():
-            skills = request.data.get("skills")
+            skills = request.data.get("skills", "")
+            tools = request.data.get("tools", "")
+            regions = request.data.get("regions", "")
             serializer.save(company_id=request.user.profile.company.id,
-                            skills=skills, designation_id=request.data.get("designation", queryset.designation_id))
+                            skills=skills, tools=tools, regions=regions,
+                            designation_id=request.data.get("designation", queryset.designation_id))
             message = "Candidate updated successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
@@ -95,5 +102,6 @@ class CandidateProfileDetailView(APIView):
         data = dict()
         if queryset is not None:
             serializer = CandidateSerializer(queryset, many=False)
-            data["Candidate"] = serializer.data
+            data["candidate"] = serializer.data
+            data["all_regions"] = [{"id": x.id, "name": x.region} for x in Regions.objects.all()]
         return Response(data, status=status.HTTP_200_OK)

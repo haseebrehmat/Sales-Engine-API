@@ -85,7 +85,6 @@ def find_jobs(driver, job_type, total_jobs):
                 total_jobs += 1
             except Exception as e:
                 print(e)
-                saveLogs(e)
         print("Per Page Scrapped")
     except Exception as e:
         print(e)
@@ -116,7 +115,6 @@ def load_jobs(driver):
         else:
             return False
     except Exception as e:
-        saveLogs(e)
         return False
 
 

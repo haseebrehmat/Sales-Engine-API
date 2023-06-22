@@ -13,4 +13,6 @@ class CandidateLogs(TimeStamped):
     exposed_user = models.ForeignKey(Candidate, on_delete=models.SET_NULL, blank=True, null=True)
     exposed_to = models.ForeignKey(Company, on_delete=models.SET_NULL, blank=True, null=True,
                                    related_name="candidate_exposed_to")
+    def __str__(self):
+        return f"{self.company.name} - {self.exposed_user.name}"
 
