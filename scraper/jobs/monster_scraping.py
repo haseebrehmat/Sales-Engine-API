@@ -25,7 +25,7 @@ def load_jobs(driver):
     finished = "No More Results"
     try:
         button = driver.find_element(
-            By.CLASS_NAME, "job-search-resultsstyle__LoadMoreContainer-sc-1wpt60k-1")
+            By.CLASS_NAME, "job-search-resultsstyle__LoadMoreContainer-sc-1wpt60k-0")
         data_exists = button.find_element(By.TAG_NAME, "span")
         if finished in data_exists.text:
             return False
@@ -73,7 +73,7 @@ def find_jobs(driver, job_type, total_job):
                 By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
             append_data(data, job_description.text)
             url = driver.find_elements(
-                By.CLASS_NAME, "sc-chibGv")
+                By.CLASS_NAME, "sc-cbPlza")
             append_data(data, url[count].get_attribute('href'))
             job_posted_date = driver.find_element(
                 By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
@@ -109,9 +109,8 @@ def monster(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
-        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
+        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             try:
                 driver.get(link)
                 driver.maximize_window()
