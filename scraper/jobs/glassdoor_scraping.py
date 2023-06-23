@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-
+from scraper.models.accounts import Accounts
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -14,19 +14,19 @@ from utils.helpers import saveLogs
 total_job = 0
 
 
-def login(driver):
+def login(driver, email, password):
     try:
         time.sleep(2)
         driver.find_element(By.CLASS_NAME, "email-input").click()
         driver.find_element(By.ID, "inlineUserEmail").clear()
         driver.find_element(By.ID, "inlineUserEmail").send_keys(
-            GLASSDOOR_USERNAME)
+            email)
         driver.find_element(By.CLASS_NAME, "email-button").click()
         time.sleep(1)
         driver.find_element(By.CLASS_NAME, "password-input").click()
         driver.find_element(By.ID, "inlineUserPassword").clear()
         driver.find_element(By.ID, "inlineUserPassword").send_keys(
-            GLASSDOOR_PASSWORD)
+            password)
         driver.find_element(By.CLASS_NAME, "css-jbcabp").click()
         login = driver.find_elements(By.CLASS_NAME, "iconContainer")
         if len(login) > 0:
@@ -115,33 +115,43 @@ def find_jobs(driver, job_type, total_job):
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
-        total_job = 0
-        count = 0
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
-            request_url(driver, GLASSDOOR_LOGIN_URL)
-            driver.maximize_window()
-            logged_in = login(driver)
-            try:
-                if logged_in:
-                    flag = True
-                    request_url(driver, link)
-                    while flag:
-                        flag, total_job = find_jobs(
-                            driver, job_type, total_job)
-                        count += 1
-                    print(SCRAPING_ENDED)
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
-
-            driver.quit()
+        for x in Accounts.objects.all():
+            # import pdb
+            # pdb.set_trace()
+            total_job = 0
+            count = 0
+            options = webdriver.ChromeOptions()  # newly added
+            options.add_argument("--headless")
+            options.add_argument("window-size=1200,1100")
+            options.add_argument(
+                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+            )
+            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                                  options=options) as driver:  # modified
+            #with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+                request_url(driver, GLASSDOOR_LOGIN_URL)
+                driver.maximize_window()
+                logged_in = login(driver, x.email, x.password)
+                # import pdb
+                # pdb.set_trace()
+                try:
+                    if logged_in:
+                        flag = True
+                        request_url(driver, link)
+                        while flag:
+                            flag, total_job = find_jobs(
+                                driver, job_type, total_job)
+                            count += 1
+                        print(SCRAPING_ENDED)
+                        break
+                    else:
+                        print(LOGIN_FAILED)
+                        continue
+                except Exception as e:
+                    saveLogs(e)
+                    print(LINK_ISSUE)
+                    break
+                driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)

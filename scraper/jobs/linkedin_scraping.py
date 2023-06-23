@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from scraper.models.accounts import Accounts
 from scraper.constants.const import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -23,7 +23,7 @@ def request_url(driver, url):
 
 
 # login method
-def login(driver):
+def login(driver, email, password):
     try:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.ID, "username"))
@@ -36,11 +36,11 @@ def login(driver):
     try:
         driver.find_element(By.ID, "username").click()
         driver.find_element(By.ID, "username").clear()
-        driver.find_element(By.ID, "username").send_keys(USERNAME)
+        driver.find_element(By.ID, "username").send_keys(email)
 
         driver.find_element(By.ID, "password").click()
         driver.find_element(By.ID, "password").clear()
-        driver.find_element(By.ID, "password").send_keys(PASSWORD)
+        driver.find_element(By.ID, "password").send_keys(password)
 
         driver.find_element(By.CLASS_NAME, "btn__primary--large").click()
         not_logged_in = driver.find_elements(
@@ -180,31 +180,39 @@ def linkedin(link, job_type):
     print("linkedin")
     total_job = 0
     try:
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        # options.headless = True  # newly added
-        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
-            request_url(driver, LOGIN_URL)
-            logged_in = login(driver)
-            try:
-                if logged_in:
-                    total_job = jobs_types(
-                        driver, link, job_type, total_job)
-                    print(SCRAPING_ENDED)
-                else:
-                    print(LOGIN_FAILED)
-            except Exception as e:
-                print(e)
-                saveLogs(e)
-                print(LINK_ISSUE)
-
-            driver.quit()
+        for x in Accounts.objects.all():
+            # import pdb
+            # pdb.set_trace()
+            options = webdriver.ChromeOptions()  # newly added
+            options.add_argument("--headless")
+            options.add_argument("window-size=1200,1100")
+            options.add_argument(
+                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+            )
+            # options.headless = True  # newly added
+            # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
+            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                                  options=options) as driver:  # modified
+            # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+                request_url(driver, LOGIN_URL)
+                logged_in = login(driver, x.email, x.password)
+                # import pdb
+                # pdb.set_trace()
+                try:
+                    if logged_in:
+                        total_job = jobs_types(
+                            driver, link, job_type, total_job)
+                        print(SCRAPING_ENDED)
+                        break
+                    else:
+                        print(LOGIN_FAILED)
+                        continue
+                except Exception as e:
+                    print(e)
+                    saveLogs(e)
+                    print(LINK_ISSUE)
+                    break
+                driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
