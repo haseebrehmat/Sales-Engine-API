@@ -7,6 +7,7 @@ from scraper.views.sync_scheduler import SyncScheduler, SchedulerStatusView, Syn
 from scraper.views.scraper_logs import ScraperLogView
 from scraper.views.group_scraper import GroupScraperView, GroupScraperDetailView, RunGroupScraper
 from scraper.views.group_scraper_queries import GroupScraperQueriesView, GroupScraperQueriesDetailView
+from scraper.views.account import AccountView, AccountDetailView
 
 urlpatterns = [
     path('sync/', SyncScheduler.as_view(), name="jobs"),
@@ -17,6 +18,8 @@ urlpatterns = [
     path('scheduler_status/', SchedulerStatusView.as_view()),
     path('sync_scheduler/', SyncAllScrapersView.as_view()),
     path('logs/', ScraperLogView.as_view()),
+    path('accounts/', AccountView.as_view()),
+    path('accounts/<str:pk>/', AccountDetailView.as_view()),
     path('group_scheduler/', GroupScraperView.as_view()),
     path('group_scheduler/<int:pk>/', GroupScraperDetailView.as_view()),
     path('group_scheduler_link/', GroupScraperQueriesView.as_view()),
