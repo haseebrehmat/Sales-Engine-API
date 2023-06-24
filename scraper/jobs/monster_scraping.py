@@ -78,6 +78,10 @@ def find_jobs(driver, job_type, total_job):
             job_posted_date = driver.find_element(
                 By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
             append_data(data, job_posted_date.text)
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
             append_data(data, "Monster")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
@@ -87,8 +91,8 @@ def find_jobs(driver, job_type, total_job):
         except Exception as e:
             print(e)
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description",
-                    'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.MONSTER)
     df.to_excel(filename, index=False)

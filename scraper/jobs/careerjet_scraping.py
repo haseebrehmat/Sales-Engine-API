@@ -58,6 +58,36 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_posted_date[0].text)
             else:
                 append_data(data, 'Posted Today')
+            try:
+                salary = driver.find_element(
+                    By.CLASS_NAME, "details")
+                estimated_salary = salary.find_elements(By.TAG_NAME, "li")
+                if ' per ' in estimated_salary[1].text:
+                    es = estimated_salary[1].text.split(' per')[0]
+                    if '$' in es:
+                        append_data(data, "$")
+                    else:
+                        append_data(data, "N/A")
+                    append_data(data, es)
+                    try:
+                        append_data(data, es.split('-')[0])
+                    except:
+                        append_data(data, "N/A")
+                    try:
+                        append_data(data, es.split('-')[1])
+                    except:
+                        append_data(data, "N/A")
+                else:
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+            except:
+                append_data(data, 'N/A')
+                append_data(data, 'N/A')
+                append_data(data, 'N/A')
+                append_data(data, 'N/A')
+
             append_data(data, "CareerJet")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
@@ -71,8 +101,8 @@ def find_jobs(driver, job_type, total_job):
         driver.back()
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.CAREERJET)
     df.to_excel(filename, index=False)
@@ -109,8 +139,7 @@ def careerjet(link, job_type):
         )
         # options.headless = True  # newly added
         # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             driver.maximize_window()
             try:
                 flag = True
@@ -123,7 +152,6 @@ def careerjet(link, job_type):
 
             except Exception as e:
                 saveLogs(e)
-                print(LINK_ISSUE)
 
             driver.quit()
     except Exception as e:

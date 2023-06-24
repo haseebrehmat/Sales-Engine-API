@@ -32,13 +32,12 @@ def find_jobs(driver, job_type, total_job):
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "slider_container")
     company_name = driver.find_elements(By.CLASS_NAME, "companyName")
-
     for job in jobs:
         try:
             data = []
             time.sleep(1)
             job.click()
-            time.sleep(3)
+            time.sleep(4)
 
             job_title = driver.find_element(
                 By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
@@ -55,6 +54,35 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_posted_date[0].text)
             else:
                 append_data(data, 'Posted Today')
+            # import pdb
+            # pdb.set_trace()
+            try:
+                estimated_salary = driver.find_element(By.CLASS_NAME, "css-2iqe2o")
+                import pdb
+                pdb.set_trace()
+                if '$' in estimated_salary.text:
+                    append_data(data, "$")
+                else:
+                    append_data(data, "N/A")
+                try:
+                    append_data(data, estimated_salary.text.split(' a')[0])
+                except:
+                    append_data(data, "N/A")
+                try:
+                    salary_min = estimated_salary.text.split('$')[1]
+                    append_data(data, salary_min.split(' ')[0])
+                except:
+                    append_data(data, "N/A")
+                try:
+                    salary_max = estimated_salary.text.split('$')[2]
+                    append_data(data, salary_max.split(' ')[0])
+                except:
+                    append_data(data, "N/A")
+            except:
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
             append_data(data, "Indeed")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
@@ -66,8 +94,8 @@ def find_jobs(driver, job_type, total_job):
             msg = f"Exception in Indeed Scraping {e}"
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.INDEED)
     df.to_excel(filename, index=False)
@@ -105,8 +133,8 @@ def indeed(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
+        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             driver.maximize_window()
             try:
                 flag = True
