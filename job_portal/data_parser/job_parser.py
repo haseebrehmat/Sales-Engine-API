@@ -69,7 +69,7 @@ class JobParser(object):
             data_frame.append(df)
 
         # concatenate and slice only first 7 columns
-        self.data_frame = pd.concat(data_frame, axis=0, ignore_index=True).iloc[:, :8]
+        self.data_frame = pd.concat(data_frame, axis=0, ignore_index=True).iloc[:, :13]
         # self.data_frame = self.data_frame.where((pd.notnull(self.data_frame)), "")
 
     @classmethod
