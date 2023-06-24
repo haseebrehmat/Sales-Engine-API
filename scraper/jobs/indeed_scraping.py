@@ -58,8 +58,6 @@ def find_jobs(driver, job_type, total_job):
             # pdb.set_trace()
             try:
                 estimated_salary = driver.find_element(By.CLASS_NAME, "css-2iqe2o")
-                import pdb
-                pdb.set_trace()
                 if '$' in estimated_salary.text:
                     append_data(data, "$")
                 else:

@@ -147,8 +147,6 @@ def find_jobs(driver, job_type, url=None):
                     except:
                         append_data(data, 'N/A')
                     try:
-                        import pdb
-                        pdb.set_trace()
                         salary_min = estimated_salary.text.split('$')[1]
                         salary_min = salary_min.split(' ')[0]
                         append_data(data, salary_min.split('-')[0])
