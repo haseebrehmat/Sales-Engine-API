@@ -43,15 +43,12 @@ def find_jobs(driver, job_type, total_job):
         try:
             jobs = driver.find_elements(
                 By.CLASS_NAME, "job-search-resultsstyle__JobCardWrap-sc-1wpt60k-4")
-
             for job in jobs:
                 job.location_once_scrolled_into_view
         except Exception as e:
             print(e)
-
     jobs = driver.find_elements(
         By.CLASS_NAME, "job-search-resultsstyle__JobCardWrap-sc-1wpt60k-4")
-
     for job in jobs:
         try:
             data = []
@@ -78,6 +75,36 @@ def find_jobs(driver, job_type, total_job):
             job_posted_date = driver.find_element(
                 By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
             append_data(data, job_posted_date.text)
+            try:
+                salary_string = driver.find_element(
+                    By.CLASS_NAME, "detailsstyles__DetailsTableDetailBody-sc-1deoovj-5")
+                if "$" and "–" in salary_string.text:
+                    #print("Entered in if condition")
+                    salary_format = "Dollars"
+                    append_data(data, salary_format)
+
+                    estimated_salary = salary_string.text.split(" ")[0]
+                    append_data(data, estimated_salary)
+
+                    salary_min = salary_string.text.split("–")[0]
+                    append_data(data, salary_min)
+
+                    salary_max = salary_string.text.split("–")[1].split(" ")[0]
+                    append_data(data, salary_max)
+                    # import pdb
+                    # pdb.set_trace()
+                else:
+                    #print("Entered in else condition")
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+            except:
+                #print("Entered in Except")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
             append_data(data, "Monster")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
@@ -88,7 +115,8 @@ def find_jobs(driver, job_type, total_job):
             print(e)
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
-                    'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
+                    'job_source_url', "job_posted_date", "salary_format", "estimated_salary", "salary_min",
+                    "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.MONSTER)
     df.to_excel(filename, index=False)
@@ -109,8 +137,8 @@ def monster(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
-        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
+        with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+        # with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             try:
                 driver.get(link)
                 driver.maximize_window()
@@ -120,7 +148,6 @@ def monster(link, job_type):
             except Exception as e:
                 saveLogs(e)
                 print(LINK_ISSUE)
-
             driver.quit()
     except Exception as e:
         saveLogs(e)
