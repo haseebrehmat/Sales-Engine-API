@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
+from django.db.models.functions import ExtractMonth, ExtractYear
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -35,32 +36,18 @@ class GenerateAnalytics(APIView):
     ]
 
     def get(self, request):
-        self.filter_queryset(request)
+        filters = self.filter_queryset(request)
         self.tech_keywords = set(self.queryset.values_list("tech_keywords", flat=True))
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
 
         data = {
             "tech_stack_data": self.get_tech_count_stats(),
-            "job_type_data": self.get_job_type_stats()
+            "job_type_data": self.get_job_type_stats(),
+            "filters": filters
         }
 
         return Response(data)
 
-    # def get_stack_date(self):
-    #     return [
-    #         {
-    #             "name": x,
-    #             "value": self.queryset.filter(tech_keywords=x).count(),
-    #         } for x in self.tech_keywords]
-    #
-    # def get_job_type_data(self):
-    #     return [
-    #         {
-    #             "name": x,
-    #             "value": self.queryset.filter(job_type=x).count(),
-    #             "tech": self.get_tech_count(x),
-    #         } for x in self.job_types]
-    #
     def get_tech_count_stats(self):
         data = [
             {
@@ -87,9 +74,55 @@ class GenerateAnalytics(APIView):
         return data
 
     def filter_queryset(self, request):
-        filter = request.GET.get("filter", False)
-        if filter:
-            filter = filter.split("-")
+        data = False
+        year_filter = request.GET.get("year", False)
+        quarter_filter = request.GET.get("quarter", False)
+        month_filter = request.GET.get("month", False)
+        week_filter = request.GET.get("week", False)
+
+        if quarter_filter and year_filter:
+            year = int(year_filter)
+            quarter_number = int(quarter_filter.split("q")[-1])
+            if quarter_number == 2:
+                quarter_number = 4
+            elif quarter_number == 3:
+                quarter_number = 7
+            elif quarter_number == 4:
+                quarter_number = 10
+
+            start_date = datetime(year, quarter_number, 1)
+            end_date = datetime(year, quarter_number + 4, 1) - timedelta(seconds=1)
+            self.queryset = self.queryset.filter(created_at__range=[start_date, end_date])
+            weeks = []
+            for x in range(quarter_number, quarter_number + 3):
+                weeks.extend(self.get_week_numbers(year, x))
+
+            data = {
+                "months": [f"{year}-{'0' + str(x) if x < 10 else x}" for x in range(quarter_number, quarter_number+3)],
+                "weeks": weeks
+            }
+
+        elif year_filter:
+            year = year_filter
+            self.queryset = self.queryset.annotate(year=ExtractYear('created_at')).filter(year=year)
+            data = {"months": [f"{year}-{'0' + str(x) if x < 10 else x}" for x in range(1, 13)]}
+
+        elif month_filter:
+            data = month_filter.split("-")
+            year = data[0]
+            month = data[1]
+            str_date = month_filter + "-" + str(1)
+            start_date = datetime.strptime(str_date, "%Y-%M-%d")
+            end_date = datetime.strptime(str_date, "%Y-%M-%d") + timedelta(days=30) - timedelta(seconds=1)
+            print(start_date, end_date)
+            self.queryset = self.queryset.annotate(
+                month=ExtractMonth('created_at'),
+                year=ExtractYear('created_at')).filter(month=month, year=year)
+
+            data = {"weeks": self.get_week_numbers(year, month)}
+
+        elif week_filter:
+            filter = week_filter.split("-")
             year = filter[0]
             if filter[-1] in ["W0" + str(x) if x < 10 else "W" + str(x) for x in range(1, 53)]:
                 week = filter[-1].replace("W", "")
@@ -111,6 +144,8 @@ class GenerateAnalytics(APIView):
                 end_date = datetime.strptime(end_date, format_string) - timedelta(seconds=1)
                 self.queryset = self.queryset.filter(created_at__lte=end_date)
 
+        return data
+
     def get_job_type_stats(self):
         job_types = [
             {"key": "Contract on site", "value": self.contract_onsite_enums},
@@ -129,3 +164,19 @@ class GenerateAnalytics(APIView):
             for x in job_types
         ]
         return data
+
+    def get_week_numbers(self, year, month):
+        weeks = []
+        year = int(year)
+        month = int(month)
+        start_date = date(year, month, 1)
+        end_date = start_date + timedelta(days=31)  # Assuming maximum 31 days in a month
+
+        current_date = start_date
+        while current_date <= end_date:
+            week_number = current_date.isocalendar()[1]  # Get the ISO week number
+            if current_date.month == month:  # Only consider weeks within the specified month
+                weeks.append("W" + str(week_number))
+            current_date += timedelta(days=7)  # Move to the next week
+
+        return weeks
