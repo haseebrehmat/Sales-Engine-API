@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from scraper.models.accounts import Accounts
 from scraper.constants.const import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -24,7 +24,7 @@ def request_url(driver, url):
 
 
 # login method
-def login(driver):
+def login(driver, email, password):
     try:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.ID, "username"))
@@ -37,11 +37,11 @@ def login(driver):
     try:
         driver.find_element(By.ID, "username").click()
         driver.find_element(By.ID, "username").clear()
-        driver.find_element(By.ID, "username").send_keys(USERNAME)
+        driver.find_element(By.ID, "username").send_keys(email)
 
         driver.find_element(By.ID, "password").click()
         driver.find_element(By.ID, "password").clear()
-        driver.find_element(By.ID, "password").send_keys(PASSWORD)
+        driver.find_element(By.ID, "password").send_keys(password)
 
         driver.find_element(By.CLASS_NAME, "btn__primary--large").click()
         not_logged_in = driver.find_elements(
@@ -132,6 +132,37 @@ def find_jobs(driver, job_type, url=None):
                 url = job_source_url.find_element(By.TAG_NAME, 'a')
                 append_data(data, url.get_attribute('href'))
                 append_data(data, job_posted_date[0].text)
+                try:
+                    es = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0]
+                    estimated_salary = es.find_elements(By.TAG_NAME, "a")[0]
+                    try:
+                        if '$' in estimated_salary:
+                            append_data(data, "$")
+                        else:
+                            append_data(data, "N/A")
+                    except:
+                        append_data(data, "N/A")
+                    try:
+                        append_data(data, estimated_salary.text.split('(')[0])
+                    except:
+                        append_data(data, 'N/A')
+                    try:
+                        salary_min = estimated_salary.text.split('$')[1]
+                        salary_min = salary_min.split(' ')[0]
+                        append_data(data, salary_min.split('-')[0])
+                    except:
+                        append_data(data, 'N/A')
+                    try:
+                        salary_max = estimated_salary.text.split('$')[2]
+                        append_data(data, salary_max.split(' ')[0])
+                    except:
+                        append_data(data, 'N/A')
+                except:
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+
                 append_data(data, "Linkedin")
                 append_data(data, job_type)
                 append_data(data, job_description.get_attribute('innerHTML'))
@@ -141,8 +172,8 @@ def find_jobs(driver, job_type, url=None):
             print(e)
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description",
-                    'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.LINKEDIN)
     df.to_excel(filename, index=False)
@@ -181,31 +212,38 @@ def linkedin(link, job_type):
     print("linkedin")
     total_job = 0
     try:
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        # options.headless = True  # newly added
-        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
-            request_url(driver, LOGIN_URL)
-            logged_in = login(driver)
-            try:
-                if logged_in:
-                    total_job = jobs_types(
-                        driver, link, job_type, total_job)
-                    print(SCRAPING_ENDED)
-                else:
-                    print(LOGIN_FAILED)
-            except Exception as e:
-                print(e)
-                saveLogs(e)
-                print(LINK_ISSUE)
-
-            driver.quit()
+        for x in Accounts.objects.all():
+            # import pdb
+            # pdb.set_trace()
+            options = webdriver.ChromeOptions()  # newly added
+            options.add_argument("--headless")
+            options.add_argument("window-size=1200,1100")
+            options.add_argument(
+                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+            )
+            # options.headless = True  # newly added
+            # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
+            # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
+                request_url(driver, LOGIN_URL)
+                logged_in = login(driver, x.email, x.password)
+                # import pdb
+                # pdb.set_trace()
+                try:
+                    if logged_in:
+                        total_job = jobs_types(
+                            driver, link, job_type, total_job)
+                        print(SCRAPING_ENDED)
+                        break
+                    else:
+                        print(LOGIN_FAILED)
+                        continue
+                except Exception as e:
+                    print(e)
+                    saveLogs(e)
+                    print(LINK_ISSUE)
+                    break
+                driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
