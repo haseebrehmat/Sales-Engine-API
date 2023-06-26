@@ -132,6 +132,37 @@ def find_jobs(driver, job_type, url=None):
                 url = job_source_url.find_element(By.TAG_NAME, 'a')
                 append_data(data, url.get_attribute('href'))
                 append_data(data, job_posted_date[0].text)
+                try:
+                    es = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0]
+                    estimated_salary = es.find_elements(By.TAG_NAME, "a")[0]
+                    try:
+                        if '$' in estimated_salary:
+                            append_data(data, "$")
+                        else:
+                            append_data(data, "N/A")
+                    except:
+                        append_data(data, "N/A")
+                    try:
+                        append_data(data, estimated_salary.text.split('(')[0])
+                    except:
+                        append_data(data, 'N/A')
+                    try:
+                        salary_min = estimated_salary.text.split('$')[1]
+                        salary_min = salary_min.split(' ')[0]
+                        append_data(data, salary_min.split('-')[0])
+                    except:
+                        append_data(data, 'N/A')
+                    try:
+                        salary_max = estimated_salary.text.split('$')[2]
+                        append_data(data, salary_max.split(' ')[0])
+                    except:
+                        append_data(data, 'N/A')
+                except:
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+                    append_data(data, 'N/A')
+
                 append_data(data, "Linkedin")
                 append_data(data, job_type)
                 append_data(data, job_description.get_attribute('innerHTML'))
@@ -141,8 +172,8 @@ def find_jobs(driver, job_type, url=None):
             print(e)
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description",
-                    'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.LINKEDIN)
     df.to_excel(filename, index=False)
@@ -192,9 +223,8 @@ def linkedin(link, job_type):
             )
             # options.headless = True  # newly added
             # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                                  options=options) as driver:  # modified
             # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
                 request_url(driver, LOGIN_URL)
                 logged_in = login(driver, x.email, x.password)
                 # import pdb
