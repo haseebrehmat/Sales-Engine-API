@@ -1,6 +1,5 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-
 from authentication.views.create_permissions import CreatePermissions
 from authentication.views.authenticate import UserLogin
 from authentication.views.company import CompanyView, CompanyDetailView
