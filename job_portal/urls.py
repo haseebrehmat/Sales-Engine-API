@@ -9,6 +9,7 @@ from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, 
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
 from job_portal.views.cover_letter.download import DownloadCoverView
 from job_portal.views.cover_letter.generate_cover import GenerateCoverView
+from job_portal.views.generate_analytics import GenerateAnalytics
 from job_portal.views.get_tech_keywords import get_tech_keywords
 from job_portal.views.job_detail import RemoveDuplicateView
 from job_portal.views.job_company import JobCompaniesList
@@ -42,6 +43,7 @@ urlpatterns = [
     path('delete_duplicated_jobs/', RemoveDuplicateView.as_view()),
     path('all_job_companies/', JobCompaniesList.as_view()),
     path('sales_engine_logs/', SalesEngineJobsStatsView.as_view()),
+    path('generate_analytics/', GenerateAnalytics.as_view()),
 ]
 
 # scheduler.start()
