@@ -1,10 +1,11 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-from pseudos.models import Verticals
+from pseudos.models import Verticals, VerticalsRegions
 from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.verticals import VerticalSerializer
 from pseudos.utils.custom_pagination import CustomPagination
@@ -47,16 +48,21 @@ class VerticalDetailView(APIView):
         serializer = VerticalSerializer(queryset, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @transaction.atomic
     def put(self, request, pk):
         queryset = Verticals.objects.filter(pk=pk).first()
         request_data = request.data
         request_data["pseudo_id"] = request_data.get("pseudo_id")
         request_data["hobbies"] = request_data.get("hobbies", "")
+        regions = request_data.pop("regions")
         if request_data["hobbies"] != "":
             request_data["hobbies"] = ",".join(request_data["hobbies"])
         print(request_data["hobbies"])
         serializer = VerticalSerializer(queryset, data=request_data)
         if serializer.is_valid():
+            VerticalsRegions.objects.filter(verticals=queryset).delete()
+            verticals_regions_data =[VerticalsRegions(verticals=queryset, region_id=region) for region in regions]
+            VerticalsRegions.objects.bulk_create(verticals_regions_data)
             serializer.save(hobbies=request_data["hobbies"])
             message = "Vertical updated successfully"
             status_code = status.HTTP_200_OK

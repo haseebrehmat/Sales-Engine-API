@@ -9,6 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -31,6 +32,8 @@ def find_jobs(driver, job_type, page_no, total_job):
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "css-f8dtpc")
 
+    es = driver.find_elements(By.CLASS_NAME, "css-1ejkpji")
+
     for job in jobs:
         data = []
         try:
@@ -51,12 +54,34 @@ def find_jobs(driver, job_type, page_no, total_job):
             except Exception as e:
                 job_posted_date = 'Today'
             append_data(data, job_posted_date)
+            try:
+                estimated_salary = es[count].text.split(" a")[0]
+                if '$' in estimated_salary:
+                    append_data(data, "N/A")
+                if "d: " in estimated_salary:
+                    estimated_salary = estimated_salary.split(": ")[1]
+                if "to " in estimated_salary:
+                    estimated_salary = estimated_salary.split("to ")[1]
+                append_data(data, estimated_salary)
+                try:
+                    append_data(data, estimated_salary.split(' - ')[0])
+                except:
+                    append_data(data, "N/A")
+                try:
+                    append_data(data, estimated_salary.split(' - ')[1])
+                except:
+                    append_data(data, "N/A")
+            except:
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+
             append_data(data, "Simplyhired")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
-            count += 1
             total_job += 1
             try:
                 job.click()
@@ -64,14 +89,15 @@ def find_jobs(driver, job_type, page_no, total_job):
                 print("Per page scraped")
 
         except Exception as e:
-            count += 1
             print(e)
+        count += 1
+
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = f'scraper/job_data/simply_hired - {date_time}.xlsx'
+    filename = generate_scraper_filename(ScraperNaming.SIMPLY_HIRED)
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Simply Hired", filename=filename)
@@ -107,8 +133,8 @@ def simply_hired(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
+        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             try:
                 flag = True
                 page_no = 2

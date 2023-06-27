@@ -3,12 +3,12 @@ import uuid
 from datetime import datetime
 
 import boto3
-
+from settings.base import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 def upload_image(object_name, user_id):
     file_name = str(user_id) + str(uuid.uuid4())
-    s3 = boto3.client('s3', aws_access_key_id='AKIAQDQXUW4VV7HSLFXE',
-                      aws_secret_access_key='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')
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
+                      aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
     # Delete the Previous Image of User
     key_prefix = f"profile_images/{user_id}"
@@ -23,8 +23,8 @@ def upload_image(object_name, user_id):
 
 def upload_pdf(object_name, user_id):
     file_name = str(user_id) + str(uuid.uuid4())
-    s3 = boto3.client('s3', aws_access_key_id='AKIAQDQXUW4VV7HSLFXE',
-                      aws_secret_access_key='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')
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
+                      aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
     # Delete the Previous Image of User
     key_prefix = f"profile_images/{user_id}"
@@ -49,8 +49,8 @@ def upload_pdf(object_name, user_id):
 
 
 def upload_csv(file_path, file_name):
-    s3 = boto3.client('s3', aws_access_key_id='AKIAQDQXUW4VV7HSLFXE',
-                      aws_secret_access_key='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')
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
+                      aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
     bucket_path = 'octagon-user-profile-images'
     s3.upload_file(file_path, bucket_path, file_name,
@@ -63,9 +63,9 @@ def upload_csv(file_path, file_name):
 
 
 def upload_job_files(file_path, file_name):
-    s3 = boto3.client('s3', aws_access_key_id='AKIAQDQXUW4VV7HSLFXE',
-                      aws_secret_access_key='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')
-    bucket_path = 'octagon-jobs-files'
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
+                      aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    bucket_path = 'octagon-user-profile-images'
     s3.upload_file(file_path, bucket_path, file_name,
                    ExtraArgs={'ContentType': 'text/csv',
                               'ACL': 'public-read'})

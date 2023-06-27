@@ -10,6 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 
@@ -26,8 +27,7 @@ def ziprecruiter_scraping(links, job_type):
         )
         # options.headless = True  # newly added
         # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             original_window = driver.current_window_handle
             driver.switch_to.new_window('tab')
             details_window = driver.current_window_handle
@@ -48,6 +48,7 @@ def ziprecruiter_scraping(links, job_type):
 
                 for job in job_search.find_elements(By.TAG_NAME, 'article'):
                     driver.switch_to.window(original_window)
+
                     job_detail = {'job_title': job.get_attribute('data-job-title'),
                                   'company_name': job.get_attribute('data-company-name'),
                                   'job_source': 'Ziprecruiter',
@@ -68,6 +69,28 @@ def ziprecruiter_scraping(links, job_type):
                         job_detail['job_description'] = driver.find_element(
                             By.CLASS_NAME, 'jobDescriptionSection').text
 
+                        try:
+                            job_detail['estimated_salary'] = driver.find_element(
+                                By.CLASS_NAME, 't_compensation').text.split(' p')[0]
+                            if '$' in job_detail['estimated_salary']:
+                                job_detail['salary_format'] = '$'
+                            else:
+                                job_detail['salary_format'] = 'N/A'
+                            try:
+                                job_detail['salary_min'] = job_detail['estimated_salary'].split(' to ')[0]
+                            except:
+                                job_detail['salary_min'] = 'N/A'
+                            try:
+                                job_detail['salary_max'] = job_detail['estimated_salary'].split(' to ')[1]
+                            except:
+                                job_detail['salary_max'] = 'N/A'
+
+                        except:
+                            job_detail['estimated_salary'] = "N/A"
+                            job_detail['salary_format'] = "N/A"
+                            job_detail['salary_min'] = "N/A"
+                            job_detail['salary_max'] = "N/A"
+
                         job_detail['job_description_tags'] = driver.find_element(
                             By.CLASS_NAME, 'jobDescriptionSection').get_attribute('innerHTML')
 
@@ -75,6 +98,12 @@ def ziprecruiter_scraping(links, job_type):
                             if 'Posted date:' in single_job.text:
                                 job_detail['job_posted_date'] = single_job.text
                     else:
+                        job_detail['job_description'] = "N/A"
+                        job_detail['estimated_salary'] = "N/A"
+                        job_detail['salary_format'] = "N/A"
+                        job_detail['salary_min'] = "N/A"
+                        job_detail['salary_max'] = "N/A"
+                        job_detail['job_description_tags'] = "N/A"
                         job_detail['job_posted_date'] = 'Today'
 
                     all_data.append(job_detail)
@@ -88,7 +117,7 @@ def ziprecruiter_scraping(links, job_type):
                 df['job_posted_date'] = df['job_posted_date'].str.replace(
                     'Posted date: ', '')
                 df['job_type'] = df['job_type'].str.replace('Type\n', '')
-                filename = f'scraper/job_data/ziprecruiter - {date_time}.xlsx'
+                filename = generate_scraper_filename(ScraperNaming.ZIP_RECRUITER)
                 df.to_excel(
                     filename, index=False)
                 ScraperLogs.objects.create(total_jobs=len(

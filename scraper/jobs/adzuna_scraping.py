@@ -11,6 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -51,6 +52,10 @@ def find_jobs(driver, job_type, total_job):
             job_link = job_title.find_element(By.TAG_NAME, "a")
             append_data(data, job_link.get_attribute('href'))
             append_data(data, 'Today')
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
             append_data(data, "Adzuna")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
@@ -60,10 +65,10 @@ def find_jobs(driver, job_type, total_job):
         except Exception as e:
             print(e)
 
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = f"scraper/job_data/adzuna - {date_time}.xlsx"
+    filename = generate_scraper_filename(ScraperNaming.ADZUNA)
     df.to_excel(filename, index=False)
 
     ScraperLogs.objects.create(total_jobs=len(df), job_source="Adzuna", filename=filename)
