@@ -591,12 +591,11 @@ def start_group_scraper_scheduler():
     run_group_scraper_jobs()
 
 
-try:
-    if env("ENVIRONMENT") != "local":
-        start_group_scraper_scheduler()
-        group_scraper_job()
-except Exception as e:
-    print(e)
+# try:
+#     if env("ENVIRONMENT") != "local":
+#         start_group_scraper_scheduler()
+#         group_scraper_job()
+# except Exception as e:
+#     print(e)
 
-# upload_jobs()
 
