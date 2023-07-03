@@ -12,7 +12,8 @@ from authentication.views.reset_password import render_reset_page
 from authentication.views.role import RoleView, RoleDetailView, RoleUserView
 from authentication.views.team_management import TeamView, TeamDetailView
 from authentication.views.users import LoginView, UserView, UserDetailView
-from authentication.views.permission import PermissionView, PermissionDetailView, get_all_permissions
+from authentication.views.permission import PermissionView, PermissionDetailView, get_all_permissions, \
+    PermissionAssignmentView
 from authentication.views.users import UserPermission
 
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
     path('authenticate/', LoginView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('permission/', PermissionView.as_view()),
+    path('permission_assignment/', PermissionAssignmentView.as_view()),
     path('all_permissions/', get_all_permissions),
     path('permission/<str:pk>/', PermissionDetailView.as_view()),
     path('user_permission/<str:pk>/', UserPermission.as_view()),
