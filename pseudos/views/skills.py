@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
 from pseudos.models import Skills, GenericSkills
+from pseudos.permissions.generic_skills import GenericSkillsPermissions
 from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.skills import SkillSerializer, GenericSkillSerializer
 from pseudos.utils.custom_pagination import CustomPagination
@@ -73,7 +74,7 @@ class SkillDetailView(APIView):
 # Add these new classes for generic skills for company based
 
 class GenericSkillView(ListAPIView):
-    permission_classes = (VerticalPermissions,)
+    permission_classes = (GenericSkillsPermissions,)
     serializer_class = GenericSkillSerializer
     pagination_class = CustomPagination
     GENERIC_SKILL_TYPES = {
@@ -112,7 +113,7 @@ class GenericSkillView(ListAPIView):
 
 
 class GenericSkillDetailView(APIView):
-    permission_classes = (VerticalPermissions,)
+    permission_classes = (GenericSkillsPermissions,)
     GENERIC_SKILL_TYPES = {
         'clientside': 'Client Side',
         'serverside': 'Server Side',

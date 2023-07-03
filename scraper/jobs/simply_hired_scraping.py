@@ -9,6 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -71,7 +72,7 @@ def find_jobs(driver, job_type, page_no, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = f'scraper/job_data/simply_hired - {date_time}.xlsx'
+    filename = generate_scraper_filename(ScraperNaming.SIMPLY_HIRED)
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Simply Hired", filename=filename)

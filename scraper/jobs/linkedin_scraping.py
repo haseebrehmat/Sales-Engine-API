@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from scraper.models.accounts import Accounts
 from scraper.constants.const import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,6 +12,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -23,7 +24,7 @@ def request_url(driver, url):
 
 
 # login method
-def login(driver):
+def login(driver, email, password):
     try:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.ID, "username"))
@@ -36,11 +37,11 @@ def login(driver):
     try:
         driver.find_element(By.ID, "username").click()
         driver.find_element(By.ID, "username").clear()
-        driver.find_element(By.ID, "username").send_keys(USERNAME)
+        driver.find_element(By.ID, "username").send_keys(email)
 
         driver.find_element(By.ID, "password").click()
         driver.find_element(By.ID, "password").clear()
-        driver.find_element(By.ID, "password").send_keys(PASSWORD)
+        driver.find_element(By.ID, "password").send_keys(password)
 
         driver.find_element(By.CLASS_NAME, "btn__primary--large").click()
         not_logged_in = driver.find_elements(
@@ -143,7 +144,7 @@ def find_jobs(driver, job_type, url=None):
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = f'scraper/job_data/linkedin - {date_time}.xlsx'
+    filename = generate_scraper_filename(ScraperNaming.LINKEDIN)
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Linkedin", filename=filename)
@@ -180,31 +181,39 @@ def linkedin(link, job_type):
     print("linkedin")
     total_job = 0
     try:
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        # options.headless = True  # newly added
-        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
-            request_url(driver, LOGIN_URL)
-            logged_in = login(driver)
-            try:
-                if logged_in:
-                    total_job = jobs_types(
-                        driver, link, job_type, total_job)
-                    print(SCRAPING_ENDED)
-                else:
-                    print(LOGIN_FAILED)
-            except Exception as e:
-                print(e)
-                saveLogs(e)
-                print(LINK_ISSUE)
-
-            driver.quit()
+        for x in Accounts.objects.all():
+            # import pdb
+            # pdb.set_trace()
+            options = webdriver.ChromeOptions()  # newly added
+            options.add_argument("--headless")
+            options.add_argument("window-size=1200,1100")
+            options.add_argument(
+                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+            )
+            # options.headless = True  # newly added
+            # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
+            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
+                                  options=options) as driver:  # modified
+            # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+                request_url(driver, LOGIN_URL)
+                logged_in = login(driver, x.email, x.password)
+                # import pdb
+                # pdb.set_trace()
+                try:
+                    if logged_in:
+                        total_job = jobs_types(
+                            driver, link, job_type, total_job)
+                        print(SCRAPING_ENDED)
+                        break
+                    else:
+                        print(LOGIN_FAILED)
+                        continue
+                except Exception as e:
+                    print(e)
+                    saveLogs(e)
+                    print(LINK_ISSUE)
+                    break
+                driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)

@@ -19,3 +19,4 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'ziprecruiter': ziprecruiter_scraping, 'ziprecruiter_scraping': ziprecruiter_scraping,
                              'google_careers': google_careers, 'googlecareers': google_careers, 'talent': talent,
                              'adzuna': adzuna_scraping, 'careerjet': careerjet, 'career_jet': careerjet}
+

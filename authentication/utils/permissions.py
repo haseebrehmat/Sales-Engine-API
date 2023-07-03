@@ -228,6 +228,24 @@ permissions = [
         "level": 1
     },
     {
+        "module": "Scraper",
+        "codename": "edit_scrapper_account",
+        "name": "Edit Scraper Account",
+        "level": 1
+    },
+    {
+        "module": "Scraper",
+        "codename": "create_scrapper_account",
+        "name": "Create Scraper Account",
+        "level": 1
+    },
+    {
+        "module": "Scraper",
+        "codename": "delete_scrapper_account",
+        "name": "Delete Scraper Account",
+        "level": 1
+    },
+    {
         "module": "Team Management",
         "codename": "view_team",
         "name": "View Teams",
@@ -525,6 +543,36 @@ permissions = [
         "module": "Jobs",
         "codename": "block_unblock_job_company",
         "name": "Block / Unblock Job Company",
+        "level": 2
+    },
+    {
+        "module": "Logger",
+        "codename": "view_api_logs",
+        "name": "View API logs",
+        "level": 1
+    },
+    {
+        "module": "Regions",
+        "codename": "view_region",
+        "name": "View Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "create_region",
+        "name": "Create Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "edit_region",
+        "name": "Edit Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "delete_region",
+        "name": "Delete Region",
         "level": 2
     },
 ]
