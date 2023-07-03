@@ -4,6 +4,8 @@ from job_portal.models import SalesEngineJobsStats
 from scraper.utils.thread import start_new_thread
 from utils.helpers import saveLogs
 from settings.base import SALES_ENGINE_UPLOAD_JOBS_URL, SALES_ENGINE_API_TOKEN
+from utils.requests_logger import requests_logger_hooks
+
 
 @start_new_thread
 def upload_jobs_in_sales_engine(jobs_data, filename=None):
@@ -21,7 +23,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
             'Authorization': SALES_ENGINE_API_TOKEN,
             'Content-Type': 'application/json'}
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
 
         # print(response.text)
         if response.ok:
