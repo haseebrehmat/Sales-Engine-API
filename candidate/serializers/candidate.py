@@ -35,7 +35,8 @@ class CandidateSerializer(serializers.ModelSerializer):
         return data
 
     def get_designation(self, obj):
-        return "" if obj.designation is None else obj.designation.title
+        return "" if obj.designation is None else {"id": obj.designation.id, "name": obj.designation.title,
+                                                   "description": obj.designation.description}
 
     def get_allowed_status(self, obj):
         try:
