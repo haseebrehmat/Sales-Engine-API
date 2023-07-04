@@ -27,12 +27,3 @@ class Migration(migrations.Migration):
         ),
     ]
 
-try:
-    job_ids = AppliedJobStatus.objects.values_list("job_id", flat=True)
-    qs = JobDetail.objects.filter(id__in=job_ids)
-    qs.count()
-    for x in qs:
-        x.job_applied = x.id
-        x.save()
-except Exception as e:
-    print("Error in updating job fields => ", str(e))
