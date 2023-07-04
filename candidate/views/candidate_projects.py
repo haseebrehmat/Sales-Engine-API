@@ -9,12 +9,12 @@ from settings.utils.helpers import serializer_errors
 class CandidateProjectDetailView(APIView):
 
     def get(self, request, pk):
+        print(pk)
         queryset = CandidateProjects.objects.filter(candidate_id=pk)
-        data = []
         if queryset is not None:
             serializer = CandidateProjectSerializer(queryset, many=True)
             data = serializer.data
-        return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
     def put(self, request, pk):
         queryset = Candidate.objects.filter(pk=pk).first()
         data = request.data

@@ -99,7 +99,7 @@ class CandidateSerializer(serializers.ModelSerializer):
         CandidateTools.objects.bulk_create(data, ignore_conflicts=True)
         data = [CandidateRegions(candidate_id=qs.id, region_id=region) for region in regions]
         CandidateRegions.objects.bulk_create(data, ignore_conflicts=True)
-        if not User.objects.filter(password=make_password(password), email=validated_data["email"]).exists():
+        if not User.objects.filter(email=validated_data["email"]).exists():
             user = User.objects.create(password=make_password(password), email=validated_data["email"])
             Profile.objects.create(user=user, company_id=validated_data["company_id"])
             user.roles = Role.objects.filter(name="candidate").first()
@@ -154,7 +154,6 @@ class CandidateSerializer(serializers.ModelSerializer):
         instance.phone = validated_data.get("phone", instance.phone)
         instance.experience = validated_data.get(
             "experience", instance.experience)
-        instance.email = validated_data.get("email", instance.email)
         designation = validated_data.get(
             "designation_id", instance.designation)
         instance.designation = Designation.objects.filter(id=designation).first()
