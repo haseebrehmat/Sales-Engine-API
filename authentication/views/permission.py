@@ -4,47 +4,43 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
-from authentication.models import CustomPermission
+from authentication.models import CustomPermission, Role
 from authentication.permissions import RolePermissions
 from authentication.serializers.permissions import PermissionSerializer
-
-
+from rest_framework.generics import ListAPIView
 from settings.utils.helpers import serializer_errors
 
 
-class PermissionView(APIView):
-    permission_classes = (RolePermissions,)
+class PermissionView(ListAPIView):
+    serializer_class = PermissionSerializer
 
-    def get(self, request):
-        queryset = CustomPermission.objects.all()
-        if request.GET.get("module", "") != "":
-            queryset = queryset.filter(module__iexact=request.GET.get("module"))
-        serializer = PermissionSerializer(queryset, many=True)
-        data = serializer.data
-        if len(data) > 0:
-            modules = set([x["module"] for x in data])
-            temp = []
-            for x in modules:
-                temp.append({"module": x, "permissions": [i for i in data if i["module"] == x]})
-            data = temp
-        else:
-            data = []
-        return Response(data, status=status.HTTP_200_OK)
+    def get_queryset(self):
+        return CustomPermission.objects.all()
+
 
     def post(self, request):
-        serializer = PermissionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.create(serializer.validated_data)
-            message = "Permission created successfully!"
-            status_code = status.HTTP_201_CREATED
-            return Response({'detail': message}, status=status_code)
-        data = serializer_errors(serializer)
-        raise InvalidUserException(data)
+        permissions = request.data["permissions"]
+        for permission in permissions:
+            serializer = PermissionSerializer(data=permission)
+            if serializer.is_valid():
+                print("Entered in if")
+                continue
+            else:
+                print("Entered in else")
+                data = serializer_errors(serializer)
+                if data == "non_field_errors: The fields module, codename, name must make a unique set." :
+                    codename = permission["codename"]
+                    module = permission["module"]
+
+                    data = f"{codename} permission already exist in {module} module"
+                raise InvalidUserException(data)
+        serializer.create(request.data)
+        message = "Permission created successfully!"
+        status_code = status.HTTP_201_CREATED
+        return Response({'detail': message}, status=status_code)
 
 
 class PermissionDetailView(APIView):
-    permission_classes = (RolePermissions,)
-
     def get(self, request, pk):
         queryset = CustomPermission.objects.filter(pk=pk).first()
         serializer = PermissionSerializer(queryset, many=False)
@@ -57,16 +53,40 @@ class PermissionDetailView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-
             message = "Permission updated successfully!"
             status_code = status.HTTP_200_OK
             return Response({'detail': message}, status=status_code)
         data = serializer_errors(serializer)
+        if data == "non_field_errors: The fields module, codename, name must make a unique set.":
+            data = "Permission already exist"
         raise InvalidUserException(data)
 
     def delete(self, request, pk):
         CustomPermission.objects.filter(pk=pk).delete()
         return Response({'detail': "Permission deleted successfully"}, status=status.HTTP_200_OK)
+
+
+class PermissionAssignmentView(ListAPIView):
+    def post(self, request):
+
+        r = request.data.get("role", "")
+        if r:
+            role = Role.objects.filter(pk=r).first()
+            for permission in role.permissions.all():
+                role.permissions.remove(permission)
+            permissions = request.data.get("permissions", "")
+            for permission in permissions:
+                custom_permission = CustomPermission.objects.filter(pk=permission).first()
+                role.permissions.add(custom_permission)
+            message = f"Permissions set for {role.name}"
+            status_code = status.HTTP_200_OK
+        else:
+            message = "Role does not exist!"
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return Response({'detail': message}, status=status_code)
+
+
+
 
 
 def get_all_permissions(request):

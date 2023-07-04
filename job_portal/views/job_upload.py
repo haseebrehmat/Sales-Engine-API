@@ -19,6 +19,7 @@ import json
 
 from utils.helpers import saveLogs
 from utils.sales_engine import upload_jobs_in_sales_engine
+from settings.base import env
 
 
 class JobDataUploadView(CreateAPIView):
@@ -62,7 +63,8 @@ class JobDataUploadView(CreateAPIView):
         jobs_data = JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True, batch_size=1000)
         JobUploadLogs.objects.create(jobs_count=len(jobs_data))
 
-        upload_jobs_in_sales_engine(model_instances)
+        if env("ENVIRONMENT") == "production":
+            upload_jobs_in_sales_engine(model_instances)
 
 
 class JobCleanerView(APIView):
