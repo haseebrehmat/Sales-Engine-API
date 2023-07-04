@@ -104,4 +104,8 @@ class CandidateProfileDetailView(APIView):
             serializer = CandidateSerializer(queryset, many=False)
             data["candidate"] = serializer.data
             data["all_regions"] = [{"id": x.id, "name": x.region} for x in Regions.objects.all()]
-        return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            message = "Your Profile has been deleted by company owner"
+            status_code = status.HTTP_404_NOT_FOUND
+            return Response({"detail": message}, status_code)
