@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
-from candidate.models import Candidate, Skills, ExposedCandidate, CandidateRegions
+from candidate.models import Candidate, Skills, ExposedCandidate, CandidateRegions, SelectedCandidate
 from candidate.serializers.candidate import CandidateSerializer
 from candidate.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
@@ -30,6 +30,8 @@ class SelectedCandidateListView(ListAPIView):
             queryset = queryset.filter(id__in=valid_candidates)
             candidates = candidates.filter(candidate__id__in=valid_candidates)
         queryset |= Candidate.objects.filter(id__in=candidates)
+        selected_candidates = SelectedCandidate.objects.filter(company=company, status=True)
+        queryset = queryset.filter(id__in=selected_candidates.values_list('candidate_id', flat=True))
         if len(skills) > 0:
             queryset = queryset.filter(candidateskills__skill_id__in=skills.split(','))
         if len(designations) > 0:

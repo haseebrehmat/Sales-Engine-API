@@ -4,11 +4,12 @@ from django.db.models.functions import ExtractMonth, ExtractYear
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from job_portal.models import JobDetail
+from job_portal.models import JobDetail, JobArchive
 
 
 class GenerateAnalytics(APIView):
     permission_classes = (AllowAny,)
+    job_archive = JobArchive.objects.all()
     queryset = JobDetail.objects.all()
     tech_keywords = ""
     job_types = ""
@@ -51,6 +52,9 @@ class GenerateAnalytics(APIView):
 
     def get(self, request):
         filters = self.filter_queryset(request)
+        if self.queryset.count() == 0:
+            self.queryset = self.job_archive
+            filters = self.filter_queryset(request)
         self.tech_keywords = set(self.queryset.values_list("tech_keywords", flat=True))
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
 
@@ -89,12 +93,12 @@ class GenerateAnalytics(APIView):
 
     def filter_queryset(self, request):
         data = False
-        year_filter = request.GET.get("year", False)
-        quarter_filter = request.GET.get("quarter", False)
-        month_filter = request.GET.get("month", False)
-        week_filter = request.GET.get("week", False)
+        year_filter = request.GET.get("year", "")
+        quarter_filter = request.GET.get("quarter", "")
+        month_filter = request.GET.get("month", "")
+        week_filter = request.GET.get("week", "")
 
-        if week_filter:
+        if week_filter != "":
             filter = week_filter.split("-")
             year = filter[0]
             if filter[-1] in ["W0" + str(x) if x < 10 else "W" + str(x) for x in range(1, 53)]:
@@ -105,7 +109,7 @@ class GenerateAnalytics(APIView):
                 end_date = datetime.strptime(str_date, "%Y-%W-%w") + timedelta(days=8) - timedelta(seconds=1)
             self.queryset = self.queryset.filter(job_posted_date__range=[start_date, end_date])
 
-        elif month_filter:
+        elif month_filter != "":
             data = month_filter.split("-")
             year = data[0]
             month = data[1]
@@ -119,7 +123,7 @@ class GenerateAnalytics(APIView):
 
             data = {"weeks": self.get_week_numbers(year, month)}
             
-        elif quarter_filter and year_filter:
+        elif quarter_filter != "" and year_filter != "":
             year = int(year_filter)
             quarter_number = int(quarter_filter.split("q")[-1])
             if quarter_number == 2:
@@ -130,13 +134,11 @@ class GenerateAnalytics(APIView):
                 quarter_number = 10
 
             start_date = datetime(year, quarter_number, 1)
-            start_date = datetime(year, quarter_number, 1)
             if quarter_filter == "q4":
-                end_date = datetime(year + 1, 1, 1) - timedelta(days=1)
                 end_date = datetime(year, 12, 31)
             else:
                 end_date = datetime(year, quarter_number + 3, 1) - timedelta(days=1)
-                end_date = datetime(year, quarter_number, 1) - timedelta(days=1)
+                # end_date = datetime(year, quarter_number, 1) - timedelta(days=1)
 
             self.queryset = self.queryset.filter(created_at__range=[start_date, end_date])
             weeks = []
@@ -153,20 +155,20 @@ class GenerateAnalytics(APIView):
                 "weeks": weeks
             }
 
-        elif year_filter:
+        elif year_filter != "":
             year = year_filter
             self.queryset = self.queryset.annotate(year=ExtractYear('created_at')).filter(year=year)
             data = {"months": [f"{year}-{'0' + str(x) if x < 10 else x}" for x in range(1, 13)]}
 
         else:
             format_string = "%Y-%m-%d"  # Replace with the format of your date string
-            start_date = self.request.GET.get("start_date", False)
-            end_date = self.request.GET.get("end_date", False)
-            if start_date:
+            start_date = self.request.GET.get("start_date", "")
+            end_date = self.request.GET.get("end_date", "")
+            if start_date != "":
                 # Convert the date string into a datetime object
                 start_date = datetime.strptime(start_date, format_string)
                 self.queryset = self.queryset.filter(created_at__gte=start_date)
-            if end_date:
+            if end_date != "":
                 end_date = datetime.strptime(end_date, format_string) - timedelta(seconds=1)
                 self.queryset = self.queryset.filter(created_at__lte=end_date)
 
