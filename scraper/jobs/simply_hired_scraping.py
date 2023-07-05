@@ -30,17 +30,17 @@ def find_jobs(driver, job_type, page_no, total_job):
     scrapped_data = []
     count = 0
     time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "css-f8dtpc")
+    jobs = driver.find_elements(By.CLASS_NAME, "css-1y7j4hn")
 
     es = driver.find_elements(By.CLASS_NAME, "css-1ejkpji")
 
     for job in jobs:
         data = []
         try:
+            job.click()
             time.sleep(5)
 
-            job_title = driver.find_element(By.CLASS_NAME, "chakra-heading")
-            append_data(data, job_title.text)
+            append_data(data, job.text)
             context = driver.find_elements(By.CLASS_NAME, "css-xtodu4")
             company_name = context[0].text.split("-")
             append_data(data, company_name[0])
@@ -83,10 +83,6 @@ def find_jobs(driver, job_type, page_no, total_job):
 
             scrapped_data.append(data)
             total_job += 1
-            try:
-                job.click()
-            except Exception as e:
-                print("Per page scraped")
 
         except Exception as e:
             print(e)
@@ -135,6 +131,7 @@ def simply_hired(link, job_type):
         # options.headless = True  # newly added
         # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
+            driver.maximize_window()
             try:
                 flag = True
                 page_no = 2
