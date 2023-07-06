@@ -31,10 +31,10 @@ def ziprecruiter_scraping(links, job_type):
             original_window = driver.current_window_handle
             driver.switch_to.new_window('tab')
             details_window = driver.current_window_handle
-            all_data = []
             driver.switch_to.window(original_window)
             next_link = links
             while 'candidate' in next_link:
+                all_data = []
                 driver.switch_to.window(original_window)
                 driver.get(next_link)
                 try:
@@ -53,9 +53,7 @@ def ziprecruiter_scraping(links, job_type):
                                   'company_name': job.get_attribute('data-company-name'),
                                   'job_source': 'Ziprecruiter',
                                   'address': job.get_attribute('data-location'),
-                                  'job_type': job.find_element(By.XPATH,
-                                                               "//section[@class='perks_item perks_type']").text,
-                                  'job_type': job_type[c],
+                                  'job_type': job_type,
                                   'job_source_url': job.find_element(By.TAG_NAME, 'a').get_attribute('href')
                                   }
                     if 'https://www.ziprecruiter.com/k' in job_detail['job_source_url']:
@@ -67,7 +65,7 @@ def ziprecruiter_scraping(links, job_type):
                         )
 
                         job_detail['job_description'] = driver.find_element(
-                            By.CLASS_NAME, 'jobDescriptionSection').text
+                            By.CLASS_NAME, 'job_description').text
 
                         try:
                             job_detail['estimated_salary'] = driver.find_element(
@@ -92,7 +90,7 @@ def ziprecruiter_scraping(links, job_type):
                             job_detail['salary_max'] = "N/A"
 
                         job_detail['job_description_tags'] = driver.find_element(
-                            By.CLASS_NAME, 'jobDescriptionSection').get_attribute('innerHTML')
+                            By.CLASS_NAME, 'job_description').get_attribute('innerHTML')
 
                         for single_job in job_data.find_elements(By.XPATH, "//p[@class='job_more']"):
                             if 'Posted date:' in single_job.text:
@@ -116,7 +114,6 @@ def ziprecruiter_scraping(links, job_type):
                     '<.*?>', '', regex=True)
                 df['job_posted_date'] = df['job_posted_date'].str.replace(
                     'Posted date: ', '')
-                df['job_type'] = df['job_type'].str.replace('Type\n', '')
                 filename = generate_scraper_filename(ScraperNaming.ZIP_RECRUITER)
                 df.to_excel(
                     filename, index=False)
