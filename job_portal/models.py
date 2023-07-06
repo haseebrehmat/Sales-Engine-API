@@ -21,6 +21,7 @@ class JobDetail(TimeStamped):
     job_type = models.CharField(max_length=2000, null=True, blank=True)
     address = models.CharField(max_length=2000)
     job_description = models.TextField(null=True, blank=True)
+    job_description_tags = models.TextField(null=True, blank=True)
     tech_keywords = models.TextField(null=True, blank=True)
     job_posted_date = models.DateTimeField(null=True, blank=True)
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)

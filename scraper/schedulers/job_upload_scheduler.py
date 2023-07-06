@@ -206,7 +206,11 @@ def upload_file(job_parser, filename):
                   job_description=job_item.job_description,
                   tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
                   job_posted_date=job_item.job_posted_date,
-                  job_source_url=job_item.job_source_url, )
+                  job_source_url=job_item.job_source_url,
+                  estimated_salary=job_item.estimated_salary,
+                  salary_format=job_item.salary_format,
+                  salary_min=job_item.salary_min,
+                  salary_max=job_item.salary_max)
         for job_item in classify_data.data_frame.itertuples() if
         job_item.job_source_url != "" and isinstance(job_item.job_source_url,
                                                      str)]
