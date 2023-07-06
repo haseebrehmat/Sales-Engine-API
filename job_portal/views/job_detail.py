@@ -48,9 +48,9 @@ class JobDetailsView(ModelViewSet):
 
         current_user = request.user
 
-        current_user_jobs_list = AppliedJobStatus.objects.select_related('applied_by').filter(applied_by=current_user)
+        current_user_jobs_list = AppliedJobStatus.objects.filter(applied_by=current_user).select_related('applied_by')
 
-        if len(current_user_jobs_list) > 0:
+        if current_user_jobs_list:
             excluded_jobs = self.get_applied_jobs(current_user, current_user_jobs_list)
             queryset = self.get_queryset().exclude(id__in=excluded_jobs)
         else:
