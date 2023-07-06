@@ -70,6 +70,9 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
             job_details["resume"] = instance.resume
             job_details["vertical"] = {"id": instance.vertical.id, "name": instance.vertical.name,
                                        "identity": instance.vertical.identity}
+            job_details['pseudo'] = {
+                "name": instance.vertical.pseudo.name
+            }
             job_details["cover_letter"] = instance.cover_letter
         except Exception as e:
             print(e)

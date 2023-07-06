@@ -14,18 +14,19 @@ from rest_framework.response import Response
 
 from authentication.models import User
 from authentication.models.team_management import Team
+from authentication.permissions.applied_job_permissions import AppliedJobPermission
 from authentication.serializers.users import UserSerializer
 from job_portal.filters.applied_job import TeamBasedAppliedJobFilter
 from job_portal.models import AppliedJobStatus
 from job_portal.paginations.applied_job import AppliedJobPagination
-from job_portal.permissions.team_applied_job import TeamAppliedJobPermission
 from job_portal.serializers.applied_job import TeamAppliedJobDetailSerializer
 from scraper.utils.thread import start_new_thread
 from settings.base import FROM_EMAIL
 from utils import upload_to_s3
 
 
-class ListAppliedJobView(ListAPIView):
+# Applied View
+class AppliedJobView(ListAPIView):
     queryset = AppliedJobStatus.objects.all()
     pagination_class = AppliedJobPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
@@ -35,11 +36,11 @@ class ListAppliedJobView(ListAPIView):
     ordering = ('-applied_date')
     search_fields = ['applied_by']
     ordering_fields = ['applied_date', 'job__job_posted_date']
-    permission_classes = (TeamAppliedJobPermission,)
+    permission_classes = (AppliedJobPermission,)
 
-    @swagger_auto_schema(responses={200: TeamAppliedJobDetailSerializer(many=True)})
     def get(self, request, *args, **kwargs):
         try:
+            company = request.user.profile.company
             bd_id_list = []
 
             if request.user.roles.name.lower() == "owner":
@@ -50,11 +51,11 @@ class ListAppliedJobView(ListAPIView):
                     bd_id_list.extend(members)
 
             else:
-                bd_id_list = Team.objects.get(
-                    reporting_to=self.request.user).members.values_list('id', flat=True)
+                teams = Team.objects.filter(members=request.user).values_list("reporting_to", flat=True)
+                bd_id_list = Team.objects.filter(reporting_to__in=teams).values("members__id")
 
             bd_users = User.objects.filter(id__in=bd_id_list).select_related()
-            bd_query = UserSerappliedializer(bd_users, many=True)
+            bd_query = UserSerializer(bd_users, many=True)
             job_list = AppliedJobStatus.objects.filter(
                 applied_by__id__in=bd_id_list).select_related()
 
