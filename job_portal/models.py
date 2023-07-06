@@ -26,14 +26,22 @@ class JobDetail(TimeStamped):
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
     block = models.BooleanField(default=False)
     is_manual = models.BooleanField(default=False)
-    job_applied = models.CharField(blank=True, null=True, max_length=300)
+    job_applied = models.CharField(max_length=300, default="not applied")
+    status = models.CharField(blank=True, null=True, max_length=50)
+    salary_max = models.CharField(max_length=50, blank=True, null=True)
+    salary_min = models.CharField(max_length=50, blank=True, null=True)
+    salary_format = models.CharField(max_length=50, blank=True, null=True)
+    estimated_salary = models.CharField(blank=True, null=True, max_length=100)
+    expired_at = models.DateTimeField(max_length=150, blank=True, null=True)
+    job_role = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         default_permissions = ()
         db_table = "job_detail"
         unique_together = (('company_name', 'job_title', 'job_applied'),)
         ordering = ['-job_posted_date']
-        indexes = [models.Index(fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
+        indexes = [models.Index(
+            fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
         index_together = ['company_name', 'job_title']
 
     def __str__(self):
@@ -61,7 +69,8 @@ class JobArchive(TimeStamped):
         default_permissions = ()
         db_table = "job_archive"
         ordering = ['-job_posted_date']
-        indexes = [models.Index(fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
+        indexes = [models.Index(
+            fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
         index_together = ['company_name', 'job_title']
 
     def __str__(self):
@@ -69,8 +78,10 @@ class JobArchive(TimeStamped):
 
 
 class AppliedJobStatus(models.Model):
-    vertical = models.ForeignKey(Verticals, on_delete=models.SET_NULL, blank=True, null=True)
-    team = models.ForeignKey(Team, on_delete=models.SET_NULL, blank=True, null=True)
+    vertical = models.ForeignKey(
+        Verticals, on_delete=models.SET_NULL, blank=True, null=True)
+    team = models.ForeignKey(
+        Team, on_delete=models.SET_NULL, blank=True, null=True)
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -124,9 +135,24 @@ class BlacklistJobs(TimeStamped):
         default_permissions = ()
 
 
+class BlockJobCompany(TimeStamped):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False)
+    company_name = models.CharField(max_length=100, blank=True, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    class Meta:
+        default_permissions = ()
+
+
 class SalesEngineJobsStats(TimeStamped):
+    job_source = models.CharField(max_length=30, blank=True, null=True)
     jobs_count = models.IntegerField()
 
 
 class JobUploadLogs(TimeStamped):
     jobs_count = models.IntegerField()
+
+

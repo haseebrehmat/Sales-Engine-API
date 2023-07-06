@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import LogSerialzer
 from .models import Log
 from .pagination import LogsPagination
+from error_logger.schedulers import run_delete_logs_scheduler
 
 # Create your views here.
 class LogsView(ListAPIView):
@@ -27,3 +28,6 @@ class LogsView(ListAPIView):
             request_types = request_types.split(',')
             queryset = queryset.filter(method__in=request_types) if request_types else queryset
         return queryset
+
+
+run_delete_logs_scheduler()

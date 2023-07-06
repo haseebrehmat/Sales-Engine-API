@@ -228,6 +228,24 @@ permissions = [
         "level": 1
     },
     {
+        "module": "Scraper",
+        "codename": "edit_scrapper_account",
+        "name": "Edit Scraper Account",
+        "level": 1
+    },
+    {
+        "module": "Scraper",
+        "codename": "create_scrapper_account",
+        "name": "Create Scraper Account",
+        "level": 1
+    },
+    {
+        "module": "Scraper",
+        "codename": "delete_scrapper_account",
+        "name": "Delete Scraper Account",
+        "level": 1
+    },
+    {
         "module": "Team Management",
         "codename": "view_team",
         "name": "View Teams",
@@ -437,18 +455,124 @@ permissions = [
         "name": "Edit Lead",
         "level": 2
     },
-    {'module': 'Candidates', 'codename': 'view_candidate', 'name': 'View Candidates', 'level': 2},
-    {'module': 'Candidates', 'codename': 'create_candidate', 'name': 'Create Candidate', 'level': 2},
-    {'module': 'Candidates', 'codename': 'view_candidate_profile', 'name': 'View Candidate Profile', 'level': 2},
-    {'module': 'Candidates', 'codename': 'edit_candidate_profile', 'name': 'Edit Candidate Profile', 'level': 2},
-    {'module': 'Candidates', 'codename': 'edit_candidate', 'name': 'Edit Candidate', 'level': 2},
-    {'module': 'Candidates', 'codename': 'delete_candidate', 'name': 'Delete Candidate', 'level': 2},
-    {'module': 'Candidates', 'codename': 'view_designation', 'name': 'View Designations', 'level': 2},
-    {'module': 'Candidates', 'codename': 'create_designation', 'name': 'Create Designation', 'level': 2},
-    {'module': 'Candidates', 'codename': 'edit_designation', 'name': 'Edit Designation', 'level': 2},
-    {'module': 'Candidates', 'codename': 'delete_designation', 'name': 'Delete Designation', 'level': 2},
-    {'module': 'Exposed Candidates', 'codename': 'view_exposed_candidate', 'name': 'View Exposed Candidates',
-     'level': 2}, {'module': 'Exposed Candidates', 'codename': 'expose_to', 'name': 'Expose To (Company)', 'level': 2},
-    {'module': 'Exposed Candidates', 'codename': 'remove_exposed_to', 'name': 'Remove Exposed To (Company)', 'level': 2}
-
+    {
+        "module": "Candidates",
+        "codename": "view_candidate",
+        "name": "View Candidates",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "create_candidate",
+        "name": "Create Candidate",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "view_candidate_profile",
+        "name": "View Candidate Profile",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "edit_candidate_profile",
+        "name": "Edit Candidate Profile",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "edit_candidate",
+        "name": "Edit Candidate",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "delete_candidate",
+        "name": "Delete Candidate",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "view_designation",
+        "name": "View Designations",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "create_designation",
+        "name": "Create Designation",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "edit_designation",
+        "name": "Edit Designation",
+        "level": 2
+    },
+    {
+        "module": "Candidates",
+        "codename": "delete_designation",
+        "name": "Delete Designation",
+        "level": 2
+    },
+    {
+        "module": "Exposed Candidates",
+        "codename": "view_exposed_candidate",
+        "name": "View Exposed Candidates",
+        "level": 2
+    },
+    {
+        "module": "Exposed Candidates",
+        "codename": "expose_to",
+        "name": "Expose To (Company)",
+        "level": 2
+    },
+    {
+        "module": "Exposed Candidates",
+        "codename": "remove_exposed_to",
+        "name": "Remove Exposed To (Company)",
+        "level": 2
+    },
+    {
+        "module": "Jobs",
+        "codename": "view_job_company",
+        "name": "View Job Companies",
+        "level": 2
+    },
+    {
+        "module": "Jobs",
+        "codename": "block_unblock_job_company",
+        "name": "Block / Unblock Job Company",
+        "level": 2
+    },
+    {
+        "module": "Logger",
+        "codename": "view_api_logs",
+        "name": "View API logs",
+        "level": 1
+    },
+    {
+        "module": "Regions",
+        "codename": "view_region",
+        "name": "View Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "create_region",
+        "name": "Create Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "edit_region",
+        "name": "Edit Regions",
+        "level": 2
+    },
+    {
+        "module": "Regions",
+        "codename": "delete_region",
+        "name": "Delete Region",
+        "level": 2
+    },
 ]

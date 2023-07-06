@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 # from selenium.webdriver.support.ui import WebDriverWait
 from utils.helpers import saveLogs
 
@@ -36,11 +37,9 @@ def find_jobs(driver, job_type, total_job):
             try:
                 job.location_once_scrolled_into_view
                 job.click()
-                # print("Job no.", count + 1, "clicked")
             except Exception as e:
-                saveLogs(e)
                 print(e)
-                # print("Job no.", count + 1, "clicked")
+
             time.sleep(2)
             job_title = driver.find_elements(By.CLASS_NAME, "gc-card__title")
             append_data(data, job_title[count].text)
@@ -55,6 +54,10 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, job.get_attribute('href'))
             # job_posted_date = driver.find_elements(By.CLASS_NAME,"posted-date")
             append_data(data, "Today")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
             append_data(data, "Google Careers")
             append_data(data, job_type)
             append_data(data, job_description[0].get_attribute('innerHTML'))
@@ -64,10 +67,10 @@ def find_jobs(driver, job_type, total_job):
             scrapped_data.append(data)
 
         date_time = str(datetime.now())
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "job_source", "job_type", "job_description_tags"]
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                        "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        filename = f'scraper/job_data/googlecareers - {date_time}.xlsx'
+        filename = generate_scraper_filename(ScraperNaming.GOOGLE_CAREERS)
         df.to_excel(filename, index=False)
         ScraperLogs.objects.create(total_jobs=len(df), job_source="GoogleCareers", filename=filename)
 
@@ -78,7 +81,6 @@ def find_jobs(driver, job_type, total_job):
             c_button[0].click()
 
     except Exception as e:
-        saveLogs(e)
         print(e)
 
     time.sleep(2)
@@ -89,7 +91,7 @@ def find_jobs(driver, job_type, total_job):
       time.sleep(2)
       return True, total_job
     except Exception as e:
-      saveLogs(e)
+      print(e)
     return False, total_job
 
 def job_display(driver):

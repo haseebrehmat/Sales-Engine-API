@@ -37,3 +37,30 @@ def is_valid_group_scraper_time(time, week_days, group_scraper=None):
             if str(scraper_start_time.time()) <= str(time.time()) <= str(estimated_scraper_end_time):
                 return False
     return True
+
+
+import enum
+
+
+class ScraperNaming(enum.Enum):
+    ADZUNA = 'adzuna'
+    GLASSDOOR = 'glassdoor'
+    CAREER_BUILDER = 'career_builder'
+    CAREERJET = 'careerjet'
+    INDEED = 'indeed'
+    LINKEDIN = 'linkedin'
+    DICE = 'dice'
+    GOOGLE_CAREERS = 'google_careers'
+    JOOBLE = 'jooble'
+    MONSTER = 'monster'
+    SIMPLY_HIRED = 'simply_hired'
+    TALENT = 'talent'
+    ZIP_RECRUITER = 'zip_recruiter'
+
+    def __str__(self):
+        return self.value
+
+
+def generate_scraper_filename(job_source):
+    date_time = str(datetime.datetime.now())
+    return f'scraper/job_data/{job_source} - {date_time}.xlsx'

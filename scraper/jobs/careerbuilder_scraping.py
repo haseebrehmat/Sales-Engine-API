@@ -11,6 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 total_jobs = 0
@@ -76,6 +77,10 @@ def find_jobs(driver, job_type, total_jobs):
                 append_data(data, job_description.text)
                 append_data(data, links[count].get_attribute("href"))
                 append_data(data, job_posted_date[count].text)
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
                 append_data(data, "Careerbuilder")
                 append_data(data, job_type)
                 append_data(data, job_description.get_attribute('innerHTML'))
@@ -85,15 +90,14 @@ def find_jobs(driver, job_type, total_jobs):
                 total_jobs += 1
             except Exception as e:
                 print(e)
-                saveLogs(e)
         print("Per Page Scrapped")
     except Exception as e:
         print(e)
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = f'scraper/job_data/career_builder - {date_time}.xlsx'
+    filename = generate_scraper_filename(ScraperNaming.CAREER_BUILDER)
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(total_jobs=len(df), job_source="Career Builder", filename=filename)
     return total_jobs
@@ -116,7 +120,6 @@ def load_jobs(driver):
         else:
             return False
     except Exception as e:
-        saveLogs(e)
         return False
 
 

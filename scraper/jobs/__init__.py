@@ -12,9 +12,11 @@ from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 
+
 single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': career_builder, 'dice': dice,
                              'glassdoor': glassdoor, 'indeed': indeed, 'linkedin': linkedin, 'monster': monster,
                              'simplyhired': simply_hired, 'simply_hired': simply_hired, 'jooble': jooble,
                              'ziprecruiter': ziprecruiter_scraping, 'ziprecruiter_scraping': ziprecruiter_scraping,
                              'google_careers': google_careers, 'googlecareers': google_careers, 'talent': talent,
                              'adzuna': adzuna_scraping, 'careerjet': careerjet, 'career_jet': careerjet}
+
