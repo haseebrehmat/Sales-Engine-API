@@ -54,7 +54,7 @@ class ListAppliedJobView(ListAPIView):
                     reporting_to=self.request.user).members.values_list('id', flat=True)
 
             bd_users = User.objects.filter(id__in=bd_id_list).select_related()
-            bd_query = UserSerappliedializer(bd_users, many=True)
+            bd_query = UserSerializer(bd_users, many=True)
             job_list = AppliedJobStatus.objects.filter(
                 applied_by__id__in=bd_id_list).select_related()
 
