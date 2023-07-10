@@ -60,6 +60,10 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_posted_date[0].text)
             else:
                 append_data(data, 'Posted Today')
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
             append_data(data, "Talent")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
@@ -71,8 +75,8 @@ def find_jobs(driver, job_type, total_job):
             msg = f"Exception in Talent Scraping {e}"
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.TALENT)
     df.to_excel(filename, index=False)

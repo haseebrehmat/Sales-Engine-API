@@ -8,10 +8,12 @@ class JobParser(object):
     def __init__(self, filelist):
         self.filelist = filelist
         self.job_desc_cols = ['job_title', 'company_name', 'job_source', 'job_type', 'address', 'job_description',
-                              'job_posted_date', 'job_source_url', 'job_description_tags']
+                              'job_posted_date', 'job_source_url', 'job_description_tags', 'salary_format',
+                              'estimated_salary', 'salary_min', 'salary_max']
         if "scraper/job_data/" in self.filelist[0]:
             self.job_desc_cols = ['job_title', 'company_name', 'job_source', 'job_type', 'address', 'job_description',
-                                  'job_posted_date', 'job_source_url', 'job_description_tags']
+                                  'job_posted_date', 'job_source_url', 'job_description_tags', 'salary_format',
+                                  'estimated_salary', 'salary_min', 'salary_max']
 
     def validate_file(self):
         # file check extensions validation
@@ -67,7 +69,7 @@ class JobParser(object):
             data_frame.append(df)
 
         # concatenate and slice only first 7 columns
-        self.data_frame = pd.concat(data_frame, axis=0, ignore_index=True).iloc[:, :8]
+        self.data_frame = pd.concat(data_frame, axis=0, ignore_index=True).iloc[:, :13]
         # self.data_frame = self.data_frame.where((pd.notnull(self.data_frame)), "")
 
     @classmethod

@@ -30,15 +30,17 @@ def find_jobs(driver, job_type, page_no, total_job):
     scrapped_data = []
     count = 0
     time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "css-f8dtpc")
+    jobs = driver.find_elements(By.CLASS_NAME, "css-1y7j4hn")
+
+    es = driver.find_elements(By.CLASS_NAME, "css-1ejkpji")
 
     for job in jobs:
         data = []
         try:
+            job.click()
             time.sleep(5)
 
-            job_title = driver.find_element(By.CLASS_NAME, "chakra-heading")
-            append_data(data, job_title.text)
+            append_data(data, job.text)
             context = driver.find_elements(By.CLASS_NAME, "css-xtodu4")
             company_name = context[0].text.split("-")
             append_data(data, company_name[0])
@@ -52,25 +54,44 @@ def find_jobs(driver, job_type, page_no, total_job):
             except Exception as e:
                 job_posted_date = 'Today'
             append_data(data, job_posted_date)
+            try:
+                estimated_salary = es[count].text.split(" a")[0]
+                if '$' in estimated_salary:
+                    append_data(data, "N/A")
+                if "d: " in estimated_salary:
+                    estimated_salary = estimated_salary.split(": ")[1]
+                if "to " in estimated_salary:
+                    estimated_salary = estimated_salary.split("to ")[1]
+                append_data(data, estimated_salary)
+                try:
+                    append_data(data, estimated_salary.split(' - ')[0])
+                except:
+                    append_data(data, "N/A")
+                try:
+                    append_data(data, estimated_salary.split(' - ')[1])
+                except:
+                    append_data(data, "N/A")
+            except:
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+
             append_data(data, "Simplyhired")
             append_data(data, job_type)
             append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
-            count += 1
             total_job += 1
-            try:
-                job.click()
-            except Exception as e:
-                print("Per page scraped")
 
         except Exception as e:
-            count += 1
             print(e)
+        count += 1
+
 
     date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.SIMPLY_HIRED)
     df.to_excel(filename, index=False)
@@ -108,8 +129,9 @@ def simply_hired(link, job_type):
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
         # options.headless = True  # newly added
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
+        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
+            driver.maximize_window()
             try:
                 flag = True
                 page_no = 2

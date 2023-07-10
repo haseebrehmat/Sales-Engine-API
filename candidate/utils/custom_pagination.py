@@ -104,7 +104,7 @@ class LeadManagementPagination(PageNumberPagination):
         return self.format_list(company_names)
 
     def get_candidates(self):
-        selected_candidates = SelectedCandidate.objects.filter(company=self.request.user.profile.company)
+        selected_candidates = SelectedCandidate.objects.filter(company=self.request.user.profile.company, status=True)
         candidates_data = [{'label': obj.candidate.name, 'value': obj.candidate.id } for obj in selected_candidates]
         return candidates_data
 

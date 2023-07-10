@@ -52,6 +52,10 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, job_description[0].text)
             append_data(data, job_source_url)
             append_data(data, job_posted_date[0].text)
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
+            append_data(data, "N/A")
             append_data(data, job_source)
             append_data(data, job_type)
             append_data(data, job_description[0].get_attribute('innerHTML'))
@@ -61,8 +65,8 @@ def find_jobs(driver, job_type, total_job):
         except Exception as e:
             print(e)
         count += 1
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.JOOBLE)
 

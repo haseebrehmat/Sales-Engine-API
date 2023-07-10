@@ -45,7 +45,8 @@ class CandidateListView(ListAPIView):
         if serializer.is_valid():
             data = serializer.validated_data
             data["company_id"] = request.user.profile.company.id
-            data["designation_id"] = request.data.get("designation", "")
+            designation = request.data.get("designation", "")
+            data["designation_id"] = designation.get("value", "")
             skills = request.data.get("skills", "")
             data['skills'] = skills
             regions = request.data.get("regions", "")
@@ -81,9 +82,10 @@ class CandidateDetailView(APIView):
             skills = request.data.get("skills", "")
             tools = request.data.get("tools", "")
             regions = request.data.get("regions", "")
+            designation = request.data.get("designation", "")
             serializer.save(company_id=request.user.profile.company.id,
                             skills=skills, tools=tools, regions=regions,
-                            designation_id=request.data.get("designation", queryset.designation_id))
+                            designation_id=designation.get("value", ""))
             message = "Candidate updated successfully"
             status_code = status.HTTP_201_CREATED
             return Response({"detail": message}, status_code)
@@ -104,4 +106,8 @@ class CandidateProfileDetailView(APIView):
             serializer = CandidateSerializer(queryset, many=False)
             data["candidate"] = serializer.data
             data["all_regions"] = [{"id": x.id, "name": x.region} for x in Regions.objects.all()]
-        return Response(data, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            message = "Your Profile has been deleted by company owner"
+            status_code = status.HTTP_404_NOT_FOUND
+            return Response({"detail": message}, status_code)
