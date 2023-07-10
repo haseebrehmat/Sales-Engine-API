@@ -1,12 +1,11 @@
-import json
-import requests
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from rest_framework.response import Response
 from rest_framework import status
 from authentication.models import User
+from authentication.views.users import LoginView
 from settings.utils.helpers import get_host
+from django.test import RequestFactory
 
 
 class UserLogin(APIView):
@@ -33,11 +32,11 @@ class UserLogin(APIView):
                     "email": email,
                     "password": password
                 }
-                resp = requests.post(
-                    url,
-                    data=json.dumps(payload),
-                    headers=headers
-                )
+                request_factory = RequestFactory()
+                drf_request = request_factory.post('/api/auth/authenticate/', data=payload, headers=headers)
+                drf_request.method = "POST"
+                view = LoginView.as_view()
+                resp = view(drf_request)
                 status_code = resp.status_code
                 if status_code == 500:
                     data = {"detail": "Something went wrong! Contact support"}
@@ -46,22 +45,9 @@ class UserLogin(APIView):
                         "detail": 'Wrong password. Try again or click Forgot password to reset it.'
                     }
                 else:
-                    data = json.loads(resp.text)
+                    data = resp.data
 
             except User.DoesNotExist:
                 data = {"detail": "User not found"}
 
         return Response(data, status_code)
-
-
-# class LogoutView(APIView):
-#     permission_classes = (IsAuthenticated,)
-#
-#     def post(self, request):
-#         print(request.user.id)
-#         tokens = OutstandingToken.objects.filter(user_id=request.user.id)
-#         for token in tokens:
-#             print("in token loop")
-#             t, _ = BlacklistedToken.objects.get_or_create(token=token)
-#             print(t, _)
-#         return Response(status=status.HTTP_205_RESET_CONTENT)
