@@ -6,7 +6,6 @@ from utils.helpers import saveLogs
 from settings.base import SALES_ENGINE_UPLOAD_JOBS_URL, SALES_ENGINE_API_TOKEN
 from utils.requests_logger import requests_logger_hooks
 
-
 @start_new_thread
 def upload_jobs_in_sales_engine(jobs_data, filename=None):
     try:

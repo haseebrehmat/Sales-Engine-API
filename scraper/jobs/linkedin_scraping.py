@@ -223,7 +223,6 @@ def linkedin(link, job_type):
             )
             # options.headless = True  # newly added
             # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-            # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
             with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
                 request_url(driver, LOGIN_URL)
                 logged_in = login(driver, x.email, x.password)

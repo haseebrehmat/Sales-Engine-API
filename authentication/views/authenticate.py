@@ -1,9 +1,8 @@
 import json
 import requests
 from django.contrib.auth.models import AnonymousUser
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from rest_framework.response import Response
 from rest_framework import status
 from authentication.models import User
@@ -41,11 +40,6 @@ class UserLogin(APIView):
                 drf_request.method = "POST"
                 view = LoginView.as_view()
                 resp = view(drf_request)
-                # resp = requests.post(
-                #     url,
-                #     data=json.dumps(payload),
-                #     headers=headers
-                # )
                 status_code = resp.status_code
                 if status_code == 500:
                     data = {"detail": "Something went wrong! Contact support"}
@@ -60,16 +54,3 @@ class UserLogin(APIView):
                 data = {"detail": "User not found"}
 
         return Response(data, status_code)
-
-
-# class LogoutView(APIView):
-#     permission_classes = (IsAuthenticated,)
-#
-#     def post(self, request):
-#         print(request.user.id)
-#         tokens = OutstandingToken.objects.filter(user_id=request.user.id)
-#         for token in tokens:
-#             print("in token loop")
-#             t, _ = BlacklistedToken.objects.get_or_create(token=token)
-#             print(t, _)
-#         return Response(status=status.HTTP_205_RESET_CONTENT)

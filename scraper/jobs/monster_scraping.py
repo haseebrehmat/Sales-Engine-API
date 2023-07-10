@@ -117,7 +117,6 @@ def monster(link, job_type):
         options.add_argument(
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
-#         with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:  # For Local
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             try:
                 driver.get(link)

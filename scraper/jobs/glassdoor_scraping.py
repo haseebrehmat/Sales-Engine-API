@@ -121,6 +121,7 @@ def find_jobs(driver, job_type, total_job):
 
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                         "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+
         filename = generate_scraper_filename(ScraperNaming.GLASSDOOR)
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
         df.to_excel(filename, index=False)
@@ -155,7 +156,6 @@ def glassdoor(link, job_type):
             options.add_argument(
                 "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
             )
-            # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
             with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
                 request_url(driver, GLASSDOOR_LOGIN_URL)
                 driver.maximize_window()
