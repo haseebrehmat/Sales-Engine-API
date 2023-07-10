@@ -6,6 +6,7 @@ from rest_framework import routers
 from job_portal.classifier.update_job_stacks import UpdateJobStackView
 from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, ChangeJobStatusView, AppliedJobDetailsView, \
     ListAppliedJobView
+from job_portal.views.applied_jobs import AppliedJobView
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
 from job_portal.views.cover_letter.download import DownloadCoverView
 from job_portal.views.cover_letter.generate_cover import GenerateCoverView
@@ -28,7 +29,8 @@ urlpatterns = [
     path('job_status/', ChangeJobStatusView.as_view(), name='change_job_status'),
     path('applied_job_details/', AppliedJobDetailsView.as_view(),
          name='applied_job_details'),
-    path('team_applied_job_details/', ListAppliedJobView.as_view(),
+    path('team_applied_job_details/', ListAppliedJobView.as_view()),
+    path('applied_jobs/', AppliedJobView.as_view(),
          name='team_applied_job_details'),
     path('cover_letter/download/', DownloadCoverView.as_view()),
     path('cover_letter/generate/', GenerateCoverView.as_view()),
