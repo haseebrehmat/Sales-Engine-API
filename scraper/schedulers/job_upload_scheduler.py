@@ -204,6 +204,7 @@ def upload_file(job_parser, filename):
                   job_type=job_item.job_type,
                   address=job_item.address,
                   job_description=job_item.job_description,
+                  job_description_tags=job_item.job_description_tags,
                   tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
                   job_posted_date=job_item.job_posted_date,
                   job_source_url=job_item.job_source_url,
