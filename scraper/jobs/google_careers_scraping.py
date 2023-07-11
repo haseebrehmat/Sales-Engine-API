@@ -111,6 +111,9 @@ def google_careers(links, job_type):
     print("Google Careers")
     total_job = 0
     options = webdriver.ChromeOptions()  # newly added
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
     options.add_argument("--headless")
     options.add_argument("window-size=1200,1100")
     options.add_argument('--log-level=0')  # Set the log level to ALL
