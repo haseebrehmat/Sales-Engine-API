@@ -113,8 +113,7 @@ def talent(link, job_type):
         )
         # options.headless = True  # newly added
         # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
+        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             driver.maximize_window()
             try:
                 flag = True
