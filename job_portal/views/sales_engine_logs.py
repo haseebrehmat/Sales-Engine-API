@@ -39,5 +39,5 @@ class SalesEngineJobsStatsView(ListAPIView):
         if job_sources:
             job_sources_query = Q(job_source__in=job_sources.split(','))
 
-        queryset = SalesEngineJobsStats.objects.filter(search_query, from_date_query, to_date_query, job_sources_query)
+        queryset = SalesEngineJobsStats.objects.filter(search_query, from_date_query, to_date_query, job_sources_query).order_by('-created_at')
         return queryset
