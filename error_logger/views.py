@@ -30,4 +30,4 @@ class LogsView(ListAPIView):
         return queryset
 
 
-run_delete_logs_scheduler()
+# run_delete_logs_scheduler()
