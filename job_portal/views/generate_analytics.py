@@ -53,7 +53,7 @@ class GenerateAnalytics(APIView):
     ]
 
     def get(self, request):
-        filters = self.filter_queryset(request)
+        filters, start_date, end_date = self.filter_queryset(request)
         if self.queryset.count() == 0:
             self.queryset = self.job_archive
             filters = self.filter_queryset(request)
@@ -64,6 +64,8 @@ class GenerateAnalytics(APIView):
             "tech_stack_data": self.get_tech_count_stats(),
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
+            "start_date": str(start_date.date()),
+            "end_date": str(end_date.date()),
         }
 
         return Response(data)
@@ -140,7 +142,6 @@ class GenerateAnalytics(APIView):
                 end_date = datetime(year, 12, 31)
             else:
                 end_date = datetime(year, quarter_number + 3, 1) - timedelta(days=1)
-                # end_date = datetime(year, quarter_number, 1) - timedelta(days=1)
 
             self.queryset = self.queryset.filter(created_at__range=[start_date, end_date])
             weeks = []
@@ -174,7 +175,12 @@ class GenerateAnalytics(APIView):
                 end_date = datetime.strptime(end_date, format_string) - timedelta(seconds=1)
                 self.queryset = self.queryset.filter(created_at__lte=end_date)
 
-        return data
+        if start_date == "":
+            start_date = self.queryset.last().created_at
+        if end_date == "":
+            end_date = self.queryset.first().created_at
+
+        return data, start_date, end_date
 
     def get_job_type_stats(self):
         job_types = [
