@@ -56,6 +56,7 @@ class ScraperNaming(enum.Enum):
     SIMPLY_HIRED = 'simply_hired'
     TALENT = 'talent'
     ZIP_RECRUITER = 'zip_recruiter'
+    RECRUIT = 'recruit'
 
     def __str__(self):
         return self.value
