@@ -615,4 +615,6 @@ try:
 except Exception as e:
     print(e)
 
+from scraper.jobs.rubynow_scraping import rubynow
 
+rubynow()
