@@ -8,9 +8,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters
 from authentication.permissions import UserPermissions
 from authentication.serializers.jwt_serializer import JwtSerializer
-from authentication.models import User, Profile, Role
+from authentication.models import User, Profile, Role, UserRegions
 from authentication.serializers.user_permission import UserPermissionSerializer
 from authentication.serializers.users import UserSerializer
+from pseudos.models import VerticalsRegions, Verticals
 from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import validate_password
 import boto3
@@ -122,6 +123,12 @@ class UserView(ListAPIView):
                 user.roles = role
         user.save()
 
+        # Add user regions
+        regions = request.data.get("regions")
+        if regions:
+            regions = regions.split(',')
+            user_regions = [UserRegions(user=user, region_id=region) for region in regions]
+            UserRegions.objects.bulk_create(user_regions)
         return status.HTTP_200_OK, "User created successfully"
 
 
@@ -171,11 +178,31 @@ class UserDetailView(APIView):
             user.roles = role
             user.save()
 
+        # Update user regions
+        regions = request.data.get("regions")
+        users_regions = UserRegions.objects.filter(user=user)
+        if users_regions:
+            users_regions.delete()
+        if regions:
+            regions = regions.split(',')
+            user_regions = [UserRegions(user=user, region_id=region) for region in regions]
+            UserRegions.objects.bulk_create(user_regions)
+        # re-assign verticals wtr valid regions
+        verticals_list = user.profile.vertical.all()
+        for vertical in verticals_list:
+            if not self.is_valid_vertical(vertical, user):
+                user.profile.vertical.remove(vertical)
         return Response({"detail": "User updated successfully"})
 
     def delete(self, request, pk):
         User.objects.filter(pk=pk).delete()
         return Response({"detail": "User deleted successfully"}, status=status.HTTP_200_OK)
+
+    def is_valid_vertical(self, vertical, user):
+        verticals_regions_set = set(VerticalsRegions.objects.filter(verticals=vertical).values_list('region', flat=True))
+        user_regions_set = set(UserRegions.objects.filter(user=user).values_list('region', flat=True))
+        result = verticals_regions_set.intersection(user_regions_set)
+        return True if result else False
 
 
 class LoginView(TokenObtainPairView):
