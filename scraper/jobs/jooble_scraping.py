@@ -31,7 +31,7 @@ def find_jobs(driver, job_type, total_job):
         for job in jobs:
             job.location_once_scrolled_into_view
     except:
-        print("Do not load the whole page")
+        print("")
     time.sleep(3)
     jobs = driver.find_elements(By.CLASS_NAME, "yKsady")
     for job in jobs:
@@ -59,7 +59,6 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, job_source)
             append_data(data, job_type)
             append_data(data, job_description[0].get_attribute('innerHTML'))
-            # print("\n")
             total_job += 1
             scrapped_data.append(data)
         except Exception as e:
@@ -84,7 +83,6 @@ def append_data(data, field):
 def jooble(link, job_type):
     try:
         total_job = 0
-        print("Start in try portion. \n")
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
@@ -105,7 +103,7 @@ def jooble(link, job_type):
                         driver, job_type, total_job)
                     print("Fetching...")
             except Exception as e:
-                print("out from for loop")
+                print(e)
 
             driver.quit()
     except:
