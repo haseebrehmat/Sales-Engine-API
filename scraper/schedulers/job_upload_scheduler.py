@@ -27,6 +27,7 @@ from scraper.jobs.jooble_scraping import jooble
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
 from scraper.jobs.simply_hired_scraping import simply_hired
+from scraper.jobs.dailyremote_scraping import dailyremote
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
@@ -83,6 +84,9 @@ scraper_functions = {
     ],
     "careerjet": [
         careerjet,
+    ],
+    "dailyremote": [
+        dailyremote,
     ]
 }
 
