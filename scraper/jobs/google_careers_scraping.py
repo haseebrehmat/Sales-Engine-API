@@ -28,11 +28,13 @@ def find_jobs(driver, job_type, total_job):
     scrapped_data = []
     count = 0
     try:
-        jobs = driver.find_elements(By.CLASS_NAME, "gc-card")
+        driver.find_element(By.CLASS_NAME, "WpHeLc").click()
+        time.sleep(5)
+        jobs = driver.find_elements(By.CLASS_NAME, "Qai30b")
 
         address = driver.find_elements(By.CLASS_NAME, "gc-job-tags__location")
 
-        for job in jobs[:-1]:
+        for job in jobs:
             data = []
             try:
                 job.location_once_scrolled_into_view
@@ -41,16 +43,15 @@ def find_jobs(driver, job_type, total_job):
                 print(e)
 
             time.sleep(2)
-            job_title = driver.find_elements(By.CLASS_NAME, "gc-card__title")
-            append_data(data, job_title[count].text)
-            company_name = driver.find_elements(By.CLASS_NAME, "gc-job-tags__team")
-            append_data(data, company_name[0].text)
-            try:
-                append_data(data, address[count].text.split('\n')[1])
-            except Exception as e:
-                append_data(data, address[count].text.split('\n')[0])
-            job_description = driver.find_elements(By.CLASS_NAME, "gc-card__content")
-            append_data(data, job_description[0].text)
+            job_title = driver.find_element(By.CLASS_NAME, "p1N2lc")
+            append_data(data, job_title.text)
+            company_name = driver.find_element(By.CLASS_NAME, "RP7SMd")
+            append_data(data, company_name.text)
+            address = driver.find_element(By.CLASS_NAME, "pwO9Dc")
+            append_data(data, address.text)
+            job_description_1 = driver.find_element(By.CLASS_NAME, "KwJkGe")
+            job_description_2 = driver.find_element(By.CLASS_NAME, "aG5W3")
+            append_data(data, job_description_1.text + job_description_2.text)
             append_data(data, job.get_attribute('href'))
             # job_posted_date = driver.find_elements(By.CLASS_NAME,"posted-date")
             append_data(data, "Today")
@@ -60,7 +61,7 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, "N/A")
             append_data(data, "Google Careers")
             append_data(data, job_type)
-            append_data(data, job_description[0].get_attribute('innerHTML'))
+            append_data(data, job_description_1.get_attribute('innerHTML') + job_description_2.get_attribute('innerHTML'))
 
             count += 1
             total_job += 1
@@ -94,18 +95,6 @@ def find_jobs(driver, job_type, total_job):
       print(e)
     return False, total_job
 
-def job_display(driver):
-    time.sleep(3)
-    expand = driver.find_elements(By.CLASS_NAME, "gc-card__cta")
-    try:
-        expand[0].click()
-        time.sleep(3)
-        return True, total_job
-    except Exception as e:
-        saveLogs(e)
-        print("No jobs to display")
-        return False, total_job
-
 # code starts from here
 def google_careers(links, job_type):
     print("Google Careers")
@@ -130,10 +119,9 @@ def google_careers(links, job_type):
         try:
             flag = True
             request_url(driver, links)
-            if job_display(driver):
-                while flag:
-                    flag, total_job = find_jobs(driver, job_type, total_job)
-                    print("Fetching...")
+            while flag:
+                flag, total_job = find_jobs(driver, job_type, total_job)
+                print("Fetching...")
             print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
