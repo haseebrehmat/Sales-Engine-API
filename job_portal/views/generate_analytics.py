@@ -45,13 +45,15 @@ class GenerateAnalytics(APIView):
     hybrid_onsite_enums = [
         "hybrid onsite",
         "hybrid on site",
-    ]
-    hybrid_remote_enums = [
+        "hybrid full time",
         "hybrid remote",
+    ]
+    hybrid_contract_enums = [
+        "hybrid contract"
     ]
 
     def get(self, request):
-        filters = self.filter_queryset(request)
+        filters, start_date, end_date = self.filter_queryset(request)
         if self.queryset.count() == 0:
             self.queryset = self.job_archive
             filters = self.filter_queryset(request)
@@ -62,6 +64,8 @@ class GenerateAnalytics(APIView):
             "tech_stack_data": self.get_tech_count_stats(),
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
+            "start_date": str(start_date.date()),
+            "end_date": str(end_date.date()),
         }
 
         return Response(data)
@@ -75,8 +79,8 @@ class GenerateAnalytics(APIView):
                 "contract_remote": self.queryset.filter(tech_keywords=x, job_type__in=self.contract_remote_enums).count(),
                 "full_time_on_site": self.queryset.filter(tech_keywords=x, job_type__in=self.full_time_onsite_enums).count(),
                 "full_time_remote": self.queryset.filter(tech_keywords=x, job_type__in=self.full_time_remote_enums).count(),
-                "hybrid_on_site":  self.queryset.filter(tech_keywords=x, job_type__in=self.hybrid_onsite_enums).count(),
-                "hybrid_remote": self.queryset.filter(tech_keywords=x, job_type__in=self.hybrid_remote_enums).count()
+                "hybrid_full_time":  self.queryset.filter(tech_keywords=x, job_type__in=self.hybrid_onsite_enums).count(),
+                "hybrid_contract": self.queryset.filter(tech_keywords=x, job_type__in=self.hybrid_contract_enums).count()
             } for x in self.tech_keywords]
 
         return data
@@ -138,7 +142,6 @@ class GenerateAnalytics(APIView):
                 end_date = datetime(year, 12, 31)
             else:
                 end_date = datetime(year, quarter_number + 3, 1) - timedelta(days=1)
-                # end_date = datetime(year, quarter_number, 1) - timedelta(days=1)
 
             self.queryset = self.queryset.filter(created_at__range=[start_date, end_date])
             weeks = []
@@ -172,7 +175,12 @@ class GenerateAnalytics(APIView):
                 end_date = datetime.strptime(end_date, format_string) - timedelta(seconds=1)
                 self.queryset = self.queryset.filter(created_at__lte=end_date)
 
-        return data
+        if start_date == "":
+            start_date = self.queryset.last().created_at
+        if end_date == "":
+            end_date = self.queryset.first().created_at
+
+        return data, start_date, end_date
 
     def get_job_type_stats(self):
         job_types = [
@@ -181,7 +189,7 @@ class GenerateAnalytics(APIView):
             {"key": "Full time on site", "value": self.full_time_onsite_enums},
             {"key": "Full time remote", "value": self.full_time_remote_enums},
             {"key": "Hybrid on site", "value": self.hybrid_onsite_enums},
-            {"key": "Hybrid remote", "value": self.hybrid_remote_enums}
+            {"key": "Hybrid remote", "value": self.hybrid_contract_enums}
         ]
         data = [
             {

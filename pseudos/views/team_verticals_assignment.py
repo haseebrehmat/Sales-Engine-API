@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from itertools import chain
-from authentication.models import Profile
+from authentication.models import Profile, UserRegions
 from authentication.serializers.team_management import TeamManagementSerializer
 from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
 from job_portal.serializers.job_detail import JobDetailSerializer
@@ -17,7 +17,7 @@ from authentication.models.user import User
 from pseudos.models import Pseudos
 from pseudos.serializers.pseudos import PseudoSerializer
 from pseudos.serializers.verticals import VerticalSerializer
-
+from pseudos.models.verticals_regions import VerticalsRegions
 
 # class for assignment verticals to team
 class TeamVerticalsAssignView(ListAPIView):
@@ -60,10 +60,8 @@ class UserVerticalsAssignView(APIView):
 
             for x in data["members"]:
                 verticals = Verticals.objects.filter(vertical__user__id=x["id"], id__in=vertical_id)
-                if verticals.count() > 0:
-                    temp = [{"id": vertical.id, "name": vertical.name, "identity": vertical.identity,
-                             "pseudo": vertical.pseudo.name} for vertical in verticals]
-                    x["verticals"] = temp
+                verticals_serializer = VerticalSerializer(verticals, many=True)
+                x["verticals"] = verticals_serializer.data
 
         else:
             data = []
@@ -96,13 +94,22 @@ class UserVerticalsAssignView(APIView):
         other_vertical.extend([x for x in verticals])
         for vertical in current_team_verticals:
             profile.vertical.remove(vertical)
+        invalid_verticals = 0
         for v in verticals:
-            profile.vertical.add(v)
-
+            if self.is_valid_vertical(v, profile.user):
+                profile.vertical.add(v)
+            else:
+                invalid_verticals += 1
+        error_msg = f'Except {invalid_verticals} verticals due to invalid regions.' if invalid_verticals> 0 else ''
         status_code = status.HTTP_200_OK
-        message = {"detail": "Verticals Saved Successfully"}
+        message = {"detail": "Verticals Saved Successfully!" + f' {error_msg}' }
         return Response(message, status=status_code)
 
+    def is_valid_vertical(self, vertical, user):
+        verticals_regions_set = set(VerticalsRegions.objects.filter(verticals=vertical).values_list('region', flat=True))
+        user_regions_set = set(UserRegions.objects.filter(user=user).values_list('region', flat=True))
+        result = verticals_regions_set.intersection(user_regions_set)
+        return True if result else False
 
 class UserVerticals(APIView):
     def get(self, request):
