@@ -5,6 +5,7 @@ from authentication.exceptions import InvalidUserException
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.serializers.users import UserSerializer
+from pseudos.serializers.verticals import VerticalSerializer
 from settings.utils.helpers import serializer_errors
 
 from authentication.models import Team, User, Profile
@@ -17,7 +18,7 @@ class TeamManagementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
-        depth = 2
+        depth = 3
 
     def get_members(self, obj):
         serializer = UserSerializer(obj.members.all(), many=True)
@@ -42,3 +43,9 @@ class TeamManagementSerializer(serializers.ModelSerializer):
             instance.members.add(member)
         instance.save()
         return instance
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['verticals'] = VerticalSerializer(instance.verticals.all(), many=True).data
+        return representation
