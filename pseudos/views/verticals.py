@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
+from authentication.models import UserRegions, User
 from pseudos.models import Verticals, VerticalsRegions
 from pseudos.permissions.verticals import VerticalPermissions
 from pseudos.serializers.verticals import VerticalSerializer
@@ -64,6 +65,11 @@ class VerticalDetailView(APIView):
             verticals_regions_data =[VerticalsRegions(verticals=queryset, region_id=region) for region in regions]
             VerticalsRegions.objects.bulk_create(verticals_regions_data)
             serializer.save(hobbies=request_data["hobbies"])
+            # revalidate user verticals
+            users = User.objects.filter(profile__vertical=queryset)
+            for user in users:
+                if not self.is_valid_vertical(queryset, user):
+                    user.profile.vertical.remove(queryset)
             message = "Vertical updated successfully"
             status_code = status.HTTP_200_OK
             return Response({"detail": message}, status_code)
@@ -74,3 +80,10 @@ class VerticalDetailView(APIView):
     def delete(self, request, pk):
         Verticals.objects.filter(pk=pk).delete()
         return Response({"detail": "Verticals deleted successfully"}, status=status.HTTP_200_OK)
+
+    def is_valid_vertical(self, vertical, user):
+        verticals_regions_set = set(
+            VerticalsRegions.objects.filter(verticals=vertical).values_list('region', flat=True))
+        user_regions_set = set(UserRegions.objects.filter(user=user).values_list('region', flat=True))
+        result = verticals_regions_set.intersection(user_regions_set)
+        return True if result else False

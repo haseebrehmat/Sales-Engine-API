@@ -11,6 +11,7 @@ from authentication.views.profile_image import ProfileViewImage
 from authentication.views.reset_password import render_reset_page
 from authentication.views.role import RoleView, RoleDetailView, RoleUserView
 from authentication.views.team_management import TeamView, TeamDetailView
+from authentication.views.user_regions import UserRegionsList
 from authentication.views.users import LoginView, UserView, UserDetailView
 from authentication.views.permission import PermissionView, PermissionDetailView, get_all_permissions, \
     PermissionAssignmentView
@@ -42,4 +43,5 @@ urlpatterns = [
     path('role/<str:pk>/', RoleDetailView.as_view()),
     path('role_users/<str:pk>/', RoleUserView.as_view()),
     path('create_permissions/', CreatePermissions.as_view()),
+    path('user_regions/', UserRegionsList.as_view()),
 ]
