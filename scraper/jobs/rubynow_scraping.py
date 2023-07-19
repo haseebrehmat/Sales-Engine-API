@@ -38,7 +38,7 @@ def find_jobs(driver, job_type):
 
     print(total_job)
     iterator = 0
-    while iterator < 1:
+    while iterator < 2:
         data = []
         job = driver.find_element(By.CLASS_NAME, "span9")
 
@@ -85,7 +85,7 @@ def find_jobs(driver, job_type):
             append_data(data, job_type[1])
 
             job_description_tags = job_description.get_attribute("innerHTML")
-            append_data(data, "job_description_tags")
+            append_data(data, str(job_description_tags))
             
 
             scrapped_data.append(data)
@@ -113,7 +113,7 @@ def find_jobs(driver, job_type):
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.Ruby_Now)
     df.to_excel(filename, index=False)
-
+    
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Ruby Now", filename=filename
     )
@@ -122,10 +122,9 @@ def find_jobs(driver, job_type):
 
 
 # code starts from here
-def rubynow(link="", job_type=""):
-    link = "https://jobs.rubynow.com/"
-    job_type = "Full Time"
-    print("Ruby Now")
+def rubynow(link, job_type):
+    # link = "https://jobs.rubynow.com/"
+    # job_type = "Full Time"
     try:
         options = webdriver.ChromeOptions()  # newly added
         options.add_argument("window-size=1200,1100")
@@ -157,6 +156,4 @@ def rubynow(link="", job_type=""):
     except Exception as e:
         saveLogs(e)
         print(e)
- 
-    import pdb
-    pdb.set_trace
+    
