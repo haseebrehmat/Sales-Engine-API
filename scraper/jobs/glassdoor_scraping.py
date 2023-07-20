@@ -69,7 +69,7 @@ def find_jobs(driver, job_type, total_job):
                     By.CLASS_NAME, "e1tk4kwz1")
                 if job_title:
                     append_data(data, job_title[0].text)
-                    append_data(data, company_name.text)
+                    append_data(data, company_name.text.split("\n")[0])
                     address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
                     append_data(data, address.text)
                     job_description = driver.find_element(
@@ -160,8 +160,8 @@ def glassdoor(link, job_type):
                 "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
             )
             with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
-                request_url(driver, GLASSDOOR_LOGIN_URL)
                 driver.maximize_window()
+                request_url(driver, GLASSDOOR_LOGIN_URL)
                 logged_in = login(driver, x.email, x.password)
                 # import pdb
                 # pdb.set_trace()
