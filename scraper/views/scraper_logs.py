@@ -6,6 +6,7 @@ from scraper.serializers.scraper_logs_serializer import ScraperLogsSerializer
 from scraper.utils.custom_pagination import CustomPagination
 import datetime
 
+
 class ScraperLogView(ListAPIView):
     pagination_class = CustomPagination
     serializer_class = ScraperLogsSerializer
