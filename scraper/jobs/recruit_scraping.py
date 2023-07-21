@@ -65,10 +65,13 @@ def find_jobs(driver, job_type, total_job):
             count += 1
     except Exception as e:
         saveLogs(e)
+
+    update_job_description(driver, scrapped_data)
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "salary_format", "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
                     "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+
     filename = generate_scraper_filename(ScraperNaming.RECRUIT)
 
     df.to_excel(filename, index=False)
@@ -85,6 +88,18 @@ def find_jobs(driver, job_type, total_job):
         saveLogs(e)
         return False
 
+
+def update_job_description(driver, data):
+    current_url = driver.current_url
+    try:
+        for i in range(len(data)):
+            driver.get(data[i][4])
+            job_description = driver.find_element(By.CLASS_NAME, "jd-des")
+            data[i][3] = job_description.text
+            data[i][-1] = job_description.get_attribute('innerHTML')
+    except Exception as e:
+        saveLogs(e)
+    driver.get(current_url)
 
 def append_data(data, field):
     data.append(str(field).strip("+"))
