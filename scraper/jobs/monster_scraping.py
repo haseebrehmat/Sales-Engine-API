@@ -12,19 +12,22 @@ from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 total_job = 0
+
 def append_data(data, field):
     data.append(str(field).strip("+"))
+
 def load_jobs(driver):
-    finished = "No More Results"
+    time.sleep(5)
+    loading = "job-search-load-more"
     try:
-        button = driver.find_element(
-            By.CLASS_NAME, "job-search-resultsstyle__LoadMoreContainer-sc-1wpt60k-0")
-        data_exists = button.find_element(By.TAG_NAME, "span")
-        if finished in data_exists.text:
-            return False
-        return True
+        for load in driver.find_elements(By.CLASS_NAME, "sc-kdBSHD"):
+            if loading in load.get_attribute("id"):
+                return True
+        return False
+
     except Exception as e:
         return False
+
 # find's job name
 def find_jobs(driver, job_type, total_job):
     scrapped_data = []
@@ -107,6 +110,7 @@ def find_jobs(driver, job_type, total_job):
         total_jobs=len(df), job_source="Monster", filename=filename)
     return total_job
 # code starts from here
+
 def monster(link, job_type):
     total_job = 0
     print("Monster")
@@ -122,8 +126,8 @@ def monster(link, job_type):
         )
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
             try:
-                driver.get(link)
                 driver.maximize_window()
+                driver.get(link)
                 total_job = find_jobs(
                     driver, job_type, total_job)
                 print("SCRAPING_ENDED")
