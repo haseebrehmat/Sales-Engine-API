@@ -57,7 +57,7 @@ class ScraperNaming(enum.Enum):
     TALENT = 'talent'
     ZIP_RECRUITER = 'zip_recruiter'
     RECRUIT = 'recruit'
-    Ruby_Now = 'ruby_now'
+    Ruby_Now = 'rubynow'
     
 
 

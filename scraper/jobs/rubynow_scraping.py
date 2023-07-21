@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
@@ -35,10 +36,10 @@ def find_jobs(driver, job_type):
     jobs = driver.find_elements(By.CLASS_NAME, "blog-img")
     total_job = len(jobs)
     jobs[0].click()
-
-    print(total_job)
+    
     iterator = 0
-    while iterator < 2:
+    while iterator < total_job:
+        time.sleep(3)
         data = []
         job = driver.find_element(By.CLASS_NAME, "span9")
 
@@ -110,6 +111,7 @@ def find_jobs(driver, job_type):
         "job_type",
         "job_description_tags",
     ]
+    
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.Ruby_Now)
     df.to_excel(filename, index=False)
@@ -117,16 +119,17 @@ def find_jobs(driver, job_type):
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Ruby Now", filename=filename
     )
-
     return False, total_job
 
 
 # code starts from here
 def rubynow(link, job_type):
+    print("Ruby Now")
     # link = "https://jobs.rubynow.com/"
     # job_type = "Full Time"
     try:
         options = webdriver.ChromeOptions()  # newly added
+        options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
