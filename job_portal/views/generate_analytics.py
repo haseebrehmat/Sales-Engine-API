@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, date
+from pprint import pprint
 
+from django.db.models import Count, F, Q, Value
 from django.db.models.functions import ExtractMonth, ExtractYear
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -42,7 +44,7 @@ class GenerateAnalytics(APIView):
         "full time remote",
         "remote"
     ]
-    hybrid_onsite_enums = [
+    hybrid_full_time_enums = [
         "hybrid onsite",
         "hybrid on site",
         "hybrid full time",
@@ -71,17 +73,20 @@ class GenerateAnalytics(APIView):
         return Response(data)
 
     def get_tech_count_stats(self):
-        data = [
-            {
-                "name": x,
-                "total": self.queryset.filter(tech_keywords=x).count(),
-                "contract_on_site": self.queryset.filter(tech_keywords=x, job_type__in=self.contract_onsite_enums).count(),
-                "contract_remote": self.queryset.filter(tech_keywords=x, job_type__in=self.contract_remote_enums).count(),
-                "full_time_on_site": self.queryset.filter(tech_keywords=x, job_type__in=self.full_time_onsite_enums).count(),
-                "full_time_remote": self.queryset.filter(tech_keywords=x, job_type__in=self.full_time_remote_enums).count(),
-                "hybrid_full_time":  self.queryset.filter(tech_keywords=x, job_type__in=self.hybrid_onsite_enums).count(),
-                "hybrid_contract": self.queryset.filter(tech_keywords=x, job_type__in=self.hybrid_contract_enums).count()
-            } for x in self.tech_keywords]
+        data = []
+
+        for x in self.tech_keywords:
+            qs = self.queryset.filter(tech_keywords=x).aggregate(
+                total=Count("id"),
+                contract_on_site=Count('id', filter=Q(job_type__in=self.contract_onsite_enums)),
+                contract_remote=Count('id', filter=Q(job_type__in=self.contract_remote_enums)),
+                full_time_on_site=Count('id', filter=Q(job_type__in=self.full_time_onsite_enums)),
+                full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
+                hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
+                hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
+                )
+            qs.update({"name": x})
+            data.append(qs)
 
         return data
 
@@ -188,8 +193,8 @@ class GenerateAnalytics(APIView):
             {"key": "Contract remote", "value": self.contract_remote_enums},
             {"key": "Full time on site", "value": self.full_time_onsite_enums},
             {"key": "Full time remote", "value": self.full_time_remote_enums},
-            {"key": "Hybrid on site", "value": self.hybrid_onsite_enums},
-            {"key": "Hybrid remote", "value": self.hybrid_contract_enums}
+            {"key": "Hybrid full time", "value": self.hybrid_full_time_enums},
+            {"key": "Hybrid contract", "value": self.hybrid_contract_enums}
         ]
         data = [
             {

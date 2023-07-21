@@ -513,7 +513,7 @@ def group_scraper_job():
     global current_scraper
     global current_group_scraper_id
     global current_group_scraper_running_time
-    last_scraper_running_time = current_group_scraper_running_time
+
 
     while True:
         if not current_group_scraper_id:
@@ -522,7 +522,11 @@ def group_scraper_job():
             group_scraper = GroupScraper.objects.get(
                 pk=current_group_scraper_id)
             current_scraper = group_scraper.name
+
+            SchedulerSync.objects.filter(type="group scraper").update(running=False)
+            SchedulerSync.objects.filter(job_source=current_scraper).update(running=True)
             last_scraper_running_time = current_group_scraper_running_time
+
         except Exception as e:
             print(str(e))
             saveLogs(e)

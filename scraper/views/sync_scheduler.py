@@ -95,9 +95,9 @@ class SchedulerStatusView(APIView):
         if AllSyncConfig.objects.filter(status=True).first() is not None:
             infinite_scraper_running_status = True
         data.append({"job_source": 'all', "running": infinite_scraper_running_status, "type": 'Infinite Scrapper'})
-        try:
-            from scraper.schedulers.job_upload_scheduler import current_scraper
-            data.append({"job_source": current_scraper, "running": True if current_scraper else False, "type": 'Group Scraper'})
-        except Exception as e:
-            print(e)
+        # try:
+        #     from scraper.schedulers.job_upload_scheduler import current_scraper
+        #     data.append({"job_source": current_scraper, "running": True if current_scraper else False, "type": 'Group Scraper'})
+        # except Exception as e:
+        #     print(e)
         return Response(data, status=status.HTTP_200_OK)
