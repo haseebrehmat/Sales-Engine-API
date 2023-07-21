@@ -30,6 +30,7 @@ from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.dailyremote_scraping import dailyremote
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
+from scraper.jobs.recruit_scraping import recruit
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
@@ -87,6 +88,9 @@ scraper_functions = {
     ],
     "dailyremote": [
         dailyremote,
+    ],
+    "recruit": [
+        recruit,
     ]
 }
 
