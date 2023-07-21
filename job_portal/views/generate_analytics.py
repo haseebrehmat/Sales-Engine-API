@@ -44,7 +44,7 @@ class GenerateAnalytics(APIView):
         "full time remote",
         "remote"
     ]
-    hybrid_onsite_enums = [
+    hybrid_full_time_enums = [
         "hybrid onsite",
         "hybrid on site",
         "hybrid full time",
@@ -82,7 +82,7 @@ class GenerateAnalytics(APIView):
                 contract_remote=Count('id', filter=Q(job_type__in=self.contract_remote_enums)),
                 full_time_on_site=Count('id', filter=Q(job_type__in=self.full_time_onsite_enums)),
                 full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
-                hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_onsite_enums)),
+                hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
                 hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
                 )
             qs.update({"name": x})
@@ -193,8 +193,8 @@ class GenerateAnalytics(APIView):
             {"key": "Contract remote", "value": self.contract_remote_enums},
             {"key": "Full time on site", "value": self.full_time_onsite_enums},
             {"key": "Full time remote", "value": self.full_time_remote_enums},
-            {"key": "Hybrid on site", "value": self.hybrid_onsite_enums},
-            {"key": "Hybrid remote", "value": self.hybrid_contract_enums}
+            {"key": "Hybrid full time", "value": self.hybrid_full_time_enums},
+            {"key": "Hybrid contract", "value": self.hybrid_contract_enums}
         ]
         data = [
             {
