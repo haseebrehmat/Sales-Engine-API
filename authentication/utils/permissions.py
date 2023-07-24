@@ -228,6 +228,18 @@ permissions = [
         "level": 1
     },
     {
+        "module": "Jobs",
+        "codename": 'edit_job',
+        "name": 'Edit Job',
+        "level": 2,
+    },
+    {
+        "module": "Jobs",
+        "codename": 'delete_job',
+        "name": 'Delete Job',
+        "level": 2,
+    },
+    {
         "module": "Scraper",
         "codename": "edit_scrapper_account",
         "name": "Edit Scraper Account",
@@ -575,4 +587,34 @@ permissions = [
         "name": "Delete Region",
         "level": 2
     },
+    {
+        "module": 'Analytics',
+        "codename": 'view_analytics',
+        "name": 'View Analytics',
+        "level": 2,
+    },
+    {
+        "module": 'Permission Management',
+        "codename": 'view_permission',
+        "name": 'View Permissions',
+        "level": 1,
+    },
+    {
+        "module": 'Permission Management',
+        "codename": 'create_permission',
+        "name": 'Create Permission',
+        "level": 1,
+    },
+    {
+        "module": 'Permission Management',
+        "codename": 'edit_permission',
+        "name": 'Edit Permission',
+        "level": 1,
+    },
+    {
+        "module": 'Permission Management',
+        "codename": 'delete_permission',
+        "name": 'Delete Permission',
+        "level": 1,
+    }
 ]
