@@ -177,8 +177,9 @@ class GenerateAnalytics(APIView):
                 start_date = datetime.strptime(start_date, format_string)
                 self.queryset = self.queryset.filter(created_at__gte=start_date)
             if end_date != "":
-                end_date = datetime.strptime(end_date, format_string) - timedelta(seconds=1)
-                self.queryset = self.queryset.filter(created_at__lte=end_date)
+                end_date = datetime.strptime(end_date, format_string)
+                calculated_end_date = end_date - timedelta(seconds=1)
+                self.queryset = self.queryset.filter(created_at__lte=calculated_end_date)
 
         if start_date == "":
             start_date = self.queryset.last().created_at
