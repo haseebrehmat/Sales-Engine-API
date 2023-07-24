@@ -7,10 +7,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from job_portal.models import JobDetail, JobArchive
+from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (AnalyticsPermission,)
     job_archive = JobArchive.objects.all()
     queryset = JobDetail.objects.all()
     tech_keywords = ""
