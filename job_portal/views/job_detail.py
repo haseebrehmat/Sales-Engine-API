@@ -170,6 +170,7 @@ class JobDetailsView(ModelViewSet):
 
 
 class RemoveDuplicateView(APIView):
+
     def post(self, request):
         if request.user.is_superuser:
             self.remove_duplicate()
@@ -177,7 +178,6 @@ class RemoveDuplicateView(APIView):
         else:
             message = "Only Admin has access to this endpoint"
         return Response({"detail": message}, status=201)
-      
 
 
     @start_new_thread

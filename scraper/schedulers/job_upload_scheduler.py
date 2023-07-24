@@ -31,6 +31,7 @@ from scraper.jobs.dailyremote_scraping import dailyremote
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.jobs.recruit_scraping import recruit
+from scraper.jobs.rubynow_scraping import rubynow
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
@@ -91,7 +92,10 @@ scraper_functions = {
     ],
     "recruit": [
         recruit,
-    ]
+    ],
+    "rubynow": [
+        rubynow,
+    ],
 }
 
 
@@ -384,6 +388,7 @@ google_careers_scheduler = BackgroundScheduler()
 jooble_scheduler = BackgroundScheduler()
 talent_scheduler = BackgroundScheduler()
 careerjet_scheduler = BackgroundScheduler()
+rubynow_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -444,6 +449,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["careerjet"])
+            
+            elif scheduler.job_source.lower() == "rubynow":
+                rubynow_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["rubynow"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -500,6 +509,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["careerjet"])
+                
+            elif scheduler.job_source.lower() == "rubynow":
+                rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                            args=["rubynow"])
 
 
 group_scraper_background_jobs = []
@@ -513,7 +526,7 @@ def group_scraper_job():
     global current_scraper
     global current_group_scraper_id
     global current_group_scraper_running_time
-    last_scraper_running_time = current_group_scraper_running_time
+
 
     while True:
         if not current_group_scraper_id:
@@ -522,7 +535,11 @@ def group_scraper_job():
             group_scraper = GroupScraper.objects.get(
                 pk=current_group_scraper_id)
             current_scraper = group_scraper.name
+
+            SchedulerSync.objects.filter(type="group scraper").update(running=False)
+            SchedulerSync.objects.filter(job_source=current_scraper).update(running=True)
             last_scraper_running_time = current_group_scraper_running_time
+
         except Exception as e:
             print(str(e))
             saveLogs(e)
@@ -610,5 +627,4 @@ try:
         group_scraper_job()
 except Exception as e:
     print(e)
-
-
+    
