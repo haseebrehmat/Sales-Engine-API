@@ -7,10 +7,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from job_portal.models import JobDetail, JobArchive
+from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (AnalyticsPermission,)
     job_archive = JobArchive.objects.all()
     queryset = JobDetail.objects.all()
     tech_keywords = ""
@@ -119,13 +120,22 @@ class GenerateAnalytics(APIView):
             self.queryset = self.queryset.filter(job_posted_date__range=[start_date, end_date])
 
         elif month_filter != "":
+
             data = month_filter.split("-")
             year = data[0]
             month = data[1]
-            str_date = month_filter + "-" + str(1)
-            start_date = datetime.strptime(str_date, "%Y-%M-%d")
-            end_date = datetime.strptime(str_date, "%Y-%M-%d") + timedelta(days=30) - timedelta(seconds=1)
-            print(start_date, end_date)
+            str_date = month_filter + "-" + "01"
+            start_date = datetime.strptime(str_date, '%Y-%m-%d')
+            month_days = 0
+            month_name = self.months[start_date.month - 1]
+            if month_name in ["January", "March", "May", "July", "August", "October", "December"]:
+                month_days = 31
+            elif month_name in ["April", "June", "September", "November"]:
+                month_days = 30
+            else:  # February (Handling leap year condition)
+                month_days = 29 if self.check_leap_year(year) else 28
+
+            end_date = datetime.strptime(str_date, '%Y-%m-%d') + timedelta(days=month_days) - timedelta(seconds=1)
             self.queryset = self.queryset.annotate(
                 month=ExtractMonth('created_at'),
                 year=ExtractYear('created_at')).filter(month=month, year=year)
@@ -177,8 +187,9 @@ class GenerateAnalytics(APIView):
                 start_date = datetime.strptime(start_date, format_string)
                 self.queryset = self.queryset.filter(created_at__gte=start_date)
             if end_date != "":
-                end_date = datetime.strptime(end_date, format_string) - timedelta(seconds=1)
-                self.queryset = self.queryset.filter(created_at__lte=end_date)
+                end_date = datetime.strptime(end_date, format_string)
+                calculated_end_date = end_date - timedelta(seconds=1)
+                self.queryset = self.queryset.filter(created_at__lte=calculated_end_date)
 
         if start_date == "":
             start_date = self.queryset.last().created_at
@@ -221,3 +232,10 @@ class GenerateAnalytics(APIView):
             current_date += timedelta(days=7)  # Move to the next week
 
         return weeks
+
+    def check_leap_year(self, year):
+        year = int(year)
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+            return True
+        else:
+            return False
