@@ -33,8 +33,11 @@ class GenerateCoverLetter(APIView):
             cover_letter = CoverLetter.objects.filter(vertical_id=vertical_id).first()
             vertical = Verticals.objects.filter(id=vertical_id).first()
 
-            if job_data is None or cover_letter is None:
+            if job_data is None:
                 data = {"detail": "Invalid Job ID or Vertical ID"}
+
+            elif cover_letter is None:
+                data = {"detail": "Cover letter not available"}
 
             else:
                 template = cover_letter.template

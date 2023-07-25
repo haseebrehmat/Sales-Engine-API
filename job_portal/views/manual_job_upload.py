@@ -1,12 +1,17 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
 from job_portal.serializers.manual_job_upload import ManualJobUploadSerializer
+from job_portal.serializers.job_detail import JobDetailSerializer
 from settings.utils.helpers import serializer_errors
 from rest_framework.permissions import IsAuthenticated
-from job_portal.models import JobDetail
+from job_portal.models import JobDetail, JobArchive
+from datetime import datetime
+import re
 
+CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
 class ManualJobUploadView(ListAPIView):
     serializer_class = ManualJobUploadSerializer
@@ -41,3 +46,19 @@ class ManualJobUploadView(ListAPIView):
         else:
             data = serializer_errors(serializer)
             raise InvalidUserException(data)
+
+class ManualJobUploadDetail(APIView):
+
+    def put(self, request, pk):
+        query = JobDetail.objects.filter(pk=pk, is_manual=True)
+        if query.exists():
+            queryset = query.first()
+            if queryset.expired_at is None:
+                request.data['expired_at'] = datetime.now()
+            else:
+                request.data['expired_at'] = None
+            message = {"detail": "Job updated successfully"}
+            return Response(message, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "This job does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)

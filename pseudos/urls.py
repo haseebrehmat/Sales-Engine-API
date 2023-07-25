@@ -1,5 +1,6 @@
 from django.urls import path
 from pseudos.views.certificates import CertificateView, CertificateDetailView
+# from pseudos.views.configurations import ConfigurationView
 from pseudos.views.cover_letter import CoverLetterView, CoverLetterDetailView
 from pseudos.views.education import EducationView, EducationDetailView
 from pseudos.views.experience import ExperienceView, ExperienceDetailView
@@ -10,7 +11,6 @@ from pseudos.views.other_sections import OtherSectionView, OtherSectionDetailVie
 from pseudos.views.projects import ProjectView, ProjectDetailView
 from pseudos.views.pseudos import PseudosView, PseudoDetailView
 from pseudos.views.resume import ResumeView
-# from pseudos.views.resume_section import ResumeSectionDetailView, ResumeSectionView
 from pseudos.views.skills import SkillView, SkillDetailView, GenericSkillView, GenericSkillDetailView
 from pseudos.views.sectionstatus import SectionStatusView
 from pseudos.views.verticals import VerticalView, VerticalDetailView
@@ -49,5 +49,6 @@ urlpatterns = [
     path('user_vertical/', UserVerticals.as_view()),
     path('job_vertical/', JobVerticals.as_view()),
     path('section_status/<str:pk>/', SectionStatusView.as_view()),
+    # path('configuration/', ConfigurationView.as_view()),
 
 ]
