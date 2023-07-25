@@ -49,7 +49,7 @@ class ManualJobUploadView(ListAPIView):
 
 class ManualJobUploadDetail(APIView):
 
-    def put(self, request, pk):
+    def get(self, request, pk):
         query = JobDetail.objects.filter(pk=pk, is_manual=True)
         if query.exists():
             queryset = query.first()
@@ -57,8 +57,10 @@ class ManualJobUploadDetail(APIView):
                 request.data['expired_at'] = datetime.now()
             else:
                 request.data['expired_at'] = None
+            query.update(**request.data)
+            status_code = status.HTTP_200_OK
             message = {"detail": "Job updated successfully"}
-            return Response(message, status=status.HTTP_200_OK)
+            return Response(message, status=status_code)
         else:
             return Response({"detail": "This job does not exist"},
                             status=status.HTTP_404_NOT_FOUND)
