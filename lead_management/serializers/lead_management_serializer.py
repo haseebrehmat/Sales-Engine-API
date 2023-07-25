@@ -22,6 +22,7 @@ class LeadManagementSerializer(serializers.ModelSerializer):
     def get_leads(self, obj):
         role = self.context['request'].user.roles.name
         user = [str(self.context['request'].user.id)]
+        current_user = self.context['request'].user
 
         if len(Team.objects.filter(reporting_to__in=user)) > 0:
             user.extend(
@@ -59,7 +60,6 @@ class LeadManagementSerializer(serializers.ModelSerializer):
 
         else:
             if 'owner' not in role.lower():
-                current_user = self.context['request'].user
                 user_team = Team.objects.filter(reporting_to=current_user)
                 if user_team:
                     team_query = Q(applied_job_status__team__id__in=list(
@@ -74,31 +74,24 @@ class LeadManagementSerializer(serializers.ModelSerializer):
         if candidates:
             candidate_query = Q(candidate__id__in=candidates.split(','))
 
+        current_user_leads = Lead.objects.filter(company_status=obj, converter=current_user)
+        leads_data = Lead.objects.filter(company_status=obj).filter(stacks_query, from_date_query, to_date_query,
+                                                                    members_query, team_query,
+                                                                    candidate_query) | current_user_leads
         try:
-            data = [
-                {
-                    "id": str(i.id),
-                    "phase_id": str(i.phase.id) if i.phase else None,
-                    "phase_name": i.phase.name if i.phase else None,
-                    "applied_job": {
-                        "id": str(i.applied_job_status.id),
-                        "title": i.applied_job_status.job.job_title,
-                        "company": i.applied_job_status.job.company_name,
-                        "tech_stack": i.applied_job_status.job.tech_keywords,
-                        "applied_by": {
-                            "id": i.applied_job_status.applied_by.id,
-                            "name": i.applied_job_status.applied_by.username
-                        },
+            data = [{"id": str(i.id), "phase_id": str(i.phase.id) if i.phase else None,
+                     "phase_name": i.phase.name if i.phase else None,
+                     "applied_job": {"id": str(i.applied_job_status.id), "title": i.applied_job_status.job.job_title,
+                                     "company": i.applied_job_status.job.company_name,
+                                     "tech_stack": i.applied_job_status.job.tech_keywords,
+                                     "applied_by": {"id": i.applied_job_status.applied_by.id,
+                                                    "name": i.applied_job_status.applied_by.username},
 
-                        "vertical_name": i.applied_job_status.vertical.name if i.applied_job_status.vertical is not None else ""
-                    },
-                    "candidate": {'id': i.candidate.id, 'name': i.candidate.name,
-                                  'desigination': i.candidate.designation.title if i.candidate.designation.title else ''} if i.candidate else None,
-                }
-                for i in Lead.objects.filter(company_status=obj).filter(stacks_query, from_date_query, to_date_query,
-                                                                        members_query, team_query, candidate_query)
-                if role.lower() == "owner" or str(i.applied_job_status.applied_by_id) in user
-            ]
+                                     "vertical_name": i.applied_job_status.vertical.name if i.applied_job_status.vertical is not None else ""},
+                     "candidate": {'id': i.candidate.id, 'name': i.candidate.name,
+                                   'desigination': i.candidate.designation.title if i.candidate.designation.title else ''} if i.candidate else None, }
+                    for i in leads_data if i.converter == current_user or role.lower() == "owner" or str(
+                    i.applied_job_status.applied_by_id) in user]
         except Exception as e:
             print(e)
             data = []
