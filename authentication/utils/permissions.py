@@ -240,6 +240,30 @@ permissions = [
         "level": 2,
     },
     {
+        "module": "Jobs",
+        "codename": 'create_manual_job',
+        "name": 'Create Manual Job',
+        "level": 2,
+    },
+    {
+        "module": "Jobs",
+        "codename": 'view_manual_job',
+        "name": 'View Manual Job',
+        "level": 2,
+    },
+    {
+        "module": "Jobs",
+        "codename": 'edit_job',
+        "name": 'Edit Job',
+        "level": 2,
+    },
+    {
+        "module": "Jobs",
+        "codename": 'delete_job',
+        "name": 'Delete Job',
+        "level": 2,
+    },
+    {
         "module": "Scraper",
         "codename": "edit_scrapper_account",
         "name": "Edit Scraper Account",

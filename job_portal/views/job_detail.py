@@ -1,6 +1,7 @@
 import uuid
 
 import pandas as pd
+from datetime import datetime
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Count
 from django.db import transaction
@@ -15,7 +16,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from job_portal.filters.job_detail import CustomJobFilter
-from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, BlockJobCompany
+from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, BlockJobCompany, JobArchive
 from job_portal.paginations.job_detail import CustomPagination
 from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer
@@ -23,6 +24,11 @@ from scraper.utils.thread import start_new_thread
 from settings.base import FROM_EMAIL
 from utils import upload_to_s3
 
+from authentication.exceptions import InvalidUserException
+from settings.utils.helpers import serializer_errors
+import re
+
+CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
 class JobDetailsView(ModelViewSet):
     queryset = JobDetail.objects.all()
@@ -198,3 +204,62 @@ class RemoveDuplicateView(APIView):
             first_record = duplicate_records.first()
             duplicate_records.exclude(pk=first_record.pk).delete()
         print("Duplicates Removed!")
+
+class JobModification(APIView):
+    def put(self, request, pk):
+        conditions = [
+            request.data.get("job_title", "") != "",
+            request.data.get("company_name", "") != "",
+            request.data.get("job_source", "") != "",
+            request.data.get("job_type", "") != "",
+            request.data.get("address", "") != "",
+            request.data.get("job_posted_date", "") != "",
+            request.data.get("time", "") != "",
+            request.data.get("job_source_url", "") != "",
+            request.data.get("job_description_tags", "") != "",
+            request.data.get("tech_keywords", "") != "",
+            request.data.get("expired", "") != ""
+        ]
+
+        if all(conditions):
+            query = JobDetail.objects.filter(pk=pk)
+            if query.exists():
+                queryset = query.first()
+                raw_data = request.data.get('job_description_tags')
+                request.data['job_description'] = re.sub(CLEANR, '', raw_data)
+
+                if request.data['expired'] == True:
+                    request.data['expired_at'] = datetime.now()
+                else:
+                    request.data['expired_at'] = None
+
+                request.data['job_role'] = request.data.get("job_role") if request.data.get("job_role") else queryset.job_role
+                request.data['salary_max'] = request.data.get("salary_max") if request.data.get("salary_max") else queryset.salary_max
+                request.data['salary_min'] = request.data.get("salary_min") if request.data.get("salary_min") else queryset.salary_min
+                request.data['salary_format'] = request.data.get("salary_format") if request.data.get("salary_format") else queryset.salary_format
+
+                serializer = JobDetailSerializer(queryset, data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    status_code = status.HTTP_200_OK
+                    message = {"detail": "Job updated successfully"}
+                    return Response(message, status=status_code)
+
+                data = serializer_errors(serializer)
+                raise InvalidUserException(data)
+            return Response({"detail": "This job does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"detail": "Feilds cannot be empty"},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    def delete(self, request, pk):
+        job_archive = JobDetail.objects.filter(pk=pk)
+        if job_archive.exists():
+            archive = job_archive.first()
+            JobArchive.objects.create(job_title=archive.job_title, company_name=archive.company_name, job_source=archive.job_source, job_type=archive.job_type, address=archive.address, job_description=archive.job_description, tech_keywords=archive.tech_keywords, job_posted_date=archive.job_posted_date, job_source_url=archive.job_source_url, block=archive.block, is_manual=archive.is_manual)
+            archive.delete()
+            message = {"detail": "Job deleted successfully"}
+            return Response(message, status=status.HTTP_200_OK)
+        return Response({"detail": "This job does not exist"},
+                            status=status.HTTP_404_NOT_FOUND)

@@ -58,11 +58,15 @@ class LeadManagement(ListAPIView):
                 due_date = request.data.get('due_date')
                 notes = request.data.get('notes')
                 candidate = request.data.get('candidate')
+
+                # convert to lead
                 lead = Lead.objects.create(applied_job_status_id=applied_job_status, company_status_id=company_status,
-                                           phase_id=phase, candidate_id=candidate)
+                                           phase_id=phase, candidate_id=candidate, converter=request.user)
+                # change applied job for applied job
                 AppliedJobStatus.objects.filter(id=applied_job_status)\
                     .update(is_converted=True, converted_at=datetime.datetime.now())
 
+                # create a new activity for lead
                 lead_activity = LeadActivity.objects.create(lead_id=lead.id, company_status_id=company_status,
                                                             phase_id=phase, candidate_id=candidate)
                 if effect_date:
