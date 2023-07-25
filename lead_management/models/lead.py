@@ -7,7 +7,7 @@ from job_portal.models import AppliedJobStatus
 from lead_management.models.company_status import CompanyStatus
 from lead_management.models.phase import Phase
 from settings.utils.model_fields import TimeStamped
-
+from authentication.models import User
 
 class Lead(TimeStamped):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -16,6 +16,8 @@ class Lead(TimeStamped):
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
     candidate = models.ForeignKey(Candidate, on_delete=models.SET_NULL, null=True)
+    converter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
     class Meta:
         default_permissions = ()
         db_table = "lead"
