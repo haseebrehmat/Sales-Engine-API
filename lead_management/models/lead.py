@@ -1,13 +1,12 @@
 import uuid
-
 from django.db import models
-
 from candidate.models import Candidate
 from job_portal.models import AppliedJobStatus
 from lead_management.models.company_status import CompanyStatus
 from lead_management.models.phase import Phase
 from settings.utils.model_fields import TimeStamped
 from authentication.models import User
+
 
 class Lead(TimeStamped):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

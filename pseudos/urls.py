@@ -1,6 +1,6 @@
 from django.urls import path
 from pseudos.views.certificates import CertificateView, CertificateDetailView
-# from pseudos.views.configurations import ConfigurationView
+from pseudos.views.configurations import ConfigurationView
 from pseudos.views.cover_letter import CoverLetterView, CoverLetterDetailView
 from pseudos.views.education import EducationView, EducationDetailView
 from pseudos.views.experience import ExperienceView, ExperienceDetailView

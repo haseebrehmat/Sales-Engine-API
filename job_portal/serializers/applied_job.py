@@ -59,6 +59,8 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
         job_details['applied_by_name'] = instance.applied_by.username
         job_details['status'] = instance.job_status
         job_details['applied_date'] = instance.applied_date
+        job_details['is_converted'] = instance.is_converted
+
         try:
             job_details['job_source'] = instance.job.job_source
             job_details['tech_stack'] = instance.job.tech_keywords
