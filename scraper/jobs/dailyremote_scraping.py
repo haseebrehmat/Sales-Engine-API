@@ -108,10 +108,10 @@ def find_jobs(driver, job_type, total_job):
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                     "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.JOOBLE)
+    filename = generate_scraper_filename(ScraperNaming.DAILY_REMOTE)
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="dailyremote", filename=filename)
+        total_jobs=len(df), job_source="DailyRemote", filename=filename)
     return False, total_job
 
 

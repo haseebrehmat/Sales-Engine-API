@@ -69,9 +69,9 @@ scraper_functions = {
     "simplyhired": [
         simply_hired,  # Tested working
     ],
-    # "ziprecruiter": [
-    #     ziprecruiter_scraping,  # not working
-    # ],
+    "ziprecruiter": [
+        ziprecruiter_scraping,  # not working
+    ],
     "adzuna": [
         adzuna_scraping,
     ],

@@ -19,7 +19,13 @@ class ExposedCandidateSerializer(serializers.ModelSerializer):
     def get_exposed_to(self, obj):
         queryset = ExposedCandidate.objects.filter(candidate_id=obj.candidate_id)
         try:
-            return [{"id": x.company.id, "name": x.company.name, "exposed_candidate_id": x.id} for x in queryset if x.id is not None and x.company is not None]
+            return [
+                {
+                    "id": x.company.id,
+                    "name": x.company.name,
+                    "exposed_candidate_id": x.id
+                } for x in queryset if x.id is not None and x.company is not None
+            ]
         except Exception as e:
             return []
 
