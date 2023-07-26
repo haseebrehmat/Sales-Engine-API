@@ -93,7 +93,9 @@ class CandidateSerializer(serializers.ModelSerializer):
                 temp.append(qs.id)
         tools = temp
         qs = Candidate.objects.create(**validated_data)
-        data = [CandidateSkills(candidate_id=qs.id, skill_id=skill, level=temp_level[position]) for position, skill in enumerate(skills)]
+        ExposedCandidate.objects.create(candidate=qs, company_id=validated_data['company_id'])
+        data = [CandidateSkills(candidate_id=qs.id, skill_id=skill, level=temp_level[position]) for position, skill in
+                enumerate(skills)]
         CandidateSkills.objects.bulk_create(data, ignore_conflicts=True)
         data = [CandidateTools(candidate_id=qs.id, tool_id=tool) for tool in tools]
         CandidateTools.objects.bulk_create(data, ignore_conflicts=True)
@@ -162,17 +164,13 @@ class CandidateSerializer(serializers.ModelSerializer):
         CandidateTools.objects.filter(candidate_id=instance.id).delete()
         CandidateRegions.objects.filter(candidate_id=instance.id).delete()
 
-        data = [CandidateSkills(candidate_id=instance.id, skill_id=skill, level=temp_level[position]) for position, skill in
-                enumerate(skills)]
+        data = [
+            CandidateSkills(candidate_id=instance.id, skill_id=skill, level=temp_level[position])
+            for position, skill in enumerate(skills)
+        ]
         CandidateSkills.objects.bulk_create(data, ignore_conflicts=True)
         data = [CandidateTools(candidate_id=instance.id, tool_id=tool) for tool in tools]
         CandidateTools.objects.bulk_create(data, ignore_conflicts=True)
         data = [CandidateRegions(candidate_id=instance.id, region_id=re) for re in regions]
         CandidateRegions.objects.bulk_create(data, ignore_conflicts=True)
         return instance
-
-
-
-
-
-
