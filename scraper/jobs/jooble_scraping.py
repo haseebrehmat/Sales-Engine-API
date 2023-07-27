@@ -20,45 +20,45 @@ def find_jobs(driver, job_type, total_job):
     date_time = str(datetime.now())
     count = 0
     WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "yKsady"))
+        EC.presence_of_element_located((By.CLASS_NAME, "LKpaAN"))
     )
     time.sleep(3)
-    alert = driver.find_elements(By.CLASS_NAME, "osfoL0")
+    alert = driver.find_elements(By.CLASS_NAME, "jMkAzG")
     if len(alert) > 0:
         alert[0].click()
-    jobs = driver.find_elements(By.CLASS_NAME, "yKsady")
+    jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
     try:
         for job in jobs:
             job.location_once_scrolled_into_view
     except:
         print("")
     time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "yKsady")
+    jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
     for job in jobs:
         data = []
         try:
-            job_title = job.find_elements(By.CLASS_NAME, "_15V35X")
-            job_description = job.find_elements(By.CLASS_NAME, "_9jGwm1")
-            company_name = job.find_elements(By.CLASS_NAME, "Ya0gV9")
-            job_posted_date = job.find_elements(By.CLASS_NAME, "e0VAhp")
-            location = job.find_elements(By.CLASS_NAME, "_2_Ab4T")
+            job_title = job.find_element(By.CLASS_NAME, "jkit_Efecu")
+            job_description = job.find_element(By.CLASS_NAME, "EIQN28")
+            company_name = job.find_element(By.CLASS_NAME, "iGX6uI")
+            job_posted_date = job.find_element(By.CLASS_NAME, "klAi0x")
+            location = job.find_element(By.CLASS_NAME, "lroapG")
             job_type = job_type
             job_source = "jooble"
-            job_source_url = job.find_elements(By.CLASS_NAME, "jkit_ff9zU")[0].get_attribute(
+            job_source_url = job.find_element(By.CLASS_NAME, "jkit_ff9zU").get_attribute(
                 'href')
-            append_data(data, job_title[0].text)
-            append_data(data, company_name[0].text)
-            append_data(data, location[0].text)
-            append_data(data, job_description[0].text)
+            append_data(data, job_title.text)
+            append_data(data, company_name.text)
+            append_data(data, location.text)
+            append_data(data, job_description.text)
             append_data(data, job_source_url)
-            append_data(data, job_posted_date[0].text)
+            append_data(data, job_posted_date.text)
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, job_source)
             append_data(data, job_type)
-            append_data(data, job_description[0].get_attribute('innerHTML'))
+            append_data(data, job_description.get_attribute('innerHTML'))
             total_job += 1
             scrapped_data.append(data)
         except Exception as e:
@@ -81,6 +81,7 @@ def append_data(data, field):
 
 # Create your views here.
 def jooble(link, job_type):
+    print("Jooble")
     try:
         total_job = 0
         options = webdriver.ChromeOptions()  # newly added
@@ -92,7 +93,7 @@ def jooble(link, job_type):
         options.add_argument(
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
-        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
+        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
             driver.maximize_window()
             try:
