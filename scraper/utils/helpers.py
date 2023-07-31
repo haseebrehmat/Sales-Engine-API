@@ -56,10 +56,10 @@ class ScraperNaming(enum.Enum):
     MONSTER = 'monster'
     SIMPLY_HIRED = 'simply_hired'
     TALENT = 'talent'
-    ZIP_RECRUITER = 'zip_recruiter'
+    ZIP_RECRUITER = 'ziprecruiter'
     RECRUIT = 'recruit'
     Ruby_Now = 'rubynow'
-    
+
 
 
     def __str__(self):
