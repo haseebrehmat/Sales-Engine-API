@@ -14,6 +14,7 @@ class Profile(TimeStamped):
         default=uuid.uuid4,
         editable=False)
     user = models.OneToOneField("User", on_delete=models.CASCADE)
+    is_restricted = models.BooleanField(default=False)
     first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
     employee_id = models.CharField(max_length=100, blank=True, null=True, )

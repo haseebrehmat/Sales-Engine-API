@@ -11,10 +11,10 @@ class CustomPermission(TimeStamped):
         default=uuid.uuid4,
         max_length=36,
         editable=False)
-    module = models.CharField(max_length=200)
-    codename = models.CharField(max_length=200)
-    name = models.CharField(max_length=200)
-    level = models.CharField(blank=True, null=True, max_length=10)
+    module = models.CharField(blank=False, null=False, max_length=200, default="nothing")
+    codename = models.CharField(blank=False, null=False, max_length=200, default="nothing")
+    name = models.CharField(blank=False, null=False, max_length=200, default="nothing")
+    level = models.CharField(blank=False, null=False, max_length=10, default=1)
 
     class Meta:
         ordering = ("module",)

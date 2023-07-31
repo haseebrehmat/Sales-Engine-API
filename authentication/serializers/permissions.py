@@ -10,9 +10,8 @@ class PermissionSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print("Entered in create function")
         permissions = validated_data.pop("permissions")
-        data = [CustomPermission(module=permission["module"], codename=permission["codename"], name=permission["name"], level=permission["name"]) for permission in
+        data = [CustomPermission(module=permission["module"], codename=permission["codename"], name=permission["name"], level=permission["level"]) for permission in
                 permissions]
         CustomPermission.objects.bulk_create(data, ignore_conflicts=True)
         return True
