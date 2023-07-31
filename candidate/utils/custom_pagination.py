@@ -38,6 +38,19 @@ class CustomPagination(PageNumberPagination):
         data = [{'label': obj.region, 'value': obj.id } for obj in Regions.objects.all()]
         return data
 
+class LeadManagementDataPagination(PageNumberPagination):
+    page_size = 25
+    page_size_query_param = 'limit'
+    max_page_size = 250
+
+    def get_paginated_response(self, data):
+        response = {'count': self.page.paginator.count, 'next': self.get_next_link(),
+                    'previous': self.get_previous_link(), 'num_pages': self.page.paginator.num_pages, 'results': data}
+        return Response(response)
+
+
+
+
 class LeadManagementPagination(PageNumberPagination):
     page_size = 50
     page_size_query_param = 'limit'

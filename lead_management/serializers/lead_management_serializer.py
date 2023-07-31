@@ -74,10 +74,10 @@ class LeadManagementSerializer(serializers.ModelSerializer):
         if candidates:
             candidate_query = Q(candidate__id__in=candidates.split(','))
 
-        current_user_leads = Lead.objects.filter(company_status=obj, converter=current_user)
-        leads_data = Lead.objects.filter(company_status=obj).filter(stacks_query, from_date_query, to_date_query,
-                                                                    members_query, team_query,
-                                                                    candidate_query) | current_user_leads
+        queryset = Lead.objects.filter(company_status=obj).filter(team_query) | Lead.objects.filter(company_status=obj,
+                                                                                                    converter=current_user)
+        leads_data = queryset.filter(members_query, stacks_query, from_date_query, to_date_query, candidate_query)
+
         try:
             data = [{"id": str(i.id), "phase_id": str(i.phase.id) if i.phase else None,
                      "phase_name": i.phase.name if i.phase else None,
@@ -95,4 +95,39 @@ class LeadManagementSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(e)
             data = []
+        return data
+
+
+class CustomLeadSerializer(serializers.ModelSerializer):
+    phase = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    applied_job = serializers.SerializerMethodField()
+    candidate = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Lead
+        fields = ['id', 'phase', 'candidate', 'status', 'applied_job', 'updated_at', 'created_at']
+
+    def get_phase(self, instance):
+        data = {'id': str(instance.phase.id) if instance.phase else None,
+            'name': instance.phase.name if instance.phase else None} if instance.phase else None
+        return data
+
+    def get_status(self, instance):
+        data = {'id': str(instance.company_status.id) if instance.company_status else None,
+            'name': instance.company_status.status.name if instance.company_status.status else None} if instance.company_status else None
+        return data
+
+    def get_applied_job(self, instance):
+        applied_job = instance.applied_job_status
+        data = {"id": str(applied_job.id), "title": applied_job.job.job_title, "company": applied_job.job.company_name,
+                "tech_stack": applied_job.job.tech_keywords,
+                "applied_by": {"id": applied_job.applied_by.id, "name": applied_job.applied_by.username},
+                "vertical_name": applied_job.vertical.name if applied_job.vertical is not None else ""}
+        return data
+
+    def get_candidate(self, instance):
+        candidate = instance.candidate
+        data = {'id': candidate.id, 'name': candidate.name,
+            'desigination': candidate.designation.title if candidate.designation.title else ''} if candidate else None
         return data
