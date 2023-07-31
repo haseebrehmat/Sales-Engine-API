@@ -120,12 +120,17 @@ class LeadManagement(ListAPIView):
         members = request.query_params.get('members', '')
         team = request.query_params.get('team', '')
         candidates = request.query_params.get('candidates', None)
+        status = request.query_params.get('status', '')
+        phase = request.query_params.get('phase', '')
+
         stacks_query = Q()
         from_date_query = Q()
         to_date_query = Q()
         members_query = Q()
         team_query = Q()
         candidate_query = Q()
+        status_query = Q()
+        phase_query = Q()
 
         if stacks:
             stacks_query = Q(applied_job_status__job__tech_keywords__in=stacks.split(','))
@@ -155,6 +160,12 @@ class LeadManagement(ListAPIView):
         if candidates:
             candidate_query = Q(candidate__id__in=candidates.split(','))
 
+        if status:
+            status_query = Q(company_status__id=status)
+        if phase:
+            phase_query = Q(phase__id=phase)
+
         data = queryset.filter(team_query) | Lead.objects.filter(converter=current_user)
-        queryset = data.filter(members_query, stacks_query, from_date_query, to_date_query, candidate_query)
+        queryset = data.filter(members_query, stacks_query, from_date_query, to_date_query, candidate_query,
+                               status_query, phase_query)
         return queryset
