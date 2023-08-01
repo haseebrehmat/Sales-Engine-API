@@ -8,6 +8,7 @@ from authentication.models import User, Profile
 from candidate.models import Candidate, Skills, ExposedCandidate, SelectedCandidate, Regions
 from candidate.serializers.candidate import CandidateSerializer
 from candidate.pagination.custom_pagination import CustomPagination
+from lead_management.models import Lead
 from settings.utils.helpers import serializer_errors
 
 
@@ -115,6 +116,9 @@ class CandidateProfileDetailView(APIView):
         if queryset is not None:
             serializer = CandidateSerializer(queryset, many=False)
             data["candidate"] = serializer.data
+            # data["leads"] = [{'id': lead.id, 'phase': lead.phase.name, 'phase_status': lead.phase.is_active,
+            #                   'convert_by': lead.converter.username}
+            #                  for lead in Lead.objects.filter(candidate=queryset)]
             data["all_regions"] = [{"id": x.id, "name": x.region} for x in Regions.objects.all()]
             return Response(data, status=status.HTTP_200_OK)
         else:

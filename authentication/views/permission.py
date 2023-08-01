@@ -26,7 +26,7 @@ class PermissionView(ListAPIView):
                 continue
             else:
                 data = serializer_errors(serializer)
-                if data == "non_field_errors: The fields module, codename, name must make a unique set." :
+                if data == "non_field_errors: The fields module, codename, name must make a unique set.":
                     codename = permission["codename"]
                     module = permission["module"]
                     data = f"{codename} permission already exist in {module} module"

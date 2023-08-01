@@ -31,6 +31,8 @@ class StatusLeadManagement(ListAPIView):
         end_date = self.request.GET.get("end_date", False)
         if "owner" in role.lower():
             queryset = CompanyStatus.objects.filter(company=self.request.user.profile.company).exclude(status=None)
+        # elif "candidate" in role.lower():
+        #     queryset = Lead.objects.filter(candidate=self.request.user)
         else:
             queryset = CompanyStatus.objects.filter(company=self.request.user.profile.company).exclude(status=None)
         if start_date and end_date:

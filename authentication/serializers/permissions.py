@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db import transaction
-from authentication.models import CustomPermission
+from authentication.models import CustomPermission, Role
 
 
 class PermissionSerializer(serializers.ModelSerializer):
