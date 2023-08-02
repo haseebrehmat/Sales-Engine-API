@@ -7,7 +7,7 @@ from django.db.models.functions import ExtractMonth, ExtractYear
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from job_portal.models import JobDetail, JobArchive
+from job_portal.models import JobDetail, JobArchive, TrendsAnalytics
 from job_portal.permissions.analytics import AnalyticsPermission
 
 
@@ -70,7 +70,7 @@ class GenerateAnalytics(APIView):
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
             "start_date": str(start_date.date()),
-            "end_date": str(end_date.date()),
+            "end_date": str(end_date.date()), "trend_analytics": self.get_trends_analytics(),
         }
 
         return Response(data)
@@ -169,7 +169,7 @@ class GenerateAnalytics(APIView):
                         for x in range(quarter_number, quarter_number + 3)],
                     "weeks": weeks
                 }
-            
+
         elif quarter_filter != "" and year_filter != "":
             year = int(year_filter)
             quarter_number = int(quarter_filter.split("q")[-1])
@@ -260,3 +260,23 @@ class GenerateAnalytics(APIView):
 
         return weeks
 
+    def check_leap_year(self, year):
+        year = int(year)
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+            return True
+        else:
+            return False
+
+    def get_trends_analytics(self):
+        trends_analytics = TrendsAnalytics.objects.all()
+        data = []
+        for trends in trends_analytics:
+            tech_stacks = trends.tech_stacks.split(',') if trends.tech_stacks else []
+            obj = {
+                'category': trends.category,
+                'tech_stacks': [{'key': stack, 'value': self.queryset.filter(tech_keywords=stack).count()}
+                                for stack in tech_stacks],
+                'total_jobs_count': self.queryset.filter(tech_keywords__in=tech_stacks).count(),
+            }
+            data.append(obj)
+        return data

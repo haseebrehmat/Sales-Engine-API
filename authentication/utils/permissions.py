@@ -640,5 +640,17 @@ permissions = [
         "codename": 'delete_permission',
         "name": 'Delete Permission',
         "level": 1,
+    },
+    {
+        "module": 'Leads',
+        "codename": 'view_lead_details',
+        "name": 'View Lead Details',
+        "level": 2,
+    },
+    {
+        "module": 'Leads',
+        "codename": 'assign_candidate',
+        "name": 'Assign / Reassign Candidate',
+        "level": 2,
     }
 ]
