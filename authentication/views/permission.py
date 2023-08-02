@@ -23,21 +23,17 @@ class PermissionView(ListAPIView):
         for permission in permissions:
             serializer = PermissionSerializer(data=permission)
             if serializer.is_valid():
-                print("Entered in if")
                 continue
             else:
-                print("Entered in else")
                 data = serializer_errors(serializer)
-                if data == "non_field_errors: The fields module, codename, name must make a unique set." :
+                if data == "non_field_errors: The fields module, codename, name must make a unique set.":
                     codename = permission["codename"]
                     module = permission["module"]
-
                     data = f"{codename} permission already exist in {module} module"
                 raise InvalidUserException(data)
         serializer.create(request.data)
         message = "Permission created successfully!"
-        status_code = status.HTTP_201_CREATED
-        return Response({'detail': message}, status=status_code)
+        return Response({'detail': message}, status=status.HTTP_200_OK)
 
 
 class PermissionDetailView(APIView):
