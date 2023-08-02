@@ -165,7 +165,8 @@ class LeadManagement(ListAPIView):
         if phase:
             phase_query = Q(phase__id=phase)
 
-        data = queryset.filter(team_query) | Lead.objects.filter(converter=current_user)
+        data = (queryset.filter(team_query) | Lead.objects.filter(converter=current_user) |
+                Lead.objects.filter(candidate__email=current_user.email))
         queryset = data.filter(members_query, stacks_query, from_date_query, to_date_query, candidate_query,
                                status_query, phase_query)
         return queryset

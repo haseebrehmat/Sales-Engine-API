@@ -4,6 +4,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from authentication.models import Team
+from candidate.models import Candidate
 from lead_management.models import CompanyStatus, Lead
 
 
@@ -42,6 +43,7 @@ class LeadManagementSerializer(serializers.ModelSerializer):
         members_query = Q()
         team_query = Q()
         candidate_query = Q()
+        candidate_profile_query = Q()
 
         if stacks:
             stacks_query = Q(
@@ -71,11 +73,11 @@ class LeadManagementSerializer(serializers.ModelSerializer):
             members = members.split(',')
             members_query = Q(applied_job_status__applied_by__id__in=members)
 
-        if candidates:
-            candidate_query = Q(candidate__id__in=candidates.split(','))
+        company_status_leads = Lead.objects.filter(company_status=obj)
+        queryset = (company_status_leads.filter(team_query) |
+                    company_status_leads.filter(converter=current_user) |
+                    company_status_leads.filter(candidate__email=current_user.email))
 
-        queryset = Lead.objects.filter(company_status=obj).filter(team_query) | Lead.objects.filter(company_status=obj,
-                                                                                                    converter=current_user)
         leads_data = queryset.filter(members_query, stacks_query, from_date_query, to_date_query, candidate_query)
 
         try:
@@ -90,7 +92,8 @@ class LeadManagementSerializer(serializers.ModelSerializer):
                                      "vertical_name": i.applied_job_status.vertical.name if i.applied_job_status.vertical is not None else ""},
                      "candidate": {'id': i.candidate.id, 'name': i.candidate.name,
                                    'desigination': i.candidate.designation.title if i.candidate.designation.title else ''} if i.candidate else None, }
-                    for i in leads_data if i.converter == current_user or role.lower() == "owner" or str(
+                    for i in leads_data if i.converter == current_user or role.lower() == "owner" or
+                    role.lower() == 'candidate' or str(
                     i.applied_job_status.applied_by_id) in user]
         except Exception as e:
             print(e)
