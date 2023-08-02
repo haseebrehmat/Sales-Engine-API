@@ -1,3 +1,4 @@
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -15,6 +16,8 @@ class TrendsAnalyticsListView(ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = TrendsAnalyticsSerializer
     pagination_class = TrendAnalyticsPagination
+    filter_backends = [SearchFilter]
+    search_fields = ['category']
 
     def get_queryset(self):
         queryset = TrendsAnalytics.objects.all()
