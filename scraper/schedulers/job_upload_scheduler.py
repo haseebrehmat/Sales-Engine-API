@@ -32,6 +32,7 @@ from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.jobs.recruit_scraping import recruit
 from scraper.jobs.rubynow_scraping import rubynow
+from scraper.jobs.ycombinator_scraping import ycombinator
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
@@ -95,6 +96,9 @@ scraper_functions = {
     ],
     "rubynow": [
         rubynow,
+    ],
+    "ycombinator": [
+        ycombinator,
     ],
 }
 
@@ -449,7 +453,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["careerjet"])
-            
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["rubynow"])
@@ -509,7 +513,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["careerjet"])
-                
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["rubynow"])
@@ -627,4 +631,3 @@ try:
         group_scraper_job()
 except Exception as e:
     print(e)
-    
