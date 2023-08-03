@@ -70,7 +70,8 @@ class GenerateAnalytics(APIView):
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
             "start_date": str(start_date.date()),
-            "end_date": str(end_date.date()), "trend_analytics": self.get_trends_analytics(),
+            "end_date": str(end_date.date()),
+            "trend_analytics": self.get_trends_analytics(),
         }
 
         return Response(data)
@@ -87,7 +88,7 @@ class GenerateAnalytics(APIView):
                 full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
                 hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
                 hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
-                )
+            )
             qs.update({"name": x})
             data.append(qs)
 
@@ -197,7 +198,7 @@ class GenerateAnalytics(APIView):
                         "value": f"{year}-{'0' + str(x) if x < 10 else x}",
                         "name": self.months[x - 1] + " " + str(year)
                     }
-                    for x in range(quarter_number, quarter_number+3)],
+                    for x in range(quarter_number, quarter_number + 3)],
                 "weeks": weeks
             }
 
@@ -259,13 +260,6 @@ class GenerateAnalytics(APIView):
             current_date += timedelta(days=7)  # Move to the next week
 
         return weeks
-
-    def check_leap_year(self, year):
-        year = int(year)
-        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
-            return True
-        else:
-            return False
 
     def get_trends_analytics(self):
         trends_analytics = TrendsAnalytics.objects.all()
