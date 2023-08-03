@@ -99,3 +99,7 @@ class RoleUserView(APIView):
             return Response({"detail": "Current user has no company assign"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class AllRoleView(ListAPIView):
+    serializer_class = RoleSerializer
+    def get_queryset(self):
+        return Role.objects.all()

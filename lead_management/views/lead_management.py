@@ -1,20 +1,24 @@
 import datetime
 
 from django.db import transaction
+from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from candidate.utils.custom_pagination import LeadManagementPagination
+from authentication.models import Team
+from candidate.utils.custom_pagination import LeadManagementPagination, LeadManagementDataPagination
 from job_portal.models import AppliedJobStatus
 from lead_management.models import Lead, CompanyStatus, LeadActivity, LeadActivityNotes
 from lead_management.serializers import LeadSerializer
-from lead_management.serializers.lead_management_serializer import LeadManagementSerializer
+from lead_management.serializers.lead_management_serializer import LeadManagementSerializer, CustomLeadSerializer
 from settings.utils.helpers import serializer_errors
 
 
-class LeadManagement(ListAPIView):
+class StatusLeadManagement(ListAPIView):
     permission_classes = (IsAuthenticated,)
     pagination_class = LeadManagementPagination
     serializer_class = LeadManagementSerializer
@@ -37,8 +41,6 @@ class LeadManagement(ListAPIView):
             end_date = datetime.datetime.strptime(end_date, format_string) - datetime.timedelta(seconds=1)
             queryset = queryset.filter(updated_at__range=[start_date, end_date])
         queryset = queryset.order_by("updated_at")
-
-
         return queryset
 
 
@@ -86,3 +88,85 @@ class LeadManagement(ListAPIView):
             msg = {'detail': str(e)}
             status_code = status.HTTP_406_NOT_ACCEPTABLE
         return msg, status_code
+
+
+class LeadManagement(ListAPIView):
+    queryset = Lead.objects.all()
+    permission_classes = (IsAuthenticated,)
+    pagination_class = LeadManagementDataPagination
+    serializer_class = CustomLeadSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['company_status__status__name', 'phase__name',
+                     'applied_job_status__job__job_title', 'applied_job_status__job__company_name']
+
+    def get_queryset(self):
+        company = self.request.user.profile.company
+        self.queryset = self.queryset.filter(company_status__company=company)
+        self.queryset = self.apply_filters(self.request, self.queryset)
+        return self.queryset.order_by("updated_at")
+
+    def apply_filters(self, request, queryset):
+        role = request.user.roles.name
+        user = [str(request.user.id)]
+        current_user = request.user
+
+        if len(Team.objects.filter(reporting_to__in=user)) > 0:
+            user.extend(
+                [str(x) for x in Team.objects.filter(reporting_to__id__in=user).values_list("members__id", flat=True)])
+
+        stacks = request.query_params.get('stacks', '')
+        from_date = request.query_params.get('from', '')
+        to_date = request.query_params.get('to', '')
+        members = request.query_params.get('members', '')
+        team = request.query_params.get('team', '')
+        candidates = request.query_params.get('candidates', None)
+        status = request.query_params.get('status', '')
+        phase = request.query_params.get('phase', '')
+
+        stacks_query = Q()
+        from_date_query = Q()
+        to_date_query = Q()
+        members_query = Q()
+        team_query = Q()
+        candidate_query = Q()
+        status_query = Q()
+        phase_query = Q()
+
+        if stacks:
+            stacks_query = Q(applied_job_status__job__tech_keywords__in=stacks.split(','))
+
+        if from_date:
+            from_date_query = Q(updated_at__gte=datetime.datetime.strptime(from_date, "%Y-%m-%d").date())
+
+        if to_date:
+            to_date_query = Q(
+                updated_at__lt=datetime.datetime.strptime(to_date, "%Y-%m-%d").date() + datetime.timedelta(days=1))
+
+        if team:
+            team_query = Q(applied_job_status__team__id=team)
+
+        else:
+            if 'owner' not in role.lower():
+                user_team = Team.objects.filter(reporting_to=current_user)
+                if user_team:
+                    team_query = Q(applied_job_status__team__id__in=list(user_team.values_list('id', flat=True)))
+                else:
+                    team_query = Q(applied_job_status__applied_by=current_user)
+
+        if members:
+            members = members.split(',')
+            members_query = Q(applied_job_status__applied_by__id__in=members)
+
+        if candidates:
+            candidate_query = Q(candidate__id__in=candidates.split(','))
+
+        if status:
+            status_query = Q(company_status__id=status)
+        if phase:
+            phase_query = Q(phase__id=phase)
+
+        data = (queryset.filter(team_query) | Lead.objects.filter(converter=current_user) |
+                Lead.objects.filter(candidate__email=current_user.email))
+        queryset = data.filter(members_query, stacks_query, from_date_query, to_date_query, candidate_query,
+                               status_query, phase_query)
+        return queryset
