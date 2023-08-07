@@ -640,5 +640,41 @@ permissions = [
         "codename": 'delete_permission',
         "name": 'Delete Permission',
         "level": 1,
-    }
+    },
+    {
+        "module": 'Leads',
+        "codename": 'view_lead_details',
+        "name": 'View Lead Details',
+        "level": 2,
+    },
+    {
+        "module": 'Leads',
+        "codename": 'assign_candidate',
+        "name": 'Assign / Reassign Candidate',
+        "level": 2,
+    },
+    {
+        "module": 'Trends Analytics',
+        "codename": 'view_trend_analytics',
+        "name": 'View Trend Analytics',
+        "level": 2,
+    },
+    {
+        "module": 'Trends Analytics',
+        "codename": 'create_trend_analytics',
+        "name": 'create Trend Analytics',
+        "level": 2,
+    },
+    {
+        "module": 'Trends Analytics',
+        "codename": 'edit_trend_analytics',
+        "name": 'Edit Trend Analytics',
+        "level": 2,
+    },
+    {
+        "module": 'Trends Analytics',
+        "codename": 'delete_trend_analytics',
+        "name": 'Delete Trend Analytics',
+        "level": 2,
+    },
 ]

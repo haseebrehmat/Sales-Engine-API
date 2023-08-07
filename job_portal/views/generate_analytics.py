@@ -7,7 +7,7 @@ from django.db.models.functions import ExtractMonth, ExtractYear
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from job_portal.models import JobDetail, JobArchive
+from job_portal.models import JobDetail, JobArchive, TrendsAnalytics
 from job_portal.permissions.analytics import AnalyticsPermission
 
 
@@ -69,8 +69,9 @@ class GenerateAnalytics(APIView):
             "tech_stack_data": self.get_tech_count_stats(),
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
-            "start_date": str(start_date.date()),
-            "end_date": str(end_date.date()),
+            "start_date": str(start_date.date()) if start_date else '',
+            "end_date": str(end_date.date()) if end_date else '',
+            "trend_analytics": self.get_trends_analytics(),
         }
 
         return Response(data)
@@ -87,7 +88,7 @@ class GenerateAnalytics(APIView):
                 full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
                 hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
                 hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
-                )
+            )
             qs.update({"name": x})
             data.append(qs)
 
@@ -105,10 +106,14 @@ class GenerateAnalytics(APIView):
 
     def filter_queryset(self, request):
         data = False
+        search_filter = request.GET.get("search", "")
         year_filter = request.GET.get("year", "")
         quarter_filter = request.GET.get("quarter", "")
         month_filter = request.GET.get("month", "")
         week_filter = request.GET.get("week", "")
+
+        if search_filter:
+            self.queryset = self.queryset.filter(job_title__icontains=search_filter)
 
         if week_filter != "":
             filter = week_filter.split("-")
@@ -169,7 +174,7 @@ class GenerateAnalytics(APIView):
                         for x in range(quarter_number, quarter_number + 3)],
                     "weeks": weeks
                 }
-            
+
         elif quarter_filter != "" and year_filter != "":
             year = int(year_filter)
             quarter_number = int(quarter_filter.split("q")[-1])
@@ -197,7 +202,7 @@ class GenerateAnalytics(APIView):
                         "value": f"{year}-{'0' + str(x) if x < 10 else x}",
                         "name": self.months[x - 1] + " " + str(year)
                     }
-                    for x in range(quarter_number, quarter_number+3)],
+                    for x in range(quarter_number, quarter_number + 3)],
                 "weeks": weeks
             }
 
@@ -219,10 +224,11 @@ class GenerateAnalytics(APIView):
                 calculated_end_date = end_date - timedelta(seconds=1)
                 self.queryset = self.queryset.filter(created_at__lte=calculated_end_date)
 
+
         if start_date == "":
-            start_date = self.queryset.last().created_at
+            start_date = self.queryset.last().created_at if self.queryset.all() else ''
         if end_date == "":
-            end_date = self.queryset.first().created_at
+            end_date = self.queryset.first().created_at if self.queryset.all() else ''
         return data, start_date, end_date
 
     def get_job_type_stats(self):
@@ -259,4 +265,24 @@ class GenerateAnalytics(APIView):
             current_date += timedelta(days=7)  # Move to the next week
 
         return weeks
+
+    def get_trends_analytics(self):
+        trends_analytics = TrendsAnalytics.objects.all()
+        data = []
+        for trends in trends_analytics:
+            # get stacks from trends analytics objects
+            tech_stacks = trends.tech_stacks.split(',') if trends.tech_stacks else []
+            # find job type stats of each trends analytics category
+            result = self.queryset.filter(tech_keywords__in=tech_stacks).aggregate(
+                total=Count("id"),
+                contract_on_site=Count('id', filter=Q(job_type__in=self.contract_onsite_enums)),
+                contract_remote=Count('id', filter=Q(job_type__in=self.contract_remote_enums)),
+                full_time_on_site=Count('id', filter=Q(job_type__in=self.full_time_onsite_enums)),
+                full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
+                hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
+                hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
+            )
+            result.update({"name": trends.category})
+            data.append(result)
+        return data
 

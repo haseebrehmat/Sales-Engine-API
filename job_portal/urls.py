@@ -17,6 +17,7 @@ from job_portal.views.job_company import JobCompaniesList
 from job_portal.views.job_upload import JobSourceCleanerView, JobTypeCleanerView
 from job_portal.views.manual_job_upload import ManualJobUploadView, ManualJobUploadDetail
 from job_portal.views.sales_engine_logs import SalesEngineJobsStatsView
+from job_portal.views.trends_analytics import TrendsAnalyticsListView, TrendsAnalyticsDetailView
 
 router = routers.DefaultRouter()
 router.register(r'', JobDetailsView, basename='job_details')
@@ -48,6 +49,9 @@ urlpatterns = [
     path('generate_analytics/', GenerateAnalytics.as_view()),
     path('job_modification/<str:pk>/', JobModification.as_view()),
     path('job_expired_at/<str:pk>/', ManualJobUploadDetail.as_view()),
+    path('trends_analytics/', TrendsAnalyticsListView.as_view()),
+    path('trends_analytics/<int:pk>/', TrendsAnalyticsDetailView.as_view()),
+
 ]
 
 # scheduler.start()

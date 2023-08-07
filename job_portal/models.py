@@ -157,3 +157,7 @@ class JobUploadLogs(TimeStamped):
     jobs_count = models.IntegerField()
 
 
+class TrendsAnalytics(TimeStamped):
+    category = models.CharField(max_length=50, unique=True)
+    tech_stacks = models.TextField(null=True, blank=True)
+
