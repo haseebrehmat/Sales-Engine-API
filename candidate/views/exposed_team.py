@@ -38,14 +38,22 @@ class ExposedTeamListAPIView(APIView):
             message = "Team or Company should not be empty"
             status_code = status.HTTP_406_NOT_ACCEPTABLE
             return Response({"detail": message}, status_code)
-        candidates = []
-        for x in candidate_ids:
-            exposed_candidate = ExposedCandidate.objects.filter(pk=x).first()
-            candidates.append(exposed_candidate.candidate.id)
-        candidates = list(set(candidates))
-        candidates = ','.join(str(value) for value in candidates)
-        candidates = candidates.split(",")
-        import pdb
-        pdb.set_trace()
+        data = []
+        for candidate_id in candidate_ids:
+            candidate_id = ExposedCandidate.objects.filter(pk=candidate_id).first()
+            candidate_id = candidate_id.candidate.id
+            for company_id in company_ids:
+                data.append(
+                    {
+                        "candidate_id": candidate_id,
+                        "company_id": company_id,
+                    }
+                )
+        instances = [ExposedCandidate(**item) for item in data]
+        ExposedCandidate.objects.bulk_create(instances, ignore_conflicts=True)
+        message = "Team Exposed Successfully"
+        status_code = status.HTTP_200_OK
+        return Response({"detail": message}, status_code)
+
 
 
