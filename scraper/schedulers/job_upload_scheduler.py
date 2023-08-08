@@ -41,6 +41,7 @@ from settings.base import env
 from utils import upload_to_s3
 from utils.helpers import saveLogs
 from utils.sales_engine import upload_jobs_in_sales_engine
+from multiprocessing import Process
 
 # from error_logger.models import Log
 # from scraper.utils.thread import start_new_thread
@@ -449,7 +450,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["careerjet"])
-            
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["rubynow"])
@@ -509,24 +510,23 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["careerjet"])
-                
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                            args=["rubynow"])
+                                          args=["rubynow"])
 
 
 group_scraper_background_jobs = []
 current_scraper = ''
 current_group_scraper_id = None
 current_group_scraper_running_time = ''
+group_scraper_process = None
 
 
-@start_new_thread
 def group_scraper_job():
     global current_scraper
     global current_group_scraper_id
     global current_group_scraper_running_time
-
 
     while True:
         if not current_group_scraper_id:
@@ -580,8 +580,14 @@ def group_scraper_job():
 def change_group_scraper_id(group_id):
     global current_group_scraper_id
     global current_group_scraper_running_time
+    global group_scraper_process
+    global current_scraper
+    if group_scraper_process:
+        group_scraper_process.terminate()
     current_group_scraper_id = group_id
     current_group_scraper_running_time = str(datetime.datetime.now())
+    group_scraper_process = Process(target=group_scraper_job)
+    group_scraper_process.start()
 
 
 def stop_group_scraper_jobs():
@@ -624,7 +630,7 @@ def start_group_scraper_scheduler():
 try:
     if env("ENVIRONMENT") != "local":
         start_group_scraper_scheduler()
-        group_scraper_job()
+        group_scraper_process = Process(target=group_scraper_job)
+        group_scraper_process.start()
 except Exception as e:
     print(e)
-    
