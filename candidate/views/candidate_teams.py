@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
+from authentication.models.company import Company
 from candidate.models import CandidateTeam, ExposedCandidate
 from candidate.serializers.candidate_teams import CandidateTeamsSerializer
 from settings.utils.custom_pagination import CustomPagination
@@ -20,10 +21,13 @@ class CandidateTeamsListView(APIView):
         if len(queryset) > 0:
             serializer = CandidateTeamsSerializer(queryset, many=True)
             data["teams"] = serializer.data
-            queryset = ExposedCandidate.objects.filter(company_id=request.user.profile.company_id)
-            exposed_candidates = [{"id": x.id, "name": x.candidate.name, "company": x.company.name,
+            queryset = ExposedCandidate.objects.filter(candidate__company_id=request.user.profile.company_id).distinct('candidate_id')
+            exposed_candidates = [{"id": x.id, "name": x.candidate.name,
                                    "allowed_status": x.allowed_status} for x in queryset]
             data['exposed_candidates'] = exposed_candidates
+            queryset = Company.objects.filter(status=True).exclude(id=request.user.profile.company.id)
+            companies = [{"id": x.id, "name": x.name} for x in queryset]
+            data['companies'] = companies
         return Response(data)
 
     def post(self, request):
