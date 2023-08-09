@@ -30,6 +30,7 @@ def run_scrapers_manually(job_source='all'):
             "rubynow",
             "ycombinator",
             "workingnomads",
+            "workopolis"
         ]
     if job_source.lower() not in valid_job_sources:
         return {"detail": f"{job_source} not a valid job source"}, status.HTTP_406_NOT_ACCEPTABLE
