@@ -4,6 +4,7 @@ from authentication.views.create_permissions import CreatePermissions
 from authentication.views.authenticate import UserLogin
 from authentication.views.company import CompanyView, CompanyDetailView
 from authentication.views.integrations import IntegrationView, IntegrationDetailView
+from authentication.views.multiple_role import MultipleRoleManagement
 from authentication.views.password.change import PasswordManagement
 from authentication.views.password.reset import PasswordReset
 from authentication.views.profile import ProfileView
@@ -44,4 +45,5 @@ urlpatterns = [
     path('role_users/<str:pk>/', RoleUserView.as_view()),
     path('create_permissions/', CreatePermissions.as_view()),
     path('user_regions/', UserRegionsList.as_view()),
+    path('roles/', MultipleRoleManagement.as_view()),
 ]

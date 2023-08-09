@@ -26,8 +26,6 @@ class UserLogin(APIView):
                 if not user.is_active:
                     return Response({"detail": "User is no longer active, Contact Admin"}, status.HTTP_401_UNAUTHORIZED)
 
-                host = get_host(request)
-                url = host + '/api/auth/authenticate/'
                 headers = {
                     "Content-Type": "application/json"
                 }

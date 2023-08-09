@@ -1,5 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from authentication.models import Role
+
 
 class JwtSerializer(TokenObtainPairSerializer):
     """
@@ -15,8 +17,16 @@ class JwtSerializer(TokenObtainPairSerializer):
 
         try:
             token['role'] = user.roles.name
+            token['role_id'] = str(user.roles.id)
         except:
             token['role'] = None
+            token['role_id'] = None
+
+        try:
+            roles = Role.objects.filter(id__in=user.multiple_roles)
+            token['roles'] = [{"id": str(x.id), "name": x.name} for x in roles]
+        except:
+            token['roles'] = None
 
         token['username'] = user.username
 
@@ -31,3 +41,4 @@ class JwtSerializer(TokenObtainPairSerializer):
             token['profile_image'] = ""
 
         return token
+
