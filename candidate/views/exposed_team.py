@@ -56,4 +56,9 @@ class ExposedTeamListAPIView(APIView):
         return Response({"detail": message}, status_code)
 
 
+    # Yahan ab team ko unexpose krna h or team m ak feild add h expose_to us m company ids available hn jin k liy team expose hoti h wahan s company ids to
+    # delete krty jana h jo jo unexpose hn gi or front end s hamary pass jo team id ay gi us k sary exposed candidates nikal k loop laga k unexposed candidate wala kam repeat ho ga
+    # or team m s exposed candidate ki logic upar waly function m implemented h 
+
+
 
