@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from time import sleep
+from django.utils import timezone
 from scraper.models import SchedulerSync
 from scraper.models import AllSyncConfig
 from scraper.utils.scraper_permission import ScraperPermissions
@@ -72,6 +72,8 @@ class SyncAllScrapersView(APIView):
         sync_status = bool(AllSyncConfig.objects.all().first().status)
         if sync_status:
             AllSyncConfig.objects.all().update(status=False)
+            SchedulerSync.objects.filter(
+                job_source='all', type='Infinite Scrapper').update(running=False, end_time=timezone.now())
             return Response({"Sync stopped"}, status=status.HTTP_200_OK)
         else:
             AllSyncConfig.objects.all().update(status=True)
@@ -92,11 +94,11 @@ class SchedulerStatusView(APIView):
         if len(queryset) is None:
             data = []
         else:
-            data = [{"job_source": x.job_source, "running": x.running, "type": x.type} for x in queryset]
-        infinite_scraper_running_status = False
-        if AllSyncConfig.objects.filter(status=True).first() is not None:
-            infinite_scraper_running_status = True
-        data.append({"job_source": 'all', "running": infinite_scraper_running_status, "type": 'Infinite Scrapper'})
+            data = [{"job_source": x.job_source, "running": x.running, "type": x.type, "start_time": x.start_time, "end_time": x.end_time} for x in queryset]
+        # infinite_scraper_running_status = False
+        # if AllSyncConfig.objects.filter(status=True).first() is not None:
+        #     infinite_scraper_running_status = True
+        # data.append({"job_source": 'all', "running": infinite_scraper_running_status, "type": 'Infinite Scrapper'})
         # try:
         #     from scraper.schedulers.job_upload_scheduler import current_scraper
         #     data.append({"job_source": current_scraper, "running": True if current_scraper else False, "type": 'Group Scraper'})
