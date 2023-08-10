@@ -14,7 +14,7 @@ class RoleSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     company = serializers.SerializerMethodField()
     regions = serializers.SerializerMethodField()
-    verticals = serializers.SerializerMethodField()
+    # verticals = serializers.SerializerMethodField()
     roles = serializers.SerializerMethodField()
 
     class Meta:
@@ -34,24 +34,25 @@ class UserSerializer(serializers.ModelSerializer):
             company = None
         return company
 
-    def get_verticals(self, obj):
-        try:
-            verticals = obj.profile.vertical.all()
-            verticals = [{
-                "id": vertical.id,
-                "name": vertical.name,
-                "identity": vertical.identity,
-            } for vertical in verticals]
-            return verticals
-        except Exception as e:
-            print("Exception in user serializer => ", str(e))
-            return []
+    # def get_verticals(self, obj):
+    #     try:
+    #         verticals = obj.profile.vertical.all()
+    #         verticals = [{
+    #             "id": vertical.id,
+    #             "name": vertical.name,
+    #             "identity": vertical.identity,
+    #         } for vertical in verticals]
+    #         return verticals
+    #     except Exception as e:
+    #         print("Exception in user serializer => ", str(e))
+    #         return []
 
     def get_regions(self, obj):
         user_regions = UserRegions.objects.filter(user=obj)
         return [{'label': user_region.region.region, 'value': user_region.region.id} for user_region in user_regions]
 
     def get_roles(self, obj):
+        team_id = self.context.get('team_id')
         data = []
         user_regions = UserRegions.objects.filter(user=obj)
         regions = [
@@ -71,6 +72,8 @@ class UserSerializer(serializers.ModelSerializer):
                     count_roles = 0
                     for x in data:
                         team_roles = TeamRoleVerticalAssignment.objects.filter(role_id=x['id'], member_id=obj.id)
+                        if team_id:
+                            team_roles = team_roles.filter(team_id=team_id)
                         x["label"] = x["name"]
                         x["value"] = x["id"]
                         del x["name"]

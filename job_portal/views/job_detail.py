@@ -30,6 +30,7 @@ import re
 
 CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
+
 class JobDetailsView(ModelViewSet):
     queryset = JobDetail.objects.all()
     serializer_class = JobDetailSerializer
@@ -185,7 +186,6 @@ class RemoveDuplicateView(APIView):
             message = "Only Admin has access to this endpoint"
         return Response({"detail": message}, status=201)
 
-
     @start_new_thread
     @transaction.atomic
     def remove_duplicate(self):
@@ -204,6 +204,7 @@ class RemoveDuplicateView(APIView):
             first_record = duplicate_records.first()
             duplicate_records.exclude(pk=first_record.pk).delete()
         print("Duplicates Removed!")
+
 
 class JobModification(APIView):
     def put(self, request, pk):
@@ -233,10 +234,14 @@ class JobModification(APIView):
                 else:
                     request.data['expired_at'] = None
 
-                request.data['job_role'] = request.data.get("job_role") if request.data.get("job_role") else queryset.job_role
-                request.data['salary_max'] = request.data.get("salary_max") if request.data.get("salary_max") else queryset.salary_max
-                request.data['salary_min'] = request.data.get("salary_min") if request.data.get("salary_min") else queryset.salary_min
-                request.data['salary_format'] = request.data.get("salary_format") if request.data.get("salary_format") else queryset.salary_format
+                request.data['job_role'] = request.data.get("job_role") if request.data.get(
+                    "job_role") else queryset.job_role
+                request.data['salary_max'] = request.data.get("salary_max") if request.data.get(
+                    "salary_max") else queryset.salary_max
+                request.data['salary_min'] = request.data.get("salary_min") if request.data.get(
+                    "salary_min") else queryset.salary_min
+                request.data['salary_format'] = request.data.get("salary_format") if request.data.get(
+                    "salary_format") else queryset.salary_format
 
                 serializer = JobDetailSerializer(queryset, data=request.data)
                 if serializer.is_valid():
@@ -257,9 +262,13 @@ class JobModification(APIView):
         job_archive = JobDetail.objects.filter(pk=pk)
         if job_archive.exists():
             archive = job_archive.first()
-            JobArchive.objects.create(job_title=archive.job_title, company_name=archive.company_name, job_source=archive.job_source, job_type=archive.job_type, address=archive.address, job_description=archive.job_description, tech_keywords=archive.tech_keywords, job_posted_date=archive.job_posted_date, job_source_url=archive.job_source_url, block=archive.block, is_manual=archive.is_manual)
+            JobArchive.objects.create(job_title=archive.job_title, company_name=archive.company_name,
+                                      job_source=archive.job_source, job_type=archive.job_type, address=archive.address,
+                                      job_description=archive.job_description, tech_keywords=archive.tech_keywords,
+                                      job_posted_date=archive.job_posted_date, job_source_url=archive.job_source_url,
+                                      block=archive.block, is_manual=archive.is_manual)
             archive.delete()
             message = {"detail": "Job deleted successfully"}
             return Response(message, status=status.HTTP_200_OK)
         return Response({"detail": "This job does not exist"},
-                            status=status.HTTP_404_NOT_FOUND)
+                        status=status.HTTP_404_NOT_FOUND)
