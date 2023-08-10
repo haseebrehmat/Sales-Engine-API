@@ -60,6 +60,9 @@ class ScraperNaming(enum.Enum):
     RECRUIT = 'recruit'
     RUBY_NOW = 'rubynow'
     YCOMBINATOR = 'ycombinator'
+    WORKING_NOMADS = 'working_nomads'
+
+
 
     def __str__(self):
         return self.value
