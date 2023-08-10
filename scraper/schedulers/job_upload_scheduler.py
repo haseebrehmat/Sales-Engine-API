@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions
+from scraper.jobs import single_scrapers_functions, working_nomads
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -32,6 +32,7 @@ from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.jobs.recruit_scraping import recruit
 from scraper.jobs.rubynow_scraping import rubynow
+from scraper.jobs.ycombinator_scraping import ycombinator
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
@@ -41,6 +42,7 @@ from settings.base import env
 from utils import upload_to_s3
 from utils.helpers import saveLogs
 from utils.sales_engine import upload_jobs_in_sales_engine
+from django.utils import timezone
 
 # from error_logger.models import Log
 # from scraper.utils.thread import start_new_thread
@@ -96,6 +98,12 @@ scraper_functions = {
     "rubynow": [
         rubynow,
     ],
+    "ycombinator": [
+        ycombinator,
+    ],
+    "workingnomads": [
+        working_nomads,
+    ]
 }
 
 
@@ -320,7 +328,8 @@ def run_scrapers(scrapers):
 
 @start_new_thread
 def load_all_job_scrappers():
-    print()
+    SchedulerSync.objects.filter(
+        job_source='all', type='Infinite Scrapper').update(running=True, start_time=timezone.now(), end_time=timezone.now())
     while AllSyncConfig.objects.filter(status=True).first() is not None:
         print("Load All Scraper Function")
         try:
@@ -329,6 +338,8 @@ def load_all_job_scrappers():
         except Exception as e:
             print(e)
             saveLogs(e)
+    SchedulerSync.objects.filter(
+        job_source='all', type='Infinite Scrapper').update(running=False, end_time=timezone.now())
     print("Script Terminated")
     return True
 
@@ -339,24 +350,25 @@ def load_job_scrappers(job_source):
     job_source = job_source.lower()
     try:
         SchedulerSync.objects.filter(
-            job_source=job_source, type='instant').update(running=True)
+            job_source=job_source, type='instant').update(running=True, start_time=timezone.now(), end_time=timezone.now())
         scrapers = get_scrapers_list(job_source)
         run_scrapers(scrapers)
     except Exception as e:
         print(str(e))
         saveLogs(e)
     SchedulerSync.objects.all().update(running=False)
+    SchedulerSync.objects.filter(job_source=job_source, type='instant').update(end_time=timezone.now())
     return True
 
 
 def run_scheduler(job_source):
     SchedulerSync.objects.filter(
-        job_source=job_source, type="time/interval").update(running=True)
+        job_source=job_source, type="time/interval").update(running=True, start_time=timezone.now(), end_time=timezone.now())
     # job_source = job_source.replace('_', '').lower()
     if job_source in list(scraper_functions.keys()):
         run_scrapers(get_scrapers_list(job_source))
     SchedulerSync.objects.filter(
-        job_source=job_source, type="time/interval").update(running=False)
+        job_source=job_source, type="time/interval").update(running=False, end_time=timezone.now())
 
 
 def start_job_sync(job_source):
@@ -449,7 +461,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["careerjet"])
-            
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["rubynow"])
@@ -509,7 +521,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["careerjet"])
-                
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["rubynow"])
@@ -537,7 +549,7 @@ def group_scraper_job():
             current_scraper = group_scraper.name
 
             SchedulerSync.objects.filter(type="group scraper").update(running=False)
-            SchedulerSync.objects.filter(job_source=current_scraper).update(running=True)
+            SchedulerSync.objects.filter(job_source=current_scraper).update(running=True, start_time=timezone.now(), end_time=timezone.now())
             last_scraper_running_time = current_group_scraper_running_time
 
         except Exception as e:
@@ -557,6 +569,7 @@ def group_scraper_job():
                             upload_jobs()
                             remove_files('all')
                             new_scraper_started = True
+
                             break
                         job_source = query['job_source'].lower()
                         print(job_source)
@@ -627,4 +640,3 @@ try:
         group_scraper_job()
 except Exception as e:
     print(e)
-    

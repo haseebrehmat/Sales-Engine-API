@@ -4,6 +4,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from authentication.models import Team
+from candidate.models import Candidate
 from lead_management.models import CompanyStatus, Lead
 
 
@@ -42,6 +43,7 @@ class LeadManagementSerializer(serializers.ModelSerializer):
         members_query = Q()
         team_query = Q()
         candidate_query = Q()
+        candidate_profile_query = Q()
 
         if stacks:
             stacks_query = Q(
@@ -71,13 +73,13 @@ class LeadManagementSerializer(serializers.ModelSerializer):
             members = members.split(',')
             members_query = Q(applied_job_status__applied_by__id__in=members)
 
-        if candidates:
-            candidate_query = Q(candidate__id__in=candidates.split(','))
+        company_status_leads = Lead.objects.filter(company_status=obj)
+        queryset = (company_status_leads.filter(team_query) |
+                    company_status_leads.filter(converter=current_user) |
+                    company_status_leads.filter(candidate__email=current_user.email))
 
-        current_user_leads = Lead.objects.filter(company_status=obj, converter=current_user)
-        leads_data = Lead.objects.filter(company_status=obj).filter(stacks_query, from_date_query, to_date_query,
-                                                                    members_query, team_query,
-                                                                    candidate_query) | current_user_leads
+        leads_data = queryset.filter(members_query, stacks_query, from_date_query, to_date_query, candidate_query)
+
         try:
             data = [{"id": str(i.id), "phase_id": str(i.phase.id) if i.phase else None,
                      "phase_name": i.phase.name if i.phase else None,
@@ -90,9 +92,45 @@ class LeadManagementSerializer(serializers.ModelSerializer):
                                      "vertical_name": i.applied_job_status.vertical.name if i.applied_job_status.vertical is not None else ""},
                      "candidate": {'id': i.candidate.id, 'name': i.candidate.name,
                                    'desigination': i.candidate.designation.title if i.candidate.designation.title else ''} if i.candidate else None, }
-                    for i in leads_data if i.converter == current_user or role.lower() == "owner" or str(
+                    for i in leads_data if i.converter == current_user or role.lower() == "owner" or
+                    role.lower() == 'candidate' or str(
                     i.applied_job_status.applied_by_id) in user]
         except Exception as e:
             print(e)
             data = []
+        return data
+
+
+class CustomLeadSerializer(serializers.ModelSerializer):
+    phase = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    applied_job = serializers.SerializerMethodField()
+    candidate = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Lead
+        fields = ['id', 'phase', 'candidate', 'status', 'applied_job', 'updated_at', 'created_at']
+
+    def get_phase(self, instance):
+        data = {'id': str(instance.phase.id) if instance.phase else None,
+            'name': instance.phase.name if instance.phase else None} if instance.phase else None
+        return data
+
+    def get_status(self, instance):
+        data = {'id': str(instance.company_status.id) if instance.company_status else None,
+            'name': instance.company_status.status.name if instance.company_status.status else None} if instance.company_status else None
+        return data
+
+    def get_applied_job(self, instance):
+        applied_job = instance.applied_job_status
+        data = {"id": str(applied_job.id), "title": applied_job.job.job_title, "company": applied_job.job.company_name,
+                "tech_stack": applied_job.job.tech_keywords,
+                "applied_by": {"id": applied_job.applied_by.id, "name": applied_job.applied_by.username},
+                "vertical_name": applied_job.vertical.name if applied_job.vertical is not None else ""}
+        return data
+
+    def get_candidate(self, instance):
+        candidate = instance.candidate
+        data = {'id': candidate.id, 'name': candidate.name,
+            'desigination': candidate.designation.title if candidate.designation.title else ''} if candidate else None
         return data

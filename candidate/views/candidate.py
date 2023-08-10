@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
+from authentication.models import User, Profile
 from candidate.models import Candidate, Skills, ExposedCandidate, SelectedCandidate, Regions
 from candidate.serializers.candidate import CandidateSerializer
 from candidate.pagination.custom_pagination import CustomPagination
+from lead_management.models import Lead
 from settings.utils.helpers import serializer_errors
 
 
@@ -40,6 +42,15 @@ class CandidateListView(ListAPIView):
                 status = request.data.get('status', False)
                 )
             return Response({"detail": "Candidate updated successfully"})
+        if request.data.get('candidate', False) and request.data.get('login_status') != None:
+            cand = Candidate.objects.filter(pk=request.data.get('candidate')).first()
+            email = cand.email
+            qs = User.objects.filter(email=email).first()
+            if qs:
+                Profile.objects.filter(user=qs).update(is_restricted=request.data.get('login_status'))
+                return Response({"detail": "Candidate updated successfully"})
+            else:
+                return Response({"detail": "Candidate not found"})
 
         serializer = CandidateSerializer(data=request.data, many=False)
         if serializer.is_valid():

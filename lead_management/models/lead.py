@@ -22,4 +22,4 @@ class Lead(TimeStamped):
         db_table = "lead"
 
     def __str__(self):
-        return self.applied_job_status.job.job_title
+        return self.applied_job_status.job.job_title if self.applied_job_status and self.applied_job_status.job else ''

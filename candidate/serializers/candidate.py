@@ -13,6 +13,7 @@ class CandidateSerializer(serializers.ModelSerializer):
     tools = serializers.SerializerMethodField(default=[])
     regions = serializers.SerializerMethodField(default=[])
     allowed_status = serializers.SerializerMethodField(default=False)
+    allowed_login = serializers.SerializerMethodField(default=False)
 
     class Meta:
         model = Candidate
@@ -42,6 +43,13 @@ class CandidateSerializer(serializers.ModelSerializer):
         try:
             qs = SelectedCandidate.objects.filter(candidate=obj, company=self.context['request'].user.profile.company)
             return False if not qs.exists() else qs.first().status
+        except Exception as e:
+            print("Error => ", str(e))
+            return False
+    def get_allowed_login(self, obj):
+        try:
+            qs = Profile.objects.filter(user__email=obj.email)
+            return False if not qs.exists() else qs.first().is_restricted
         except Exception as e:
             print("Error => ", str(e))
             return False

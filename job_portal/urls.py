@@ -5,7 +5,7 @@ from rest_framework import routers
 
 from job_portal.classifier.update_job_stacks import UpdateJobStackView
 from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, ChangeJobStatusView, AppliedJobDetailsView, \
-    ListAppliedJobView
+    ListAppliedJobView, MarkedAsExpiredView
 from job_portal.views.applied_jobs import AppliedJobView
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
 from job_portal.views.cover_letter.download import DownloadCoverView
@@ -17,15 +17,19 @@ from job_portal.views.job_company import JobCompaniesList
 from job_portal.views.job_upload import JobSourceCleanerView, JobTypeCleanerView
 from job_portal.views.manual_job_upload import ManualJobUploadView, ManualJobUploadDetail
 from job_portal.views.sales_engine_logs import SalesEngineJobsStatsView
+from job_portal.views.trends_analytics import TrendsAnalyticsListView, TrendsAnalyticsDetailView
 
-router = routers.DefaultRouter()
-router.register(r'', JobDetailsView, basename='job_details')
+router1 = routers.DefaultRouter()
+router2 = routers.DefaultRouter()
+router1.register(r'', JobDetailsView, basename='job_details')
+router2.register(r'', MarkedAsExpiredView, basename='expired_jobs')
 
 app_name = 'job_portal'
 urlpatterns = [
     path('upload_data/', JobDataUploadView.as_view(), name='upload_job_data'),
     path('manual_jobs/', ManualJobUploadView.as_view()),
-    path('job_details/', include(router.urls)),
+    path('job_details/', include(router1.urls)),
+    path('expired_jobs/', include(router2.urls)),
     path('job_status/', ChangeJobStatusView.as_view(), name='change_job_status'),
     path('applied_job_details/', AppliedJobDetailsView.as_view(),
          name='applied_job_details'),
@@ -48,6 +52,9 @@ urlpatterns = [
     path('generate_analytics/', GenerateAnalytics.as_view()),
     path('job_modification/<str:pk>/', JobModification.as_view()),
     path('job_expired_at/<str:pk>/', ManualJobUploadDetail.as_view()),
+    path('trends_analytics/', TrendsAnalyticsListView.as_view()),
+    path('trends_analytics/<int:pk>/', TrendsAnalyticsDetailView.as_view()),
+
 ]
 
 # scheduler.start()

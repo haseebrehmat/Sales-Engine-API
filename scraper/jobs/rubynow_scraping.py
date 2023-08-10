@@ -36,7 +36,7 @@ def find_jobs(driver, job_type):
     jobs = driver.find_elements(By.CLASS_NAME, "blog-img")
     total_job = len(jobs)
     jobs[0].click()
-    
+
     iterator = 0
     while iterator < total_job:
         time.sleep(3)
@@ -79,7 +79,7 @@ def find_jobs(driver, job_type):
             salary_max = "N/A"
             append_data(data, salary_max)
 
-            job_source = ScraperNaming.Ruby_Now
+            job_source = ScraperNaming.RUBY_NOW
             append_data(data, job_source)
 
             job_type = temp1[0].split(":")
@@ -87,14 +87,14 @@ def find_jobs(driver, job_type):
 
             job_description_tags = job_description.get_attribute("innerHTML")
             append_data(data, str(job_description_tags))
-            
+
 
             scrapped_data.append(data)
             but = job.find_element(By.CLASS_NAME, "pull-right")
             but = but.find_elements(By.TAG_NAME, "a")
             but = [d for d in but][-1]
             but.click()
-            iterator += 1 
+            iterator += 1
 
     columns_name = [
         "job_title",
@@ -111,11 +111,11 @@ def find_jobs(driver, job_type):
         "job_type",
         "job_description_tags",
     ]
-    
+
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.Ruby_Now)
+    filename = generate_scraper_filename(ScraperNaming.RUBY_NOW)
     df.to_excel(filename, index=False)
-    
+
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Ruby Now", filename=filename
     )
@@ -159,4 +159,4 @@ def rubynow(link, job_type):
     except Exception as e:
         saveLogs(e)
         print(e)
-    
+

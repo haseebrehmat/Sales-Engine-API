@@ -6611,3 +6611,10 @@ all_jobs_titles = {
         ]
     }
 }
+
+def get_tech_stacks():
+    tech_stacks_list = ['others', 'others dev']
+    tech_stacks_list.extend(list(keyword.keys()))
+    tech_stacks_list.extend(list(languages.keys()))
+    tech_stacks_list = list(set([stack.lower() for stack in tech_stacks_list]))
+    return tech_stacks_list
