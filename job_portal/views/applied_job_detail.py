@@ -7,6 +7,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+
+from authentication.models import TeamRoleVerticalAssignment
 from job_portal.filters.applied_job import CustomAppliedJobFilter
 from job_portal.models import AppliedJobStatus
 from job_portal.paginations.applied_job import AppliedJobPagination
@@ -29,10 +31,12 @@ class AppliedJobDetailsView(ListAPIView):
     # @method_decorator(cache_page(60*2))
     @swagger_auto_schema(responses={200: AppliedJobDetailSerializer(many=False)})
     def get(self, request, *args, **kwargs):
+        excluded_verticals_ids = (TeamRoleVerticalAssignment.objects.filter(role=request.user.roles, member=request.user)
+                                  .values_list('vertical_id', flat=True))
         user_id = request.query_params.get('user_id', None)
         filter_query = self.get_queryset()
         if self.is_valid_uuid(user_id):
-            filter_query = filter_query.filter(applied_by__id=user_id)
+            filter_query = filter_query.filter(applied_by__id=user_id, vertical_id__in=excluded_verticals_ids)
         queryset = self.filter_queryset(filter_query)
         page = self.paginate_queryset(queryset)
         if page is not None:

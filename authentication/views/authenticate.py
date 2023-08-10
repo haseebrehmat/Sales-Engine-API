@@ -27,8 +27,6 @@ class UserLogin(APIView):
                     return Response({"detail": "User is no longer active, Contact Admin"}, status.HTTP_401_UNAUTHORIZED)
                 if user.profile.is_restricted:
                     return Response({"detail": "Company owner restrict this user to login"}, status.HTTP_401_UNAUTHORIZED)
-                host = get_host(request)
-                url = host + '/api/auth/authenticate/'
                 headers = {
                     "Content-Type": "application/json"
                 }

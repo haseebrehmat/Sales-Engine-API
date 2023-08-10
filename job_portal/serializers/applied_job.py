@@ -18,7 +18,6 @@ class AppliedJobDetailSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         # Here instance is instance of your model
-        # so you can build your dict however you like
         result = OrderedDict()
 
         json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
@@ -50,7 +49,6 @@ class TeamAppliedJobDetailSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         # Here instance is instance of your model
-        # so you build your dict however you like
         result = OrderedDict()
         json_results = json.loads(dj_serializers.serialize("json", [instance.job]))[0]
         job_details = json_results['fields']
@@ -130,7 +128,6 @@ class JobStatusSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         # Here instance is instance of your model
-        # so you build your dict however you like
         result = OrderedDict()
         result['status'] = instance.job_status
         result['job_id'] = instance.id

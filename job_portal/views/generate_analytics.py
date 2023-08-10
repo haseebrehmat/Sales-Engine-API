@@ -12,7 +12,6 @@ from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    permission_classes = (AllowAny,)
     job_archive = JobArchive.objects.all()
     queryset = JobDetail.objects.all()
     tech_keywords = ""
@@ -59,9 +58,12 @@ class GenerateAnalytics(APIView):
 
     def get(self, request):
         filters, start_date, end_date = self.filter_queryset(request)
+        previous_qs = self.queryset
         if self.queryset.count() == 0 or self.job_archive.count() > self.queryset.count():
             self.queryset = self.job_archive
             filters, start_date, end_date = self.filter_queryset(request)
+            if previous_qs.count() > self.queryset.count():
+                self.queryset = previous_qs
         self.tech_keywords = set(self.queryset.values_list("tech_keywords", flat=True))
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
 
