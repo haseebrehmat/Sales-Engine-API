@@ -38,7 +38,7 @@ def get_job_url(job):
 def get_job_detail(driver, job_source, job_url, job_type):
     error = False
     try:
-        job_title = driver.find_element(By.CLASS_NAME, "job-titlee").text
+        job_title = driver.find_element(By.CLASS_NAME, "job-title").text
         company_name = driver.find_element(By.CLASS_NAME, "job-company").text
         job_description = driver.find_element(By.CLASS_NAME, "job")
 
@@ -140,7 +140,7 @@ def find_jobs(driver, job_type):
 def working_nomads(link, job_type):
     try:
         print("Start in try portion. \n")
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             driver.get(link)
