@@ -59,7 +59,8 @@ class ScraperNaming(enum.Enum):
     ZIP_RECRUITER = 'zip_recruiter'
     RECRUIT = 'recruit'
     Ruby_Now = 'rubynow'
-    
+    WORKING_NOMADS = 'working_nomads'
+
 
 
     def __str__(self):

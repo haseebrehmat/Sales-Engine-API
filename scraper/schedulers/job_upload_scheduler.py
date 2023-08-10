@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions
+from scraper.jobs import single_scrapers_functions, working_nomads
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -96,6 +96,9 @@ scraper_functions = {
     "rubynow": [
         rubynow,
     ],
+    "workingnomads": [
+        working_nomads,
+    ]
 }
 
 
@@ -449,7 +452,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["careerjet"])
-            
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["rubynow"])
@@ -509,7 +512,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "careerjet":
                 careerjet_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["careerjet"])
-                
+
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["rubynow"])
@@ -627,4 +630,3 @@ try:
         group_scraper_job()
 except Exception as e:
     print(e)
-    
