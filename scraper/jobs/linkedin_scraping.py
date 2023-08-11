@@ -67,7 +67,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, job_type, url=None):
+def find_jobs(driver, job_type, total_jobs, url=None):
     scrapped_data = []
     try:
         WebDriverWait(driver, 30).until(
@@ -102,6 +102,10 @@ def find_jobs(driver, job_type, url=None):
         except Exception as e:
             print(e)
 
+    address = driver.find_elements(By.CLASS_NAME, "job-card-container__metadata-item")
+    job_posted_date = driver.find_elements(By.CLASS_NAME, "job-card-container__footer-item--highlighted")
+    count = 0
+
     for job in jobs:
         try:
             data = []
@@ -112,18 +116,14 @@ def find_jobs(driver, job_type, url=None):
                     (By.CLASS_NAME, "jobs-unified-top-card__job-insight"))
             )
 
-            job_posted_date = driver.find_elements(
-                By.CLASS_NAME, "jobs-unified-top-card__posted-date")
-            if job_posted_date:
+            if len(job_posted_date) > 0:
                 job_title = driver.find_element(
                     By.CLASS_NAME, "jobs-unified-top-card__job-title")
                 append_data(data, job_title.text)
                 company_name = driver.find_element(
-                    By.CLASS_NAME, "jobs-unified-top-card__company-name")
+                    By.CLASS_NAME, "job-card-container__primary-description")
                 append_data(data, company_name.text)
-                address = driver.find_element(
-                    By.CLASS_NAME, "jobs-unified-top-card__bullet")
-                append_data(data, address.text)
+                append_data(data, address[count].text)
                 job_description = driver.find_element(
                     By.CLASS_NAME, "jobs-description-content__text")
                 append_data(data, job_description.text)
@@ -131,7 +131,7 @@ def find_jobs(driver, job_type, url=None):
                     By.CLASS_NAME, "jobs-unified-top-card__content--two-pane")
                 url = job_source_url.find_element(By.TAG_NAME, 'a')
                 append_data(data, url.get_attribute('href'))
-                append_data(data, job_posted_date[0].text)
+                append_data(data, job_posted_date[count].text.split('\n')[0])
                 try:
                     es = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0]
                     estimated_salary = es.find_elements(By.TAG_NAME, "a")[0]
@@ -168,8 +168,10 @@ def find_jobs(driver, job_type, url=None):
                 append_data(data, job_description.get_attribute('innerHTML'))
 
                 scrapped_data.append(data)
+                total_jobs += 1
         except Exception as e:
             print(e)
+        count += 1
 
     date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
@@ -179,7 +181,7 @@ def find_jobs(driver, job_type, url=None):
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Linkedin", filename=filename)
-    return True
+    return True, total_jobs
 
 
 # check if there is more jobs available or not
@@ -195,16 +197,16 @@ def data_exists(driver):
 def jobs_types(driver, url, job_type, total_job):
     count = 0
     request_url(driver, url)  # select type from the const file
-    if find_jobs(driver, job_type):
+    flag = True
+    flag, total_job = find_jobs(driver, job_type, total_job)
+    if flag:
         count += 25
 
-        while find_jobs(driver, job_type, "&start=" + str(count)):
+        while flag:
+            flag, total_job = find_jobs(driver, job_type, total_job, "&start=" + str(count))
             count += 25
-            total_job += 25
-        return total_job
     else:
         print(NO_JOB_RESULT)
-        return total_job
 
 
 # code starts from here
@@ -213,8 +215,6 @@ def linkedin(link, job_type):
     total_job = 0
     try:
         for x in Accounts.objects.all():
-            # import pdb
-            # pdb.set_trace()
             options = webdriver.ChromeOptions()  # newly added
             options.add_argument("--headless")
             options.add_argument("window-size=1200,1100")
@@ -229,25 +229,21 @@ def linkedin(link, job_type):
             with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
                 request_url(driver, LOGIN_URL)
                 logged_in = login(driver, x.email, x.password)
-                # import pdb
-                # pdb.set_trace()
                 try:
                     if logged_in:
-                        total_job = jobs_types(
-                            driver, link, job_type, total_job)
+                        jobs_types(driver, link, job_type, total_job)
                         print(SCRAPING_ENDED)
+                        driver.quit()
                         break
                     else:
                         print(LOGIN_FAILED)
-                        continue
+                        driver.quit()
                 except Exception as e:
-                    print(e)
+                    print("Exception in linkedin => ", e)
                     saveLogs(e)
                     print(LINK_ISSUE)
+                    driver.quit()
                     break
-                driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
-
-
