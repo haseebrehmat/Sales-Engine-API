@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters
 from authentication.permissions import UserPermissions
 from authentication.serializers.jwt_serializer import JwtSerializer
-from authentication.models import User, Profile, Role, UserRegions
+from authentication.models import User, Profile, Role, UserRegions, MultipleRoles
 from authentication.serializers.user_permission import UserPermissionSerializer
 from authentication.serializers.users import UserSerializer
 from pseudos.models import VerticalsRegions, Verticals
@@ -178,7 +178,9 @@ class UserDetailView(APIView):
         roles = role_id.split(",")
         if roles:
             user.roles_id = roles[0]
-            user.multiple_roles = roles
+            for x in roles:
+                if not MultipleRoles.objects.filter(user=user, role_id=x).exists():
+                    MultipleRoles.objects.create(user=user, role_id=x)
         user.save()
 
         # Update user regions

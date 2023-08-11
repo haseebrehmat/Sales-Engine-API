@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from authentication.models import Profile, UserRegions, Role
+from authentication.models import Profile, UserRegions, Role, MultipleRoles
 from authentication.serializers.team_management import TeamManagementSerializer
 from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
 from job_portal.serializers.job_detail import JobDetailSerializer
@@ -66,13 +66,13 @@ class UserVerticalsAssignView(APIView):
                         x["verticals"] = verticals_serializer.data
                 except:
                     print("No Verticals")
-                multiple_roles = x['multiple_roles']
-                if multiple_roles:
+                multiple_roles = MultipleRoles.objects.filter(user_id=x['id']).count()
+                if multiple_roles > 0:
                     assign_roles = TeamRoleVerticalAssignment.objects.filter(
                         member_id=x['id'],
                         team_id=pk
                     ).values_list("role_id", flat=True)
-                    x["allow_assignment"] = not len(multiple_roles) == len(set(assign_roles))
+                    x["allow_assignment"] = not multiple_roles == len(set(assign_roles))
                 else:
                     x["allow_assignment"] = True
 
