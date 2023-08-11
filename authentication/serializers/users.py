@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from authentication.models import User, Profile, UserRegions, Role
+from authentication.models import User, Profile, UserRegions, Role, MultipleRoles
 from authentication.models.team_management import TeamRoleVerticalAssignment
 
 
@@ -61,11 +61,10 @@ class UserSerializer(serializers.ModelSerializer):
                 'value': user_region.region.id
             } for user_region in user_regions]
         try:
-            ids = [str(obj.roles.id)]
-            if obj.multiple_roles:
-                ids.extend(obj.multiple_roles)
+            ids = [obj.roles.id]
+            ids.extend(MultipleRoles.objects.filter(user=obj).values_list("role_id", flat=True))
             if ids:
-                qs = Role.objects.filter(id__in=ids)
+                qs = Role.objects.filter(id__in=set(ids))
                 if qs:
                     serializer = RoleSerializer(qs, many=True)
                     data = serializer.data

@@ -55,7 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
         help_text="The roles of this user belongs to. A user will get all permissions "
                   "granted to each of their roles.")
 
-    multiple_roles = models.JSONField(blank=True, null=True)
+    # multiple_roles = models.JSONField(blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

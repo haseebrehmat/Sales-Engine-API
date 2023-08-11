@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from authentication.models import Role
+from authentication.models import Role, MultipleRoles
 
 
 class JwtSerializer(TokenObtainPairSerializer):
@@ -23,8 +23,8 @@ class JwtSerializer(TokenObtainPairSerializer):
             token['role_id'] = None
 
         try:
-            roles = Role.objects.filter(id__in=user.multiple_roles)
-            token['roles'] = [{"id": str(x.id), "name": x.name} for x in roles]
+            roles = MultipleRoles.objects.filter(user=user)
+            token['roles'] = [{"id": str(x.role.id), "name": x.role.name} for x in roles]
         except:
             token['roles'] = None
 

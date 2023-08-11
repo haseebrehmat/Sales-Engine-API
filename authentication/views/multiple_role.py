@@ -4,7 +4,7 @@ import jwt
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from authentication.models import Role, User, TeamRoleVerticalAssignment
+from authentication.models import Role, User, TeamRoleVerticalAssignment, MultipleRoles
 from settings.base import SIMPLE_JWT
 
 
@@ -17,9 +17,9 @@ class MultipleRoleManagement(APIView):
         if user_id:
             qs = User.objects.filter(id=user_id).first()
             if qs:
-                multiple_roles = qs.multiple_roles
+                multiple_roles = MultipleRoles.objects.filter(user=qs)
         else:
-            multiple_roles = self.request.user.multiple_roles
+            multiple_roles = MultipleRoles.objects.filter(user=request.user)
         if multiple_roles:
             # exclude team based assign roles from the view
             assign_roles = TeamRoleVerticalAssignment.objects.filter(
@@ -28,9 +28,9 @@ class MultipleRoleManagement(APIView):
             ).values_list("role_id", flat=True)
             roles = [
                 {
-                    "value": x['id'],
-                    "label": x['name']
-                } for x in Role.objects.filter(id__in=multiple_roles).exclude(id__in=assign_roles).values("id", "name")
+                    "value": x['role_id'],
+                    "label": x['role__name']
+                } for x in multiple_roles.exclude(role_id__in=assign_roles).values("role_id", "role__name")
             ]
         else:
             roles = [{
@@ -43,7 +43,11 @@ class MultipleRoleManagement(APIView):
     def post(self, request):
         role_id = request.data.get("role_id")
         status_code = status.HTTP_200_OK
-        if role_id in request.user.multiple_roles or self.request.user.roles_id == role_id:
+        conditions = [
+            MultipleRoles.objects.filter(user=request.user, role_id=role_id).exists(),
+            self.request.user.roles_id == role_id
+        ]
+        if any(conditions):
             if role_id == str(self.request.user.roles_id):
                 data = {"detail": "Role already assign"}
             else:
@@ -63,7 +67,7 @@ class MultipleRoleManagement(APIView):
             permissions = list(user.roles.permissions.values_list('codename', flat=True))
         except:
             permissions = None
-        roles = Role.objects.filter(id__in=user.multiple_roles)
+        roles = MultipleRoles.objects.filter(user=user)
         token = {
             "token_type": "access",
             "jti": str(uuid.uuid4()),
@@ -73,7 +77,7 @@ class MultipleRoleManagement(APIView):
             "permissions": permissions,
             "role": user.roles.name if user.roles else None,
             "role_id": str(user.roles.id) if user.roles else None,
-            "roles": [{"id": str(x.id), "name": x.name} for x in roles] if roles else None,
+            "roles": [{"id": str(x.role.id), "name": x.role.name} for x in roles] if roles else None,
             'username': user.username,
             "email": user.email,
             "is_superuser": user.is_superuser,
@@ -82,10 +86,9 @@ class MultipleRoleManagement(APIView):
             "profile_image": str(user.profile.file_url) if user.profile else None
         }
         return jwt.encode(token, SIMPLE_JWT['SIGNING_KEY'], algorithm=SIMPLE_JWT['ALGORITHM'])
-
-
-# for x in User.objects.all().exclude(multiple_roles__isnull=False):
-#     if x.roles is not None:
-#         x.multiple_roles = [str(x.roles.id)]
-#         x.save()
+#
+# print("Started")
+# bulk_instances = [MultipleRoles(user=x, role=x.roles) for x in User.objects.all() if x.roles is not None]
+# MultipleRoles.objects.bulk_create(bulk_instances, batch_size=500, ignore_conflicts=True)
 # print("Terminated")
+
