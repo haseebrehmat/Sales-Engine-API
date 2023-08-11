@@ -45,6 +45,7 @@ urlpatterns = [
     path('role_users/<str:pk>/', RoleUserView.as_view()),
     path('create_permissions/', CreatePermissions.as_view()),
     path('user_regions/', UserRegionsList.as_view()),
+    path('roles/', MultipleRoleManagement.as_view()),
     path('all_roles/', AllRoleView.as_view()),
     path('roles/', MultipleRoleManagement.as_view()),
 ]
