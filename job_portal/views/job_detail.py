@@ -416,4 +416,3 @@ class MarkedAsExpiredView(ModelViewSet):
         elif blocked == "false":
             queryset = queryset.exclude(company_name__in=blocked_job_companies)
         return queryset
-                        status=status.HTTP_404_NOT_FOUND)
