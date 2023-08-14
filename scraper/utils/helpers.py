@@ -69,6 +69,7 @@ class ScraperNaming(enum.Enum):
     Ruby_Now = 'rubynow'
     Remote_Ok = 'remoteok'
     
+    HIMALAYAS = 'himalayas'
 
 
     def __str__(self):
