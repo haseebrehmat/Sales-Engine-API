@@ -18,10 +18,11 @@ class TeamManagementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
-        depth = 3
+        # depth = = 3
 
     def get_members(self, obj):
-        serializer = UserSerializer(obj.members.all(), many=True)
+        serializer = UserSerializer(obj.members.all(), many=True, context={"team_id": obj.id})
+
         return serializer.data
 
     def create(self, validated_data):

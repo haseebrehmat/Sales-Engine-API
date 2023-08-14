@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from authentication.models import Profile
+from authentication.models import Profile, TeamRoleVerticalAssignment
 from job_portal.models import JobDetail, AppliedJobStatus
 from pseudos.models import Verticals
 
@@ -16,14 +16,21 @@ class JobDetailSerializer(serializers.ModelSerializer):
 
     def get_total_vertical(self, obj):
         try:
-            verticals = self.context['request'].user.profile.vertical.count()
+            current_role_id = self.context['request'].user.roles_id
+            verticals = TeamRoleVerticalAssignment.objects.filter(
+                role_id=current_role_id, member=self.context['request'].user
+            ).count()
         except:
             verticals = 0
         return verticals
 
     def get_remaining_vertical(self, obj):
         try:
-            verticals = self.context['request'].user.profile.vertical.all()
+            current_role_id = self.context['request'].user.roles_id
+            # verticals = self.context['request'].user.profile.vertical.all()
+            verticals = TeamRoleVerticalAssignment.objects.filter(
+                role_id=current_role_id, member=self.context['request'].user
+            ).values("vertical")
             used = AppliedJobStatus.objects.filter(job_id=obj.id, vertical__in=verticals).count()
             remaining = used
         except:

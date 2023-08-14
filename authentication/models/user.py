@@ -1,4 +1,5 @@
 import uuid
+
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, AbstractUser
@@ -53,7 +54,8 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamped):
         null=True,
         help_text="The roles of this user belongs to. A user will get all permissions "
                   "granted to each of their roles.")
-    # groups = None
+
+    # multiple_roles = models.JSONField(blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

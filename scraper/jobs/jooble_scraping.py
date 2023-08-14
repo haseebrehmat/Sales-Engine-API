@@ -28,8 +28,26 @@ def find_jobs(driver, job_type, total_job):
         alert[0].click()
     jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
     try:
-        for job in jobs:
-            job.location_once_scrolled_into_view
+        flag = True
+        while(flag):
+            for job in jobs:
+                job.location_once_scrolled_into_view
+            # this is the logic for click load more jobs button in this scraper 2 loaders are running
+            time.sleep(5)
+            jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
+            for job in jobs:
+                job.location_once_scrolled_into_view
+            time.sleep(5)
+            jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
+            for job in jobs:
+                job.location_once_scrolled_into_view
+            time.sleep(5)
+            if len(jobs) > 450:
+                break
+            try:
+                driver.find_elements(By.CLASS_NAME, "jkit_AySJs")[1].click()
+            except:
+                flag = False
     except:
         print("")
     time.sleep(3)
@@ -39,7 +57,6 @@ def find_jobs(driver, job_type, total_job):
         try:
             job_title = job.find_element(By.CLASS_NAME, "jkit_Efecu")
             job_description = job.find_element(By.CLASS_NAME, "EIQN28")
-            company_name = job.find_element(By.CLASS_NAME, "iGX6uI")
             job_posted_date = job.find_element(By.CLASS_NAME, "klAi0x")
             location = job.find_element(By.CLASS_NAME, "lroapG")
             job_type = job_type
@@ -47,7 +64,11 @@ def find_jobs(driver, job_type, total_job):
             job_source_url = job.find_element(By.CLASS_NAME, "jkit_ff9zU").get_attribute(
                 'href')
             append_data(data, job_title.text)
-            append_data(data, company_name.text)
+            try:
+                company_name = job.find_element(By.CLASS_NAME, "iGX6uI").text
+            except:
+                company_name = "N/A"
+            append_data(data, company_name)
             append_data(data, location.text)
             append_data(data, job_description.text)
             append_data(data, job_source_url)
@@ -93,7 +114,6 @@ def jooble(link, job_type):
         options.add_argument(
             "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
         )
-        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
         with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
             driver.maximize_window()
             try:
@@ -105,7 +125,6 @@ def jooble(link, job_type):
                     print("Fetching...")
             except Exception as e:
                 print(e)
-
             driver.quit()
     except:
         print("Error Occurs. \n")

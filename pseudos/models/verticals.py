@@ -1,20 +1,6 @@
 from django.db import models
-
-from authentication.models.company import Company
 from pseudos.models.pseudos import Pseudos
 from utils.model_fields.timestamped import TimeStamped
-
-# choices = [
-#     ('basic', 'Basic'),
-#     ('summary', 'Summary'),
-#     ('experience', 'Experience'),
-#     ('education', 'Education'),
-#     ('skill', 'Skill'),
-#     ('certificate', 'Certificate'),
-#     ('hobby', 'Hobby'),
-#     ('link', 'Link'),
-#     ('other', 'Other')
-# ]
 
 
 class Verticals(TimeStamped):
@@ -33,4 +19,8 @@ class Verticals(TimeStamped):
     show_summary = models.BooleanField(default=True)
     hobbies = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+
+
+
+
 

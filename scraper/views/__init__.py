@@ -3,11 +3,10 @@ from settings.base import env
 try:
     import os
     import shutil
-    from scraper.models import SchedulerSync
-    # from scraper.views.sync_scheduler import run_scrapers_manually
+    from scraper.models import SchedulerSync, AllSyncConfig
     SchedulerSync.objects.all().update(running=False)
-    # if AllSyncConfig.objects.filter(status=True).exists():
-    #     run_scrapers_manually()
+    AllSyncConfig.objects.filter(status=True).update(status=False)
+
     if os.path.exists('scraper/job_data'):
         shutil.rmtree('scraper/job_data')
         os.makedirs('scraper/job_data')

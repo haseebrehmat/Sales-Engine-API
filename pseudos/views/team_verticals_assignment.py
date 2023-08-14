@@ -1,25 +1,21 @@
-from pprint import pprint
-from django.core import serializers
-from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from itertools import chain
-from authentication.models import Profile, UserRegions
+from authentication.models import Profile, UserRegions, Role, MultipleRoles
 from authentication.serializers.team_management import TeamManagementSerializer
 from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
 from job_portal.serializers.job_detail import JobDetailSerializer
 from pseudos.models.verticals import Verticals
-from authentication.models.team_management import Team
+from authentication.models.team_management import Team, TeamRoleVerticalAssignment
 from authentication.models.user import User
 from pseudos.models import Pseudos
 from pseudos.serializers.pseudos import PseudoSerializer
 from pseudos.serializers.verticals import VerticalSerializer
 from pseudos.models.verticals_regions import VerticalsRegions
 
-# class for assignment verticals to team
+
 class TeamVerticalsAssignView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PseudoSerializer
@@ -32,14 +28,18 @@ class TeamVerticalsAssignView(ListAPIView):
         team = request.data.get('team_id')
         team = Team.objects.filter(id=team).first()
         all_verticals = request.data.get('verticals')
+        team_assign_verticals = TeamRoleVerticalAssignment.objects.filter(team=team)
         all_verticals = Verticals.objects.filter(id__in=all_verticals)
+        excluded_ids = []
         for vertical in team.verticals.all():
             Verticals.objects.filter(id=vertical.id).update(assigned=False)
         team.verticals.clear()
         for vertical in all_verticals:
+            excluded_ids.append(vertical.id)
             if vertical.assigned == False:
                 team.verticals.add(vertical)
                 Verticals.objects.filter(id=vertical.id).update(assigned=True)
+        team_assign_verticals.exclude(vertical_id__in=excluded_ids).delete()
         status_code = status.HTTP_200_OK
         message = {"detail": "Verticals Saved Successfully"}
         return Response(message, status=status_code)
@@ -59,9 +59,23 @@ class UserVerticalsAssignView(APIView):
             data = serializer.data
 
             for x in data["members"]:
-                verticals = Verticals.objects.filter(vertical__user__id=x["id"], id__in=vertical_id)
-                verticals_serializer = VerticalSerializer(verticals, many=True)
-                x["verticals"] = verticals_serializer.data
+                try:
+                    verticals = Verticals.objects.filter(vertical__user__id=x["id"], id__in=vertical_id)
+                    if verticals:
+                        verticals_serializer = VerticalSerializer(verticals, many=True)
+                        x["verticals"] = verticals_serializer.data
+                except:
+                    print("No Verticals")
+                multiple_roles = MultipleRoles.objects.filter(user_id=x['id']).count()
+                if multiple_roles > 0:
+                    assign_roles = TeamRoleVerticalAssignment.objects.filter(
+                        member_id=x['id'],
+                        team_id=pk
+                    ).values_list("role_id", flat=True)
+                    x["allow_assignment"] = not multiple_roles == len(set(assign_roles))
+                else:
+                    x["allow_assignment"] = True
+
 
         else:
             data = []
@@ -72,6 +86,10 @@ class UserVerticalsAssignView(APIView):
         user_id = request.data.get('user_id')
         team_id = request.data.get('team_id')
         verticals = request.data.get('verticals')
+        role_id = request.data.get('role_id')
+
+        if not role_id:
+            return Response({"detail": "Roles cannot be empty"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         # fetching data from current team
         current_team = Team.objects.filter(id=team_id, members__id=user_id).first()
@@ -95,21 +113,37 @@ class UserVerticalsAssignView(APIView):
         for vertical in current_team_verticals:
             profile.vertical.remove(vertical)
         invalid_verticals = 0
+        # removing previously assign verticals
+        TeamRoleVerticalAssignment.objects.filter(
+            team_id=team_id,
+            member_id=user_id,
+            role_id=role_id
+        ).delete()
         for v in verticals:
             if self.is_valid_vertical(v, profile.user):
                 profile.vertical.add(v)
+
+                # assigning vertical to the team along with its roles
+                TeamRoleVerticalAssignment.objects.create(
+                    vertical=v,
+                    team_id=team_id,
+                    member_id=user_id,
+                    role_id=role_id
+                )
             else:
                 invalid_verticals += 1
-        error_msg = f'Except {invalid_verticals} verticals due to invalid regions.' if invalid_verticals> 0 else ''
+        error_msg = f'Except {invalid_verticals} verticals due to invalid regions.' if invalid_verticals > 0 else ''
         status_code = status.HTTP_200_OK
-        message = {"detail": "Verticals Saved Successfully!" + f' {error_msg}' }
+        message = {"detail": "Verticals Saved Successfully!" + f' {error_msg}'}
         return Response(message, status=status_code)
 
     def is_valid_vertical(self, vertical, user):
-        verticals_regions_set = set(VerticalsRegions.objects.filter(verticals=vertical).values_list('region', flat=True))
+        verticals_regions_set = set(
+            VerticalsRegions.objects.filter(verticals=vertical).values_list('region', flat=True))
         user_regions_set = set(UserRegions.objects.filter(user=user).values_list('region', flat=True))
         result = verticals_regions_set.intersection(user_regions_set)
         return True if result else False
+
 
 class UserVerticals(APIView):
     def get(self, request):
@@ -121,24 +155,57 @@ class UserVerticals(APIView):
             job = JobDetail.objects.filter(pk=job_id).first()
             profile = Profile.objects.filter(user_id=user_id).first()
             verticals = list(profile.vertical.values_list('id', flat=True))
-            teams = Team.objects.filter(members__id=user_id).all()
+            team_ids = (TeamRoleVerticalAssignment.objects.filter(role_id=request.user.roles_id, member_id=user_id)
+                        .values_list("team_id", flat=True))
+            teams = Team.objects.filter(id__in=team_ids)
+
             if len(verticals) == 0 or len(teams) == 0:
                 data = []
             else:
-                data = {"assigned": [{'id': team.id, 'name': team.name, 'verticals': [
-                    {"id": vertical.id, "name": vertical.name, "identity": vertical.identity} for vertical in
-                    team.verticals.filter(id__in=verticals)]} for team in teams],
-                        "job": {'id': job.id, 'name': job.job_title, 'company': job.company_name, 'type': job.job_type,
-                                'description': job.job_description, 'source': job.job_source,
-                                'link': job.job_source_url, 'posted_at': job.job_posted_date, }, "history": [
-                        {'vertical': apply.vertical.name, "pseudo": apply.vertical.pseudo.name,
-                         'time': apply.applied_date.strftime('%Y-%m-%d %H:%M:%S'), 'team': apply.team.name, } for apply
-                        in user_applied]}
+                data = {
+                    "assigned": [
+                        {
+                            'id': team.id,
+                            'name': team.name,
+                            'verticals': [
+                                {
+                                    "id": vertical.id,
+                                    "name": vertical.name,
+                                    "identity": vertical.identity
+                                } for vertical in self.get_verticals(team.id, request)
+                            ]
+                        } for team in teams
+                    ],
+                    "job": {
+                        'id': job.id,
+                        'name': job.job_title,
+                        'company': job.company_name,
+                        'type': job.job_type,
+                        'description': job.job_description,
+                        'source': job.job_source,
+                        'link': job.job_source_url,
+                        'posted_at': job.job_posted_date
+                    },
+                    "history": [
+                        {
+                            'vertical': apply.vertical.name,
+                            "pseudo": apply.vertical.pseudo.name,
+                            'time': apply.applied_date.strftime('%Y-%m-%d %H:%M:%S'),
+                            'team': apply.team.name
+                        } for apply in user_applied]}
+
             status_code = status.HTTP_200_OK
         except Exception as e:
             data = {'detail': str(e)}
             status_code = status.HTTP_406_NOT_ACCEPTABLE
         return Response(data, status=status_code)
+
+    def get_verticals(self, team_id, request):
+        vertical_ids = TeamRoleVerticalAssignment.objects.filter(
+            team_id=team_id,
+            role_id=request.user.roles_id
+        ).values_list('vertical_id', flat=True)
+        return Verticals.objects.filter(id__in=vertical_ids)
 
 
 class JobVerticals(APIView):
