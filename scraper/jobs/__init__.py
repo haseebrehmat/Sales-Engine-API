@@ -1,4 +1,5 @@
 from scraper.jobs.adzuna_scraping import adzuna_scraping
+from scraper.jobs.arc_dev_scraping import arc_dev
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
 from scraper.jobs.dice_scraping import dice
@@ -27,4 +28,4 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'adzuna': adzuna_scraping, 'careerjet': careerjet, 'career_jet': careerjet,
                              'recruit': recruit, 'dailyremote': dailyremote, 'rubynow': rubynow,
                              'workingnomads': working_nomads, 'working_nomads': working_nomads, 'workopolis': workopolis,
-                             'dynamite': dynamite}
+                             'dynamite': dynamite, "arcdev": arc_dev, "arc_dev": arc_dev}
