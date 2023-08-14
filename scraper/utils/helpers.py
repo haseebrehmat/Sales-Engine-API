@@ -66,6 +66,9 @@ class ScraperNaming(enum.Enum):
     WORKOPOLIS = 'workopolis'
     DYNAMITE = 'dynamite'
     ARC_DEV = 'arcdev'
+    Ruby_Now = 'rubynow'
+    Remote_Ok = 'remoteok'
+    
 
 
     def __str__(self):

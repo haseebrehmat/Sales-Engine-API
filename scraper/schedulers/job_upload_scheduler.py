@@ -34,6 +34,7 @@ from scraper.jobs.recruit_scraping import recruit
 from scraper.jobs.rubynow_scraping import rubynow
 from scraper.jobs.ycombinator_scraping import ycombinator
 from scraper.jobs.workopolis_scraping import workopolis
+from scraper.jobs.remote_ok_scraping import remoteok
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
@@ -113,7 +114,10 @@ scraper_functions = {
     ],
     "arcdev": [
         arc_dev,
-    ]
+    ],
+    "remoteok": [
+        remoteok,
+    ],
 }
 
 
@@ -134,10 +138,12 @@ def upload_jobs():
                     upload_to_s3.upload_job_files(file, file.replace(path, ""))
                     upload_file(job_parser, file)
             except Exception as e:
-                print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
+                print(
+                    f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
                 saveLogs(e)
     except Exception as e:
-        print(f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
+        print(
+            f"An exception occurred: {e}\n\nTraceback: {traceback.format_exc()}")
         saveLogs(e)
 
 
@@ -231,18 +237,24 @@ def upload_file(job_parser, filename):
         JobDetail(job_title=job_item.job_title, company_name=job_item.company_name, job_source=job_item.job_source,
                   job_type=job_item.job_type, address=job_item.address, job_description=job_item.job_description,
                   job_description_tags=job_item.job_description_tags,
-                  tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
-                  job_posted_date=job_item.job_posted_date, job_source_url=job_item.job_source_url,
-                  estimated_salary=job_item.estimated_salary, salary_format=job_item.salary_format,
-                  salary_min=job_item.salary_min, salary_max=job_item.salary_max) for job_item in
-        classify_data.data_frame.itertuples() if
-        job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)]
+                  tech_keywords=job_item.tech_keywords.replace(
+                      " / ", "").lower(),
+                  job_posted_date=job_item.job_posted_date,
+                  job_source_url=job_item.job_source_url,
+                  estimated_salary=job_item.estimated_salary,
+                  salary_format=job_item.salary_format,
+                  salary_min=job_item.salary_min,
+                  salary_max=job_item.salary_max)
+        for job_item in classify_data.data_frame.itertuples() if
+        job_item.job_source_url != "" and isinstance(job_item.job_source_url,
+                                                     str)]
 
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
     upload_jobs_in_sales_engine(model_instances, filename)
     after_uploading_jobs_count = JobDetail.objects.count()
-    scraper_log = ScraperLogs.objects.filter(filename=filename, uploaded_jobs=0).first()
+    scraper_log = ScraperLogs.objects.filter(
+        filename=filename, uploaded_jobs=0).first()
     if scraper_log:
         uploaded_count = after_uploading_jobs_count - before_uploading_jobs
         if uploaded_count > 0:
@@ -482,6 +494,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "arcdev":
                 arcdev_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["arcdev"])
 
+            elif scheduler.job_source.lower() == "remoteok":
+                rubynow_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["remoteok"])
+
         elif scheduler.time_based:
             now = datetime.datetime.now()
             dat = str(now).split(' ')
@@ -554,6 +570,10 @@ def scheduler_settings():
                 arcdev_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["arcdev"])
 
+            elif scheduler.job_source.lower() == "remoteok":
+                rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["remoteok"])
+
 
 group_scraper_background_jobs = []
 current_scraper = ''
@@ -575,9 +595,10 @@ def group_scraper_job():
                 pk=current_group_scraper_id)
             current_scraper = group_scraper.name
 
-            SchedulerSync.objects.filter(type="group scraper").update(running=False)
-            SchedulerSync.objects.filter(job_source=current_scraper).update(running=True, start_time=timezone.now(),
-                                                                            end_time=timezone.now())
+            SchedulerSync.objects.filter(
+                type="group scraper").update(running=False)
+            SchedulerSync.objects.filter(
+                job_source=current_scraper).update(running=True)
             last_scraper_running_time = current_group_scraper_running_time
 
         except Exception as e:

@@ -19,6 +19,7 @@ from scraper.jobs.rubynow_scraping import rubynow
 from scraper.jobs.workopolis_scraping import workopolis
 from scraper.jobs.dynamite_scraping import dynamite
 
+from scraper.jobs.remote_ok_scraping import remoteok
 
 single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': career_builder, 'dice': dice,
                              'glassdoor': glassdoor, 'indeed': indeed, 'linkedin': linkedin, 'monster': monster,
