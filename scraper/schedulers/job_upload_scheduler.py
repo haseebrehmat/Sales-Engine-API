@@ -35,6 +35,7 @@ from scraper.jobs.rubynow_scraping import rubynow
 from scraper.jobs.ycombinator_scraping import ycombinator
 from scraper.jobs.workopolis_scraping import workopolis
 from scraper.jobs.remote_ok_scraping import remoteok
+from scraper.jobs.himalayas_scraping import himalayas
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
@@ -118,6 +119,9 @@ scraper_functions = {
     "remoteok": [
         remoteok,
     ],
+    "himalayas": [
+        himalayas,
+    ]
 }
 
 
@@ -420,6 +424,7 @@ workopolis_scheduler = BackgroundScheduler()
 recruit_scheduler = BackgroundScheduler()
 dynamite_scheduler = BackgroundScheduler()
 arcdev_scheduler = BackgroundScheduler()
+himalayas_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -487,6 +492,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "workopolis":
                 workopolis_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["workopolis"])
+            elif scheduler.job_source.lower() == "himalayas":
+                himalayas_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["himalayas"])
             elif scheduler.job_source.lower() == "recruit":
                 recruit_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["recruit"])
             elif scheduler.job_source.lower() == "dynamite":
@@ -560,6 +568,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "workopolis":
                 workopolis_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                              args=["workopolis"])
+            elif scheduler.job_source.lower() == "himalayas":
+                himalayas_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                             args=["himalayas"])
             elif scheduler.job_source.lower() == "recruit":
                 recruit_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["recruit"])
