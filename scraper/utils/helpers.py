@@ -65,6 +65,7 @@ class ScraperNaming(enum.Enum):
     WORKING_NOMADS = 'working_nomads'
     WORKOPOLIS = 'workopolis'
     DYNAMITE = 'dynamite'
+    ARC_DEV = 'arcdev'
 
 
     def __str__(self):
