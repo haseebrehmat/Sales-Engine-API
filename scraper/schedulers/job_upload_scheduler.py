@@ -114,7 +114,7 @@ scraper_functions = {
     ],
     "arcdev": [
         arc_dev,
-    ]
+    ],
     "remoteok": [
         remoteok,
     ],

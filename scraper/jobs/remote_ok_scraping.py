@@ -39,16 +39,12 @@ def request_url(driver, url):
 def append_data(data, field):
     data.append(str(field).strip("+"))
 
-# find's job name
-
 
 def find_jobs(driver, job_type):
     scrapped_data = []
 
     links = get_job_urls(driver)
-
-    print(len(links))
-
+    
     total_job = len(links)
     links.pop(0)
     for link in links:
@@ -181,4 +177,3 @@ def remoteok(link, job_type):
         print(e)
 
 
-# remoteok('https://remoteok.com/?order_by=date', 'full time')
