@@ -68,7 +68,7 @@ def find_jobs(driver, job_type):
         time.sleep(3)
 
         start = 0
-        for i in range(40):
+        for i in range(10):
             jobs = driver.find_elements(By.CLASS_NAME, "job-card")
             for job in jobs[start:]:
                 job.location_once_scrolled_into_view
@@ -127,16 +127,16 @@ def arc_dev(link, job_type):
     try:
         print("Start in try portion. \n")
         queryset = Accounts.objects.all()
-        # queryset = Accounts.objects.all().order_by('-id')
-
         login_status = False
         for account in queryset:
-            driver = configure_webdriver(True)
+            driver = configure_webdriver()
             driver.maximize_window()
             driver.get(link)
             login_status = login(driver, account.email, account.password)
             if login_status:
                 break
+            else:
+                driver.quit()
         try:
             print("Fetching...")
             find_jobs(driver, job_type)
