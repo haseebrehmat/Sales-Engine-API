@@ -33,6 +33,7 @@ from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.jobs.recruit_scraping import recruit
 from scraper.jobs.rubynow_scraping import rubynow
 from scraper.jobs.ycombinator_scraping import ycombinator
+from scraper.jobs.workopolis_scraping import workopolis
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
@@ -103,6 +104,9 @@ scraper_functions = {
     ],
     "workingnomads": [
         working_nomads,
+    ],
+    "workopolis": [
+        workopolis,
     ]
 }
 
@@ -401,6 +405,7 @@ jooble_scheduler = BackgroundScheduler()
 talent_scheduler = BackgroundScheduler()
 careerjet_scheduler = BackgroundScheduler()
 rubynow_scheduler = BackgroundScheduler()
+workopolis_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -465,6 +470,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["rubynow"])
+            elif scheduler.job_source.lower() == "workopolis":
+                workopolis_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["workopolis"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -525,6 +533,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "rubynow":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                             args=["rubynow"])
+            elif scheduler.job_source.lower() == "workopolis":
+                workopolis_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["workopolis"])
 
 
 group_scraper_background_jobs = []

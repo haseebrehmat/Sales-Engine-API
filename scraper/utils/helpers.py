@@ -61,6 +61,8 @@ class ScraperNaming(enum.Enum):
     RUBY_NOW = 'rubynow'
     YCOMBINATOR = 'ycombinator'
     WORKING_NOMADS = 'working_nomads'
+    Ruby_Now = 'rubynow'
+    WORKOPOLIS = 'workopolis'
 
 
 
