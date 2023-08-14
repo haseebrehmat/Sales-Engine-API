@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import filters
 from authentication.permissions import UserPermissions
 from authentication.serializers.jwt_serializer import JwtSerializer
-from authentication.models import User, Profile, Role, UserRegions
+from authentication.models import User, Profile, Role, UserRegions, MultipleRoles
 from authentication.serializers.user_permission import UserPermissionSerializer
 from authentication.serializers.users import UserSerializer
 from pseudos.models import VerticalsRegions, Verticals
@@ -25,6 +25,8 @@ class UserPermission(APIView):
         if queryset is not None:
             serializer = UserPermissionSerializer(queryset)
             data = serializer.data
+            data["roles"] = data['multiple_roles']
+            del data['multiple_roles']
             status_code = status.HTTP_200_OK
         else:
             data = {'detail': "User not found"}
@@ -117,10 +119,10 @@ class UserView(ListAPIView):
             user.profile = profile
 
         role_id = request.data.get("roles", "")
-        if role_id != "":
-            role = Role.objects.filter(pk=role_id).first()
-            if role is not None:
-                user.roles = role
+        roles = role_id.split(",")
+        if roles:
+                user.roles_id = roles[0]
+                user.multiple_roles = roles
         user.save()
 
         # Add user regions
@@ -172,11 +174,14 @@ class UserDetailView(APIView):
         if company_id is not None:
             Profile.objects.filter(user_id=user.id).update(company_id=company_id)
 
-        role_id = request.data.get("roles")
-        if role_id is not None:
-            role = Role.objects.filter(pk=role_id).first()
-            user.roles = role
-            user.save()
+        role_id = request.data.get("roles", "")
+        roles = role_id.split(",")
+        if roles:
+            user.roles_id = roles[0]
+            for x in roles:
+                if not MultipleRoles.objects.filter(user=user, role_id=x).exists():
+                    MultipleRoles.objects.create(user=user, role_id=x)
+        user.save()
 
         # Update user regions
         regions = request.data.get("regions")
@@ -188,10 +193,11 @@ class UserDetailView(APIView):
             user_regions = [UserRegions(user=user, region_id=region) for region in regions]
             UserRegions.objects.bulk_create(user_regions)
         # re-assign verticals wtr valid regions
-        verticals_list = user.profile.vertical.all()
-        for vertical in verticals_list:
-            if not self.is_valid_vertical(vertical, user):
-                user.profile.vertical.remove(vertical)
+        if user.profile.vertical.exists():
+            verticals_list = user.profile.vertical.all()
+            for vertical in verticals_list:
+                if not self.is_valid_vertical(vertical, user):
+                    user.profile.vertical.remove(vertical)
         return Response({"detail": "User updated successfully"})
 
     def delete(self, request, pk):

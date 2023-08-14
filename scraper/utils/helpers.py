@@ -1,7 +1,9 @@
 import datetime
 
 from scraper.models import GroupScraper, GroupScraperQuery
-
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -56,11 +58,17 @@ class ScraperNaming(enum.Enum):
     MONSTER = 'monster'
     SIMPLY_HIRED = 'simply_hired'
     TALENT = 'talent'
-    ZIP_RECRUITER = 'zip_recruiter'
+    ZIP_RECRUITER = 'ziprecruiter'
     RECRUIT = 'recruit'
-    Ruby_Now = 'rubynow'
+    RUBY_NOW = 'rubynow'
+    YCOMBINATOR = 'ycombinator'
     WORKING_NOMADS = 'working_nomads'
-
+    WORKOPOLIS = 'workopolis'
+    DYNAMITE = 'dynamite'
+    ARC_DEV = 'arcdev'
+    Ruby_Now = 'rubynow'
+    Remote_Ok = 'remoteok'
+    HIMALAYAS = 'himalayas'
 
 
     def __str__(self):
@@ -70,3 +78,22 @@ class ScraperNaming(enum.Enum):
 def generate_scraper_filename(job_source):
     date_time = str(datetime.datetime.now())
     return f'scraper/job_data/{job_source} - {date_time}.xlsx'
+
+
+
+def configure_webdriver(open_browser=False):
+    options = webdriver.ChromeOptions()
+
+    if not open_browser:
+        options.add_argument("--headless")
+
+    options.add_argument("window-size=1200,1100")
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36")
+
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+
+    return driver

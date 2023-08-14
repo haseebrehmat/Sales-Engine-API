@@ -1,7 +1,8 @@
 from scraper.jobs.adzuna_scraping import adzuna_scraping
+from scraper.jobs.arc_dev_scraping import arc_dev
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
-from scraper.jobs.dice_scraping import dice
+from scraper.jobs.dice_scraping import dicee
 from scraper.jobs.glassdoor_scraping import glassdoor
 from scraper.jobs.google_careers_scraping import google_careers
 from scraper.jobs.indeed_scraping import indeed
@@ -15,6 +16,11 @@ from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
 from scraper.jobs.recruit_scraping import recruit
 from scraper.jobs.dailyremote_scraping import dailyremote
 from scraper.jobs.rubynow_scraping import rubynow
+from scraper.jobs.workopolis_scraping import workopolis
+from scraper.jobs.himalayas_scraping import himalayas
+from scraper.jobs.dynamite_scraping import dynamite
+
+from scraper.jobs.remote_ok_scraping import remoteok
 
 single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': career_builder, 'dice': dice,
                              'glassdoor': glassdoor, 'indeed': indeed, 'linkedin': linkedin, 'monster': monster,
@@ -23,4 +29,6 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'google_careers': google_careers, 'googlecareers': google_careers, 'talent': talent,
                              'adzuna': adzuna_scraping, 'careerjet': careerjet, 'career_jet': careerjet,
                              'recruit': recruit, 'dailyremote': dailyremote, 'rubynow': rubynow,
-                             'workingnomads': working_nomads, 'working_nomads': working_nomads}
+                             'workingnomads': working_nomads, 'working_nomads': working_nomads, 'workopolis': workopolis,
+                             'dynamite': dynamite, "arcdev": arc_dev, "arc_dev": arc_dev,
+                             'himalayas': himalayas}

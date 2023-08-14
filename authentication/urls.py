@@ -4,12 +4,13 @@ from authentication.views.create_permissions import CreatePermissions
 from authentication.views.authenticate import UserLogin
 from authentication.views.company import CompanyView, CompanyDetailView
 from authentication.views.integrations import IntegrationView, IntegrationDetailView
+from authentication.views.multiple_role import MultipleRoleManagement
 from authentication.views.password.change import PasswordManagement
 from authentication.views.password.reset import PasswordReset
 from authentication.views.profile import ProfileView
 from authentication.views.profile_image import ProfileViewImage
 from authentication.views.reset_password import render_reset_page
-from authentication.views.role import RoleView, RoleDetailView, RoleUserView
+from authentication.views.role import RoleView, RoleDetailView, RoleUserView, AllRoleView
 from authentication.views.team_management import TeamView, TeamDetailView
 from authentication.views.user_regions import UserRegionsList
 from authentication.views.users import LoginView, UserView, UserDetailView
@@ -44,4 +45,7 @@ urlpatterns = [
     path('role_users/<str:pk>/', RoleUserView.as_view()),
     path('create_permissions/', CreatePermissions.as_view()),
     path('user_regions/', UserRegionsList.as_view()),
+    path('roles/', MultipleRoleManagement.as_view()),
+    path('all_roles/', AllRoleView.as_view()),
+    path('roles/', MultipleRoleManagement.as_view()),
 ]

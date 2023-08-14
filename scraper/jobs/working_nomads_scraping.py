@@ -140,7 +140,7 @@ def find_jobs(driver, job_type):
 def working_nomads(link, job_type):
     try:
         print("Start in try portion. \n")
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             driver.get(link)

@@ -1,5 +1,7 @@
 import uuid
 from django.db import models
+
+from authentication.models import Role
 from settings.utils.model_fields import TimeStamped
 from pseudos.models.verticals import Verticals
 
@@ -36,3 +38,13 @@ class Team(TimeStamped):
     class Meta:
         db_table = "team"
         default_permissions = ()
+
+
+class TeamRoleVerticalAssignment(TimeStamped):
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name='team_verticals', blank=True)
+    member = models.ForeignKey('User', on_delete=models.CASCADE, related_name='team_members', blank=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team', blank=True)
+    vertical = models.ForeignKey(Verticals, on_delete=models.CASCADE, related_name='team_role_vertical', blank=True)
+
+    class Meta:
+        unique_together = ('role', 'member', 'team', 'vertical')
