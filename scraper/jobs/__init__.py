@@ -2,7 +2,7 @@ from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.arc_dev_scraping import arc_dev
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
-from scraper.jobs.dice_scraping import dice
+from scraper.jobs.dice_scraping import dicee
 from scraper.jobs.glassdoor_scraping import glassdoor
 from scraper.jobs.google_careers_scraping import google_careers
 from scraper.jobs.indeed_scraping import indeed
