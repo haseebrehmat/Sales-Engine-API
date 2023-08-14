@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions, working_nomads
+from scraper.jobs import single_scrapers_functions, working_nomads, dynamite
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -107,6 +107,9 @@ scraper_functions = {
     ],
     "workopolis": [
         workopolis,
+    ],
+    "dynamite": [
+        dynamite,
     ]
 }
 
@@ -560,7 +563,8 @@ def group_scraper_job():
             current_scraper = group_scraper.name
 
             SchedulerSync.objects.filter(type="group scraper").update(running=False)
-            SchedulerSync.objects.filter(job_source=current_scraper).update(running=True, start_time=timezone.now(), end_time=timezone.now())
+            SchedulerSync.objects.filter(job_source=current_scraper).update(running=True, start_time=timezone.now(),
+                end_time=timezone.now())
             last_scraper_running_time = current_group_scraper_running_time
 
         except Exception as e:
