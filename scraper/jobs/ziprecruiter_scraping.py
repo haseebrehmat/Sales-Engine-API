@@ -55,10 +55,12 @@ def ziprecruiter_scraping(links, job_type):
             try:
                 job_search = WebDriverWait(driver, 60).until(
                     EC.presence_of_element_located(
-                        (By.CLASS_NAME, "tiles_wrapper"))
+                        (By.CLASS_NAME, "jobs_list"))
                 )
             except Exception as e:
                 print("Hello")
+
+            job_search = driver.find_element(By.CLASS_NAME, 'jobs_list')
 
             for job in job_search.find_elements(By.TAG_NAME, 'article'):
                 driver.switch_to.window(original_window)
