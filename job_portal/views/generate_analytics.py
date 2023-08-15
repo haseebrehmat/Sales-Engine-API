@@ -13,8 +13,8 @@ from job_portal.permissions.analytics import AnalyticsPermission
 
 class GenerateAnalytics(APIView):
     permission_classes = (AllowAny,)
-    job_archive = JobArchive.objects.all()
-    queryset = JobDetail.objects.all()
+    # job_archive = JobArchive.objects.all()
+    queryset = JobArchive.objects.all()
     tech_keywords = ""
     job_types = ""
     months = [
@@ -60,9 +60,9 @@ class GenerateAnalytics(APIView):
     def get(self, request):
         filters, start_date, end_date = self.filter_queryset(request)
         # previous_qs = self.queryset
-        if self.job_archive.count() > self.queryset.count():
-            self.queryset = self.job_archive
-            filters, start_date, end_date = self.filter_queryset(request)
+        # if self.job_archive.count() > self.queryset.count():
+        #     self.queryset = self.job_archive
+        #     filters, start_date, end_date = self.filter_queryset(request)
             # if previous_qs.count() > self.queryset.count():
             #     self.queryset = previous_qs
         self.tech_keywords = set(self.queryset.values_list("tech_keywords", flat=True))
@@ -229,9 +229,9 @@ class GenerateAnalytics(APIView):
 
 
         if start_date == "":
-            start_date = self.queryset.last().created_at if self.queryset.all() else ''
+            start_date = self.queryset.last().job_posted_date if self.queryset.all() else ''
         if end_date == "":
-            end_date = self.queryset.first().created_at if self.queryset.all() else ''
+            end_date = self.queryset.first().job_posted_date if self.queryset.all() else ''
         return data, start_date, end_date
 
     def get_job_type_stats(self):
@@ -289,3 +289,23 @@ class GenerateAnalytics(APIView):
             data.append(result)
         return data
 
+
+#
+# jobs = JobDetail.objects.filter(created_at__gte='2023-08-01')
+# bulk_instances = [
+#     JobArchive(
+#         id=x.id,
+#         job_title=x.job_title,
+#         company_name=x.company_name,
+#         job_source=x.job_source,
+#         job_type=x.job_type,
+#         address=x.address,
+#         job_description=x.job_description,
+#         tech_keywords=x.tech_keywords,
+#         job_posted_date=x.job_posted_date,
+#         job_source_url=x.job_source_url,
+#         created_at=x.created_at,
+#         updated_at=x.updated_at
+#     )
+#     for x in jobs]
+# JobArchive.objects.bulk_create(bulk_instances, batch_size=500, ignore_conflicts=True)
