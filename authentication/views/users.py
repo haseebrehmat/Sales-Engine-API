@@ -117,12 +117,13 @@ class UserView(ListAPIView):
         if company_id != "":
             profile, created = Profile.objects.update_or_create(user_id=user.id, defaults={'company_id': company_id})
             user.profile = profile
-
         role_id = request.data.get("roles", "")
         roles = role_id.split(",")
         if roles:
-                user.roles_id = roles[0]
-                user.multiple_roles = roles
+            user.roles_id = roles[0]
+            for x in roles:
+                if not MultipleRoles.objects.filter(user=user, role_id=x).exists():
+                    MultipleRoles.objects.create(user=user, role_id=x)
         user.save()
 
         # Add user regions
@@ -205,7 +206,8 @@ class UserDetailView(APIView):
         return Response({"detail": "User deleted successfully"}, status=status.HTTP_200_OK)
 
     def is_valid_vertical(self, vertical, user):
-        verticals_regions_set = set(VerticalsRegions.objects.filter(verticals=vertical).values_list('region', flat=True))
+        verticals_regions_set = set(
+            VerticalsRegions.objects.filter(verticals=vertical).values_list('region', flat=True))
         user_regions_set = set(UserRegions.objects.filter(user=user).values_list('region', flat=True))
         result = verticals_regions_set.intersection(user_regions_set)
         return True if result else False

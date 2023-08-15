@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentication.models import Role, User
+from authentication.models import Role, User, MultipleRoles
 from authentication.permissions import RolePermissions
 from authentication.serializers.role import RoleSerializer
 from authentication.serializers.users import UserSerializer
@@ -92,7 +92,8 @@ class RoleUserView(APIView):
     def get(self, request, pk):
         user_profile = request.user.profile
         if user_profile and user_profile.company:
-            users = User.objects.filter(profile__company=user_profile.company, roles=pk)
+            users = MultipleRoles.objects.filter(role_id=pk).values_list("user_id", flat=True)
+            users = User.objects.filter(profile__company=user_profile.company, id__in=users)
             serializer = UserSerializer(users, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
         else:
