@@ -121,6 +121,7 @@ scraper_functions = {
     ],
     "himalayas": [
         himalayas,
+    ]
 }
 
 
