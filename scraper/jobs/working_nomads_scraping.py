@@ -1,42 +1,19 @@
 import time
 
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
-
-
-def configure_webdriver(open_browser=False):
-    options = webdriver.ChromeOptions()
-
-    if not open_browser:
-        options.add_argument("--headless")
-
-    options.add_argument("window-size=1200,1100")
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--disable-gpu')
-    options.add_argument(
-        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36")
-
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-
-    return driver
-
 
 def get_job_url(job):
     return job.find_element(By.CLASS_NAME, "open-button").get_attribute('href')
 
 
 def get_job_detail(driver, job_source, job_url, job_type):
-    error = False
     try:
         job_title = driver.find_element(By.CLASS_NAME, "job-title").text
         company_name = driver.find_element(By.CLASS_NAME, "job-company").text
@@ -76,12 +53,10 @@ def get_job_detail(driver, job_source, job_url, job_type):
                 salary = about_line_text.split('-')
                 job['salary_min'] = salary[0] if '-' in about_line_text else about_line_text.split(' ')[0]
                 job['salary_max'] = salary[1].split(' ')[0] if '-' in about_line_text else about_line_text.split(' ')[0]
+        return job, False
     except Exception as e:
         saveLogs(e)
-        job = None
-        error = True
-    finally:
-        job, error
+        return None, True
 
 def find_jobs(driver, job_type):
     scrapped_data = []
@@ -137,6 +112,8 @@ def find_jobs(driver, job_type):
                 break
     except Exception as e:
         saveLogs(e)
+
+
 def working_nomads(link, job_type):
     try:
         print("Start in try portion. \n")
