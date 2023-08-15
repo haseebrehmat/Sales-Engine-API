@@ -149,6 +149,8 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
 def append_data(data, field):
     data.append(str(field).strip("+"))
 
+
+
 # Create your views here.
 def himalayas(link, job_type):
     print("Himalayas Scraper")
