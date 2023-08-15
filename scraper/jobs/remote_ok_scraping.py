@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -29,6 +30,21 @@ def get_job_urls(driver):
         links.append(link.get_attribute("href"))
     return links
 
+def remove_emojis(text):
+    emoji_pattern = re.compile("["
+                           u"\U0001F600-\U0001F64F"  # emoticons
+                           u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                           u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                           u"\U0001F700-\U0001F77F"  # alchemical symbols
+                           u"\U0001F780-\U0001F7FF"  # Geometric Shapes Extended
+                           u"\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
+                           u"\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
+                           u"\U0001FA00-\U0001FA6F"  # Chess Symbols
+                           u"\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
+                           u"\U00002702-\U000027B0"  # Dingbats
+                           u"\U000024C2-\U0001F251"
+                           "]+", flags=re.UNICODE)
+    return emoji_pattern.sub(r'', text)
 
 # calls url
 def request_url(driver, url):
@@ -38,6 +54,7 @@ def request_url(driver, url):
 # append data for csv file
 def append_data(data, field):
     data.append(str(field).strip("+"))
+
 
 
 def find_jobs(driver, job_type):
@@ -61,10 +78,10 @@ def find_jobs(driver, job_type):
 
             temp = job.find_element(By.CLASS_NAME, "company_and_position").text
             temp = temp.splitlines()
-            job_title = temp[0]
+            job_title = remove_emojis(temp[0])
             append_data(data, job_title)
 
-            company_name = temp[1]
+            company_name = remove_emojis(temp[1])
             append_data(data, company_name)
 
             address = 'Remote'
@@ -73,7 +90,7 @@ def find_jobs(driver, job_type):
             job_source_url = link
             append_data(data, job_source_url)
 
-            job_description = job_desc.text
+            job_description = remove_emojis(job_desc.text)
             append_data(data, job_description)
 
             temp1 = job.find_element(By.CLASS_NAME, "time").text
@@ -85,13 +102,13 @@ def find_jobs(driver, job_type):
 
             temp2 = temp[-1].split(" ")
             if len(temp2[-3]) >= 4 and temp2[-3][0] == "$":
-                salary_min = temp2[-3]
+                salary_min = remove_emojis(temp2[-3])
             else:
                 salary_min = "N/A"
             append_data(data, salary_min)
 
             if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
-                salary_max = temp2[-1]
+                salary_max = remove_emojis(temp2[-1])
             else:
                 salary_max = "N/A"
             append_data(data, salary_max)
@@ -108,8 +125,9 @@ def find_jobs(driver, job_type):
             job_type = "remote"
             append_data(data, job_type)
 
-            job_description_tags = job_desc.get_attribute("innerHTML")
+            job_description_tags = remove_emojis(job_desc.get_attribute("innerHTML"))
             append_data(data, str(job_description_tags))
+            
         scrapped_data.append(data)
            
     columns_name = [
@@ -177,3 +195,4 @@ def remoteok(link, job_type):
         print(e)
 
 
+# remoteok('https://remoteok.com/?order_by=date', 'full time')
