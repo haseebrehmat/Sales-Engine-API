@@ -69,7 +69,6 @@ class ScraperNaming(enum.Enum):
     ARC_DEV = 'arcdev'
     Ruby_Now = 'rubynow'
     Remote_Ok = 'remoteok'
-    
     HIMALAYAS = 'himalayas'
 
 

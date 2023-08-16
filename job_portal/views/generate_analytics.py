@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, date
 from pprint import pprint
 
 from django.db.models import Count, F, Q, Value
-from django.db.models.functions import ExtractMonth, ExtractYear
+from django.db.models.functions import ExtractMonth, ExtractYear, ExtractQuarter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,8 +12,9 @@ from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    job_archive = JobArchive.objects.all()
-    queryset = JobDetail.objects.all()
+    fields = ['job_type', 'job_posted_date', 'tech_keywords', 'job_type']
+    permission_classes = (AllowAny, )
+    queryset = JobArchive.objects.select_related().only(*fields)
     tech_keywords = ""
     job_types = ""
     months = [
@@ -58,12 +59,6 @@ class GenerateAnalytics(APIView):
 
     def get(self, request):
         filters, start_date, end_date = self.filter_queryset(request)
-        previous_qs = self.queryset
-        if self.queryset.count() == 0 or self.job_archive.count() > self.queryset.count():
-            self.queryset = self.job_archive
-            filters, start_date, end_date = self.filter_queryset(request)
-            if previous_qs.count() > self.queryset.count():
-                self.queryset = previous_qs
         self.tech_keywords = set(self.queryset.values_list("tech_keywords", flat=True))
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
 
@@ -73,7 +68,7 @@ class GenerateAnalytics(APIView):
             "filters": filters,
             "start_date": str(start_date.date()) if start_date else '',
             "end_date": str(end_date.date()) if end_date else '',
-            "trend_analytics": self.get_trends_analytics(),
+            # "trend_analytics": self.get_trends_analytics(),
         }
 
         return Response(data)
@@ -113,6 +108,7 @@ class GenerateAnalytics(APIView):
         quarter_filter = request.GET.get("quarter", "")
         month_filter = request.GET.get("month", "")
         week_filter = request.GET.get("week", "")
+        start_date = end_date = ""
 
         if search_filter:
             self.queryset = self.queryset.filter(job_title__icontains=search_filter)
@@ -126,7 +122,7 @@ class GenerateAnalytics(APIView):
                 str_date = str(year) + "-" + str(week) + "-" + str(1)
                 start_date = datetime.strptime(str_date, "%Y-%W-%w")
                 end_date = datetime.strptime(str_date, "%Y-%W-%w") + timedelta(days=8) - timedelta(seconds=1)
-            self.queryset = self.queryset.filter(job_posted_date__range=[start_date, end_date])
+            self.queryset = self.queryset.filter(job_posted_date__range=[start_date, end_date]).only(*self.fields)
             if month_filter:
                 year, month = month_filter.split("-")
                 data = {"week": self.get_week_numbers(year, month)}
@@ -136,15 +132,11 @@ class GenerateAnalytics(APIView):
             year, month = month_filter.split("-")
             str_date = month_filter + "-" + "01"
             start_date = datetime.strptime(str_date, '%Y-%m-%d')
-            month_days = 0
             month_days = calendar.monthrange(int(year), int(month))[-1]
-            # else:  # February (Handling leap year condition)
-            #     month_days = 29 if calendar.isleap(int(year)) else 28
-
             end_date = datetime.strptime(str_date, '%Y-%m-%d') + timedelta(days=month_days) - timedelta(seconds=1)
             self.queryset = self.queryset.annotate(
-                month=ExtractMonth('created_at'),
-                year=ExtractYear('created_at')).filter(month=month, year=year)
+                month=ExtractMonth('job_posted_date'),
+                year=ExtractYear('job_posted_date')).filter(month=month, year=year)
 
             if year_filter == "":
                 data = {"weeks": self.get_week_numbers(year, month)}
@@ -180,20 +172,12 @@ class GenerateAnalytics(APIView):
         elif quarter_filter != "" and year_filter != "":
             year = int(year_filter)
             quarter_number = int(quarter_filter.split("q")[-1])
-            if quarter_number == 2:
-                quarter_number = 4
-            elif quarter_number == 3:
-                quarter_number = 7
-            elif quarter_number == 4:
-                quarter_number = 10
 
-            start_date = datetime(year, quarter_number, 1)
-            if quarter_filter == "q4":
-                end_date = datetime(year, 12, 31)
-            else:
-                end_date = datetime(year, quarter_number + 3, 1) - timedelta(days=1)
-
-            self.queryset = self.queryset.filter(created_at__range=[start_date, end_date])
+            self.queryset = (self.queryset.annotate(
+                year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date'))
+                .filter(
+                    quarter=quarter_number, year=year
+                ))
             weeks = []
             for x in range(quarter_number, quarter_number + 3):
                 weeks.extend(self.get_week_numbers(year, x))
@@ -210,27 +194,37 @@ class GenerateAnalytics(APIView):
 
         elif year_filter != "":
             year = year_filter
-            self.queryset = self.queryset.annotate(year=ExtractYear('created_at')).filter(year=year)
+            self.queryset = self.queryset.annotate(year=ExtractYear('job_posted_date')).filter(year=year)
             data = {"months": [f"{year}-{'0' + str(x) if x < 10 else x}" for x in range(1, 13)]}
 
         else:
             format_string = "%Y-%m-%d"  # Replace with the format of your date string
             start_date = self.request.GET.get("start_date", "")
             end_date = self.request.GET.get("end_date", "")
+            if start_date == "" and end_date == "":
+                quarter, year = self.get_current_quarter()
+                self.queryset = (self.queryset.annotate(
+                    year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date'))
+                    .filter(
+                        quarter=quarter, year=year
+                    ))
+
             if start_date != "":
-                # Convert the date string into a datetime object
+                # Convert the dself.querysetate string into a datetime object
                 start_date = datetime.strptime(start_date, format_string)
-                self.queryset = self.queryset.filter(created_at__gte=start_date)
+                self.queryset = self.queryset.filter(job_posted_date__gte=start_date)
             if end_date != "":
                 end_date = datetime.strptime(end_date, format_string)
                 calculated_end_date = end_date - timedelta(seconds=1)
-                self.queryset = self.queryset.filter(created_at__lte=calculated_end_date)
+                self.queryset = self.queryset.filter(job_posted_date__lte=calculated_end_date)
+
 
 
         if start_date == "":
-            start_date = self.queryset.last().created_at if self.queryset.all() else ''
+            start_date = self.queryset.last().job_posted_date if self.queryset.all() else ''
         if end_date == "":
-            end_date = self.queryset.first().created_at if self.queryset.all() else ''
+            end_date = self.queryset.first().job_posted_date if self.queryset.all() else ''
+
         return data, start_date, end_date
 
     def get_job_type_stats(self):
@@ -288,3 +282,27 @@ class GenerateAnalytics(APIView):
             data.append(result)
         return data
 
+    def get_current_quarter(self):
+        now = datetime.now()
+        quarter = (now.month - 1) // 3 + 1
+        return quarter, now.year
+
+#
+# jobs = JobDetail.objects.filter(job_posted_date__gte='2023-08-01')
+# bulk_instances = [
+#     JobArchive(
+#         id=x.id,
+#         job_title=x.job_title,
+#         company_name=x.company_name,
+#         job_source=x.job_source,
+#         job_type=x.job_type,
+#         address=x.address,
+#         job_description=x.job_description,
+#         tech_keywords=x.tech_keywords,
+#         job_posted_date=x.job_posted_date,
+#         job_source_url=x.job_source_url,
+#         job_posted_date=x.job_posted_date,
+#         updated_at=x.updated_at
+#     )
+#     for x in jobs]
+# JobArchive.objects.bulk_create(bulk_instances, batch_size=500, ignore_conflicts=True)

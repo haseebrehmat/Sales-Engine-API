@@ -71,7 +71,7 @@ class JobArchive(TimeStamped):
         db_table = "job_archive"
         ordering = ['-job_posted_date']
         indexes = [models.Index(
-            fields=['company_name', 'job_source', 'tech_keywords', 'job_posted_date'])]
+            fields=['job_type', 'job_posted_date', 'tech_keywords', 'job_type'])]
         index_together = ['company_name', 'job_title']
 
     def __str__(self):
