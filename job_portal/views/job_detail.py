@@ -3,7 +3,7 @@ import uuid
 import pandas as pd
 from datetime import datetime
 from django.core.mail import EmailMultiAlternatives
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db import transaction
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
@@ -72,7 +72,9 @@ class JobDetailsView(ModelViewSet):
         job_title_params = self.request.GET.get('search')
 
         if job_title_params:
-            queryset = queryset.filter(job_title__icontains=job_title_params)
+            queryset = queryset.filter(
+                Q(job_title__icontains=job_title_params) | Q(company_name__icontains=job_title_params)
+            )
 
         # Exporting CSV Data
         if request.GET.get("download", "") == "true":
