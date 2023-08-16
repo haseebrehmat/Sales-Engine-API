@@ -30,20 +30,21 @@ def get_job_urls(driver):
         links.append(link.get_attribute("href"))
     return links
 
+
 def remove_emojis(text):
     emoji_pattern = re.compile("["
-                           u"\U0001F600-\U0001F64F"  # emoticons
-                           u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                           u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                           u"\U0001F700-\U0001F77F"  # alchemical symbols
-                           u"\U0001F780-\U0001F7FF"  # Geometric Shapes Extended
-                           u"\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
-                           u"\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
-                           u"\U0001FA00-\U0001FA6F"  # Chess Symbols
-                           u"\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
-                           u"\U00002702-\U000027B0"  # Dingbats
-                           u"\U000024C2-\U0001F251"
-                           "]+", flags=re.UNICODE)
+                               u"\U0001F600-\U0001F64F"  # emoticons
+                               u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                               u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                               u"\U0001F700-\U0001F77F"  # alchemical symbols
+                               u"\U0001F780-\U0001F7FF"  # Geometric Shapes Extended
+                               u"\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
+                               u"\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
+                               u"\U0001FA00-\U0001FA6F"  # Chess Symbols
+                               u"\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
+                               u"\U00002702-\U000027B0"  # Dingbats
+                               u"\U000024C2-\U0001F251"
+                               "]+", flags=re.UNICODE)
     return emoji_pattern.sub(r'', text)
 
 # calls url
@@ -56,12 +57,11 @@ def append_data(data, field):
     data.append(str(field).strip("+"))
 
 
-
 def find_jobs(driver, job_type):
     scrapped_data = []
 
     links = get_job_urls(driver)
-    
+
     total_job = len(links)
     links.pop(0)
     for link in links:
@@ -90,14 +90,14 @@ def find_jobs(driver, job_type):
             job_source_url = link
             append_data(data, job_source_url)
 
-            job_description = remove_emojis(job_desc.text)
+            job_description = job_desc.text
             append_data(data, job_description)
 
             temp1 = job.find_element(By.CLASS_NAME, "time").text
             job_posted_date = temp1
             append_data(data, job_posted_date)
 
-            salary_format = "$"
+            salary_format = "yearly"
             append_data(data, salary_format)
 
             temp2 = temp[-1].split(" ")
@@ -115,7 +115,7 @@ def find_jobs(driver, job_type):
 
             if salary_max == "N/A" or salary_min == "N/A":
                 estimated_salary = "N/A"
-            else:    
+            else:
                 estimated_salary = f"{salary_min}-{salary_max}"
             append_data(data, estimated_salary)
 
@@ -125,11 +125,11 @@ def find_jobs(driver, job_type):
             job_type = "remote"
             append_data(data, job_type)
 
-            job_description_tags = remove_emojis(job_desc.get_attribute("innerHTML"))
+            job_description_tags = job_desc.get_attribute("innerHTML")
             append_data(data, str(job_description_tags))
-            
+
         scrapped_data.append(data)
-           
+
     columns_name = [
         "job_title",
         "company_name",
@@ -195,4 +195,4 @@ def remoteok(link, job_type):
         print(e)
 
 
-# remoteok('https://remoteok.com/?order_by=date', 'full time')
+# remoteok('https://remoteok.com/?order_by=date', 'full time remote')
