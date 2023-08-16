@@ -111,7 +111,7 @@ def find_jobs(driver, job_type):
 
             job_description_tags = job_desc.get_attribute("innerHTML")
             append_data(data, str(job_description_tags))
-            
+
         scrapped_data.append(data)
 
     columns_name = [
@@ -179,4 +179,4 @@ def remoteok(link, job_type):
         print(e)
 
 
-remoteok('https://remoteok.com/?order_by=date', 'full time remote')
+# remoteok('https://remoteok.com/?order_by=date', 'full time remote')
