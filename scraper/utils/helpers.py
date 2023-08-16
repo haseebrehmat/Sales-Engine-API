@@ -1,5 +1,6 @@
 import datetime
 
+import re
 from scraper.models import GroupScraper, GroupScraperQuery
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -98,3 +99,9 @@ def configure_webdriver(open_browser=False):
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     return driver
+
+
+def remove_emojis(text):
+    pattern =  r'[\w\s.,!?\'"“”‘’#$%^&*()_+=\-{}\[\]:;<>\|\\/~`]+'
+    extracted_text = re.findall(pattern, text)
+    return ' '.join(extracted_text)
