@@ -62,7 +62,7 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 job_link = job.find_elements(By.TAG_NAME, "a")[0].get_attribute('href')
                 company_name = job.find_elements(By.TAG_NAME, "a")[1].text
                 job_posted_date = job.find_element(By.TAG_NAME, "p").text
-                if 'day ago' in job_posted_date:
+                if 'day ago' in job_posted_date or 'days ago' in job_posted_date:
                     posted_count += 1
                 if posted_count > 7:
                     break
@@ -125,15 +125,10 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 print(e)
             count += 1
         try:
-            driver.switch_to.window(original_window)
-            time.sleep(3)
-            next_button = driver.find_element(By.CLASS_NAME, "pagination").find_elements(By.TAG_NAME, "a")[-1]
-            if 'Next' in next_button.text:
-                time.sleep(5)
-                next_button.click()
-                time.sleep(3)
-            else:
-                break
+            paginaton = driver.find_element(By.ID, 'paginate')
+            next_btn = paginaton.find_elements(By.CSS_SELECTOR, 'a[rel="next"]')
+            if len(next_btn) > 0:
+                driver.execute_script("arguments[0].click();", next_btn[1])
         except:
             flag_count = False
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",

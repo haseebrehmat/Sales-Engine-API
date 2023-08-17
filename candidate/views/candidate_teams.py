@@ -33,13 +33,12 @@ class CandidateTeamsListView(APIView):
     def post(self, request):
         serializer = CandidateTeamsSerializer(data=request.data, many=False)
         conditions = [
-            request.data.get("company", "") != "",
             request.data.get("name", "") != ""
         ]
         if all(conditions):
             if serializer.is_valid():
                 data = serializer.validated_data
-                data["company_id"] = request.data.get("company", "")
+                data["company_id"] = request.user.profile.company.id
                 exposed_candidates = request.data.get("exposed_candidates", "")
                 data['exposed_candidates'] = exposed_candidates
                 serializer.create(data)
@@ -73,9 +72,9 @@ class CandidateTeamsDetailView(APIView):
     def put(self, request, pk):
         queryset = CandidateTeam.objects.filter(pk=pk).first()
         data = request.data
+        data["company_id"] = request.user.profile.company.id
         serializer = CandidateTeamsSerializer(instance=queryset, data=data)
         conditions = [
-            request.data.get("company", "") != "",
             request.data.get("name", "") != ""
         ]
         if all(conditions):

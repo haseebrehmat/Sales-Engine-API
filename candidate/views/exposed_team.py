@@ -1,15 +1,8 @@
 from rest_framework import status
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db import transaction
-from authentication.exceptions import InvalidUserException
-from authentication.models.company import Company
 from candidate.models import CandidateTeam, ExposedCandidate, ExposedCandidateTeam
-from candidate.serializers.candidate_teams import CandidateTeamsSerializer
 from candidate.serializers.exposed_candidate import ExposedCandidateSerializer
-from settings.utils.custom_pagination import CustomPagination
-from settings.utils.helpers import serializer_errors
 class ExposedTeamListAPIView(APIView):
     serializer_class = ExposedCandidateSerializer
     def post(self, request):
@@ -54,11 +47,30 @@ class ExposedTeamListAPIView(APIView):
         message = "Team Exposed Successfully"
         status_code = status.HTTP_200_OK
         return Response({"detail": message}, status_code)
+    def delete(self, request, pk):
+        candidate_ids = []
+        unexposed_company_id = request.GET.get("company_id", "")
+        try:
+            company = request.user.profile.company
+            queryset = ExposedCandidate.objects.filter(candidate__company=company, company_id=unexposed_company_id)
+            for x in queryset:
+                candidate = x.candidate
+                if ExposedCandidate.objects.filter(candidate=candidate, candidate__company=company).count() == 1:
+                    x.delete()
+                    ExposedCandidate.objects.create(candidate=candidate)
+                else:
+                    x.delete()
+            team = CandidateTeam.objects.filter(pk=pk).first()
+            array = team.exposed_to
+            new_array = []
 
-
-    # Yahan ab team ko unexpose krna h or team m ak feild add h expose_to us m company ids available hn jin k liy team expose hoti h wahan s company ids to
-    # delete krty jana h jo jo unexpose hn gi or front end s hamary pass jo team id ay gi us k sary exposed candidates nikal k loop laga k unexposed candidate wala kam repeat ho ga
-    # or team m s exposed candidate ki logic upar waly function m implemented h
-
-
+            for id in array:
+                if id != unexposed_company_id:
+                    new_array.append(id)
+            team.exposed_to = new_array
+            team.save()
+            return Response({"detail": "Team Unexposed successfully"}, status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": "You dont have permission to unexposed this team"},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
 

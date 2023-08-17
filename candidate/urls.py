@@ -26,6 +26,7 @@ urlpatterns = [
    path("candidate_exposed/", ExposedCandidateListAPIView.as_view()),
    path("candidate_exposed/<str:pk>/", CandidateExposedDetailView.as_view()),
    path("team_exposed/", ExposedTeamListAPIView.as_view()),
+   path("team_exposed/<str:pk>/", ExposedTeamListAPIView.as_view()),
    path("pool_candidate/", PoolCandidateListAPIView.as_view()),
    path("pool_candidate/<str:pk>/", PoolCandidateDetailView.as_view()),
    path("candidate_company/", CandidateCompanyListView.as_view()),
