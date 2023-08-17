@@ -18,7 +18,7 @@ class CandidateTeamsSerializer(serializers.ModelSerializer):
     def get_team_candidates(self, obj):
         data = []
         queryset = ExposedCandidateTeam.objects.filter(candidate_team=obj)
-        data = [{'id': x.id, 'candidate': x.exposed_candidate.candidate.name} for x in queryset]
+        data = [{'id': x.exposed_candidate_id, 'candidate': x.exposed_candidate.candidate.name} for x in queryset]
         return data
     def get_exposed_to_companies(self, obj):
         data = []
