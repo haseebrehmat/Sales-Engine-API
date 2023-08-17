@@ -160,7 +160,7 @@ def remoteok(link, job_type):
 
     try:
         options = webdriver.ChromeOptions()  # newly added
-        # options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
