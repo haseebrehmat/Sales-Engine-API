@@ -192,4 +192,4 @@ def remoteok(link, job_type):
         print(e)
 
 
-remoteok('https://remoteok.com/remote-api+engineer-jobs?order_by=date','full time remote')
+# remoteok('https://remoteok.com/remote-api+engineer-jobs?order_by=date','full time remote')
