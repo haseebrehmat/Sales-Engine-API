@@ -13,7 +13,20 @@ from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remo
 from utils.helpers import saveLogs
 
 
+def load_jobs(driver):
+    previous_len = len(driver.find_elements(
+        By.CLASS_NAME, "company_and_position"))
+    while True:
+        time.sleep(5)
+        driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+        elements = driver.find_elements(By.CLASS_NAME, "company_and_position")
+        if previous_len == len(elements):
+            break
+        previous_len = len(elements)
+
+
 def get_job_urls(driver):
+    load_jobs(driver)
     try:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
@@ -45,7 +58,7 @@ def find_jobs(driver, job_type):
     scrapped_data = []
 
     links = get_job_urls(driver)
-
+    
     total_job = len(links)
     links.pop(0)
     for link in links:
@@ -147,7 +160,7 @@ def remoteok(link, job_type):
 
     try:
         options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
+        # options.add_argument("--headless")
         options.add_argument("window-size=1200,1100")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -179,4 +192,4 @@ def remoteok(link, job_type):
         print(e)
 
 
-# remoteok('https://remoteok.com/?order_by=date', 'full time remote')
+remoteok('https://remoteok.com/remote-api+engineer-jobs?order_by=date','full time remote')
