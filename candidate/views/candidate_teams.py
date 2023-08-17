@@ -18,16 +18,15 @@ class CandidateTeamsListView(APIView):
     def get(self, request):
         queryset = CandidateTeam.objects.filter(company=self.request.user.profile.company_id)
         data = {}
-        if len(queryset) > 0:
-            serializer = CandidateTeamsSerializer(queryset, many=True)
-            data["teams"] = serializer.data
-            queryset = ExposedCandidate.objects.filter(candidate__company_id=request.user.profile.company_id).distinct('candidate_id')
-            exposed_candidates = [{"id": x.id, "name": x.candidate.name,
-                                   "allowed_status": x.allowed_status} for x in queryset]
-            data['exposed_candidates'] = exposed_candidates
-            queryset = Company.objects.filter(status=True).exclude(id=request.user.profile.company.id)
-            companies = [{"id": x.id, "name": x.name} for x in queryset]
-            data['companies'] = companies
+        serializer = CandidateTeamsSerializer(queryset, many=True)
+        data["teams"] = serializer.data
+        queryset = ExposedCandidate.objects.filter(candidate__company_id=request.user.profile.company_id).distinct('candidate_id')
+        exposed_candidates = [{"id": x.id, "name": x.candidate.name,
+                               "allowed_status": x.allowed_status} for x in queryset]
+        data['exposed_candidates'] = exposed_candidates
+        queryset = Company.objects.filter(status=True).exclude(id=request.user.profile.company.id)
+        companies = [{"id": x.id, "name": x.name} for x in queryset]
+        data['companies'] = companies
         return Response(data)
 
     def post(self, request):
