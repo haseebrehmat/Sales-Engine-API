@@ -37,7 +37,10 @@ class CandidateTeamsSerializer(serializers.ModelSerializer):
             try:
                 candidate_team = CandidateTeam.objects.create(**validated_data)
             except Exception as e:
-                raise ValidationError({"detail": e}, code=406)
+                if "duplicate key value violates unique constraint" in str(e):
+                    raise ValidationError({"detail": "Team Already Exist"}, code=406)
+                else:
+                    raise ValidationError({"detail": e}, code=406)
         else:
             raise ValidationError({"detail": "Please select more than one candidate"}, code=406)
         data = [ExposedCandidateTeam(candidate_team=candidate_team,

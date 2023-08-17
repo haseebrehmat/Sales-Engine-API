@@ -71,6 +71,6 @@ class ExposedTeamListAPIView(APIView):
             team.save()
             return Response({"detail": "Team Unexposed successfully"}, status.HTTP_200_OK)
         except Exception as e:
-            return Response({"detail": "You dont have permission to unexposed this team"},
+            return Response({"detail": "Team Unexposed failed! "},
                             status=status.HTTP_406_NOT_ACCEPTABLE)
 
