@@ -59,6 +59,8 @@ class GenerateAnalytics(APIView):
 
     def get(self, request):
         filters, start_date, end_date = self.filter_queryset(request)
+        if not self.queryset.exists():
+            return Response({"detail": "No Analytics Exists"})
         self.tech_keywords = set(self.queryset.values_list("tech_keywords", flat=True))
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
 
@@ -329,6 +331,8 @@ class GenerateAnalytics2(APIView):
 
     def get(self, request):
         filters, start_date, end_date = self.filter_queryset(request)
+        if not self.queryset.values_list("job_type", flat=True):
+            return Response({"detail": "No Analytics Exists"}, status=406)
         self.tech_keywords = set(TechStats.objects.values_list("name", flat=True))
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
 
@@ -468,26 +472,25 @@ class GenerateAnalytics2(APIView):
             format_string = "%Y-%m-%d"  # Replace with the format of your date string
             start_date = self.request.GET.get("start_date", "")
             end_date = self.request.GET.get("end_date", "")
-            if start_date == "" and end_date == "":
-                quarter, year = self.get_current_quarter()
-                self.queryset = (self.queryset.annotate(
-                    year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date'))
-                .filter(
-                    quarter=quarter, year=year
-                ))
+            # if start_date == "" and end_date == "":
+            #     # quarter, year = self.get_current_quarter()
+            #     self.queryset = (self.queryset.annotate(
+            #         year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date'))
+            #     .filter(
+            #         quarter=quarter, year=year
+            #     ))
 
-            if start_date != "":
-                # Convert the dself.querysetate string into a datetime object
+            if start_date:
                 start_date = datetime.strptime(start_date, format_string)
                 self.queryset = self.queryset.filter(job_posted_date__gte=start_date)
-            if end_date != "":
+            if end_date:
                 end_date = datetime.strptime(end_date, format_string)
                 calculated_end_date = end_date - timedelta(seconds=1)
                 self.queryset = self.queryset.filter(job_posted_date__lte=calculated_end_date)
 
-        if start_date == "":
+        if not start_date:
             start_date = self.queryset.last().job_posted_date if self.queryset.all() else ''
-        if end_date == "":
+        if not end_date:
             end_date = self.queryset.first().job_posted_date if self.queryset.all() else ''
 
         return data, start_date, end_date
@@ -508,25 +511,25 @@ class GenerateAnalytics2(APIView):
 
         return weeks
 
-    def get_trends_analytics(self):
-        trends_analytics = TrendsAnalytics.objects.all()
-        data = []
-        for trends in trends_analytics:
-            # get stacks from trends analytics objects
-            tech_stacks = trends.tech_stacks.split(',') if trends.tech_stacks else []
-            # find job type stats of each trends analytics category
-            result = self.queryset.filter(tech_keywords__in=tech_stacks).aggregate(
-                total=Count("id"),
-                contract_on_site=Count('id', filter=Q(job_type__in=self.contract_onsite_enums)),
-                contract_remote=Count('id', filter=Q(job_type__in=self.contract_remote_enums)),
-                full_time_on_site=Count('id', filter=Q(job_type__in=self.full_time_onsite_enums)),
-                full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
-                hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
-                hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
-            )
-            result.update({"name": trends.category})
-            data.append(result)
-        return data
+    # def get_trends_analytics(self):
+    #     trends_analytics = TrendsAnalytics.objects.all()
+    #     data = []
+    #     for trends in trends_analytics:
+    #         # get stacks from trends analytics objects
+    #         tech_stacks = trends.tech_stacks.split(',') if trends.tech_stacks else []
+    #         # find job type stats of each trends analytics category
+    #         result = self.queryset.filter(tech_keywords__in=tech_stacks).aggregate(
+    #             total=Count("id"),
+    #             contract_on_site=Count('id', filter=Q(job_type__in=self.contract_onsite_enums)),
+    #             contract_remote=Count('id', filter=Q(job_type__in=self.contract_remote_enums)),
+    #             full_time_on_site=Count('id', filter=Q(job_type__in=self.full_time_onsite_enums)),
+    #             full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
+    #             hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
+    #             hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
+    #         )
+    #         result.update({"name": trends.category})
+    #         data.append(result)
+    #     return data
 
     def get_current_quarter(self):
         now = datetime.now()
@@ -619,13 +622,10 @@ def save_analytics():
     fields = ['job_type', 'job_posted_date', 'tech_keywords', 'job_type']
 
     queryset = JobArchive.objects.only(*fields)
-    start_date = queryset.last().job_posted_date.date()
-    end_date = queryset.first().job_posted_date.date()
+    current_date = datetime.now().date()
+    end_date = Analytics.objects.first().job_posted_date.date()
     queryset.values_list()
-    #
-    current_date = end_date
-
-    while current_date >= start_date:
+    while current_date >= end_date:
         print(current_date)
 
         next_date = current_date - timedelta(days=1)
@@ -634,7 +634,6 @@ def save_analytics():
         save_tech_stacks_stats(daily_records, current_date)
 
         current_date = next_date
-
 
 # save_analytics()
 
