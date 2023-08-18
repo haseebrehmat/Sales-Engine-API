@@ -65,6 +65,7 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 if 'day ago' in job_posted_date or 'days ago' in job_posted_date:
                     posted_count += 1
                 if posted_count > 7:
+                    flag_count = False
                     break
                 job_source = "himalayas"
                 job_source_url = job_link
@@ -125,10 +126,12 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 print(e)
             count += 1
         try:
+            driver.switch_to.window(original_window)
             paginaton = driver.find_element(By.ID, 'paginate')
             next_btn = paginaton.find_elements(By.CSS_SELECTOR, 'a[rel="next"]')
             if len(next_btn) > 0:
                 driver.execute_script("arguments[0].click();", next_btn[1])
+            time.sleep(5)
         except:
             flag_count = False
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
