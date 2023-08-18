@@ -8,3 +8,4 @@ from candidate.models.selected_candidates import SelectedCandidate
 from candidate.models.projects import CandidateProjects
 from candidate.models.tools import Tools, CandidateTools
 from candidate.models.region import Regions, CandidateRegions
+from candidate.models.candidate_team import CandidateTeam, ExposedCandidateTeam

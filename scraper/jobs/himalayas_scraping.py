@@ -14,8 +14,7 @@ from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
 
 total_job = 0
 
-def find_jobs(driver, job_type, total_job):
-    print("Entered in find jobs ")
+def find_jobs(driver, job_type, total_job, search_keyword, location_type):
     scrapped_data = []
     count = 0
     posted_count = 0
@@ -25,8 +24,6 @@ def find_jobs(driver, job_type, total_job):
     time.sleep(1)
     details_window = driver.current_window_handle
     driver.switch_to.window(original_window)
-    search_keyword = "Software Engineer"
-    location_type = "United States"
     try:
         # Here is the logic of making query
         search_div = driver.find_elements(By.NAME, "search-container")[0]
@@ -54,6 +51,7 @@ def find_jobs(driver, job_type, total_job):
     flag_count = True
     while(flag_count):
         driver.switch_to.window(original_window)
+        time.sleep(10)
         jobs = driver.find_element(By.ID, "search-results").find_elements(By.TAG_NAME, "li")
         for job in jobs:
             data = []
@@ -61,11 +59,10 @@ def find_jobs(driver, job_type, total_job):
                 driver.switch_to.window(original_window)
                 time.sleep(3)
                 job_title = job.find_element(By.TAG_NAME, "h2").text
-                print(job_title)
                 job_link = job.find_elements(By.TAG_NAME, "a")[0].get_attribute('href')
                 company_name = job.find_elements(By.TAG_NAME, "a")[1].text
                 job_posted_date = job.find_element(By.TAG_NAME, "p").text
-                if 'day ago' in job_posted_date:
+                if 'day ago' in job_posted_date or 'days ago' in job_posted_date:
                     posted_count += 1
                 if posted_count > 7:
                     break
@@ -128,16 +125,10 @@ def find_jobs(driver, job_type, total_job):
                 print(e)
             count += 1
         try:
-            driver.switch_to.window(original_window)
-            time.sleep(3)
-            next_button = driver.find_element(By.CLASS_NAME, "pagination").find_elements(By.TAG_NAME, "a")[-1]
-            if 'Next' in next_button.text:
-                #driver.get(next_button.get_attribute('href'))
-                time.sleep(5)
-                next_button.click()
-                time.sleep(3)
-            else:
-                break
+            paginaton = driver.find_element(By.ID, 'paginate')
+            next_btn = paginaton.find_elements(By.CSS_SELECTOR, 'a[rel="next"]')
+            if len(next_btn) > 0:
+                driver.execute_script("arguments[0].click();", next_btn[1])
         except:
             flag_count = False
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
@@ -154,31 +145,47 @@ def append_data(data, field):
     data.append(str(field).strip("+"))
 
 
+
 # Create your views here.
 def himalayas(link, job_type):
     print("Himalayas Scraper")
-    try:
-        total_job = 0
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-            driver.maximize_window()
-            try:
-                flag = True
-                driver.get(link)
-                while flag:
-                    flag, total_job = find_jobs(
-                        driver, job_type, total_job)
-                    print("Fetching...")
-            except Exception as e:
-                print(e)
-            driver.quit()
-    except:
-        print("Error Occurs. \n")
+    total_job = 0
+    i = 1
+    while(i < 5):
+        if i == 1:
+            search_keyword = "Software Engineer"
+            location_type = "United States"
+        elif i == 2:
+            search_keyword = "Software Engineer"
+            location_type = "Only 100% remote jobs"
+        elif i == 3:
+            search_keyword = "Developer"
+            location_type = "United States"
+        elif i == 4:
+            search_keyword = "Developer"
+            location_type = "Only 100% remote jobs"
+        try:
+            options = webdriver.ChromeOptions()  # newly added
+            options.add_argument("--headless")
+            options.add_argument("window-size=1200,1100")
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--disable-gpu')
+            options.add_argument(
+                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+            )
+            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+                driver.maximize_window()
+                try:
+                    flag = True
+                    driver.get(link)
+                    while flag:
+                        flag, total_job = find_jobs(
+                            driver, job_type, total_job, search_keyword, location_type)
+                        print("Fetching...")
+                except Exception as e:
+                    print(e)
+                driver.quit()
+        except:
+            print("Error Occurs. \n")
+        i += 1
