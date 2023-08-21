@@ -9,11 +9,24 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis
 from utils.helpers import saveLogs
 
 
+def load_jobs(driver):
+    previous_len = len(driver.find_elements(
+        By.CLASS_NAME, "company_and_position"))
+    while True:
+        time.sleep(5)
+        driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+        elements = driver.find_elements(By.CLASS_NAME, "company_and_position")
+        if previous_len == len(elements):
+            break
+        previous_len = len(elements)
+
+
 def get_job_urls(driver):
+    load_jobs(driver)
     try:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
@@ -29,8 +42,9 @@ def get_job_urls(driver):
         links.append(link.get_attribute("href"))
     return links
 
-
 # calls url
+
+
 def request_url(driver, url):
     driver.get(url)
 
@@ -61,10 +75,10 @@ def find_jobs(driver, job_type):
 
             temp = job.find_element(By.CLASS_NAME, "company_and_position").text
             temp = temp.splitlines()
-            job_title = temp[0]
+            job_title = remove_emojis(temp[0])
             append_data(data, job_title)
 
-            company_name = temp[1]
+            company_name = remove_emojis(temp[1])
             append_data(data, company_name)
 
             address = 'Remote'
@@ -80,25 +94,25 @@ def find_jobs(driver, job_type):
             job_posted_date = temp1
             append_data(data, job_posted_date)
 
-            salary_format = "$"
+            salary_format = "yearly"
             append_data(data, salary_format)
 
             temp2 = temp[-1].split(" ")
             if len(temp2[-3]) >= 4 and temp2[-3][0] == "$":
-                salary_min = temp2[-3]
+                salary_min = remove_emojis(temp2[-3])
             else:
                 salary_min = "N/A"
             append_data(data, salary_min)
 
             if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
-                salary_max = temp2[-1]
+                salary_max = remove_emojis(temp2[-1])
             else:
                 salary_max = "N/A"
             append_data(data, salary_max)
 
             if salary_max == "N/A" or salary_min == "N/A":
                 estimated_salary = "N/A"
-            else:    
+            else:
                 estimated_salary = f"{salary_min}-{salary_max}"
             append_data(data, estimated_salary)
 
@@ -110,8 +124,9 @@ def find_jobs(driver, job_type):
 
             job_description_tags = job_desc.get_attribute("innerHTML")
             append_data(data, str(job_description_tags))
+
         scrapped_data.append(data)
-           
+
     columns_name = [
         "job_title",
         "company_name",
@@ -177,3 +192,4 @@ def remoteok(link, job_type):
         print(e)
 
 
+# remoteok('https://remoteok.com/remote-api+engineer-jobs?order_by=date','full time remote')

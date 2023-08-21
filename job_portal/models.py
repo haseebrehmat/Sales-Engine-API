@@ -71,7 +71,7 @@ class JobArchive(TimeStamped):
         db_table = "job_archive"
         ordering = ['-job_posted_date']
         indexes = [models.Index(
-            fields=['job_source', 'tech_keywords', 'job_posted_date', 'created_at'])]
+            fields=['job_type', 'job_posted_date', 'tech_keywords', 'job_type'])]
         index_together = ['company_name', 'job_title']
 
     def __str__(self):
@@ -161,3 +161,20 @@ class TrendsAnalytics(TimeStamped):
     category = models.CharField(max_length=50, unique=True)
     tech_stacks = models.TextField(null=True, blank=True)
 
+
+class Analytics(TimeStamped):
+    job_type = models.CharField(max_length=50)
+    jobs = models.IntegerField(default=0)
+    job_posted_date = models.DateTimeField(null=True, blank=True)
+
+
+class TechStats(TimeStamped):
+    name = models.CharField(max_length=50)
+    total = models.IntegerField(default=0)
+    contract_on_site = models.IntegerField(default=0)
+    contract_remote = models.IntegerField(default=0)
+    full_time_on_site = models.IntegerField(default=0)
+    full_time_remote = models.IntegerField(default=0)
+    hybrid_full_time = models.IntegerField(default=0)
+    hybrid_contract = models.IntegerField(default=0)
+    job_posted_date = models.DateTimeField(null=True, blank=True)
