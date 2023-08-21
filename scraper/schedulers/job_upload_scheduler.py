@@ -209,33 +209,7 @@ def upload_file(job_parser, filename):
     classify_data.classify()
     before_uploading_jobs = JobDetail.objects.count()
 
-    # last_10_days = datetime.datetime.now() - datetime.timedelta(days=10)
-    #
-    # query = Q()
-    # for item in classify_data.data_frame.itertuples():
-    #     query |= Q(company_name=item.company_name, job_title=item.job_title)
-
-    # jobs = JobDetail.objects.filter(query, created_at__lte=last_10_days, job_applied="not applied")
-
-    # bulk_data = [JobArchive(
-    #     id=x.id,
-    #     job_title=x.job_title,
-    #     company_name=x.company_name,
-    #     job_source=x.job_source,
-    #     job_type=x.job_type,
-    #     address=x.address,
-    #     job_description=x.job_description,
-    #     tech_keywords=x.tech_keywords,
-    #     job_posted_date=x.job_posted_date,
-    #     job_source_url=x.job_source_url,
-    #     block=x.block,
-    #     is_manual=x.is_manual,
-    #     created_at=x.created_at,
-    #     updated_at=x.updated_at
-    # ) for x in jobs]
-    #
-    # JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True)
-    # jobs.delete()
+    # migrate_jobs_to_archive(classify_data)
 
     model_instances = [
         JobDetail(job_title=job_item.job_title, company_name=job_item.company_name, job_source=job_item.job_source,
@@ -265,6 +239,61 @@ def upload_file(job_parser, filename):
             scraper_log.uploaded_jobs = uploaded_count
             scraper_log.save()
 
+
+def migrate_jobs_to_archive(classify_data=None):
+    try:
+        last_30_days = datetime.datetime.now() - datetime.timedelta(days=30)
+        excluded_id = JobArchive.objects.only("id").values_list("id", flat=True)
+        fields = [
+            'id',
+            'job_title',
+            'company_name',
+            'job_source',
+            'job_type',
+            'address',
+            'job_description',
+            'tech_keywords',
+            'job_posted_date',
+            'job_source_url',
+            'block',
+            'is_manual',
+            'created_at',
+            'updated_at'
+        ]
+
+        if classify_data:
+            query = Q()
+            for item in classify_data.data_frame.itertuples():
+                query |= Q(company_name=item.company_name, job_title=item.job_title)
+
+        jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
+        qs = JobDetail.objects.exclude(id__in=set(excluded_id)).only(*fields)
+        print(jobs.count())
+        if classify_data:
+            jobs.filter(query)
+        bulk_data = [JobArchive(
+            id=x.id,
+            job_title=x.job_title,
+            company_name=x.company_name,
+            job_source=x.job_source,
+            job_type=x.job_type,
+            address=x.address,
+            job_description=x.job_description,
+            tech_keywords=x.tech_keywords,
+            job_posted_date=x.job_posted_date,
+            job_source_url=x.job_source_url,
+            block=x.block,
+            is_manual=x.is_manual,
+            created_at=x.created_at,
+            updated_at=x.updated_at
+        ) for x in qs]
+
+        JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True)
+        jobs.delete()
+    except Exception as e:
+        print("Exception in migrating data => ", e)
+
+# migrate_jobs_to_archive()
 
 def get_job_source_quries(job_source):
     job_source_queries = list(JobSourceQuery.objects.filter(
