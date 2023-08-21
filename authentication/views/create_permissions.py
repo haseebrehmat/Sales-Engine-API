@@ -8,7 +8,6 @@ from authentication.utils.permissions import permissions
 
 
 class CreatePermissions(APIView):
-    permission_classes = (AllowAny,)
 
     def get(self, request):
         if request.user.is_superuser:

@@ -7,6 +7,7 @@ from job_portal.classifier.update_job_stacks import UpdateJobStackView
 from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, ChangeJobStatusView, AppliedJobDetailsView, \
     ListAppliedJobView, MarkedAsExpiredView
 from job_portal.views.applied_jobs import AppliedJobView
+from job_portal.views.archive_jobs import ArchiveJobs
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
 from job_portal.views.cover_letter.download import DownloadCoverView
 from job_portal.views.cover_letter.generate_cover import GenerateCoverView
@@ -55,6 +56,7 @@ urlpatterns = [
     path('job_expired_at/<str:pk>/', ManualJobUploadDetail.as_view()),
     path('trends_analytics/', TrendsAnalyticsListView.as_view()),
     path('trends_analytics/<int:pk>/', TrendsAnalyticsDetailView.as_view()),
+    path('archive_jobs/', ArchiveJobs.as_view()),
 
 ]
 

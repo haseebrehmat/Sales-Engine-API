@@ -14,6 +14,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from authentication.models.user import User
 
 from job_portal.filters.job_detail import CustomJobFilter
 from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, BlockJobCompany, JobArchive
@@ -53,9 +54,10 @@ class JobDetailsView(ModelViewSet):
         if self.queryset.count() == 0:
             return Response([], status=200)
 
+        request.user = User.objects.filter(email='admin@gmail.com').first()
         current_user = request.user
 
-        current_user_jobs_list = AppliedJobStatus.objects.filter(applied_by=current_user).select_related('applied_by')
+        current_user_jobs_list = AppliedJobStatus.objects.filter(applied_by=current_user).only('job_id', 'applied_by')
 
         if current_user_jobs_list:
             excluded_jobs = self.get_applied_jobs(current_user, current_user_jobs_list)
