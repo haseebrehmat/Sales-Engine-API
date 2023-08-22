@@ -25,24 +25,7 @@ def request_url(driver, url):
 # append data for csv file
 def append_data(data, field):
     data.append(str(field).strip("+"))
-
-
-# check if there is more jobs available or not
-def data_exists(driver):
-    try:
-        WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (By.CLASS_NAME, "btn-clear-blue"))
-        )
-        time.sleep(6)
-
-        page_exists = driver.find_elements(By.CLASS_NAME, "btn-clear-blue")
-        return False if len(page_exists) == 0 else True
-    except Exception as e:
-        print(e)
-        saveLogs(e)
-        return False
-
+    
 
 def find_jobs(driver, job_type, total_jobs):
     scrapped_data = []
