@@ -32,7 +32,7 @@ def find_jobs(driver, job_type, total_job):
     try:
         driver.find_element(By.CLASS_NAME, "clicky").click()
         while True:
-            time.sleep(3)
+            time.sleep(5)
             next_btn = driver.find_elements(By.CLASS_NAME, "next")
             try:
                 data = []
@@ -61,18 +61,22 @@ def find_jobs(driver, job_type, total_job):
                         By.CLASS_NAME, "details")
                     estimated_salary = salary.find_elements(By.TAG_NAME, "li")
                     if ' per ' in estimated_salary[1].text:
-                        es = estimated_salary[1].text.split(' per')[0]
-                        if '$' in es:
-                            append_data(data, "$")
+                        es = estimated_salary[1].text.split(' per ')
+                        if 'hour' in es[1]:
+                            append_data(data, "hourly")
+                        elif ('year' or 'annum') in es[1]:
+                            append_data(data, "yearly")
+                        elif 'month' in es[1]:
+                            append_data(data, "monthly")
                         else:
                             append_data(data, "N/A")
-                        append_data(data, es)
+                        append_data(data, es[0])
                         try:
-                            append_data(data, es.split('-')[0])
+                            append_data(data, es[0].split('-')[0])
                         except:
                             append_data(data, "N/A")
                         try:
-                            append_data(data, es.split('-')[1])
+                            append_data(data, es[0].split('-')[1])
                         except:
                             append_data(data, "N/A")
                     else:
@@ -107,7 +111,6 @@ def find_jobs(driver, job_type, total_job):
     except Exception as e:
         print(e)
 
-    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                     "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)

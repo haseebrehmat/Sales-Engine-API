@@ -54,16 +54,23 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_posted_date[0].text)
             else:
                 append_data(data, 'Posted Today')
-            # import pdb
-            # pdb.set_trace()
             try:
                 estimated_salary = driver.find_element(By.CLASS_NAME, "css-2iqe2o")
-                if '$' in estimated_salary.text:
-                    append_data(data, "$")
+                a_an = ''
+                if 'an' in estimated_salary.text:
+                    a_an = 'an'
+                else:
+                    a_an = 'a'
+                if 'hour' in estimated_salary.text.split(a_an)[1]:
+                    append_data(data, "hourly")
+                elif ('year' or 'annum') in estimated_salary.text.split(a_an)[1]:
+                    append_data(data, "yearly")
+                elif 'month' in estimated_salary.text.split(a_an)[1]:
+                    append_data(data, "monthly")
                 else:
                     append_data(data, "N/A")
                 try:
-                    append_data(data, estimated_salary.text.split(' a')[0])
+                    append_data(data, estimated_salary.text.split(a_an)[0])
                 except:
                     append_data(data, "N/A")
                 try:

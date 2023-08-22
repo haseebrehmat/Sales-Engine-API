@@ -87,11 +87,11 @@ def find_jobs(driver, job_type, total_jobs, url=None):
             )
     except Exception as e:
         saveLogs(e)
-        return False
+        return False, total_jobs
 
     time.sleep(2)
     if not data_exists(driver):
-        return False
+        return False, total_jobs
 
     jobs = driver.find_elements(
         By.CLASS_NAME, "jobs-search-results__list-item")
@@ -133,27 +133,29 @@ def find_jobs(driver, job_type, total_jobs, url=None):
                 append_data(data, url.get_attribute('href'))
                 append_data(data, job_posted_date[count].text.split('\n')[0])
                 try:
-                    es = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0]
-                    estimated_salary = es.find_elements(By.TAG_NAME, "a")[0]
+                    estimated_salary = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0].text
+                    estimated_salary.split(' (')[0]
                     try:
-                        if '$' in estimated_salary:
-                            append_data(data, "$")
+                        if 'yr' in estimated_salary:
+                            append_data(data, "yearly")
+                        elif 'hr' in estimated_salary:
+                            append_data(data, "hourly")
                         else:
                             append_data(data, "N/A")
                     except:
                         append_data(data, "N/A")
                     try:
-                        append_data(data, estimated_salary.text.split('(')[0])
+                        append_data(data, estimated_salary)
                     except:
                         append_data(data, 'N/A')
                     try:
-                        salary_min = estimated_salary.text.split('$')[1]
+                        salary_min = estimated_salary.split('$')[1]
                         salary_min = salary_min.split(' ')[0]
                         append_data(data, salary_min.split('-')[0])
                     except:
                         append_data(data, 'N/A')
                     try:
-                        salary_max = estimated_salary.text.split('$')[2]
+                        salary_max = estimated_salary.split('$')[2]
                         append_data(data, salary_max.split(' ')[0])
                     except:
                         append_data(data, 'N/A')

@@ -47,8 +47,10 @@ def get_job_detail(driver, job_source, job_url, job_type):
                 job['address'] = about_line_text
             elif 'fa-money' in class_name:
                 # save salary data
-                if '$' in about_line_text:
-                    job['salary_format'] = '$'
+                if 'year' in about_line_text:
+                    job['salary_format'] = 'yearly'
+                else:
+                    job['salary_format'] = 'N/A'
                 job['estimated_salary'] = about_line_text
                 salary = about_line_text.split('-')
                 job['salary_min'] = salary[0] if '-' in about_line_text else about_line_text.split(' ')[0]

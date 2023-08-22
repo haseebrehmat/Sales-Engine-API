@@ -64,17 +64,11 @@ def finding_job(driver, company_name, scrapped_data):
             if '-' in estimated_salary:
                 salary_min = estimated_salary.split(' - ')[0]
                 salary_max = estimated_salary.split(' - ')[1]
-                if '$' in estimated_salary:
-                    salary_format = '$'
-                else:
-                    salary_format = 'N/A'
+                salary_format = 'N/A'
             else:
                 salary_min = estimated_salary.split('K')[0]
                 salary_max = estimated_salary.split('K')[0]
-                if '$' in estimated_salary:
-                    salary_format = '$'
-                else:
-                    salary_format = 'N/A'
+                salary_format = 'N/A'
         else:
             salary_format = 'N/A'
             estimated_salary = 'N/A'

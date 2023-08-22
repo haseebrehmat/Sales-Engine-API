@@ -72,14 +72,14 @@ def find_jobs(driver, job_type, total_job):
             try:
                 salary_string = driver.find_element(
                     By.CLASS_NAME, "detailsstyles__DetailsTableDetailBody-sc-1deoovj-5")
-                if "$" and "–" in salary_string.text:
-                    salary_format = "$"
+                if "$" in salary_string.text:
+                    salary_format = "N/A"
                     append_data(data, salary_format)
                     estimated_salary = salary_string.text.split(" ")[0]
                     append_data(data, estimated_salary)
-                    salary_min = salary_string.text.split("–")[0]
+                    salary_min = salary_string.text.split("-")[0]
                     append_data(data, salary_min)
-                    salary_max = salary_string.text.split("–")[1].split(" ")[0]
+                    salary_max = salary_string.text.split("-")[1].split(" ")[0]
                     append_data(data, salary_max)
                 else:
                     append_data(data, "N/A")
