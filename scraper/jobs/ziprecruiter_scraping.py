@@ -85,10 +85,14 @@ def ziprecruiter_scraping(links, job_type):
                         By.CLASS_NAME, 'job_description').text
 
                     try:
-                        job_detail['estimated_salary'] = driver.find_element(
-                            By.CLASS_NAME, 't_compensation').text.split(' p')[0]
-                        if '$' in job_detail['estimated_salary']:
-                            job_detail['salary_format'] = '$'
+                        job_est_sal = driver.find_element(
+                            By.CLASS_NAME, 't_compensation').text
+                        job_detail['estimated_salary'] = job_est_sal.split(' per ')[0]
+                        job_detail['salary_format'] = job_est_sal.split(' per ')[1]
+                        if 'year' in job_detail['salary_format']:
+                            job_detail['salary_format'] = 'yearly'
+                        elif 'hour' in job_detail['salary_format']:
+                            job_detail['salary_format'] = 'hourly'
                         else:
                             job_detail['salary_format'] = 'N/A'
                         try:

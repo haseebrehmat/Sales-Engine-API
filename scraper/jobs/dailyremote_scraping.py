@@ -74,7 +74,7 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_source_url)
                 append_data(data, job_posted_date)
                 if "$" and "-" in salary_string:
-                    salary_format = "$"
+                    salary_format = "N/A"
                     append_data(data, salary_format)
                     estimated_salary = salary_string
                     append_data(data, estimated_salary)
