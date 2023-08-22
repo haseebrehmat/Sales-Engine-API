@@ -1,15 +1,13 @@
 import pandas as pd
 import time
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
+
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import configure_webdriver, generate_scraper_filename, ScraperNaming
 from utils.helpers import saveLogs
 
 
@@ -18,13 +16,15 @@ def load_all_jobs(driver):
     jobs_len = len(driver.find_elements(By.CLASS_NAME, "List__item__a2c7522"))
     while True:
         try:
-           show_more = WebDriverWait(driver, 30).until(
+            show_more = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable(
                     (By.CLASS_NAME, "List__showMoreBtn__cbb9f47"))
             )
+
+            show_more.click()
         except Exception as error:
-            print(error)
-        show_more.click()
+            print("Loaded all jobs")
+
         time.sleep(2)
         if jobs_len == len(driver.find_elements(By.CLASS_NAME, "List__item__a2c7522")):
             break
@@ -38,6 +38,7 @@ def load_all_jobs(driver):
 def request_url(driver, url):
     driver.get(url)
 
+
 # append data for csv file
 def append_data(data, field):
     data.append(str(field).strip("+"))
@@ -47,7 +48,7 @@ def find_jobs(driver, job_type):
     scrapped_data = []
     jobs = load_all_jobs(driver)
     total_jobs = len(jobs)
-    print(total_jobs)
+    print('total jobs :', total_jobs)
     for job in jobs:
         data = []
         if job:
@@ -105,12 +106,7 @@ def find_jobs(driver, job_type):
             append_data(data, job_type)
 
             append_data(data, str(job_description_tags))
-
-            print(job_title)
-            total_jobs =total_jobs-1
-            print(total_jobs)
-        
-
+                
         scrapped_data.append(data)
 
     columns_name = [
@@ -133,14 +129,11 @@ def find_jobs(driver, job_type):
     filename = generate_scraper_filename(ScraperNaming.STARTWIRE)
     df.to_excel(filename, index=False)
 
-    import pdb
-    pdb.set_trace()
-
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Startwire", filename=filename
     )
 
-    return False, total_job
+    return False, total_jobs
 
 
 # code starts from here
@@ -148,37 +141,23 @@ def startwire(link, job_type):
     print("startwire")
 
     try:
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
+        driver = configure_webdriver()
+        driver.maximize_window()
+        flag = True
+        try:
+            request_url(driver, link)
+            while flag:
+                flag, _ = find_jobs(driver, job_type)
+                print("Fetching...")
+            print(SCRAPING_ENDED)
 
-        with webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
-            options=options
-        ) as driver:
-            driver.maximize_window()
-            flag = True
-            try:
-                request_url(driver, link)
-                while flag:
-                    flag, _ = find_jobs(driver, job_type)
-                    print("Fetching...")
-                print(SCRAPING_ENDED)
+        except Exception as e:
+            saveLogs(e)
+            print(LINK_ISSUE)
 
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
-
-            driver.quit()
+        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
 
 
-startwire('https://www.startwire.com/job/search?query=Engineer%20Developer%20%20Software&location_title=&radius=100&age=all', '')
