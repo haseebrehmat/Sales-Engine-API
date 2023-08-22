@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.models import Profile, UserRegions, Role, MultipleRoles
 from authentication.serializers.team_management import TeamManagementSerializer
-from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
+from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, EditHistory
 from job_portal.serializers.job_detail import JobDetailSerializer
 from pseudos.models.verticals import Verticals
 from authentication.models.team_management import Team, TeamRoleVerticalAssignment
@@ -225,6 +225,12 @@ class JobVerticals(APIView):
                                      x in jobs]
         data["job_details"] = serializer.data
         data["total_applied_count"] = len(data["applied_verticals"])
+        if job.edited:
+            queryset = EditHistory.objects.filter(company_id=request.user.profile.company_id, instance_id=job_id)
+            data["edit_history"] = [{"instance": x.instance_id, "model": x.model, "changes": x.changes,
+                                     "company": {"id": x.company_id, "name": x.company.name, "code": x.company.code},
+                                     "user": {"id": x.user_id, "username": x.user.username, "email": x.user.email}
+                                     } for x in queryset]
         return Response(data, status=status.HTTP_200_OK)
 
     def get_blacklist_companies(self, request):
