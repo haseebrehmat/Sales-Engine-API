@@ -58,7 +58,7 @@ def find_jobs(driver, job_type):
     scrapped_data = []
 
     links = get_job_urls(driver)
-    
+
     total_job = len(links)
     links.pop(0)
     for link in links:
@@ -116,7 +116,7 @@ def find_jobs(driver, job_type):
                 estimated_salary = f"{salary_min}-{salary_max}"
             append_data(data, estimated_salary)
 
-            job_source = ScraperNaming.Remote_Ok
+            job_source = ScraperNaming.REMOTE_OK
             append_data(data, job_source)
 
             job_type = "remote"
@@ -144,7 +144,7 @@ def find_jobs(driver, job_type):
     ]
 
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.Remote_Ok)
+    filename = generate_scraper_filename(ScraperNaming.REMOTE_OK)
     df.to_excel(filename, index=False)
 
     ScraperLogs.objects.create(
