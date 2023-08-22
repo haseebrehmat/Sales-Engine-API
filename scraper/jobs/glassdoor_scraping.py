@@ -87,19 +87,27 @@ def find_jobs(driver, job_type, total_job):
                     try:
                         salary_exist = driver.find_element(By.CLASS_NAME, "css-1xe2xww")
                         if salary_exist:
-                            if '$' in estimated_salary[c_count].text:
-                                append_data(data, "$")
+                            es = estimated_salary[c_count].text.split(' (')[0]
+                            if 'Per' in es:
+                                es_salary = es.split(" Per ")
+                                salary_format = es_salary[1]
+                                if 'Hour' in salary_format:
+                                    append_data(data, "hourly")
+                                elif 'Month' in salary_format:
+                                    append_data(data, "monthly")
+                                elif ('Year' or 'Annum') in salary_format:
+                                    append_data(data, "yearly")
+                                else:
+                                    append_data(data, "N/A")
                             else:
-                                append_data(data, "N/A")
-                            es = estimated_salary[c_count].text.split(" P")[0]
-                            est_salary = es.split(" (")[0]
-                            append_data(data, est_salary)
+                                append_data(data, 'N/A')
+                            append_data(data, es)
                             try:
-                                append_data(data, est_salary.split(" - ")[0])
+                                append_data(data, es.split(" - ")[0].split(" Per")[0])
                             except:
                                 append_data(data, "N/A")
                             try:
-                                append_data(data, est_salary.split(" - ")[1])
+                                append_data(data, es.split(" - ")[1].split(" Per")[0])
                             except:
                                 append_data(data, "N/A")
 
@@ -144,6 +152,7 @@ def find_jobs(driver, job_type, total_job):
 # code starts from here
 def glassdoor(link, job_type):
     print("Glassdoor")
+    exit_scraping = False
     try:
         for x in Accounts.objects.all():
             # import pdb
@@ -163,8 +172,6 @@ def glassdoor(link, job_type):
                 driver.maximize_window()
                 request_url(driver, GLASSDOOR_LOGIN_URL)
                 logged_in = login(driver, x.email, x.password)
-                # import pdb
-                # pdb.set_trace()
                 try:
                     if logged_in:
                         flag = True
@@ -174,15 +181,17 @@ def glassdoor(link, job_type):
                                 driver, job_type, total_job)
                             count += 1
                         print(SCRAPING_ENDED)
-                        break
+                        exit_scraping = True
                     else:
                         print(LOGIN_FAILED)
-                        continue
+                        exit_scraping = False
                 except Exception as e:
                     saveLogs(e)
                     print(LINK_ISSUE)
-                    break
+                    exit_scraping = True
                 driver.quit()
+            if exit_scraping:
+                break
     except Exception as e:
         saveLogs(e)
         print(e)

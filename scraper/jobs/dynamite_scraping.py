@@ -43,8 +43,15 @@ def find_jobs(driver, job_type, total_job):
             job_url = driver.find_element(By.CLASS_NAME, 'min-h-32').find_element(By.TAG_NAME, 'a').get_attribute(
                 'href')
             if '$' in job_details[3]:
-                salary_format = '$'
+                import pdb
+                pdb.set_trace()
                 estimated_salary = job_details[-3]
+                if 'month' in estimated_salary.split(' per ')[1]:
+                    salary_format = 'monthly'
+                elif 'hour' in estimated_salary.split(' per ')[1]:
+                    salary_format = 'hourly'
+                elif ('year' or 'annum') in estimated_salary.split(' per ')[1]:
+                    salary_format = 'yearly'
                 address = job_details[4]
                 job_posted_date = job_details[-1]
             else:
@@ -97,7 +104,7 @@ def dynamite(link, job_type):
     total_job = 0
     print("Dynamite")
     try:
-        driver = configure_webdriver()
+        driver = configure_webdriver(True)
         driver.maximize_window()
         flag = True
         count = 0

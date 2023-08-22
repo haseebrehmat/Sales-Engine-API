@@ -58,13 +58,21 @@ def find_jobs(driver, job_type, total_job):
                         salary_string = driver.find_element(
                             By.CLASS_NAME, "Estimated_Salary")
                     if "$" and "-" in salary_string.text:
-                        salary_format = "$"
+                        salary_est = salary_string.text
+                        if 'year' in salary_est:
+                            salary_format = "yearly"
+                        elif 'month' in salary_est:
+                            salary_format = "monthly"
+                        elif 'hour' in salary_est:
+                            salary_format = "hourly"
+                        else:
+                            salary_format = "N/A"
                         append_data(data, salary_format)
-                        estimated_salary = salary_string.text
+                        estimated_salary = salary_est
                         append_data(data, estimated_salary)
-                        salary_min = salary_string.text.split(" ")[0]
+                        salary_min = salary_est.split(" ")[0]
                         append_data(data, salary_min)
-                        salary_max = salary_string.text.split(" ")[2]
+                        salary_max = salary_est.split(" ")[2]
                         append_data(data, salary_max)
                     else:
                         append_data(data, "N/A")

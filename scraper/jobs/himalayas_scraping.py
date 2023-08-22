@@ -91,7 +91,7 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 except:
                     job_type = "Full Time on Site"
                 try:
-                    salary_format = '$'
+                    salary_format = 'N/A'
                     estimated_salary = main_grid.find_elements(By.TAG_NAME, "div")[7].find_element(By.TAG_NAME, "p").text
                     salary_min = estimated_salary.split("-")[0]
                     salary_max = estimated_salary.split("-")[1].split(" ")[0]
