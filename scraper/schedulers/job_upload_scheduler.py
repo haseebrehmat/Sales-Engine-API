@@ -127,7 +127,7 @@ scraper_functions = {
     ],
     "usjora": [
         us_jora,
-    ]
+    ],
     "startwire": [
         startwire,
     ],
