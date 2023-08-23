@@ -104,7 +104,7 @@ def dynamite(link, job_type):
     total_job = 0
     print("Dynamite")
     try:
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         count = 0
