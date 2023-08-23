@@ -64,7 +64,7 @@ def find_jobs(driver, job_type, total_job):
                 By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
             append_data(data, job_description.text)
             url = driver.find_elements(
-                By.CLASS_NAME, "sc-cbPlza")
+                By.CLASS_NAME, "sc-gAjuZT")
             append_data(data, url[count].get_attribute('href'))
             job_posted_date = driver.find_element(
                 By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
@@ -74,12 +74,12 @@ def find_jobs(driver, job_type, total_job):
                     By.CLASS_NAME, "detailsstyles__DetailsTableDetailBody-sc-1deoovj-5")
                 if "$" in salary_string.text:
                     salary_format = "N/A"
-                    append_data(data, salary_format)
                     estimated_salary = salary_string.text.split(" ")[0]
-                    append_data(data, estimated_salary)
                     salary_min = salary_string.text.split("-")[0]
-                    append_data(data, salary_min)
                     salary_max = salary_string.text.split("-")[1].split(" ")[0]
+                    append_data(data, salary_format)
+                    append_data(data, estimated_salary)
+                    append_data(data, salary_min)
                     append_data(data, salary_max)
                 else:
                     append_data(data, "N/A")
@@ -99,7 +99,6 @@ def find_jobs(driver, job_type, total_job):
             total_job += 1
         except Exception as e:
             print("Exception in Monster => ", e)
-    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "salary_format", "estimated_salary", "salary_min",
                     "salary_max", "job_source", "job_type", "job_description_tags"]
