@@ -70,6 +70,7 @@ class ScraperNaming(enum.Enum):
     REMOTE_OK = 'remoteok'
     HIMALAYAS = 'himalayas'
     USJORA = 'usjora'
+    STARTWIRE =  'startwire'
 
 
     def __str__(self):
