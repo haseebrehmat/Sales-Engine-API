@@ -71,7 +71,7 @@ class ScraperNaming(enum.Enum):
     HIMALAYAS = 'himalayas'
     USJORA = 'usjora'
     STARTWIRE =  'startwire'
-
+    JOB_GETHER = 'job_gether'
 
     def __str__(self):
         return self.value
