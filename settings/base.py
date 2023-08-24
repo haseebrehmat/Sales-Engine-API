@@ -230,9 +230,10 @@ LOGGING = {
 }
 
 
-ROLLBAR = {
-    'access_token': '9253e9ce8ed24d669401c0fb5d37d62c',
-    'environment': 'development' if env("DEBUG") else 'production',
-    'code_version': '1.0',
-    'root': BASE_DIR,
-}
+if env("ENVIRONMENT") != 'local':
+    ROLLBAR = {
+        'access_token': '9253e9ce8ed24d669401c0fb5d37d62c',
+        'environment': env("ENVIRONMENT"),
+        'code_version': '1.0',
+        'root': BASE_DIR,
+    }

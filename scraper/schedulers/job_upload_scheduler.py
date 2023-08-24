@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev
+from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -131,6 +131,9 @@ scraper_functions = {
     "startwire": [
         startwire,
     ],
+    "jobgether": [
+        job_gether,
+    ]
 }
 
 
@@ -468,7 +471,7 @@ arcdev_scheduler = BackgroundScheduler()
 himalayas_scheduler = BackgroundScheduler()
 us_jora_scheduler = BackgroundScheduler()
 startwire_scheduler = BackgroundScheduler()
-
+job_gether_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -563,10 +566,12 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "remoteok":
                 rubynow_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["remoteok"])
-                
+
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(
-                    start_job_sync, 'interval', minutes=interval, args=["startwire"])    
+                    start_job_sync, 'interval', minutes=interval, args=["startwire"])
+            elif scheduler.job_source.lower() == "jobgether":
+                job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["jobgether"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -655,10 +660,13 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "remoteok":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["remoteok"])
-                
+
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["startwire"])    
+                                          args=["startwire"])
+            elif scheduler.job_source.lower() == "jobgether":
+                rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["jobgether"])
 
 
 group_scraper_background_jobs = []
@@ -682,9 +690,9 @@ def group_scraper_job():
             current_scraper = group_scraper.name
 
             SchedulerSync.objects.filter(
-                type="group scraper").update(running=False)
+                type="group scraper").update(running=False, end_time=timezone.now())
             SchedulerSync.objects.filter(
-                job_source=current_scraper).update(running=True)
+                job_source=current_scraper).update(running=True, start_time=timezone.now(), end_time=timezone.now())
             last_scraper_running_time = current_group_scraper_running_time
 
         except Exception as e:
