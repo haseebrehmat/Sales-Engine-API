@@ -92,3 +92,12 @@ def remove_files():
                     print(msg)
     except Exception as e:
         print(e)
+
+
+def upload_file(file, file_name):
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
+                      aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    bucket_path = 'octagon-user-profile-images'
+    s3.upload_fileobj(file, bucket_path, file_name, ExtraArgs={'ACL': 'public-read'})
+    file_url = "https://octagon-user-profile-images.s3.us-west-1.amazonaws.com/" + str(file_name)
+    return file_url
