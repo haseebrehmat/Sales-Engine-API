@@ -566,7 +566,7 @@ def scheduler_settings():
                 
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(
-                    start_job_sync, 'interval', minutes=interval, args=["startwire"])    
+                    start_job_sync, 'interval', minutes=interval, args=["startwire"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -655,10 +655,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "remoteok":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["remoteok"])
-                
+
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["startwire"])    
+                                          args=["startwire"])
 
 
 group_scraper_background_jobs = []
@@ -682,9 +682,9 @@ def group_scraper_job():
             current_scraper = group_scraper.name
 
             SchedulerSync.objects.filter(
-                type="group scraper").update(running=False)
+                type="group scraper").update(running=False, end_time=timezone.now())
             SchedulerSync.objects.filter(
-                job_source=current_scraper).update(running=True)
+                job_source=current_scraper).update(running=True, start_time=timezone.now(), end_time=timezone.now())
             last_scraper_running_time = current_group_scraper_running_time
 
         except Exception as e:
