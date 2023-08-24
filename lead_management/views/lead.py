@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from job_portal.utils.detect_changes import detect_model_changes
 from lead_management.models import Lead, LeadActivity, LeadActivityNotes
 from lead_management.serializers import LeadSerializer
 from lead_management.serializers.lead_serializer import LeadDetailSerializer
@@ -38,22 +39,39 @@ class LeadDetail(APIView):
     @transaction.atomic
     def update_lead(self, request, pk):
         try:
+            flag = True
+            new_data = {}
+            old_data = {}
+
             lead = Lead.objects.filter(pk=pk)
+            old_data['id'] = lead.first()
             company_status = request.data.get('status')
             phase = request.data.get('phase')
             notes = request.data.get('notes')
             candidate = request.data.get('candidate')
 
             if not company_status and not phase and candidate:
+                # update candidate on lead
+                old_data['candidate_id'] = lead.first().candidate_id
                 lead.update(candidate_id=candidate)
+                lead.update(edited=True)
+                new_data['candidate_id'] = candidate
                 lead = lead.first()
                 lead_activity = LeadActivity.objects.filter(lead=lead, company_status=lead.company_status,
                                                             phase=lead.phase, candidate_id=candidate).first()
+
                 if not lead_activity:
+                    flag = False
                     lead_activity = LeadActivity.objects.create(lead=lead, company_status=lead.company_status,
                                                                 phase=lead.phase, candidate_id=candidate)
             elif company_status:
+                # update company_status and phase_id
+                old_data['company_status_id'] = lead.first().company_status_id
+                old_data['phase_id'] = lead.first().phase_id
                 lead.update(company_status_id=company_status, phase_id=phase)
+                lead.update(edited=True)
+                new_data['company_status_id'] = company_status
+                new_data['phase_id'] = phase
                 lead = lead.first()
                 lead_activity = LeadActivity.objects.filter(lead=lead, company_status_id=company_status, phase_id=phase,
                                                             candidate=lead.candidate).first()
@@ -66,12 +84,20 @@ class LeadDetail(APIView):
                 effect_date = request.data.get('effect_date')
                 due_date = request.data.get('due_date')
                 if effect_date:
+                    old_data['effect_date'] = lead_activity.effect_date
                     lead_activity.effect_date = effect_date
+                    if flag:
+                        new_data['effect_date'] = effect_date
                 if due_date:
+                    old_data['due_date'] = lead_activity.due_date
                     lead_activity.due_date = due_date
+                    if flag:
+                        new_data['due_date'] = due_date
                 lead_activity.save()
             if notes:
                 LeadActivityNotes.objects.create(lead_activity=lead_activity, message=notes)
+
+            detect_model_changes(old_data, new_data, Lead, request.user)
             return {"detail": "Lead updated successfully!"}, status.HTTP_200_OK
         except Exception as e:
             return {"detail": str(e)}, status.HTTP_406_NOT_ACCEPTABLE

@@ -8,7 +8,7 @@ from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, 
     ListAppliedJobView, MarkedAsExpiredView
 from job_portal.views.applied_jobs import AppliedJobView
 from job_portal.views.archive_jobs import ArchiveJobs
-from job_portal.views.detect_changes import EditHistoryView
+from job_portal.views.detect_changes import EditHistoryView, DetectChangesView
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
 from job_portal.views.cover_letter.download import DownloadCoverView
 from job_portal.views.cover_letter.generate_cover import GenerateCoverView
@@ -40,7 +40,8 @@ urlpatterns = [
          name='team_applied_job_details'),
     path('cover_letter/download/', DownloadCoverView.as_view()),
     path('cover_letter/generate/', GenerateCoverView.as_view()),
-    path('detect_changes/', EditHistoryView.as_view()),
+    path('detect_changes_all/', EditHistoryView.as_view()),
+    path('detect_changes/', DetectChangesView.as_view()),
     path('clean_job_keywords/', JobCleanerView.as_view()),
     path('company/blacklist/add/', BlackListJobsView.as_view()),
     path('company/blacklist/remove/', NonBlackListJobsView.as_view()),

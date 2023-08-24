@@ -1,9 +1,12 @@
+import json
 import uuid
 from django.core import serializers
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import JSONField
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+# from django.contrib.postgres.fields.jsonb import JSONField
 from django.utils import timezone
 from authentication.models import User, Team
 from authentication.models.company import Company
@@ -186,7 +189,7 @@ class EditHistory(TimeStamped):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
     instance_id = models.CharField(max_length=500)
     model = models.CharField(max_length=200)
-    changes = ArrayField(models.TextField(blank=True, null=True))
+    changes = ArrayField(JSONField(blank=True, null=True), blank=True, null=True)
     class Meta:
         default_permissions = ()
         db_table = "edit_history"
@@ -195,23 +198,6 @@ class EditHistory(TimeStamped):
     def __str__(self):
         return f"{self.user.email} - {self.model}"
 
-def detect_model_changes(instance, updated_instance, model, user):
-    model_name = model.__name__
-    change_logs = []
-    for x in updated_instance.keys():
-        old_value = str(getattr(instance, x))
-        new_value = str(updated_instance[x])
-        if old_value != new_value:
-            change_logs.append({"field": x, "old_value": old_value, "new_value": new_value})
-    obj = model.objects.filter(pk=instance.id)
-    if obj.exists():
-        try:
-            EditHistory.objects.create(instance_id=instance.id, model=model_name, changes=change_logs, user=user,
-                                       company_id=user.profile.company_id)
-        except:
-            print("")
-    else:
-        print("")
 
 
 

@@ -9,15 +9,17 @@ from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import JSONParser, MultiPartParser
-from rest_framework.response import Response
+
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from authentication.models.user import User
 
 from job_portal.filters.job_detail import CustomJobFilter
-from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, BlockJobCompany, JobArchive, detect_model_changes
+from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, BlockJobCompany, JobArchive
+from job_portal.utils.detect_changes import detect_model_changes
 from job_portal.paginations.job_detail import CustomPagination
 from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer
@@ -252,9 +254,12 @@ class JobModification(APIView):
                     # Here is a logic of detect changes module
                     time = request.data.pop("time")
                     expired = request.data.pop("expired")
+                    job_posted_date = request.data.pop("job_posted_date")
                     detect_model_changes(queryset, request.data, JobDetail, request.user)
                     request.data['time'] = time
                     request.data["expired"] = expired
+                    request.data["job_posted_date"] = job_posted_date
+
                     serializer.validated_data['edited'] = True
                     serializer.save()
                     status_code = status.HTTP_200_OK
