@@ -11,7 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
 
 total_jobs = 0
@@ -134,32 +134,20 @@ def career_builder(link, job_type):
     total_job = 0
     print("Career builder")
     try:
-        print("career_builder started ... ")
-        count = 0
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                              options=options) as driver:  # modified
-            driver.maximize_window()
-            try:
-                request_url(driver, link)
-                accept_cookie(driver)
-                while load_jobs(driver):
-                    print("Loading...")
-                total_job = find_jobs(driver, job_type, total_job)
-                print(SCRAPING_ENDED)
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
+        driver = configure_webdriver()
+        driver.maximize_window()
+        try:
+            request_url(driver, link)
+            accept_cookie(driver)
+            while load_jobs(driver):
+                print("Loading...")
+            total_job = find_jobs(driver, job_type, total_job)
+            print(SCRAPING_ENDED)
+        except Exception as e:
+            saveLogs(e)
+            print(LINK_ISSUE)
 
-            driver.quit()
+        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)

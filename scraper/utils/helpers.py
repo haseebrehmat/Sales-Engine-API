@@ -105,3 +105,6 @@ def remove_emojis(text):
     pattern =  r'[\w\s.,!?\'"“”‘’#$%^&*()_+=\-{}\[\]:;<>\|\\/~`]+'
     extracted_text = re.findall(pattern, text)
     return ' '.join(extracted_text)
+
+def k_conversion(text):
+    return text.replace("k", ",000").replace( "K", ",000")

@@ -106,7 +106,7 @@ def find_jobs(driver, job_type):
             append_data(data, job_type)
 
             append_data(data, str(job_description_tags))
-                
+
         scrapped_data.append(data)
 
     columns_name = [

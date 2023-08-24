@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -18,7 +18,6 @@ total_job = 0
 
 def find_jobs(driver, job_type, total_job):
     scrapped_data = []
-    date_time = str(datetime.now())
     count = 0
     try:
         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "result-item")))
@@ -29,8 +28,8 @@ def find_jobs(driver, job_type, total_job):
         try:
             for job in jobs:
                 job.location_once_scrolled_into_view
-        except:
-            print("Do not load the whole page")
+        except Exception as e:
+            print(e)
         time.sleep(3)
         for job in jobs:
             data = []
@@ -109,27 +108,17 @@ def append_data(data, field):
 def recruit(link, job_type):
     try:
         total_job = 0
-        print("Start in try portion. \n")
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36")
-        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-            driver.maximize_window()
-            try:
-                flag = True
-                driver.get(link)
-                while flag:
-                    flag = find_jobs(driver, job_type, total_job)
-                    print("Fetching...")
-            except Exception as e:
-                print("out from for loop")
+        driver = configure_webdriver()
+        driver.maximize_window()
+        try:
+            flag = True
+            driver.get(link)
+            while flag:
+                flag = find_jobs(driver, job_type, total_job)
+                print("Fetching...")
+        except Exception as e:
+            print(e)
 
-            driver.quit()
-    except:
-        print("Error Occurs. \n")
+        driver.quit()
+    except Exception as e:
+        print(e)

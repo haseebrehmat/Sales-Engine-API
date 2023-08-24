@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -26,9 +26,9 @@ def save_data(scrapped_data, job_title, company_name, address, job_description, 
         append_data(data, job_source_url)
         append_data(data, "N/A")
         append_data(data, salary_format)
-        append_data(data, estimated_salary)
-        append_data(data, salary_min)
-        append_data(data, salary_max)
+        append_data(data, k_conversion(estimated_salary))
+        append_data(data, k_conversion(salary_min))
+        append_data(data, k_conversion(salary_max))
         append_data(data, "YCombinator")
         append_data(data, job_type)
         append_data(data, job_description_tags)
@@ -198,34 +198,23 @@ def ycombinator(link, job_type):
     print("YCombinator")
     try:
         total_job = 0
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        # options.headless = True  # newly added
-        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
+        driver = configure_webdriver()
+        driver.maximize_window()
+        try:
+            flag = True
+            request_url(driver, YCOMBINATOR_LOGIN_URL)
             driver.maximize_window()
-            try:
-                flag = True
-                request_url(driver, YCOMBINATOR_LOGIN_URL)
-                driver.maximize_window()
-                if login(driver):
-                    request_url(driver, link)
-                    loading(driver)
-                    find_jobs(driver, total_job)
-                else:
-                    print("Login failed")
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
+            if login(driver):
+                request_url(driver, link)
+                loading(driver)
+                find_jobs(driver, total_job)
+            else:
+                print("Login failed")
+        except Exception as e:
+            saveLogs(e)
+            print(LINK_ISSUE)
 
-            driver.quit()
+        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)

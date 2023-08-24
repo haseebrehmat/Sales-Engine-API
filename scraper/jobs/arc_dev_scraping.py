@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 from scraper.models.accounts import Accounts
 
@@ -45,7 +45,7 @@ def get_job_detail(driver, job_source, job_url, job_type):
         except Exception as e:
             print(e)
         try:
-            job['estimated_salary'] = about_job_lines[1].text
+            job['estimated_salary'] = k_conversion(about_job_lines[1].text)
         except Exception as e:
             print(e)
         try:
