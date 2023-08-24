@@ -13,11 +13,22 @@ def get_job_url(job):
     return job.find_element(By.CLASS_NAME, "open-button").get_attribute('href')
 
 
-def get_job_detail(driver, job_source, job_url, job_type):
+def get_job_detail(driver, job_source, job_url, job_date, job_type):
     try:
-        job_title = driver.find_element(By.CLASS_NAME, "job-title").text
-        company_name = driver.find_element(By.CLASS_NAME, "job-company").text
-        job_description = driver.find_element(By.CLASS_NAME, "job")
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, "opportunity_info_title")))
+        time.sleep(3)
+        for i in range(3):
+            try:
+                driver.find_element(By.CLASS_NAME, 'see_more_button').find_element(By.TAG_NAME, 'span').click()
+                time.sleep(3)
+                see_more_text = driver.find_element(By.CLASS_NAME, 'see_more_button').find_element(By.TAG_NAME, 'span').text
+                if see_more_text.lower() != 'see more':
+                    break
+            except Exception as e:
+                saveLogs(e)
+        job_title = driver.find_element(By.CLASS_NAME, "opportunity_info_title").text
+        company_name = driver.find_element(By.CLASS_NAME, "company-name").text
+        job_description = driver.find_element(By.ID, "description_container")
 
         job = {
             "job_title": job_title,
@@ -25,7 +36,7 @@ def get_job_detail(driver, job_source, job_url, job_type):
             "address": "",
             "job_description": job_description.text,
             "job_source_url": job_url,
-            "job_posted_date": "",
+            "job_posted_date": job_date,
             "salary_format": "N/A",
             "estimated_salary": "N/A",
             "salary_min": "N/A",
@@ -35,24 +46,33 @@ def get_job_detail(driver, job_source, job_url, job_type):
             "job_description_tags": job_description.get_attribute('innerHTML')
         }
 
-        about_job_lines = driver.find_elements(By.CLASS_NAME, "about-job-line")
+        job_general_info = driver.find_element(By.CSS_SELECTOR, "#offer_general_data").text.replace(':\n', ':').replace('\nK', 'K').split('\n')
 
-        for about_line in about_job_lines:
-            # class_name is class of i icon, fetch data on the bases of icons classes
-            class_name = about_line.find_element(By.CLASS_NAME, 'fa').get_attribute('class')
-            about_line_text = about_line.find_element(By.CLASS_NAME, 'about-job-line-text').text
-            if 'fa-calendar' in class_name:
-                job['job_posted_date'] = about_line_text
-            elif 'fa-map-marker' in class_name:
-                job['address'] = about_line_text
-            elif 'fa-money' in class_name:
-                # save salary data
-                if '$' in about_line_text:
-                    job['salary_format'] = '$'
-                job['estimated_salary'] = about_line_text
-                salary = about_line_text.split('-')
-                job['salary_min'] = salary[0] if '-' in about_line_text else about_line_text.split(' ')[0]
-                job['salary_max'] = salary[1].split(' ')[0] if '-' in about_line_text else about_line_text.split(' ')[0]
+        try:
+            for item in job_general_info:
+                info_detail = item.split(':')
+                key = info_detail[0].lower()
+                val = info_detail[1].lower()
+                if key == 'work from':
+                    job['address'] = val
+                elif key == 'salary':
+                    job['estimated_salary'] = val
+                    if 'year' in val:
+                        job['salary_format'] = 'yearly'
+                    elif 'month' in val:
+                        job['salary_format'] = 'monthly'
+                    elif 'hour' in val:
+                        job['salary_format'] = 'hourly'
+                    if '-' in val:
+                        salary = val.split(' - ')
+                        factor = 3 if 'k' in val else 0
+                        job['salary_min'] = salary[0].replace('k', '') + '0' * factor
+                        job['salary_max'] = salary[1].split('k ')[0] + '0' * factor
+                    else:
+                        job['salary_min'] = val
+                        job['salary_max'] = val
+        except Exception as e:
+            saveLogs(e)
         return job, False
     except Exception as e:
         saveLogs(e)
@@ -67,10 +87,13 @@ def find_jobs(driver, job_type):
     try:
         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "match-card")))
         try:
-            while True:
-                show_more_btn = driver.find_element(By.CSS_SELECTOR, 'a.btn-primary')
-                show_more_btn.click()
+            for i in range(20):
+                jobs = driver.find_elements(By.CLASS_NAME, "match-card")
+                for job in jobs:
+                    job.location_once_scrolled_into_view
                 time.sleep(3)
+                driver.find_element(By.CSS_SELECTOR, 'a.btn-primary').click()
+                time.sleep(5)
         except Exception as e:
             print('Loaded all jobs ...')
             saveLogs(e)
@@ -79,20 +102,19 @@ def find_jobs(driver, job_type):
         job_urls = []
 
         for job in jobs:
-            job_posted_date = job.find_elements(By.CLASS_NAME, 'date')[1].text
-            if 'days ago' in job_posted_date:
-                days = int(job_posted_date.split(' ')[0])
-                if days > 3:
-                    break
-            job_urls.append(get_job_url(job))
+            job_posted_date = job.find_element(By.CLASS_NAME, 'date_fav_container').text
+            url = job.find_element(By.CLASS_NAME, 'offer-link').get_attribute('href')
+            job_urls.append({'url': url, 'date': job_posted_date})
 
         count = 0
         total_jobs = len(job_urls)
 
         for job_url in job_urls:
             try:
-                driver.get(job_url)
-                job, error = get_job_detail(driver, 'jobgether', job_url, job_type)
+                url = job_url['url']
+                date = job_url['date']
+                driver.get(url)
+                job, error = get_job_detail(driver, 'jobgether', url, date, job_type)
                 if error:
                     break
                 data = [job[c] for c in columns_name]
@@ -117,7 +139,7 @@ def find_jobs(driver, job_type):
 def job_gether(link, job_type):
     try:
         print("Start in try portion. \n")
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             driver.get(link)
