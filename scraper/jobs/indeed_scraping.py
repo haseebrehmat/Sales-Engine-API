@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -70,17 +70,17 @@ def find_jobs(driver, job_type, total_job):
                 else:
                     append_data(data, "N/A")
                 try:
-                    append_data(data, estimated_salary.text.split(a_an)[0])
+                    append_data(data, k_conversion(estimated_salary.text.split(a_an)[0]))
                 except:
                     append_data(data, "N/A")
                 try:
                     salary_min = estimated_salary.text.split('$')[1]
-                    append_data(data, salary_min.split(' ')[0])
+                    append_data(data, k_conversion(salary_min.split(' ')[0]))
                 except:
                     append_data(data, "N/A")
                 try:
                     salary_max = estimated_salary.text.split('$')[2]
-                    append_data(data, salary_max.split(' ')[0])
+                    append_data(data, k_conversion(salary_max.split(' ')[0]))
                 except:
                     append_data(data, "N/A")
             except:
@@ -131,34 +131,23 @@ def indeed(link, job_type):
     try:
         total_job = 0
         count = 0
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        # options.headless = True  # newly added
-        # with webdriver.Chrome('/home/dev/Desktop/selenium') as driver:
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
+        driver = configure_webdriver()
+        driver.maximize_window()
+        try:
+            flag = True
+            request_url(driver, link)
             driver.maximize_window()
-            try:
-                flag = True
-                request_url(driver, link)
-                driver.maximize_window()
-                while flag:
-                    flag, total_job = find_jobs(
-                        driver, job_type, total_job)
-                    print("Fetching...")
-                count += 1
-                print(SCRAPING_ENDED)
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
+            while flag:
+                flag, total_job = find_jobs(
+                    driver, job_type, total_job)
+                print("Fetching...")
+            count += 1
+            print(SCRAPING_ENDED)
+        except Exception as e:
+            saveLogs(e)
+            print(LINK_ISSUE)
 
-            driver.quit()
+        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)

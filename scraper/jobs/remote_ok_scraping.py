@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 
 
@@ -102,19 +102,19 @@ def find_jobs(driver, job_type):
                 salary_min = remove_emojis(temp2[-3])
             else:
                 salary_min = "N/A"
-            append_data(data, salary_min)
+            append_data(data, k_conversion(salary_min))
 
             if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
                 salary_max = remove_emojis(temp2[-1])
             else:
                 salary_max = "N/A"
-            append_data(data, salary_max)
+            append_data(data, k_conversion(salary_max))
 
             if salary_max == "N/A" or salary_min == "N/A":
                 estimated_salary = "N/A"
             else:
                 estimated_salary = f"{salary_min}-{salary_max}"
-            append_data(data, estimated_salary)
+            append_data(data, k_conversion(estimated_salary))
 
             job_source = ScraperNaming.REMOTE_OK
             append_data(data, job_source)
@@ -159,34 +159,21 @@ def remoteok(link, job_type):
     print("Remote Ok")
 
     try:
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
+        driver = configure_webdriver()
+        driver.maximize_window()
+        flag = True
+        try:
+            request_url(driver, link)
+            while flag:
+                flag, _ = find_jobs(driver, job_type)
+                print("Fetching...")
+            print(SCRAPING_ENDED)
 
-        with webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
-            options=options
-        ) as driver:
-            driver.maximize_window()
-            flag = True
-            try:
-                request_url(driver, link)
-                while flag:
-                    flag, _ = find_jobs(driver, job_type)
-                    print("Fetching...")
-                print(SCRAPING_ENDED)
+        except Exception as e:
+            saveLogs(e)
+            print(LINK_ISSUE)
 
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
-
-            driver.quit()
+        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)

@@ -8,8 +8,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models import ScraperLogs
-from scraper.utils.helpers import configure_webdriver, generate_scraper_filename, ScraperNaming
-# from selenium.webdriver.support.ui import WebDriverWait
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
 
 
