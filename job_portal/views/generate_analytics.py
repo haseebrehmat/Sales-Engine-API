@@ -13,7 +13,7 @@ from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    permission_classes = (AllowAny | AnalyticsPermission,)
+    permission_classes = (AnalyticsPermission,)
     queryset = Analytics.objects.all().order_by('-job_posted_date')
     tech_keywords = ""
     job_types = ""
