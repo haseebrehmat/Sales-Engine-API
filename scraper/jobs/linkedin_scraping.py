@@ -12,7 +12,7 @@ import time
 
 from scraper.models import JobSourceQuery
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -87,11 +87,11 @@ def find_jobs(driver, job_type, total_jobs, url=None):
             )
     except Exception as e:
         saveLogs(e)
-        return False
+        return False, total_jobs
 
     time.sleep(2)
     if not data_exists(driver):
-        return False
+        return False, total_jobs
 
     jobs = driver.find_elements(
         By.CLASS_NAME, "jobs-search-results__list-item")
@@ -133,28 +133,30 @@ def find_jobs(driver, job_type, total_jobs, url=None):
                 append_data(data, url.get_attribute('href'))
                 append_data(data, job_posted_date[count].text.split('\n')[0])
                 try:
-                    es = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0]
-                    estimated_salary = es.find_elements(By.TAG_NAME, "a")[0]
+                    estimated_salary = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0].text
+                    estimated_salary.split(' (')[0]
                     try:
-                        if '$' in estimated_salary:
-                            append_data(data, "$")
+                        if 'yr' in estimated_salary:
+                            append_data(data, "yearly")
+                        elif 'hr' in estimated_salary:
+                            append_data(data, "hourly")
                         else:
                             append_data(data, "N/A")
                     except:
                         append_data(data, "N/A")
                     try:
-                        append_data(data, estimated_salary.text.split('(')[0])
+                        append_data(data, k_conversion(estimated_salary))
                     except:
                         append_data(data, 'N/A')
                     try:
-                        salary_min = estimated_salary.text.split('$')[1]
+                        salary_min = estimated_salary.split('$')[1]
                         salary_min = salary_min.split(' ')[0]
-                        append_data(data, salary_min.split('-')[0])
+                        append_data(data, k_conversion(salary_min.split('-')[0]))
                     except:
                         append_data(data, 'N/A')
                     try:
-                        salary_max = estimated_salary.text.split('$')[2]
-                        append_data(data, salary_max.split(' ')[0])
+                        salary_max = estimated_salary.split('$')[2]
+                        append_data(data, k_conversion(salary_max.split(' ')[0]))
                     except:
                         append_data(data, 'N/A')
                 except:
@@ -215,35 +217,24 @@ def linkedin(link, job_type):
     total_job = 0
     try:
         for x in Accounts.objects.all():
-            options = webdriver.ChromeOptions()  # newly added
-            options.add_argument("--headless")
-            options.add_argument("window-size=1200,1100")
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--disable-gpu')
-            options.add_argument(
-                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-            )
-            # options.headless = True  # newly added
-            # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
-            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
-                request_url(driver, LOGIN_URL)
-                logged_in = login(driver, x.email, x.password)
-                try:
-                    if logged_in:
-                        jobs_types(driver, link, job_type, total_job)
-                        print(SCRAPING_ENDED)
-                        driver.quit()
-                        break
-                    else:
-                        print(LOGIN_FAILED)
-                        driver.quit()
-                except Exception as e:
-                    print("Exception in linkedin => ", e)
-                    saveLogs(e)
-                    print(LINK_ISSUE)
+            driver = configure_webdriver()
+            request_url(driver, LOGIN_URL)
+            logged_in = login(driver, x.email, x.password)
+            try:
+                if logged_in:
+                    jobs_types(driver, link, job_type, total_job)
+                    print(SCRAPING_ENDED)
                     driver.quit()
                     break
+                else:
+                    print(LOGIN_FAILED)
+                    driver.quit()
+            except Exception as e:
+                print("Exception in linkedin => ", e)
+                saveLogs(e)
+                print(LINK_ISSUE)
+                driver.quit()
+                break
     except Exception as e:
         saveLogs(e)
         print(e)

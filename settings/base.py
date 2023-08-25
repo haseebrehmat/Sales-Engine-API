@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 THIRD_PARTY_MIDDLEWARES = [
 ]
@@ -227,3 +228,12 @@ LOGGING = {
     #     "level": "WARNING",
     # },
 }
+
+
+if env("ENVIRONMENT") != 'local':
+    ROLLBAR = {
+        'access_token': '9253e9ce8ed24d669401c0fb5d37d62c',
+        'environment': env("ENVIRONMENT"),
+        'code_version': '1.0',
+        'root': BASE_DIR,
+    }

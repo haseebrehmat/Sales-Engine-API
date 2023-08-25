@@ -8,8 +8,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
-# from selenium.webdriver.support.ui import WebDriverWait
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
 
 
@@ -28,7 +27,6 @@ def find_jobs(driver, job_type, total_job):
     scrapped_data = []
     count = 0
     try:
-        driver.find_element(By.CLASS_NAME, "WpHeLc").click()
         time.sleep(5)
         jobs = driver.find_elements(By.CLASS_NAME, "Qai30b")
 
@@ -85,45 +83,33 @@ def find_jobs(driver, job_type, total_job):
         print(e)
 
     time.sleep(2)
-    next_page = driver.find_elements(By.CLASS_NAME, "gc-link--on-grey")
     try:
-      next_page[1].location_once_scrolled_into_view
-      next_page[1].click()
-      time.sleep(2)
-      return True, total_job
-    except Exception as e:
-      print(e)
-    return False, total_job
+        next_page = driver.find_element(By.CLASS_NAME, "bsEDOd")
+        for next in next_page.find_elements(By.CLASS_NAME, "VfPpkd-wZVHld-gruSEe-LgbsSe"):
+            if next.get_attribute("aria-label") == "Go to next page":
+                next.location_once_scrolled_into_view
+                next.click()
+                time.sleep(5)
+                return True, total_job
+        return False, total_job
+    except:
+        return False, total_job
 
 # code starts from here
 def google_careers(links, job_type):
     print("Google Careers")
     total_job = 0
-    options = webdriver.ChromeOptions()  # newly added
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--disable-gpu')
-    options.add_argument("--headless")
-    options.add_argument("window-size=1200,1100")
-    options.add_argument('--log-level=0')  # Set the log level to ALL
-    options.add_argument('--disable-logging')  # Disable logging to the console
-    options.set_capability('goog:loggingPrefs', {'browser': 'ALL'})
-    options.add_argument(
-        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-    )
-    # options.headless = True  # newly added
-    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),
-                          options=options) as driver:  # modified
-        # driver = webdriver.Chrome('/home/dev/Desktop/selenium')
+    try:
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
             request_url(driver, links)
+            driver.find_element(By.CLASS_NAME, "WpHeLc").click()
             while flag:
                 flag, total_job = find_jobs(driver, job_type, total_job)
-                print("Fetching...")
-            print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
-            print("Failed")
         driver.quit()
+    except Exception as e:
+        print(e)

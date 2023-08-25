@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 total_job = 0
 
@@ -64,7 +64,7 @@ def find_jobs(driver, job_type, total_job):
                 By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
             append_data(data, job_description.text)
             url = driver.find_elements(
-                By.CLASS_NAME, "sc-cbPlza")
+                By.CLASS_NAME, "sc-gAjuZT")
             append_data(data, url[count].get_attribute('href'))
             job_posted_date = driver.find_element(
                 By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
@@ -72,15 +72,15 @@ def find_jobs(driver, job_type, total_job):
             try:
                 salary_string = driver.find_element(
                     By.CLASS_NAME, "detailsstyles__DetailsTableDetailBody-sc-1deoovj-5")
-                if "$" and "–" in salary_string.text:
-                    salary_format = "$"
-                    append_data(data, salary_format)
+                if "$" in salary_string.text:
+                    salary_format = "N/A"
                     estimated_salary = salary_string.text.split(" ")[0]
-                    append_data(data, estimated_salary)
-                    salary_min = salary_string.text.split("–")[0]
-                    append_data(data, salary_min)
-                    salary_max = salary_string.text.split("–")[1].split(" ")[0]
-                    append_data(data, salary_max)
+                    salary_min = salary_string.text.split("-")[0]
+                    salary_max = salary_string.text.split("-")[1].split(" ")[0]
+                    append_data(data, salary_format)
+                    append_data(data, k_conversion(estimated_salary))
+                    append_data(data, k_conversion(salary_min))
+                    append_data(data, k_conversion(salary_max))
                 else:
                     append_data(data, "N/A")
                     append_data(data, "N/A")
@@ -99,7 +99,6 @@ def find_jobs(driver, job_type, total_job):
             total_job += 1
         except Exception as e:
             print("Exception in Monster => ", e)
-    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description",
                     'job_source_url', "job_posted_date", "salary_format", "estimated_salary", "salary_min",
                     "salary_max", "job_source", "job_type", "job_description_tags"]
@@ -115,26 +114,17 @@ def monster(link, job_type):
     total_job = 0
     print("Monster")
     try:
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
-            try:
-                driver.maximize_window()
-                driver.get(link)
-                total_job = find_jobs(
-                    driver, job_type, total_job)
-                print("SCRAPING_ENDED")
-            except Exception as e:
-                saveLogs(e)
-                print(LINK_ISSUE)
-            driver.quit()
+        driver = configure_webdriver()
+        try:
+            driver.maximize_window()
+            driver.get(link)
+            total_job = find_jobs(
+                driver, job_type, total_job)
+            print("SCRAPING_ENDED")
+        except Exception as e:
+            saveLogs(e)
+            print(LINK_ISSUE)
+        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)

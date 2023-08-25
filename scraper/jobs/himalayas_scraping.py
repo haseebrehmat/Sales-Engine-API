@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from utils.helpers import saveLogs
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 
 total_job = 0
 
@@ -91,7 +91,7 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 except:
                     job_type = "Full Time on Site"
                 try:
-                    salary_format = '$'
+                    salary_format = 'N/A'
                     estimated_salary = main_grid.find_elements(By.TAG_NAME, "div")[7].find_element(By.TAG_NAME, "p").text
                     salary_min = estimated_salary.split("-")[0]
                     salary_max = estimated_salary.split("-")[1].split(" ")[0]
@@ -114,9 +114,9 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 append_data(data, job_source_url)
                 append_data(data, job_posted_date)
                 append_data(data, salary_format)
-                append_data(data, estimated_salary)
-                append_data(data, salary_min)
-                append_data(data, salary_max)
+                append_data(data, k_conversion(estimated_salary))
+                append_data(data, k_conversion(salary_min))
+                append_data(data, k_conversion(salary_max))
                 append_data(data, job_source)
                 append_data(data, job_type)
                 append_data(data, job_description_tags)
@@ -154,30 +154,22 @@ def himalayas(link, job_type):
     print("Himalayas Scraper")
     total_job = 0
     i = 1
-    while(i < 5):
-        if i == 1:
-            search_keyword = "Software Engineer"
-            location_type = "United States"
-        elif i == 2:
-            search_keyword = "Software Engineer"
-            location_type = "Only 100% remote jobs"
-        elif i == 3:
-            search_keyword = "Developer"
-            location_type = "United States"
-        elif i == 4:
-            search_keyword = "Developer"
-            location_type = "Only 100% remote jobs"
-        try:
-            options = webdriver.ChromeOptions()  # newly added
-            options.add_argument("--headless")
-            options.add_argument("window-size=1200,1100")
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--disable-gpu')
-            options.add_argument(
-                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-            )
-            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+    try:
+        while(i < 5):
+            if i == 1:
+                search_keyword = "Software Engineer"
+                location_type = "United States"
+            elif i == 2:
+                search_keyword = "Software Engineer"
+                location_type = "Only 100% remote jobs"
+            elif i == 3:
+                search_keyword = "Developer"
+                location_type = "United States"
+            elif i == 4:
+                search_keyword = "Developer"
+                location_type = "Only 100% remote jobs"
+            try:
+                driver = configure_webdriver()
                 driver.maximize_window()
                 try:
                     flag = True
@@ -189,6 +181,8 @@ def himalayas(link, job_type):
                 except Exception as e:
                     print(e)
                 driver.quit()
-        except:
-            print("Error Occurs. \n")
-        i += 1
+            except:
+                print("Error Occurs. \n")
+            i += 1
+    except Exception as e:
+        print(e)

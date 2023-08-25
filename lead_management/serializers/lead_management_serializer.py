@@ -106,10 +106,10 @@ class CustomLeadSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     applied_job = serializers.SerializerMethodField()
     candidate = serializers.SerializerMethodField()
-
+    
     class Meta:
         model = Lead
-        fields = ['id', 'phase', 'candidate', 'status', 'applied_job', 'updated_at', 'created_at']
+        fields = ['id', 'phase', 'candidate', 'status', 'edited', 'applied_job', 'updated_at', 'created_at']
 
     def get_phase(self, instance):
         data = {'id': str(instance.phase.id) if instance.phase else None,

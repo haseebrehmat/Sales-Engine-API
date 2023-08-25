@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.models import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 from scraper.utils.helpers import configure_webdriver
 total_job = 0
@@ -43,8 +43,13 @@ def find_jobs(driver, job_type, total_job):
             job_url = driver.find_element(By.CLASS_NAME, 'min-h-32').find_element(By.TAG_NAME, 'a').get_attribute(
                 'href')
             if '$' in job_details[3]:
-                salary_format = '$'
                 estimated_salary = job_details[-3]
+                if 'month' in estimated_salary.split(' per ')[1]:
+                    salary_format = 'monthly'
+                elif 'hour' in estimated_salary.split(' per ')[1]:
+                    salary_format = 'hourly'
+                elif ('year' or 'annum') in estimated_salary.split(' per ')[1]:
+                    salary_format = 'yearly'
                 address = job_details[4]
                 job_posted_date = job_details[-1]
             else:
@@ -70,9 +75,9 @@ def find_jobs(driver, job_type, total_job):
             data.append(job_url)
             data.append(job_posted_date)
             data.append(salary_format)
-            data.append(estimated_salary)
-            data.append(min_salary)
-            data.append(max_salary)
+            data.append(k_conversion(estimated_salary))
+            data.append(k_conversion(min_salary))
+            data.append(k_conversion(max_salary))
             data.append("Dynamite")
             data.append(job_type)
             data.append(job_description.get_attribute('innerHTML'))

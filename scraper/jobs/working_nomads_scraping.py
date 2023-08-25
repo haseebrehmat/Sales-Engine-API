@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 
 def get_job_url(job):
@@ -47,12 +47,14 @@ def get_job_detail(driver, job_source, job_url, job_type):
                 job['address'] = about_line_text
             elif 'fa-money' in class_name:
                 # save salary data
-                if '$' in about_line_text:
-                    job['salary_format'] = '$'
-                job['estimated_salary'] = about_line_text
+                if 'year' in about_line_text:
+                    job['salary_format'] = 'yearly'
+                else:
+                    job['salary_format'] = 'N/A'
+                job['estimated_salary'] = k_conversion(about_line_text)
                 salary = about_line_text.split('-')
-                job['salary_min'] = salary[0] if '-' in about_line_text else about_line_text.split(' ')[0]
-                job['salary_max'] = salary[1].split(' ')[0] if '-' in about_line_text else about_line_text.split(' ')[0]
+                job['salary_min'] = k_conversion(salary[0] if '-' in about_line_text else about_line_text.split(' ')[0])
+                job['salary_max'] = k_conversion(salary[1].split(' ')[0] if '-' in about_line_text else about_line_text.split(' ')[0])
         return job, False
     except Exception as e:
         saveLogs(e)

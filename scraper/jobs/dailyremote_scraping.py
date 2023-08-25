@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from utils.helpers import saveLogs
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 
 total_job = 0
 
@@ -74,15 +74,15 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_source_url)
                 append_data(data, job_posted_date)
                 if "$" and "-" in salary_string:
-                    salary_format = "$"
+                    salary_format = "N/A"
                     append_data(data, salary_format)
                     estimated_salary = salary_string
-                    append_data(data, estimated_salary)
+                    append_data(data, k_conversion(estimated_salary))
                     salary_min = salary_string.split("-")[0]
-                    append_data(data, salary_min)
+                    append_data(data, k_conversion(salary_min))
                     salary_max = salary_string.split("-")[1].split("k")[0]
                     salary_max = "$"+salary_max+"k"
-                    append_data(data, salary_max)
+                    append_data(data, k_conversion(salary_max))
                 else:
                     append_data(data, "N/A")
                     append_data(data, "N/A")
@@ -123,26 +123,17 @@ def append_data(data, field):
 def dailyremote(link, job_type):
     try:
         total_job = 0
-        options = webdriver.ChromeOptions()  # newly added
-        options.add_argument("--headless")
-        options.add_argument("window-size=1200,1100")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument(
-            "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-        )
-        with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
-            driver.maximize_window()
-            try:
-                flag = True
-                driver.get(link)
-                while flag:
-                    flag, total_job = find_jobs(
-                        driver, job_type, total_job)
-                    print("Fetching...")
-            except Exception as e:
-                print(e)
-            driver.quit()
+        driver = configure_webdriver()
+        driver.maximize_window()
+        try:
+            flag = True
+            driver.get(link)
+            while flag:
+                flag, total_job = find_jobs(
+                    driver, job_type, total_job)
+                print("Fetching...")
+        except Exception as e:
+            print(e)
+        driver.quit()
     except:
         print("Error Occurs. \n")

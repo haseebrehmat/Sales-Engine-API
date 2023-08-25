@@ -6,6 +6,7 @@ from scraper.jobs.dice_scraping import dice
 from scraper.jobs.glassdoor_scraping import glassdoor
 from scraper.jobs.google_careers_scraping import google_careers
 from scraper.jobs.indeed_scraping import indeed
+from scraper.jobs.job_gether_scraping import job_gether
 from scraper.jobs.jooble_scraping import jooble
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
@@ -19,7 +20,7 @@ from scraper.jobs.rubynow_scraping import rubynow
 from scraper.jobs.workopolis_scraping import workopolis
 from scraper.jobs.himalayas_scraping import himalayas
 from scraper.jobs.dynamite_scraping import dynamite
-
+from scraper.jobs.startwire_scraping import startwire
 from scraper.jobs.remote_ok_scraping import remoteok
 
 single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': career_builder, 'dice': dice,
@@ -31,4 +32,6 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'recruit': recruit, 'dailyremote': dailyremote, 'rubynow': rubynow,
                              'workingnomads': working_nomads, 'working_nomads': working_nomads, 'workopolis': workopolis,
                              'dynamite': dynamite, "arcdev": arc_dev, "arc_dev": arc_dev,
-                             'himalayas': himalayas}
+                             'himalayas': himalayas, 'startwire': startwire, "jobgether": job_gether, "remoteok": remoteok,
+                             "remote_ok": remoteok
+}

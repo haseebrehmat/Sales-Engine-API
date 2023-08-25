@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -55,7 +55,6 @@ def find_jobs(driver, job_type, total_job):
     count = 0
     c_count = 0
     time.sleep(3)
-    date_time = str(datetime.now())
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "react-job-listing")
         estimated_salary = driver.find_elements(By.CLASS_NAME, "salary-estimate")
@@ -87,19 +86,27 @@ def find_jobs(driver, job_type, total_job):
                     try:
                         salary_exist = driver.find_element(By.CLASS_NAME, "css-1xe2xww")
                         if salary_exist:
-                            if '$' in estimated_salary[c_count].text:
-                                append_data(data, "$")
+                            es = estimated_salary[c_count].text.split(' (')[0]
+                            if 'Per' in es:
+                                es_salary = es.split(" Per ")
+                                salary_format = es_salary[1]
+                                if 'Hour' in salary_format:
+                                    append_data(data, "hourly")
+                                elif 'Month' in salary_format:
+                                    append_data(data, "monthly")
+                                elif ('Year' or 'Annum') in salary_format:
+                                    append_data(data, "yearly")
+                                else:
+                                    append_data(data, "N/A")
                             else:
-                                append_data(data, "N/A")
-                            es = estimated_salary[c_count].text.split(" P")[0]
-                            est_salary = es.split(" (")[0]
-                            append_data(data, est_salary)
+                                append_data(data, 'N/A')
+                            append_data(data, k_conversion(es))
                             try:
-                                append_data(data, est_salary.split(" - ")[0])
+                                append_data(data, k_conversion(es.split(" - ")[0].split(" Per")[0]))
                             except:
                                 append_data(data, "N/A")
                             try:
-                                append_data(data, est_salary.split(" - ")[1])
+                                append_data(data, k_conversion(es.split(" - ")[1].split(" Per")[0]))
                             except:
                                 append_data(data, "N/A")
 
@@ -144,45 +151,35 @@ def find_jobs(driver, job_type, total_job):
 # code starts from here
 def glassdoor(link, job_type):
     print("Glassdoor")
+    exit_scraping = False
     try:
         for x in Accounts.objects.all():
-            # import pdb
-            # pdb.set_trace()
             total_job = 0
             count = 0
-            options = webdriver.ChromeOptions()  # newly added
-            options.add_argument("--headless")
-            options.add_argument("window-size=1200,1100")
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--disable-gpu')
-            options.add_argument(
-                "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
-            )
-            with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:  # modified
-                driver.maximize_window()
-                request_url(driver, GLASSDOOR_LOGIN_URL)
-                logged_in = login(driver, x.email, x.password)
-                # import pdb
-                # pdb.set_trace()
-                try:
-                    if logged_in:
-                        flag = True
-                        request_url(driver, link)
-                        while flag:
-                            flag, total_job = find_jobs(
-                                driver, job_type, total_job)
-                            count += 1
-                        print(SCRAPING_ENDED)
-                        break
-                    else:
-                        print(LOGIN_FAILED)
-                        continue
-                except Exception as e:
-                    saveLogs(e)
-                    print(LINK_ISSUE)
-                    break
-                driver.quit()
+            driver = configure_webdriver()
+            driver.maximize_window()
+            request_url(driver, GLASSDOOR_LOGIN_URL)
+            logged_in = login(driver, x.email, x.password)
+            try:
+                if logged_in:
+                    flag = True
+                    request_url(driver, link)
+                    while flag:
+                        flag, total_job = find_jobs(
+                            driver, job_type, total_job)
+                        count += 1
+                    print(SCRAPING_ENDED)
+                    exit_scraping = True
+                else:
+                    print(LOGIN_FAILED)
+                    exit_scraping = False
+            except Exception as e:
+                saveLogs(e)
+                print(LINK_ISSUE)
+                exit_scraping = True
+            driver.quit()
+            if exit_scraping:
+                break
     except Exception as e:
         saveLogs(e)
         print(e)
