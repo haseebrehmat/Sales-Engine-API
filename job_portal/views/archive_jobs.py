@@ -39,7 +39,7 @@ class ArchiveJobs(APIView):
 
     def get(self, request):
         message = "Only Admin has access to this endpoint!"
-        if self.request.user.is_superuser:
+        if not self.request.user.is_superuser:
             if request.GET.get("archive") == "true":
                 self.migrate_jobs_to_archive()
                 message = "Job migration in progress!"

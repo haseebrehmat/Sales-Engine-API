@@ -13,8 +13,8 @@ from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    permission_classes = (AllowAny,)
-    queryset = Analytics.objects.all()
+    permission_classes = (AllowAny | AnalyticsPermission,)
+    queryset = Analytics.objects.all().order_by('-job_posted_date')
     tech_keywords = ""
     job_types = ""
     months = [
@@ -310,42 +310,3 @@ class GenerateAnalytics(APIView):
 #
 #
 # print(salary_stats)
-
-
-# Add up the count fields to create a composite count field for sorting
-# top_tech_stats = top_tech_stats.annotate(
-#     composite_count=(
-#         F('total_count') +
-#         F('contract_on_site_count') +
-#         F('contract_remote_count') +
-#         F('full_time_on_site_count') +
-#         F('full_time_remote_count') +
-#         F('hybrid_full_time_count') +
-#         F('hybrid_contract_count')
-#     ),
-# )
-
-# Order the queryset by the composite count field in descending order
-
-
-# import pandas as pd
-#
-# df = pd.read_csv('scraper/jobs backup of august.csv')
-# # for idx, x in df.iterrows():
-# #     print(x)
-# bulk_instances = [
-# JobArchive(
-#     job_title=x['job_title'],
-#     company_name=x['company_name'],
-#     job_source=x['job_source'],
-#     job_type=x['job_type'],
-#     address=x['address'],
-#     tech_keywords=x['tech_keywords'],
-#     job_posted_date=x['job_posted_date'],
-#     job_source_url=x['job_source_url'],
-#     salary_max=x['salary_max'],
-#     salary_min=x['salary_min'],
-#     salary_format=x['salary_format']
-# ) for idx, x in df.iterrows()]
-#
-# JobArchive.objects.bulk_create(bulk_instances, batch_size=500, ignore_conflicts=True)
