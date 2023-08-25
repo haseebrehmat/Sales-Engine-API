@@ -219,18 +219,8 @@ class GenerateAnalytics(APIView):
                 # get stacks from trends analytics objects
                 tech_stacks = trends.tech_stacks.split(',') if trends.tech_stacks else []
                 # find job type stats of each trends analytics category
-                # result = self.queryset.filter(name__in=tech_stacks).aggregate(
-                #     total=Count("id"),
-                #     contract_on_site=Count('id', filter=Q(job_type__in=self.contract_onsite_enums)),
-                #     contract_remote=Count('id', filter=Q(job_type__in=self.contract_remote_enums)),
-                #     full_time_on_site=Count('id', filter=Q(job_type__in=self.full_time_onsite_enums)),
-                #     full_time_remote=Count('id', filter=Q(job_type__in=self.full_time_remote_enums)),
-                #     hybrid_full_time=Count('id', filter=Q(job_type__in=self.hybrid_full_time_enums)),
-                #     hybrid_contract=Count('id', filter=Q(job_type__in=self.hybrid_contract_enums))
-                # )
                 queryset = TechStats.objects.filter(job_posted_date__range=[start_date, end_date])
-
-                result = queryset.filter(name__in=tech_stacks).values('id').annotate(
+                result = queryset.filter(name__in=tech_stacks).values('id').aggregate(
                     total=Sum('total'),
                     contract_on_site=Sum('contract_on_site'),
                     contract_remote=Sum('contract_remote'),
@@ -239,11 +229,11 @@ class GenerateAnalytics(APIView):
                     hybrid_full_time=Sum('hybrid_full_time'),
                     hybrid_contract=Sum('hybrid_contract'),
                 )
-                result.update({'name': trends.category})
+                result.update({'name': trends.category, 'tech_stacks': tech_stacks})
                 data.append(result)
             return data
         except Exception as e:
-            print("trend analytics by Ahsan Riaz => ", e)
+            print("trend analytics failed due to ", e)
             return []
 
     def check_tech_growth(self, tech, start_date, end_date):
