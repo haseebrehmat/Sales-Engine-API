@@ -1,18 +1,14 @@
-import json
 import uuid
-from django.core import serializers
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.db.models import JSONField
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-# from django.contrib.postgres.fields.jsonb import JSONField
 from django.utils import timezone
 from authentication.models import User, Team
 from authentication.models.company import Company
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
 from pseudos.models import Verticals
 from settings.utils.model_fields import TimeStamped
+
 
 class JobDetail(TimeStamped):
     id = models.UUIDField(
@@ -39,7 +35,6 @@ class JobDetail(TimeStamped):
     estimated_salary = models.CharField(blank=True, null=True, max_length=100)
     expired_at = models.DateTimeField(max_length=150, blank=True, null=True)
     job_role = models.CharField(max_length=50, blank=True, null=True)
-    edited = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()
@@ -183,22 +178,3 @@ class TechStats(TimeStamped):
     hybrid_full_time = models.IntegerField(default=0)
     hybrid_contract = models.IntegerField(default=0)
     job_posted_date = models.DateTimeField(null=True, blank=True)
-
-class EditHistory(TimeStamped):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
-    instance_id = models.CharField(max_length=500)
-    model = models.CharField(max_length=200)
-    changes = ArrayField(JSONField(blank=True, null=True), blank=True, null=True)
-    class Meta:
-        default_permissions = ()
-        db_table = "edit_history"
-        unique_together = [("instance_id", "model", "changes", "user")]
-
-    def __str__(self):
-        return f"{self.user.email} - {self.model}"
-
-
-
-
-

@@ -16,7 +16,6 @@ class Lead(TimeStamped):
     is_active = models.BooleanField(default=True)
     candidate = models.ForeignKey(Candidate, on_delete=models.SET_NULL, null=True)
     converter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    edited = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()
