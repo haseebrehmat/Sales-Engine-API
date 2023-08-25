@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from job_portal.models import AppliedJobStatus, JobDetail, BlacklistJobs, EditHistory
+from job_portal.models import AppliedJobStatus, JobDetail, BlacklistJobs
 
 
 # Register your models here.
@@ -17,4 +17,3 @@ class AppliedJobAdmin(admin.ModelAdmin):
 admin.site.register(JobDetail, JobDetailAdmin)
 admin.site.register(AppliedJobStatus, AppliedJobAdmin)
 admin.site.register(BlacklistJobs)
-admin.site.register(EditHistory)
