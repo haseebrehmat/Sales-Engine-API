@@ -1,5 +1,7 @@
 import uuid
 from django.db import models
+# from django.db.models import FloatField, Value, Avg
+# from django.db.models.functions import Coalesce, Cast
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -63,6 +65,10 @@ class JobArchive(TimeStamped):
     tech_keywords = models.TextField(null=True, blank=True)
     job_posted_date = models.DateTimeField(null=True, blank=True)
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
+    salary_max = models.CharField(max_length=50, blank=True, null=True)
+    salary_min = models.CharField(max_length=50, blank=True, null=True)
+    salary_format = models.CharField(max_length=50, blank=True, null=True)
+    estimated_salary = models.CharField(blank=True, null=True, max_length=100)
     block = models.BooleanField(default=False)
     is_manual = models.BooleanField(default=False)
 
@@ -178,3 +184,8 @@ class TechStats(TimeStamped):
     hybrid_full_time = models.IntegerField(default=0)
     hybrid_contract = models.IntegerField(default=0)
     job_posted_date = models.DateTimeField(null=True, blank=True)
+
+
+
+
+
