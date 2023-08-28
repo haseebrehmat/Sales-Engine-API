@@ -115,7 +115,7 @@ class JobClassifier(object):
         classifier_result = self.find_job_techkeyword(job_title, regular_expression_list, languages)
         if classifier_result == 'others dev' and job_description:
             job_description = job_description.strip().lower()
-            tags = ['qa']
+            tags = ['qa', 'shopify']
             regular_expression_list = [regex_exp for regex_exp in regular_expressions if regex_exp['tech_stack'].lower() not in tags]
             classifier_result = self.match_text_with_regex(job_description, regular_expression_list)
             if classifier_result is None:

@@ -31,6 +31,21 @@ keyword = {
         "Salesforce Sales Operations Analyst",
         "Salesforce Technical Account Manager"
     ],
+    "shopify": [
+        "Shopify developer",
+        "Shopify Store",
+        "Shopify Full Stack Developer",
+        "Shopify Plus",
+        "Shopify Consultant",
+        "Shopify Expert",
+        "Sr. Shopify Developer",
+        "Senior Shopify Developer",
+        "Shopify Plus Developer",
+        "Shopify App Developer",
+        "Shopify Frontend Theme Engineer",
+        "Shopify Designer",
+        "Lead Shopify Developer",
+    ],
     "Database": [
         "database",
         "Database Administrator (DBA)",
@@ -515,6 +530,14 @@ languages = {
         "service now",
         "service-now",
         "servicenow"
+    ],
+    "shopify": [
+      "shopify",
+      "shopify developer",
+      "shopify expert",
+      "shopify consultant",
+      "shopify designer",
+      "shopify plus",
     ],
     "salesforce": [
         "salesforce",
@@ -1302,8 +1325,11 @@ languages = {
         "ms-sql"
     ],
 }
-
 regular_expressions = [
+    {
+        'tech_stack': 'shopify',
+        'exp': '(?i)(^|\W)(shopify([-\s](engineer|designer|app|themes?|store|liquid|expert|consultant|Plus|developers?))?)(\W|$)'
+    },
     {
         'tech_stack': 'qa',
         'exp': '(?i)(^|\W)(qa|qe|Quality[-\s]Assurance|Quality[-\s]Engineer)(\W|$)'
@@ -1413,6 +1439,7 @@ regular_expressions = [
         'exp': '(?i)(^|\W)(front[-\s]?end)(\W|$)'
     },
 ]
+
 
 developer = [
     "Engineer application",
