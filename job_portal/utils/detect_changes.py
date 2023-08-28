@@ -21,15 +21,16 @@ def detect_model_changes(instance, updated_instance, model, user):
                 print("")
     elif model_name == 'Lead':
         for x in updated_instance.keys():
-
             old_value = str(instance[x])
             new_value = str(updated_instance[x])
             if old_value != new_value:
                 if x == 'candidate_id':
-                    change_logs.append({"field": "candidate", "old_value": Candidate.objects.filter(id=old_value).first().name,
+                    change_logs.append({"field": "candidate", "old_value": 'None' if old_value == 'None' else
+                    Candidate.objects.filter(id=old_value).first().name,
                                         "new_value": Candidate.objects.filter(id=new_value).first().name})
                 elif x == 'phase_id':
-                    change_logs.append({"field": "phase", "old_value": Phase.objects.filter(id=old_value).first().name,
+                    change_logs.append({"field": "phase", "old_value": 'None' if old_value == 'None' else
+                    Phase.objects.filter(id=old_value).first().name,
                                         "new_value": Phase.objects.filter(id=new_value).first().name})
                 elif x == 'company_status_id':
                     company_status_new = CompanyStatus.objects.filter(id=new_value).first()

@@ -30,6 +30,17 @@ class DetectChangesView(ListAPIView):
             queryset = EditHistory.objects.filter(company_id=self.request.user.profile.company_id,
                                                   instance_id=instance_id,
                                                   model=model)
+
+            if self.request.GET.get("search", "") != "":
+                search_ids = []
+                target_search = self.request.GET.get("search")
+                for object in queryset:
+                    changes = object.changes
+                    for json in changes:
+                        if any(target_search.lower() in value.lower() for value in json.values()):
+                            search_ids.append(object.id)
+                            break
+                queryset = queryset.filter(pk__in=search_ids)
             return queryset
         else:
             return EditHistory.objects.none()
