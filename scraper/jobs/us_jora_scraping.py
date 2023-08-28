@@ -25,7 +25,7 @@ def request_url(driver, url):
 # append data for csv file
 def append_data(data, field):
     data.append(str(field).strip("+"))
-    
+
 
 def find_jobs(driver, job_type, total_jobs):
     scrapped_data = []
@@ -67,23 +67,25 @@ def find_jobs(driver, job_type, total_jobs):
                 scrapped_data.append(data)
                 total_jobs += 1
             except Exception as e:
+                saveLogs(e)
                 print(e)
-    except Exception as e:
-        print(e)
 
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.USJORA)
-    df.to_excel(filename, index=False)
-    ScraperLogs.objects.create(total_jobs=len(df), job_source="US Jora", filename=filename)
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                        "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+        filename = generate_scraper_filename(ScraperNaming.USJORA)
+        df.to_excel(filename, index=False)
+        ScraperLogs.objects.create(total_jobs=len(df), job_source="US Jora", filename=filename)
 
-    try:
-        next_btn = driver.find_elements(By.CLASS_NAME, "next-page-button")
-        if len(next_btn) > 0:
-            next_btn[0].click()
-            return True, total_jobs
-        return False, total_jobs
+        try:
+            next_btn = driver.find_elements(By.CLASS_NAME, "next-page-button")
+            if len(next_btn) > 0:
+                next_btn[0].location_once_scrolled_into_view
+                next_btn[0].click()
+                return True, total_jobs
+            return False, total_jobs
+        except Exception as e:
+            return False, total_jobs
     except Exception as e:
         return False, total_jobs
 

@@ -31,6 +31,7 @@ def find_jobs(driver, job_type, total_job):
         except Exception as e:
             print(e)
         time.sleep(3)
+        jobs = driver.find_elements(By.CLASS_NAME, "result-item")
         for job in jobs:
             data = []
             try:
@@ -93,6 +94,7 @@ def update_job_description(driver, data):
     try:
         for i in range(len(data)):
             driver.get(data[i][4])
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "jd-des")))
             job_description = driver.find_element(By.CLASS_NAME, "jd-des")
             data[i][3] = job_description.text
             data[i][-1] = job_description.get_attribute('innerHTML')
@@ -106,6 +108,7 @@ def append_data(data, field):
 
 # Create your views here.
 def recruit(link, job_type):
+    print("Recruit")
     try:
         total_job = 0
         driver = configure_webdriver()

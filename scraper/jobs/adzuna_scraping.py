@@ -29,61 +29,65 @@ def append_data(data, field):
 
 # find's job name
 def find_jobs(driver, job_type, total_job):
-    scrapped_data = []
-    date_time = str(datetime.now())
-    count = 0
+    try:
+        scrapped_data = []
+        date_time = str(datetime.now())
+        count = 0
 
-    WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "gap-4"))
-    )
-    jobs = driver.find_elements(By.CLASS_NAME, "gap-2")
+        WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "gap-4"))
+        )
+        jobs = driver.find_elements(By.CLASS_NAME, "gap-2")
 
-    for job in jobs:
+        for job in jobs:
+            try:
+                data = []
+                job_title = job.find_element(By.CLASS_NAME, "gap-4")
+                append_data(data, job_title.text)
+                company_name = job.find_element(By.CLASS_NAME, "ui-company")
+                append_data(data, company_name.text)
+                address = job.find_element(By.CLASS_NAME, "ui-location")
+                append_data(data, address.text)
+                job_description = job.find_element(By.CLASS_NAME, "max-snippet-height")
+                append_data(data, job_description.text)
+                job_link = job_title.find_element(By.TAG_NAME, "a")
+                append_data(data, job_link.get_attribute('href'))
+                append_data(data, 'Today')
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "Adzuna")
+                append_data(data, job_type)
+                append_data(data, job_description.get_attribute('innerHTML'))
+                count += 1
+                total_job += 1
+                scrapped_data.append(data)
+            except Exception as e:
+                print(e)
+
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                        "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+        filename = generate_scraper_filename(ScraperNaming.ADZUNA)
+        df.to_excel(filename, index=False)
+
+        ScraperLogs.objects.create(total_jobs=len(df), job_source="Adzuna", filename=filename)
+
+        finished = "next"
+        pagination = driver.find_elements(By.CLASS_NAME, "leading-10")
+        pagination[-1].location_once_scrolled_into_view
         try:
-            data = []
-            job_title = job.find_element(By.CLASS_NAME, "gap-4")
-            append_data(data, job_title.text)
-            company_name = job.find_element(By.CLASS_NAME, "ui-company")
-            append_data(data, company_name.text)
-            address = job.find_element(By.CLASS_NAME, "ui-location")
-            append_data(data, address.text)
-            job_description = job.find_element(By.CLASS_NAME, "max-snippet-height")
-            append_data(data, job_description.text)
-            job_link = job_title.find_element(By.TAG_NAME, "a")
-            append_data(data, job_link.get_attribute('href'))
-            append_data(data, 'Today')
-            append_data(data, "N/A")
-            append_data(data, "N/A")
-            append_data(data, "N/A")
-            append_data(data, "N/A")
-            append_data(data, "Adzuna")
-            append_data(data, job_type)
-            append_data(data, job_description.get_attribute('innerHTML'))
-            count += 1
-            total_job += 1
-            scrapped_data.append(data)
+            if finished in pagination[-1].text:
+                next_page_link = pagination[-1].get_attribute('href')
+                request_url(driver, next_page_link)
+                return True, total_job
+            return False, total_job
         except Exception as e:
             print(e)
-
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.ADZUNA)
-    df.to_excel(filename, index=False)
-
-    ScraperLogs.objects.create(total_jobs=len(df), job_source="Adzuna", filename=filename)
-
-    finished = "next"
-    pagination = driver.find_elements(By.CLASS_NAME, "leading-10")
-    pagination[-1].location_once_scrolled_into_view
-    try:
-        if finished in pagination[-1].text:
-            next_page_link = pagination[-1].get_attribute('href')
-            request_url(driver, next_page_link)
-            return True, total_job
-        return False, total_job
+            return False, total_job
     except Exception as e:
-        print(e)
+        saveLogs(e)
         return False, total_job
 
 
