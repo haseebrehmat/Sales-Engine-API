@@ -26,8 +26,6 @@ class LeadDetail(APIView):
 
     def get(self, request, pk):
         try:
-            import pdb
-            pdb.set_trace()
             queryset = Lead.objects.get(pk=pk)
             serializer = LeadDetailSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_200_OK)
