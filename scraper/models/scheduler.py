@@ -11,3 +11,5 @@ class SchedulerSync(TimeStamped):
 
     class Meta:
         unique_together = ["job_source", "type"]
+    def __str__(self):
+        return f"{self.job_source} - {self.type}"

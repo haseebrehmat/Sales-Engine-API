@@ -198,7 +198,6 @@ class EditHistory(TimeStamped):
     class Meta:
         default_permissions = ()
         db_table = "edit_history"
-        unique_together = [("instance_id", "model", "changes", "user")]
 
     def __str__(self):
         return f"{self.user.email} - {self.model}"

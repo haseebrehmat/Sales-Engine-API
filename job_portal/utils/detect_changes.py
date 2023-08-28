@@ -26,15 +26,15 @@ def detect_model_changes(instance, updated_instance, model, user):
             new_value = str(updated_instance[x])
             if old_value != new_value:
                 if x == 'candidate_id':
-                    change_logs.append({"field": "Candidate", "old_value": Candidate.objects.filter(id=old_value).first().name,
+                    change_logs.append({"field": "candidate", "old_value": Candidate.objects.filter(id=old_value).first().name,
                                         "new_value": Candidate.objects.filter(id=new_value).first().name})
                 elif x == 'phase_id':
-                    change_logs.append({"field": "Phase", "old_value": Phase.objects.filter(id=old_value).first().name,
+                    change_logs.append({"field": "phase", "old_value": Phase.objects.filter(id=old_value).first().name,
                                         "new_value": Phase.objects.filter(id=new_value).first().name})
                 elif x == 'company_status_id':
                     company_status_new = CompanyStatus.objects.filter(id=new_value).first()
                     company_status_old = CompanyStatus.objects.filter(id=old_value).first()
-                    change_logs.append({"field": "Company Status", "old_value": company_status_old.status.name,
+                    change_logs.append({"field": "company_status", "old_value": company_status_old.status.name,
                                         "new_value": company_status_new.status.name})
                 else:
                     change_logs.append({"field": x, "old_value": old_value, "new_value": new_value})
