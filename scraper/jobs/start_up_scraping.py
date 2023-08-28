@@ -42,7 +42,6 @@ def append_data(data, field):
 # find's job name
 def find_jobs(driver, job_type, total_job):
     scrapped_data = []
-    date_time = str(datetime.now())
     count = 0
     WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.CLASS_NAME, "grid"))
@@ -55,7 +54,7 @@ def find_jobs(driver, job_type, total_job):
             main_tab_handle = driver.current_window_handle
             jobs = driver.find_elements(By.XPATH, jobs_query_selector)
             try:
-                for idx, job in enumerate(jobs):
+                for job in jobs:
                     if count >= max_scrap_limit:
                         break
                     try:

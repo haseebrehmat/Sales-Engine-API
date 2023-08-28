@@ -38,6 +38,7 @@ from scraper.jobs.remote_ok_scraping import remoteok
 from scraper.jobs.himalayas_scraping import himalayas
 from scraper.jobs.us_jora_scraping import us_jora
 from scraper.jobs.startwire_scraping import startwire
+from scraper.jobs.start_up_scraping import startup
 
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
@@ -133,7 +134,10 @@ scraper_functions = {
     ],
     "jobgether": [
         job_gether,
-    ]
+    ],
+    "startup": [
+        startup,
+    ],
 }
 
 
