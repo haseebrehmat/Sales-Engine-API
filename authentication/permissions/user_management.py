@@ -6,7 +6,6 @@ class UserPermissions(BasePermission):
     message = "You don't have access to this endpoint!"
 
     def has_permission(self, request, view):
-        print(request.user.is_authenticated)
 
         permissions = {
             'GET': ['view_team','view_user'],

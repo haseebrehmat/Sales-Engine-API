@@ -35,7 +35,7 @@ CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
 
 class JobDetailsView(ModelViewSet):
-    queryset = JobDetail.objects.all()
+    queryset = JobDetail.objects.only('id')
     serializer_class = JobDetailSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     model = JobDetail
@@ -51,12 +51,11 @@ class JobDetailsView(ModelViewSet):
     def get_paginated_response(self, data, query):
         return self.paginator.get_paginated_response(data, query)
 
-    @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
+    # @swagger_auto_schema(responses={200: JobDetailOutputSerializer(many=False)})
     def list(self, request, *args, **kwargs):
         if self.queryset.count() == 0:
             return Response([], status=200)
 
-        request.user = User.objects.filter(email='admin@gmail.com').first()
         current_user = request.user
 
         current_user_jobs_list = AppliedJobStatus.objects.filter(applied_by=current_user).only('job_id', 'applied_by')
