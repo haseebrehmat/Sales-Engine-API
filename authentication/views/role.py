@@ -102,5 +102,6 @@ class RoleUserView(APIView):
 
 class AllRoleView(ListAPIView):
     serializer_class = RoleSerializer
+
     def get_queryset(self):
         return Role.objects.all()

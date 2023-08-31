@@ -1,6 +1,8 @@
 from django.apps import apps
+from django.db.models import F
 from django.http import JsonResponse
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.exceptions import InvalidUserException
@@ -11,15 +13,27 @@ from rest_framework.generics import ListAPIView
 from settings.utils.helpers import serializer_errors
 
 
-class PermissionView(ListAPIView):
+class PermissionView(APIView):
     serializer_class = PermissionSerializer
 
-    def get_queryset(self):
-        return CustomPermission.objects.all()
+    def get(self, request):
+        modules = set(CustomPermission.objects.values_list("module", flat=True))
+        data = [{
+            'module': module,
+            'permissions': [
+                {
+                    'id': x.id,
+                    'name': x.name,
+                    'codename': x.codename,
+                    'level': x.level
+                } for x in CustomPermission.objects.filter(module=module)]
+        } for module in modules]
 
+        return Response({'data': data, 'modules': modules})
 
     def post(self, request):
         permissions = request.data["permissions"]
+        print(request.data)
         for permission in permissions:
             serializer = PermissionSerializer(data=permission)
             if serializer.is_valid():
@@ -46,6 +60,8 @@ class PermissionDetailView(APIView):
     def put(self, request, pk):
         queryset = CustomPermission.objects.filter(pk=pk).first()
         serializer = PermissionSerializer(queryset, request.data)
+        if not request.data.get("module"):
+            return Response({"detail": "Module cannot be empty!"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         if serializer.is_valid():
             serializer.save()
@@ -80,9 +96,6 @@ class PermissionAssignmentView(ListAPIView):
             message = "Role does not exist!"
             status_code = status.HTTP_406_NOT_ACCEPTABLE
         return Response({'detail': message}, status=status_code)
-
-
-
 
 
 def get_all_permissions(request):
