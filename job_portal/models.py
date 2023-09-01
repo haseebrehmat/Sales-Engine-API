@@ -15,6 +15,7 @@ from job_portal.utils.job_status import JOB_STATUS_CHOICE
 from pseudos.models import Verticals
 from settings.utils.model_fields import TimeStamped
 
+
 class JobDetail(TimeStamped):
     id = models.UUIDField(
         primary_key=True,
@@ -69,10 +70,10 @@ class JobArchive(TimeStamped):
     tech_keywords = models.TextField(null=True, blank=True)
     job_posted_date = models.DateTimeField(null=True, blank=True)
     job_source_url = models.CharField(max_length=2000, null=True, blank=True)
-    # salary_max = models.CharField(max_length=50, blank=True, null=True)
-    # salary_min = models.CharField(max_length=50, blank=True, null=True)
-    # salary_format = models.CharField(max_length=50, blank=True, null=True)
-    # estimated_salary = models.CharField(blank=True, null=True, max_length=100)
+    salary_max = models.CharField(max_length=50, blank=True, null=True)
+    salary_min = models.CharField(max_length=50, blank=True, null=True)
+    salary_format = models.CharField(max_length=50, blank=True, null=True)
+    estimated_salary = models.CharField(blank=True, null=True, max_length=100)
     block = models.BooleanField(default=False)
     is_manual = models.BooleanField(default=False)
 
@@ -189,19 +190,17 @@ class TechStats(TimeStamped):
     hybrid_contract = models.IntegerField(default=0)
     job_posted_date = models.DateTimeField(null=True, blank=True)
 
+
 class EditHistory(TimeStamped):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, blank=True, null=True)
     instance_id = models.CharField(max_length=500)
     model = models.CharField(max_length=200)
     changes = ArrayField(JSONField(blank=True, null=True), blank=True, null=True)
+
     class Meta:
         default_permissions = ()
         db_table = "edit_history"
 
     def __str__(self):
         return f"{self.user.email} - {self.model}"
-
-
-
-

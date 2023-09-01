@@ -106,31 +106,44 @@ class CustomLeadSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     applied_job = serializers.SerializerMethodField()
     candidate = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Lead
         fields = ['id', 'phase', 'candidate', 'status', 'edited', 'applied_job', 'updated_at', 'created_at']
 
     def get_phase(self, instance):
-        data = {'id': str(instance.phase.id) if instance.phase else None,
-            'name': instance.phase.name if instance.phase else None} if instance.phase else None
-        return data
+        try:
+            data = {'id': str(instance.phase.id) if instance.phase else None,
+                    'name': instance.phase.name if instance.phase else None} if instance.phase else None
+            return data
+        except Exception as e:
+            print("Exception in get phase => ", str(e))
 
     def get_status(self, instance):
-        data = {'id': str(instance.company_status.id) if instance.company_status else None,
-            'name': instance.company_status.status.name if instance.company_status.status else None} if instance.company_status else None
-        return data
+        try:
+            data = {'id': str(instance.company_status.id) if instance.company_status else None,
+                    'name': instance.company_status.status.name if instance.company_status.status else None} if instance.company_status else None
+            return data
+        except Exception as e:
+            print("Exception in get status => ", str(e))
 
     def get_applied_job(self, instance):
-        applied_job = instance.applied_job_status
-        data = {"id": str(applied_job.id), "title": applied_job.job.job_title, "company": applied_job.job.company_name,
-                "tech_stack": applied_job.job.tech_keywords,
-                "applied_by": {"id": applied_job.applied_by.id, "name": applied_job.applied_by.username},
-                "vertical_name": applied_job.vertical.name if applied_job.vertical is not None else ""}
-        return data
+        try:
+            applied_job = instance.applied_job_status
+            data = {"id": str(applied_job.id), "title": applied_job.job.job_title,
+                    "company": applied_job.job.company_name,
+                    "tech_stack": applied_job.job.tech_keywords,
+                    "applied_by": {"id": applied_job.applied_by.id, "name": applied_job.applied_by.username},
+                    "vertical_name": applied_job.vertical.name if applied_job.vertical is not None else ""}
+            return data
+        except Exception as e:
+            print("Exception in get applied job => ", str(e))
 
     def get_candidate(self, instance):
-        candidate = instance.candidate
-        data = {'id': candidate.id, 'name': candidate.name,
-            'desigination': candidate.designation.title if candidate.designation.title else ''} if candidate else None
-        return data
+        try:
+            candidate = instance.candidate
+            data = {'id': candidate.id, 'name': candidate.name,
+                    'desigination': candidate.designation.title if candidate.designation.title else ''} if candidate else None
+            return data
+        except Exception as e:
+            print("Exception in get candidate => ", str(e))
