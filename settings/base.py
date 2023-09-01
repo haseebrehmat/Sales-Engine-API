@@ -230,7 +230,7 @@ LOGGING = {
 }
 
 
-if env("ENVIRONMENT") != 'local':
+if env("ENVIRONMENT") == 'production':
     ROLLBAR = {
         'access_token': '9253e9ce8ed24d669401c0fb5d37d62c',
         'environment': env("ENVIRONMENT"),
