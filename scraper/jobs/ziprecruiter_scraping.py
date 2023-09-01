@@ -36,7 +36,7 @@ def ziprecruiter_scraping(links, job_type):
                     break
             except:
                 break
-            time.sleep(5)
+            time.sleep(10)
 
         all_data = []
         driver.switch_to.window(original_window)
@@ -116,6 +116,11 @@ def ziprecruiter_scraping(links, job_type):
             all_data.append(job_detail)
         driver.switch_to.window(original_window)
 
+    except Exception as e:
+        print(e)
+        saveLogs(e)
+
+    try:
         df = pd.DataFrame.from_dict(all_data)
         df['job_description'] = df['job_description'].str.replace(
             '<.*?>', '', regex=True)
@@ -130,5 +135,4 @@ def ziprecruiter_scraping(links, job_type):
         driver.quit()
         print("SCRAPING_ENDED")
     except Exception as e:
-        print(e)
         saveLogs(e)
