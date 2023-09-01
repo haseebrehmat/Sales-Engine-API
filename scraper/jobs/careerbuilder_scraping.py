@@ -104,10 +104,16 @@ def find_jobs(driver, job_type, total_jobs):
 
 
 # find's job name
-def load_jobs(driver):
+def load_jobs(driver, count):
     if not data_exists(driver):
-        return False
+        return False, count
     try:
+        jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
+        print(len(jobs), count)
+        if len(jobs) == count:
+            return False, count
+
+        count = len(jobs)
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
                 (By.CLASS_NAME, "btn-clear-blue"))
@@ -116,11 +122,11 @@ def load_jobs(driver):
         next_page = driver.find_elements(By.CLASS_NAME, "btn-clear-blue")
         if len(next_page) > 0:
             next_page[0].click()
-            return True
+            return True, count
         else:
-            return False
+            return False, count
     except Exception as e:
-        return False
+        return False, count
 
 
 def accept_cookie(driver):
@@ -132,14 +138,17 @@ def accept_cookie(driver):
 # code starts from here
 def career_builder(link, job_type):
     total_job = 0
+    total_count = 0
     print("Career builder")
     try:
         driver = configure_webdriver()
         driver.maximize_window()
         try:
+            flag = True
             request_url(driver, link)
             accept_cookie(driver)
-            while load_jobs(driver):
+            while flag:
+                flag, total_count = load_jobs(driver, total_count)
                 print("Loading...")
             total_job = find_jobs(driver, job_type, total_job)
             print(SCRAPING_ENDED)
