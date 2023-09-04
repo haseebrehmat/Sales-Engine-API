@@ -204,3 +204,8 @@ class EditHistory(TimeStamped):
 
     def __str__(self):
         return f"{self.user.email} - {self.model}"
+
+
+class DownloadLogs(TimeStamped):
+    url = models.CharField(max_length=250, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)

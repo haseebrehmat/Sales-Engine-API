@@ -11,6 +11,7 @@ from utils.helpers import saveLogs
 
 
 class ArchiveJobs(APIView):
+    permission_classes = (AllowAny, )
     contract_onsite_enums = [
         "contract onsite",
         "contract on site",
@@ -57,9 +58,7 @@ class ArchiveJobs(APIView):
                     query |= Q(company_name=item.company_name, job_title=item.job_title)
 
             jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
-            filter_jobs = JobDetail.objects.filter(created_at__gte="2023-08-15")
-            print(filter_jobs.count())
-            print("filtered_jobs => ", jobs.count())
+            filter_jobs = JobDetail.objects.filter(created_at__gte="2023-08-24")
             if classify_data:
                 jobs.filter(query)
             print("Started")

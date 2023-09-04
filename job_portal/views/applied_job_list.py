@@ -125,25 +125,27 @@ class ListAppliedJobView(ListAPIView):
             path = f"job_portal/{filename}"
 
             url = upload_to_s3.upload_csv(path, filename)
-            context = {
-                "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
-                "username": request.user.username,
-                "company": "Octagon",
-                "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
-                "download_link": url
-            }
+            # context = {
+            #     "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
+            #     "username": request.user.username,
+            #     "company": "Octagon",
+            #     "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
+            #     "download_link": url
+            # }
 
-            html_string = render_to_string("csv_email_template.html", context)
-            msg = EmailMultiAlternatives("Applied Jobs Export", "Applied Jobs Export",
-                                         FROM_EMAIL,
-                                         [request.user.email])
+            # html_string = render_to_string("csv_email_template.html", context)
+            # msg = EmailMultiAlternatives("Applied Jobs Export", "Applied Jobs Export",
+            #                              FROM_EMAIL,
+            #                              [request.user.email])
 
-            msg.attach_alternative(
-                html_string,
-                "text/html"
-            )
-            email_status = msg.send()
-            return email_status
+            # msg.attach_alternative(
+            #     html_string,
+            #     "text/html"
+            # )
+            # email_status = msg.send()
+            # return email_status
+
+            return True
         except Exception as e:
             print("Error in exporting csv function", e)
             return False
