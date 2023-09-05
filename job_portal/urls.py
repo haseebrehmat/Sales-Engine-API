@@ -6,6 +6,7 @@ from rest_framework import routers
 from job_portal.classifier.update_job_stacks import UpdateJobStackView
 from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, ChangeJobStatusView, AppliedJobDetailsView, \
     ListAppliedJobView, MarkedAsExpiredView
+from job_portal.views.applied_job_list import TeamAppliedJobsMemberwiseAnalytics
 from job_portal.views.applied_jobs import AppliedJobView
 from job_portal.views.archive_jobs import ArchiveJobs
 from job_portal.views.detect_changes import EditHistoryView, DetectChangesView
@@ -59,6 +60,7 @@ urlpatterns = [
     path('trends_analytics/', TrendsAnalyticsListView.as_view()),
     path('trends_analytics/<int:pk>/', TrendsAnalyticsDetailView.as_view()),
     path('archive_jobs/', ArchiveJobs.as_view()),
+    path('team_applied_jobs_memberwise_analytics/', TeamAppliedJobsMemberwiseAnalytics.as_view()),
 
 ]
 
