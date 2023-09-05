@@ -237,3 +237,9 @@ if env("ENVIRONMENT") == 'production':
         'code_version': '1.0',
         'root': BASE_DIR,
     }
+
+
+# settings.py
+
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'  # Replace with your RabbitMQ credentials
+CELERY_RESULT_BACKEND = 'rpc://'  # Use a placeholder result backend (can be updated as needed)
