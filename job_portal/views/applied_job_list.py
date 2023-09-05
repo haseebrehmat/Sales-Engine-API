@@ -59,9 +59,21 @@ class ListAppliedJobView(ListAPIView):
                 applied_by__id__in=bd_id_list).select_related()
 
             queryset = self.filter_queryset(job_list)
+            queryset = self.filter_queryset_data(queryset, request)
             if request.GET.get("download", "") == "true":
-                self.export_csv(queryset, self.request)
-                return Response("Export in progress, You will be notify through email")
+                if queryset:
+                    filters = {x: request.GET[x] for x in request.query_params.keys() if x != 'download'}
+                    if DownloadLogs.objects.filter(user=request.user, query=filters).exists():
+                        message = "Job exports already exists, check logs"
+                    else:
+                        self.export_csv(queryset, self.request, filters)
+                        message = 'Export in progress, Check Logs in a while'
+                    status_code = status.HTTP_200_OK
+                else:
+                    message = {'detail': 'No job exists'}
+                    status_code = status.HTTP_406_NOT_ACCEPTABLE
+                return Response(message, status_code)
+
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = self.get_serializer(page, many=True)
@@ -100,8 +112,22 @@ class ListAppliedJobView(ListAPIView):
 
         return job_type_count
 
+    def filter_queryset_data(self, queryset, request):
+        if request.GET.get('tech_stacks'):
+            queryset = queryset.filter(job__tech_keywords__in=request.GET.get('tech_stacks').split(','))
+        if request.GET.get('start_date'):
+            queryset = queryset.filter(created_at__gte=request.GET.get('start_date'))
+        if request.GET.get('end_date'):
+            queryset = queryset.filter(created_at__lte=request.GET.get('end_date'))
+        if request.GET.get('applied_by'):
+            queryset = queryset.filter(applied_by__id=request.GET.get('applied_by'))
+        if request.GET.get('job_source'):
+            queryset = queryset.filter(job__job_source__in=request.GET.get('job_source').split(','))
+
+        return queryset
+
     @start_new_thread
-    def export_csv(self, queryset, request):
+    def export_csv(self, queryset, request, query):
         try:
             data = [
                 {
@@ -125,7 +151,7 @@ class ListAppliedJobView(ListAPIView):
             path = f"job_portal/{filename}"
 
             url = upload_to_s3.upload_csv(path, filename)
-            DownloadLogs.objects.create(url=url, user=request.user)
+            DownloadLogs.objects.create(url=url, user=request.user, query=query)
             # context = {
             #     "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
             #     "username": request.user.username,

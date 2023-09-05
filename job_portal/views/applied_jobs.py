@@ -58,11 +58,10 @@ class AppliedJobView(ListAPIView):
             job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list).select_related()
 
             queryset = self.filter_queryset(job_list)
+            queryset = self.filter_queryset_data(queryset, request)
             if request.GET.get("download", "") == "true":
-                print(queryset)
                 if queryset:
-                    filters = {x: request.GET[x] for x in request.query_params.keys()}
-                    print(filters)
+                    filters = {x: request.GET[x] for x in request.query_params.keys() if x != 'download'}
                     if DownloadLogs.objects.filter(user=request.user, query=filters).exists():
                         message = "Job exports already exists, check logs"
                     else:
@@ -110,6 +109,20 @@ class AppliedJobView(ListAPIView):
             'job__job_type').annotate(total_job_type=Count('job__job_type')))
 
         return job_type_count
+
+    def filter_queryset_data(self, queryset, request):
+        if request.GET.get('tech_stacks'):
+            queryset = queryset.filter(job__tech_keywords__in=request.GET.get('tech_stacks').split(','))
+        if request.GET.get('start_date'):
+            queryset = queryset.filter(created_at__gte=request.GET.get('start_date'))
+        if request.GET.get('end_date'):
+            queryset = queryset.filter(created_at__lte=request.GET.get('end_date'))
+        if request.GET.get('applied_by'):
+            queryset = queryset.filter(applied_by__id=request.GET.get('applied_by'))
+        if request.GET.get('job_source'):
+            queryset = queryset.filter(job__job_source__in=request.GET.get('job_source').split(','))
+
+        return queryset
 
     @start_new_thread
     def export_csv(self, queryset, request, query):

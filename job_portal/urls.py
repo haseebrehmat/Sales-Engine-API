@@ -7,6 +7,7 @@ from job_portal.classifier.update_job_stacks import UpdateJobStackView
 from job_portal.views import JobDetailsView, JobDataUploadView, JobCleanerView, ChangeJobStatusView, AppliedJobDetailsView, \
     ListAppliedJobView, MarkedAsExpiredView
 from job_portal.views.applied_jobs import AppliedJobView
+from job_portal.views.applied_jobs_download_logs import AppliedJobDownloadsView, FilterView
 from job_portal.views.archive_jobs import ArchiveJobs
 from job_portal.views.detect_changes import EditHistoryView, DetectChangesView
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
@@ -59,6 +60,8 @@ urlpatterns = [
     path('trends_analytics/', TrendsAnalyticsListView.as_view()),
     path('trends_analytics/<int:pk>/', TrendsAnalyticsDetailView.as_view()),
     path('archive_jobs/', ArchiveJobs.as_view()),
+    path('download_logs/', AppliedJobDownloadsView.as_view()),
+    path('applied_job_filters/', FilterView.as_view()),
 
 ]
 
