@@ -17,7 +17,7 @@ from authentication.models.team_management import Team
 from authentication.permissions.applied_job_permissions import AppliedJobPermission
 from authentication.serializers.users import UserSerializer
 from job_portal.filters.applied_job import TeamBasedAppliedJobFilter
-from job_portal.models import AppliedJobStatus
+from job_portal.models import AppliedJobStatus, DownloadLogs
 from job_portal.paginations.applied_job import AppliedJobPagination
 from job_portal.serializers.applied_job import TeamAppliedJobDetailSerializer
 from scraper.utils.thread import start_new_thread
@@ -61,8 +61,15 @@ class AppliedJobView(ListAPIView):
 
             queryset = self.filter_queryset(job_list)
             if request.GET.get("download", "") == "true":
-                self.export_csv(queryset, self.request)
-                return Response("Export in progress, You will be notify through email")
+                print(queryset)
+                if queryset:
+                    self.export_csv(queryset, self.request)
+                    message = 'Export in progress, You will be notify through email'
+                    status_code = status.HTTP_200_OK
+                else:
+                    message = {'detail': 'No job exists'}
+                    status_code = status.HTTP_406_NOT_ACCEPTABLE
+                return Response(message, status_code)
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = self.get_serializer(page, many=True)
@@ -119,33 +126,33 @@ class AppliedJobView(ListAPIView):
                     "applied_date": str(x.applied_date),
                     "resume": x.resume,
                 } for x in queryset]
-
             df = pd.DataFrame(data)
-            filename = "export-" + str(uuid.uuid4())[:10] + ".xlsx"
+            filename = f"{request.user.profile.company.name}-{request.user.email}-{str(datetime.now())}.xlsx".lower()
             df.to_excel(f'job_portal/{filename}', index=True)
             path = f"job_portal/{filename}"
 
-            url = upload_to_s3.upload_csv(path, filename)
-            context = {
-                "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
-                "username": request.user.username,
-                "company": "Octagon",
-                "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
-                "download_link": url
-            }
-
-            html_string = render_to_string("csv_email_template.html", context)
-            msg = EmailMultiAlternatives("Applied Jobs Export", "Applied Jobs Export",
-                                         FROM_EMAIL,
-                                         [request.user.email])
-
-            msg.attach_alternative(
-                html_string,
-                "text/html"
-            )
-            email_status = msg.send()
-            return email_status
+            url = upload_to_s3.upload_job_files(path, filename)
+            DownloadLogs.objects.create(url=url, user=request.user)
+            # context = {
+            #     "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
+            #     "username": request.user.username,
+            #     "company": "Octagon",
+            #     "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
+            #     "download_link": url
+            # }
+            #
+            # html_string = render_to_string("csv_email_template.html", context)
+            # msg = EmailMultiAlternatives("Applied Jobs Export", "Applied Jobs Export",
+            #                              FROM_EMAIL,
+            #                              [request.user.email])
+            #
+            # msg.attach_alternative(
+            #     html_string,
+            #     "text/html"
+            # )
+            # email_status = msg.send()
+            # return email_status
+            return True
         except Exception as e:
             print("Error in exporting csv function", e)
             return False
-

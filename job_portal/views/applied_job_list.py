@@ -16,7 +16,7 @@ from authentication.models import User
 from authentication.models.team_management import Team
 from authentication.serializers.users import UserSerializer
 from job_portal.filters.applied_job import TeamBasedAppliedJobFilter
-from job_portal.models import AppliedJobStatus
+from job_portal.models import AppliedJobStatus, DownloadLogs
 from job_portal.paginations.applied_job import AppliedJobPagination
 from job_portal.permissions.team_applied_job import TeamAppliedJobPermission
 from job_portal.serializers.applied_job import TeamAppliedJobDetailSerializer
@@ -120,11 +120,12 @@ class ListAppliedJobView(ListAPIView):
                 } for x in queryset]
 
             df = pd.DataFrame(data)
-            filename = "export-" + str(uuid.uuid4())[:10] + ".xlsx"
+            filename = f"{request.user.profile.company.name}-{request.user.email}-{str(datetime.now())}.xlsx".lower()
             df.to_excel(f'job_portal/{filename}', index=True)
             path = f"job_portal/{filename}"
 
             url = upload_to_s3.upload_csv(path, filename)
+            DownloadLogs.objects.create(url=url, user=request.user)
             # context = {
             #     "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
             #     "username": request.user.username,
@@ -149,4 +150,3 @@ class ListAppliedJobView(ListAPIView):
         except Exception as e:
             print("Error in exporting csv function", e)
             return False
-
