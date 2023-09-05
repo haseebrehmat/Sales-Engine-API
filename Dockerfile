@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.9
 
 RUN pip install --upgrade pip
 
@@ -50,6 +50,11 @@ RUN pip install -r requirements.txt
 COPY ./ /app
 
 WORKDIR /app
+
+# Install wait-for-it script
+RUN wget -O /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+    chmod +x /usr/local/bin/wait-for-it.sh
+
 
 COPY ./entrypoint.sh /
 ENTRYPOINT ["sh", "/entrypoint.sh"]

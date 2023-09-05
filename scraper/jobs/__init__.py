@@ -10,6 +10,7 @@ from scraper.jobs.job_gether_scraping import job_gether
 from scraper.jobs.jooble_scraping import jooble
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
+from scraper.jobs.receptix_scraping import receptix
 from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.working_nomads_scraping import working_nomads
@@ -33,5 +34,6 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'workingnomads': working_nomads, 'working_nomads': working_nomads, 'workopolis': workopolis,
                              'dynamite': dynamite, "arcdev": arc_dev, "arc_dev": arc_dev,
                              'himalayas': himalayas, 'startwire': startwire, "jobgether": job_gether, "remoteok": remoteok,
-                             "remote_ok": remoteok
+                             "remote_ok": remoteok, 'receptix': receptix
+
 }
