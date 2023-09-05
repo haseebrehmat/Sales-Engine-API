@@ -40,7 +40,6 @@ class AppliedJobView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            company = request.user.profile.company
             bd_id_list = []
 
             if request.user.roles.name.lower() == "owner":
@@ -56,15 +55,19 @@ class AppliedJobView(ListAPIView):
 
             bd_users = User.objects.filter(id__in=bd_id_list).select_related()
             bd_query = UserSerializer(bd_users, many=True)
-            job_list = AppliedJobStatus.objects.filter(
-                applied_by__id__in=bd_id_list).select_related()
+            job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list).select_related()
 
             queryset = self.filter_queryset(job_list)
             if request.GET.get("download", "") == "true":
                 print(queryset)
                 if queryset:
-                    self.export_csv(queryset, self.request)
-                    message = 'Export in progress, You will be notify through email'
+                    filters = {x: request.GET[x] for x in request.query_params.keys()}
+                    print(filters)
+                    if DownloadLogs.objects.filter(user=request.user, query=filters).exists():
+                        message = "Job exports already exists, check logs"
+                    else:
+                        self.export_csv(queryset, self.request, filters)
+                        message = 'Export in progress, Check Logs in a while'
                     status_code = status.HTTP_200_OK
                 else:
                     message = {'detail': 'No job exists'}
@@ -109,7 +112,7 @@ class AppliedJobView(ListAPIView):
         return job_type_count
 
     @start_new_thread
-    def export_csv(self, queryset, request):
+    def export_csv(self, queryset, request, query):
         try:
             data = [
                 {
@@ -132,7 +135,7 @@ class AppliedJobView(ListAPIView):
             path = f"job_portal/{filename}"
 
             url = upload_to_s3.upload_job_files(path, filename)
-            DownloadLogs.objects.create(url=url, user=request.user)
+            DownloadLogs.objects.create(url=url, user=request.user, query=query)
             # context = {
             #     "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
             #     "username": request.user.username,
