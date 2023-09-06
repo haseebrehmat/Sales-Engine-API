@@ -2,8 +2,9 @@ import datetime
 import json
 import os
 import time
+from datetime import datetime
 import traceback
-
+import pytz
 import pandas as pd
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -690,52 +691,54 @@ def scheduler_settings():
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["receptix"])
 
+def group_scraper_job(group_id):
+    pakistan_timezone = pytz.timezone('Asia/Karachi')
+    current_scraper = ''
+    current_group_scraper_id = group_id
+    group_scraper = GroupScraper.objects.filter(
+        pk=current_group_scraper_id).first()
 
-group_scraper_background_jobs = []
-current_scraper = ''
-current_group_scraper_id = None
-current_group_scraper_running_time = ''
+    current_scraper = group_scraper.name
+    current_scraper = current_scraper.lower()
 
-
-def group_scraper_job():
-    global current_scraper
-    global current_group_scraper_id
-    global current_group_scraper_running_time
-    try:
-        group_scraper = GroupScraper.objects.filter(
-            pk=current_group_scraper_id).first()
-
-        current_scraper = group_scraper.name
-        current_scraper = current_scraper.lower()
-
-        SchedulerSync.objects.filter(
-            type="group scraper").update(running=False, end_time=timezone.now())
-        SchedulerSync.objects.filter(
-            job_source=current_scraper).update(running=True, start_time=timezone.now(), end_time=timezone.now())
-        last_scraper_running_time = current_group_scraper_running_time
-    except Exception as e:
-        print(str(e))
-        saveLogs(e)
-        #continue
+    SchedulerSync.objects.filter(
+        type="group scraper").update(running=False, end_time=datetime.now(pakistan_timezone))
+    SchedulerSync.objects.filter(
+        job_source=current_scraper).update(running=True, start_time=datetime.now(pakistan_timezone),
+                                           end_time=datetime.now(pakistan_timezone))
 
     try:
         group_scraper_query = group_scraper.groupscraperquery
+        # print(f"The id is : {group_scraper_query.id}")
         if group_scraper_query:
             queries = group_scraper_query.queries
             for query in queries:
                 query["status"] = "stop"
+                query["start_time"] = None
+                query["end_time"] = None
+            group_scraper_query.save()
+            for query in queries:
                 job_source = query['job_source'].lower()
                 print(job_source)
                 if job_source in list(single_scrapers_functions.keys()):
                     scraper_func = single_scrapers_functions[job_source]
                     try:
+                        # start time and status running
                         query["status"] = "running"
+                        query["start_time"] = str(datetime.now(pakistan_timezone))
+                        group_scraper_query.save()
                         scraper_func(query['link'], query['job_type'])
                         upload_jobs()
                         remove_files(job_source)
-                        query["status"] = "stop"
+                        # end time and status successfully completed
+                        query["status"] = "completed"
+                        query["end_time"] = str(datetime.now(pakistan_timezone))
+                        group_scraper_query.save()
                     except Exception as e:
-                        query["status"] = "missed"
+                        # end time and status of missed
+                        query["status"] = "failed"
+                        query["end_time"] = str(datetime.now(pakistan_timezone))
+                        group_scraper_query.save()
                         print(e)
                         saveLogs(e)
             upload_jobs()
@@ -747,62 +750,5 @@ def group_scraper_job():
         print(str(e))
         saveLogs(e)
     SchedulerSync.objects.filter(
-        job_source=current_scraper).update(running=False, end_time=timezone.now())
-
-
-def change_group_scraper_id(group_id):
-    global current_group_scraper_id
-    global current_group_scraper_running_time
-    current_group_scraper_id = group_id
-    current_group_scraper_running_time = str(datetime.datetime.now())
-
-def change_group_scraper_id_from_celery(group_id):
-    global current_group_scraper_id
-    global current_group_scraper_running_time
-    current_group_scraper_id = group_id
-    current_group_scraper_running_time = str(datetime.datetime.now())
-    group_scraper_job()
-def stop_group_scraper_jobs():
-    print("Stopping group scrapper jobs ...")
-    for job in group_scraper_background_jobs:
-        job.shutdown()
-
-
-def run_group_scraper_jobs():
-    print("Running group scraper jobs ... ")
-
-    for job in group_scraper_background_jobs:
-        job.start()
-
-# for backup previous code
-# def start_group_scraper_scheduler():
-#     stop_group_scraper_jobs()
-#     global group_scraper_background_jobs
-#     group_scraper_background_jobs = []
-#     group_scrapers = GroupScraper.objects.select_related()
-#     for group_scraper in group_scrapers:
-#         scheduler = group_scraper.scheduler_settings
-#         group_scraper_scheduler = BackgroundScheduler()
-#         if scheduler:
-#             if scheduler.interval_based:
-#                 interval = convert_time_into_minutes(
-#                     scheduler.interval, scheduler.interval_type)
-#                 group_scraper_scheduler.add_job(change_group_scraper_id, 'interval', minutes=interval,
-#                                                 args=[group_scraper.id])
-#                 group_scraper_background_jobs.append(group_scraper_scheduler)
-#             elif scheduler.time_based:
-#                 group_scraper_scheduler.add_job(change_group_scraper_id, 'cron',
-#                                                 day_of_week='*' if not scheduler.week_days else scheduler.week_days,
-#                                                 hour=scheduler.time.hour, minute=scheduler.time.minute,
-#                                                 args=[group_scraper.id])
-#                 group_scraper_background_jobs.append(group_scraper_scheduler)
-#     run_group_scraper_jobs()
-#
-#
-#
-# try:
-#     if env("ENVIRONMENT") != "local":
-#         start_group_scraper_scheduler()
-#         group_scraper_job()
-# except Exception as e:
-#     print(e)
+        job_source=current_scraper).update(running=False, end_time=datetime.now(pakistan_timezone))
+    print("Group Scraper is finished")
