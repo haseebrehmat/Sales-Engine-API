@@ -18,7 +18,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'check_group_scraper': {
         'task': 'settings.celery.check_group_scraper',
-        'schedule': timedelta(seconds=60),
+        'schedule': timedelta(seconds=600),
     }
 }
 
