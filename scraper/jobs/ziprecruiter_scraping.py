@@ -20,6 +20,7 @@ def ziprecruiter_scraping(links, job_type):
         print("Zip Recruiter")
         c = 0
         driver = configure_webdriver()
+        driver.maximize_window()
         original_window = driver.current_window_handle
         driver.switch_to.new_window('tab')
         details_window = driver.current_window_handle

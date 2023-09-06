@@ -42,6 +42,7 @@ from scraper.jobs.us_jora_scraping import us_jora
 from scraper.jobs.startwire_scraping import startwire
 from scraper.jobs.start_up_scraping import startup
 from scraper.jobs.builtin_scraping import builtin
+from scraper.jobs.workable_scraping import workable
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -147,6 +148,9 @@ scraper_functions = {
     ],
     "builtin": [
         builtin,
+    ],
+    "workable": [
+        workable,
     ],
 }
 
