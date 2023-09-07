@@ -14,11 +14,11 @@ from utils.requests_logger import requests_logger_hooks
 def upload_jobs_in_sales_engine(jobs_data, filename=None):
     try:
         headers = {
-            'Authorization': '445f188bsk3423dsd1342jj434hjkn43j43n43j4d875ee0995ac1e89de6fc1d0252aabc5f2b24a4928',
+            'Authorization': SALES_ENGINE_API_TOKEN,
             'Content-Type': 'application/json'
         }
 
-        url = 'https://decagon-staging.devsinc.com/job_portal/api/v1/job_roles'  # API for getting role
+        url = 'https://bd.devsinc.com/job_portal/api/v1/job_roles'  # API for getting role
         resp = requests.get(url, headers=headers)
         job_roles = json.loads(resp.text).get('job_roles', []) if resp.ok else []
         excluded_jobs = ['others', 'others dev', 'other', 'other dev']
@@ -43,10 +43,6 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 } for job in jobs_data if job.tech_keywords not in excluded_jobs]
         }
         )
-
-        headers = {
-            'Authorization': SALES_ENGINE_API_TOKEN,
-            'Content-Type': 'application/json'}
 
         response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
 
