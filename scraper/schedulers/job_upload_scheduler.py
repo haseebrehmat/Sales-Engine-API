@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix
+from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix, the_muse
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -150,7 +150,10 @@ scraper_functions = {
         builtin,
     ],
     "workable": [
-        workable,
+        workable
+    ],
+    "themuse": [
+        the_muse,
     ],
 }
 
@@ -494,6 +497,7 @@ us_jora_scheduler = BackgroundScheduler()
 startwire_scheduler = BackgroundScheduler()
 job_gether_scheduler = BackgroundScheduler()
 receptix_scheduler = BackgroundScheduler()
+the_muse_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -595,7 +599,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "jobgether":
                 job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
-                job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["receptix"])
+                receptix_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["receptix"])
+            elif scheduler.job_source.lower() == "themuse":
+                the_muse_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["themuse"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -689,11 +695,14 @@ def scheduler_settings():
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["startwire"])
             elif scheduler.job_source.lower() == "jobgether":
-                rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                job_gether_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
-                rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                receptix_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["receptix"])
+            elif scheduler.job_source.lower() == "themuse":
+                the_muse_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["themuse"])
 
 def group_scraper_job(group_id):
     pakistan_timezone = pytz.timezone('Asia/Karachi')

@@ -23,6 +23,7 @@ from scraper.jobs.himalayas_scraping import himalayas
 from scraper.jobs.dynamite_scraping import dynamite
 from scraper.jobs.startwire_scraping import startwire
 from scraper.jobs.remote_ok_scraping import remoteok
+from scraper.jobs.the_muse_scraping import the_muse
 
 single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': career_builder, 'dice': dice,
                              'glassdoor': glassdoor, 'indeed': indeed, 'linkedin': linkedin, 'monster': monster,
@@ -34,6 +35,6 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'workingnomads': working_nomads, 'working_nomads': working_nomads, 'workopolis': workopolis,
                              'dynamite': dynamite, "arcdev": arc_dev, "arc_dev": arc_dev,
                              'himalayas': himalayas, 'startwire': startwire, "jobgether": job_gether, "remoteok": remoteok,
-                             "remote_ok": remoteok, 'receptix': receptix
+                             "remote_ok": remoteok, 'receptix': receptix, "the_muse": the_muse,
 
 }
