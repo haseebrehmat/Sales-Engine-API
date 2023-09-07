@@ -91,16 +91,17 @@ def find_jobs(driver, job_type, total_jobs):
             except Exception as e:
                 print(e)
         print("Per Page Scrapped")
+        date_time = str(datetime.now())
+        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                        "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+        filename = generate_scraper_filename(ScraperNaming.CAREER_BUILDER)
+        df.to_excel(filename, index=False)
+        ScraperLogs.objects.create(total_jobs=len(df), job_source="Career Builder", filename=filename)
+        return total_jobs
     except Exception as e:
         print(e)
-    date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.CAREER_BUILDER)
-    df.to_excel(filename, index=False)
-    ScraperLogs.objects.create(total_jobs=len(df), job_source="Career Builder", filename=filename)
-    return total_jobs
+        return total_jobs
 
 
 # find's job name
@@ -130,9 +131,12 @@ def load_jobs(driver, count):
 
 
 def accept_cookie(driver):
-    accept = driver.find_elements(By.CLASS_NAME, "btn-clear-white-transparent")
-    if len(accept) > 0:
-        accept[0].click()
+    try:
+        accept = driver.find_elements(By.CLASS_NAME, "btn-clear-white-transparent")
+        if len(accept) > 0:
+            accept[0].click()
+    except Exception as e:
+        print(e)
 
 
 # code starts from here

@@ -74,6 +74,7 @@ class ScraperNaming(enum.Enum):
     JOB_GETHER = 'job_gether'
     RECEPTIX = 'receptix'
     BUILTIN = 'builtin'
+    WORKABLE = 'workable'
 
     def __str__(self):
         return self.value
