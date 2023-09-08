@@ -45,53 +45,55 @@ def data_exists(driver):
 
 
 def find_jobs(driver, job_type, total_jobs):
-    scrapped_data = []
-    count = 0
-    c_count = 4
     try:
-        jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
-        links = driver.find_elements(By.CLASS_NAME, "job-listing-item")
-        c_name = driver.find_elements(By.CLASS_NAME, "data-details")
-        job_posted_date = driver.find_elements(
-            By.CLASS_NAME, "data-results-publish-time")
-        job_title = driver.find_elements(By.CLASS_NAME, "data-results-title")
+        scrapped_data = []
+        count = 0
+        c_count = 4
+        try:
+            jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
+            links = driver.find_elements(By.CLASS_NAME, "job-listing-item")
+            c_name = driver.find_elements(By.CLASS_NAME, "data-details")
+            job_posted_date = driver.find_elements(
+                By.CLASS_NAME, "data-results-publish-time")
+            job_title = driver.find_elements(By.CLASS_NAME, "data-results-title")
 
-        for job in jobs:
-            try:
-                data = []
-                job.click()
-                WebDriverWait(driver, 30).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, "jdp_title_header"))
-                )
-                WebDriverWait(driver, 30).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, "jdp-left-content"))
-                )
+            for job in jobs:
+                try:
+                    data = []
+                    job.click()
+                    WebDriverWait(driver, 30).until(
+                        EC.presence_of_element_located(
+                            (By.CLASS_NAME, "jdp_title_header"))
+                    )
+                    WebDriverWait(driver, 30).until(
+                        EC.presence_of_element_located(
+                            (By.CLASS_NAME, "jdp-left-content"))
+                    )
 
-                append_data(data, job_title[c_count].text)
-                company = c_name[c_count].find_elements(By.TAG_NAME, "span")
-                append_data(data, company[0].text)
-                append_data(data, company[1].text)
-                job_description = driver.find_element(By.CLASS_NAME, "jdp-left-content")
-                append_data(data, job_description.text)
-                append_data(data, links[count].get_attribute("href"))
-                append_data(data, job_posted_date[count].text)
-                append_data(data, "N/A")
-                append_data(data, "N/A")
-                append_data(data, "N/A")
-                append_data(data, "N/A")
-                append_data(data, "Careerbuilder")
-                append_data(data, job_type)
-                append_data(data, job_description.get_attribute('innerHTML'))
-                scrapped_data.append(data)
-                count += 1
-                c_count += 1
-                total_jobs += 1
-            except Exception as e:
-                print(e)
-        print("Per Page Scrapped")
-        date_time = str(datetime.now())
+                    append_data(data, job_title[c_count].text)
+                    company = c_name[c_count].find_elements(By.TAG_NAME, "span")
+                    append_data(data, company[0].text)
+                    append_data(data, company[1].text)
+                    job_description = driver.find_element(By.CLASS_NAME, "jdp-left-content")
+                    append_data(data, job_description.text)
+                    append_data(data, links[count].get_attribute("href"))
+                    append_data(data, job_posted_date[count].text)
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+                    append_data(data, "Careerbuilder")
+                    append_data(data, job_type)
+                    append_data(data, job_description.get_attribute('innerHTML'))
+                    scrapped_data.append(data)
+                    count += 1
+                    c_count += 1
+                    total_jobs += 1
+                except Exception as e:
+                    print(e)
+            print("Per Page Scrapped")
+        except Exception as e:
+            print(e)
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                         "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
@@ -100,7 +102,7 @@ def find_jobs(driver, job_type, total_jobs):
         ScraperLogs.objects.create(total_jobs=len(df), job_source="Career Builder", filename=filename)
         return total_jobs
     except Exception as e:
-        print(e)
+        saveLogs(e)
         return total_jobs
 
 

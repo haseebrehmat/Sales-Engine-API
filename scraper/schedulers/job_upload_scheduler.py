@@ -44,6 +44,7 @@ from scraper.jobs.start_up_scraping import startup
 from scraper.jobs.builtin_scraping import builtin
 from scraper.jobs.workable_scraping import workable
 from scraper.jobs.hirenovice_scraping import hirenovice
+from scraper.jobs.clearance_scraping import clearance
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -158,6 +159,9 @@ scraper_functions = {
     ],
     "themuse": [
         the_muse,
+    ],
+    "clearance": [
+        clearance,
     ],
 }
 
@@ -555,7 +559,7 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "jooble":
                 jooble_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["jooble"])
-                
+
             elif scheduler.job_source.lower() == "hirenovice":
                 hirenovice_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["hirenovice"])
@@ -659,7 +663,11 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "jooble":
                 jooble_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["jooble"])
-            
+
+            elif scheduler.job_source.lower() == "hirenovice":
+                hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["hirenovice"])
+
             elif scheduler.job_source.lower() == "hirenovice":
                 hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["hirenovice"])
