@@ -8,6 +8,7 @@ from scraper.jobs.google_careers_scraping import google_careers
 from scraper.jobs.indeed_scraping import indeed
 from scraper.jobs.job_gether_scraping import job_gether
 from scraper.jobs.jooble_scraping import jooble
+from scraper.jobs.hirenovice_scraping import hirenovice
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
 from scraper.jobs.receptix_scraping import receptix
@@ -34,7 +35,7 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'recruit': recruit, 'dailyremote': dailyremote, 'rubynow': rubynow,
                              'workingnomads': working_nomads, 'working_nomads': working_nomads, 'workopolis': workopolis,
                              'dynamite': dynamite, "arcdev": arc_dev, "arc_dev": arc_dev,
-                             'himalayas': himalayas, 'startwire': startwire, "jobgether": job_gether, "remoteok": remoteok,
-                             "remote_ok": remoteok, 'receptix': receptix, "the_muse": the_muse,
+                             'himalayas': himalayas, 'startwire': startwire, "jobgether": job_gether,
+                             "remote_ok": remoteok,  "the_muse": the_muse, 'receptix': receptix, 'hirenovice': hirenovice
 
 }

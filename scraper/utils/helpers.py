@@ -55,6 +55,7 @@ class ScraperNaming(enum.Enum):
     DICE = 'dice'
     GOOGLE_CAREERS = 'google_careers'
     JOOBLE = 'jooble'
+    HIRENOVICE = 'hirenovice'
     DAILY_REMOTE = 'dailyremote'
     MONSTER = 'monster'
     SIMPLY_HIRED = 'simply_hired'

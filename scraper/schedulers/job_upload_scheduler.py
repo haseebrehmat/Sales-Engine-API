@@ -43,6 +43,7 @@ from scraper.jobs.startwire_scraping import startwire
 from scraper.jobs.start_up_scraping import startup
 from scraper.jobs.builtin_scraping import builtin
 from scraper.jobs.workable_scraping import workable
+from scraper.jobs.hirenovice_scraping import hirenovice
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -94,6 +95,9 @@ scraper_functions = {
     ],
     "jooble": [
         jooble,
+    ],
+    "hirenovice": [
+        hirenovice,
     ],
     "talent": [
         talent,
@@ -498,6 +502,7 @@ startwire_scheduler = BackgroundScheduler()
 job_gether_scheduler = BackgroundScheduler()
 receptix_scheduler = BackgroundScheduler()
 the_muse_scheduler = BackgroundScheduler()
+hirenovice_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -550,6 +555,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "jooble":
                 jooble_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["jooble"])
+                
+            elif scheduler.job_source.lower() == "hirenovice":
+                hirenovice_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["hirenovice"])
 
             elif scheduler.job_source.lower() == "talent":
                 talent_scheduler.add_job(
@@ -650,6 +659,10 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "jooble":
                 jooble_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["jooble"])
+            
+            elif scheduler.job_source.lower() == "hirenovice":
+                hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["hirenovice"])
 
             elif scheduler.job_source.lower() == "talent":
                 talent_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
@@ -726,7 +739,7 @@ def group_scraper_job(group_id):
         if group_scraper_query:
             queries = group_scraper_query.queries
             for query in queries:
-                query["status"] = "stop"
+                query["status"] = "remaining"
                 query["start_time"] = None
                 query["end_time"] = None
             group_scraper_query.save()
