@@ -109,7 +109,6 @@ def load_jobs(driver, count):
         return False, count
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
-        print(len(jobs), count)
         if len(jobs) == count:
             return False, count
 
@@ -138,6 +137,18 @@ def accept_cookie(driver):
         print(e)
 
 
+def check_us_region(driver):
+    try:
+        driver.find_element(By.ID, "international")
+        try:
+            raise Exception('We are sorry, we do not operate in your country yet.')
+        except Exception as e:
+            saveLogs(e)
+        return False
+    except Exception as e:
+        return True
+
+
 # code starts from here
 def career_builder(link, job_type):
     total_job = 0
@@ -149,12 +160,13 @@ def career_builder(link, job_type):
         try:
             flag = True
             request_url(driver, link)
-            accept_cookie(driver)
-            while flag:
-                flag, total_count = load_jobs(driver, total_count)
-                print("Loading...")
-            total_job = find_jobs(driver, job_type, total_job)
-            print(SCRAPING_ENDED)
+            if check_us_region(driver):
+                accept_cookie(driver)
+                while flag:
+                    flag, total_count = load_jobs(driver, total_count)
+                    print("Loading...")
+                total_job = find_jobs(driver, job_type, total_job)
+                print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
