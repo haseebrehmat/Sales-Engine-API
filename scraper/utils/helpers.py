@@ -75,6 +75,8 @@ class ScraperNaming(enum.Enum):
     RECEPTIX = 'receptix'
     BUILTIN = 'builtin'
     WORKABLE = 'workable'
+    THE_MUSE = 'themuse'
+
 
     def __str__(self):
         return self.value
