@@ -138,6 +138,19 @@ def accept_cookie(driver):
         print(e)
 
 
+def check_us_region(driver):
+    try:
+        not_us = driver.find_element(By.ID, "international")
+        if 'We are sorry, we do not operate in your country yet.' in not_us.text:
+            try:
+                raise Exception('We are sorry, we do not operate in your country yet.')
+            except Exception as e:
+                saveLogs(e)
+            return False
+    except Exception as e:
+        return True
+
+
 # code starts from here
 def career_builder(link, job_type):
     total_job = 0
@@ -149,6 +162,7 @@ def career_builder(link, job_type):
         try:
             flag = True
             request_url(driver, link)
+            check_us_region(driver)
             accept_cookie(driver)
             while flag:
                 flag, total_count = load_jobs(driver, total_count)
