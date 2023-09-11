@@ -45,6 +45,7 @@ from scraper.jobs.builtin_scraping import builtin
 from scraper.jobs.workable_scraping import workable
 from scraper.jobs.hirenovice_scraping import hirenovice
 from scraper.jobs.clearance_scraping import clearance
+from scraper.jobs.smartrecruiter_scraping import smartrecruiter
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -162,6 +163,9 @@ scraper_functions = {
     ],
     "clearance": [
         clearance,
+    ],
+    "smartrecruiter": [
+        smartrecruiter,
     ],
 }
 
