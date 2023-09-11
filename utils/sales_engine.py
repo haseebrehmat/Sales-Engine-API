@@ -58,8 +58,9 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
     except Exception as e:
         saveLogs(e)
 
+
 def check_job_role(tech, job_roles):
-    regular_expression = [item for item in regular_expressions if item['tech_stack'] == tech]
+    regular_expression = [item for item in regular_expressions if item['tech_stack'].lower() == tech.lower()]
 
     for role in job_roles:
         for regex in regular_expression:

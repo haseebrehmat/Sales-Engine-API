@@ -17,11 +17,19 @@ class JobClassifier(object):
         self.data_frame = dataframe
 
     def match_text_with_regex(self, text, regular_expression_list):
-        for regex in regular_expression_list:
-            pattern = re.compile(regex['exp'])
+        # for regex in regular_expression_list:
+        #     pattern = re.compile(regex['exp'])
+        #     if pattern.search(text):
+        #         return regex['tech_stack']
+        # return None
+        tech_stacks = []
+        for x in regular_expressions:
+            regex, tech_stack = x['exp'], x['tech_stack']
+            pattern = re.compile(pattern=regex)
             if pattern.search(text):
-                return regex['tech_stack']
-        return None
+                tech_stacks.append(tech_stack)
+
+        return ",".join(tech_stacks) if tech_stacks else None
 
     def classify_job_with_languages(self, text, langugages_dict):
         for key, value in langugages_dict.items():

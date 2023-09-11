@@ -4,7 +4,7 @@ from threading import Thread
 import pandas as pd
 from django.db import transaction
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -68,11 +68,11 @@ class JobDataUploadView(CreateAPIView):
 
 
 class JobCleanerView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def put(self, request):
         try:
-            job_data = JobDetail.objects.all().select_related()
+            job_data = JobDetail.objects.all().only('pk', 'job_title', 'tech_keywords', 'job_description').select_related()
             self.update_data(job_data)
             return Response({'detail': f'jobs updated successfully with new tech keywords!'}, status=204)
         except Exception as e:
@@ -99,7 +99,7 @@ class JobCleanerView(APIView):
             start_index = i
             end_index = min(i + batch_size, num_records)
             user_bulk_update_list = updated_job_details[start_index:end_index]
-            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'])
+            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'], batch_size=500)
         return num_records
 
 
