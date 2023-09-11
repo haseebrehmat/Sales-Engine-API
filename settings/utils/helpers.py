@@ -30,3 +30,24 @@ def serializer_errors(serializer):
         return data
     except:
         return serializer.errors
+
+
+import random
+import string
+
+# Function to generate a random email
+def generate_random_email():
+    # Define the characters to choose from
+    alpha_characters = string.ascii_letters  # This includes all alphabets (uppercase and lowercase)
+    numeric_characters = string.digits  # This includes 0-9
+
+    # Generate 5 random alphabet characters
+    alpha_part = ''.join(random.choice(alpha_characters) for _ in range(5))
+
+    # Generate 10 random numeric characters
+    numeric_part = ''.join(random.choice(numeric_characters) for _ in range(10))
+
+    # Combine the alpha and numeric parts with the email domain
+    email = alpha_part + numeric_part + "@example.com"
+
+    return email
