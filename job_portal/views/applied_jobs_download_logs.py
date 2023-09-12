@@ -15,8 +15,7 @@ class AppliedJobDownloadsView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        # qs = self.queryset.filter(user=self.request.user)
-        qs = self.queryset
+        qs = self.queryset.filter(user=self.request.user)
         return qs
 
 
