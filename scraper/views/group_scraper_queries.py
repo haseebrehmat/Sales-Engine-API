@@ -46,7 +46,8 @@ class GroupScraperQueriesView(APIView):
                                                                     status="completed")),
                              "failed_count": len(queryset.filter(group_scraper__name=group_name,
                                                                     status="failed")),
-                             "total_count": len(queryset.filter(group_scraper__name=group_name))
+                             "total_count": len(queryset.filter(group_scraper__name=group_name)),
+                             "group_id": GroupScraper.objects.filter(name=group_name).first().id
 
             }
             data[group_name] = group_objects
@@ -119,9 +120,11 @@ class GroupScraperQueriesStatusWise(APIView):
         status = request.GET.get("status", "")
         if group_scraper_id is "" or status is "":
             return Response({"detail": "Group Scraper Fields should not be empty"})
+        group_query = GroupScraper.objects.filter(pk=group_scraper_id)
         queryset = GroupScraperQuery.objects.filter(group_scraper_id=group_scraper_id)
         group_object = {
-            "remaining_queries": [{
+            "queries": [{
+                "id": obj.id,
                 "group_scraper": obj.group_scraper.name if obj.group_scraper.name else None,
                 "link": obj.link if obj.link else None,
                 "job_type": obj.job_type if obj.job_type else None,
@@ -130,12 +133,8 @@ class GroupScraperQueriesStatusWise(APIView):
                 "end_time": obj.end_time if obj.end_time else None,
                 "start_time": obj.start_time if obj.start_time else None
             } for obj in (queryset.filter(status=status) if status != "total" else queryset)],
-
-            "running_count": len(queryset.filter(status="running")),
-            "remaining_count": len(queryset.filter(status="remaining")),
-            "completed_count": len(queryset.filter(status="completed")),
-            "failed_count": len(queryset.filter(status="failed")),
-            "total_count": len(queryset)
+            "group_id": group_scraper_id if group_query.exists() else None,
+            "group_name": group_query.first().name if group_query.exists() else None,
         }
         return Response(group_object, status=s.HTTP_200_OK)
 
