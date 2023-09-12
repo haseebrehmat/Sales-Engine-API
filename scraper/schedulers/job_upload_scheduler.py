@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix
+from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix, the_muse
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -42,6 +42,10 @@ from scraper.jobs.us_jora_scraping import us_jora
 from scraper.jobs.startwire_scraping import startwire
 from scraper.jobs.start_up_scraping import startup
 from scraper.jobs.builtin_scraping import builtin
+from scraper.jobs.workable_scraping import workable
+from scraper.jobs.hirenovice_scraping import hirenovice
+from scraper.jobs.clearance_scraping import clearance
+from scraper.jobs.smartrecruiter_scraping import smartrecruiter
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -93,6 +97,9 @@ scraper_functions = {
     ],
     "jooble": [
         jooble,
+    ],
+    "hirenovice": [
+        hirenovice,
     ],
     "talent": [
         talent,
@@ -147,6 +154,18 @@ scraper_functions = {
     ],
     "builtin": [
         builtin,
+    ],
+    "workable": [
+        workable
+    ],
+    "themuse": [
+        the_muse,
+    ],
+    "clearance": [
+        clearance,
+    ],
+    "smartrecruiter": [
+        smartrecruiter,
     ],
 }
 
@@ -490,6 +509,8 @@ us_jora_scheduler = BackgroundScheduler()
 startwire_scheduler = BackgroundScheduler()
 job_gether_scheduler = BackgroundScheduler()
 receptix_scheduler = BackgroundScheduler()
+the_muse_scheduler = BackgroundScheduler()
+hirenovice_scheduler = BackgroundScheduler()
 
 
 def scheduler_settings():
@@ -543,6 +564,10 @@ def scheduler_settings():
                 jooble_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["jooble"])
 
+            elif scheduler.job_source.lower() == "hirenovice":
+                hirenovice_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["hirenovice"])
+
             elif scheduler.job_source.lower() == "talent":
                 talent_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["talent"])
@@ -591,7 +616,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "jobgether":
                 job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
-                job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["receptix"])
+                receptix_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["receptix"])
+            elif scheduler.job_source.lower() == "themuse":
+                the_muse_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["themuse"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -641,6 +668,14 @@ def scheduler_settings():
                 jooble_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["jooble"])
 
+            elif scheduler.job_source.lower() == "hirenovice":
+                hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["hirenovice"])
+
+            elif scheduler.job_source.lower() == "hirenovice":
+                hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                         args=["hirenovice"])
+
             elif scheduler.job_source.lower() == "talent":
                 talent_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                          args=["talent"])
@@ -685,11 +720,14 @@ def scheduler_settings():
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["startwire"])
             elif scheduler.job_source.lower() == "jobgether":
-                rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                job_gether_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
-                rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                receptix_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["receptix"])
+            elif scheduler.job_source.lower() == "themuse":
+                the_muse_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["themuse"])
 
 def group_scraper_job(group_id):
     pakistan_timezone = pytz.timezone('Asia/Karachi')
@@ -713,7 +751,7 @@ def group_scraper_job(group_id):
         if group_scraper_query:
             queries = group_scraper_query.queries
             for query in queries:
-                query["status"] = "stop"
+                query["status"] = "remaining"
                 query["start_time"] = None
                 query["end_time"] = None
             group_scraper_query.save()
