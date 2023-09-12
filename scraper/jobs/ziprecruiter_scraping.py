@@ -17,17 +17,20 @@ from settings.utils.helpers import generate_random_email
 
 def submit_email_alert(driver):
     # submit modal for email notifcation
+    form_submitted = False
     try:
         driver.find_element(By.NAME, "email_address").send_keys(generate_random_email())
         time.sleep(3)
         driver.find_element(By.CLASS_NAME, 'zrs_btn_primary_400').submit()
         time.sleep(3)
+        form_submitted = True
     except Exception as e:
+        print(e)
+    if not form_submitted:
         try:
             driver.find_element(By.CLASS_NAME, 'text-button-primary-default-text').click()
         except Exception as e:
             print(e)
-        print(e)
     time.sleep(3)
 
 
