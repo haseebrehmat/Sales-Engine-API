@@ -10,7 +10,7 @@ from settings.utils.custom_pagination import CustomPagination
 
 class AppliedJobDownloadsView(ListAPIView):
     permission_classes = (AllowAny, )
-    queryset = DownloadLogs.objects.all()
+    queryset = DownloadLogs.objects.all().order_by('-created_at')
     serializer_class = DownloadLogsSerializer
     pagination_class = CustomPagination
 

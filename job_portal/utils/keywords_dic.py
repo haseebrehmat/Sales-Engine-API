@@ -6639,6 +6639,7 @@ all_jobs_titles = {
     }
 }
 
+
 def get_tech_stacks():
     tech_stacks_list = ['others', 'others dev']
     tech_stacks_list.extend(list(keyword.keys()))
