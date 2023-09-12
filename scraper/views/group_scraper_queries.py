@@ -118,7 +118,7 @@ class GroupScraperQueriesStatusWise(APIView):
     def get(self, request):
         group_scraper_id = request.GET.get("group_scraper_id", "")
         status = request.GET.get("status", "")
-        if group_scraper_id is "" or status is "":
+        if group_scraper_id == "" or status == "":
             return Response({"detail": "Group Scraper Fields should not be empty"})
         group_query = GroupScraper.objects.filter(pk=group_scraper_id)
         queryset = GroupScraperQuery.objects.filter(group_scraper_id=group_scraper_id)
