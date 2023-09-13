@@ -79,6 +79,7 @@ class ScraperNaming(enum.Enum):
     THE_MUSE = 'themuse'
     CLEARANCE = 'clearance'
     SMARTRECRUITER = 'smartrecruiter'
+    GETWORK = 'getwork'
 
     def __str__(self):
         return self.value
