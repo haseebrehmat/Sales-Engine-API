@@ -35,13 +35,10 @@ class CustomJobFilter(FilterSet):
 
     def tech_keywords_field(self, queryset, field_name, value):
         if value and value != "":
-            keyword_list = value.split(",")
-            results = JobDetail.objects.none()
-            for x in keyword_list:
-                results |= queryset.filter(tech_keywords__icontains=x)
-            if 'java' in keyword_list and 'javascript' not in keyword_list:
-                results = results.exclude(tech_keywords__icontains='javascript')
-            return results
+            keyword_list = value
+            if isinstance(value, str):
+                keyword_list = value.split(",")
+            return queryset.filter(tech_stacks__contains=keyword_list)
         return queryset
 
     def job_sources_field(self, queryset, field_name, value):

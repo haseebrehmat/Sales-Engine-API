@@ -2,7 +2,7 @@ import datetime
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Count, F
+from django.db.models import Count, F, Func, Q
 from django.utils import timezone
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -15,8 +15,9 @@ from job_portal.permissions.job_detail import JobDetailPermission
 
 class JobsFilters(APIView):
     permission_classes = (AllowAny,)
+    expression = Func(F('tech_stacks'), function='unnest')
     job_sources = set(JobDetail.objects.values_list('job_source', flat=True))
-    keywords = set(JobDetail.objects.exclude(tech_keywords__contains=",").values_list('tech_keywords', flat=True))
+    keywords = set(JobDetail.objects.only('tech_stacks').annotate(keywords=expression).values_list('keywords', flat=True))
     queryset = JobDetail.objects.only('job_source', 'job_posted_date').filter(appliedjobstatus__applied_by=None)
     job_types = set(JobDetail.objects.values_list('job_type', flat=True))
     recruiter_jobs_count = 0
@@ -72,16 +73,12 @@ class JobsFilters(APIView):
         return job_source_count_list
 
     def keyword_count(self):
-        filtered_job_sources = self.queryset.values_list("tech_keywords", flat=True)
-        unique_keyword_object = list(self.queryset.values('tech_keywords').annotate(
-            name=F('tech_keywords'),
-            value=Count('tech_keywords')).exclude(tech_keywords__contains=",")
-                                     .order_by('-value').values('name', 'value'))
+        # filtered_job_sources = self.queryset.values_list("tech_keywords", flat=True)
+        unique_keyword_object = []
         for x in self.keywords:
-            if x not in filtered_job_sources:
-                unique_keyword_object.append({'name': x, 'value': 0})
+            unique_keyword_object.append({'name': x, 'value': self.queryset.filter(tech_stacks__contains=[x]).count()})
 
-        return unique_keyword_object
+        return sorted(unique_keyword_object, key=lambda x: x['value'], reverse=True)
 
     def total_job_count(self):
         return JobDetail.objects.count()
@@ -133,9 +130,13 @@ class JobsFilters(APIView):
             queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
         if self.request.GET.get("job_type", "") != "":
             queryset = queryset.filter(job_type__iexact=self.request.GET.get("job_type"))
+        keyword_filters = Q()
         if self.request.GET.get("tech_keywords", "") != "":
             keywords_list = self.request.GET.get("tech_keywords").split(",")
-            queryset = queryset.filter(tech_keywords__in=keywords_list)
+            for x in keywords_list:
+                keyword_filters |= Q(tech_stacks__contains=[x])
+            queryset = queryset.filter(keyword_filters)
+
         if self.request.GET.get("job_visibility") != "all":
             if self.request.user.profile.company:
                 company = BlacklistJobs.objects.filter(company_id=self.request.user.profile.company_id).values_list(

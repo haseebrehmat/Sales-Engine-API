@@ -42,6 +42,7 @@ class JobDetail(TimeStamped):
     expired_at = models.DateTimeField(max_length=150, blank=True, null=True)
     job_role = models.CharField(max_length=50, blank=True, null=True)
     edited = models.BooleanField(default=False)
+    tech_stacks = ArrayField(models.CharField(max_length=100, blank=True, null=True), blank=True, null=True)
 
     class Meta:
         default_permissions = ()
@@ -204,3 +205,10 @@ class EditHistory(TimeStamped):
 
     def __str__(self):
         return f"{self.user.email} - {self.model}"
+
+
+# qs = JobDetail.objects.only('tech_keywords', 'tech_stacks')
+# for x in qs:
+#     x.tech_stacks = x.tech_keywords.split(",")
+#
+# print(JobDetail.objects.bulk_update(qs, batch_size=500, fields=['tech_stacks']))
