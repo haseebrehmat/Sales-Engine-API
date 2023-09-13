@@ -25,7 +25,7 @@ class JobsView(ListAPIView):
     search_fields = ['job_title', 'company_name']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
-    permission_classes = (JobDetailPermission, )
+    permission_classes = (AllowAny, )
 
     def get_queryset(self):
         self.request.user = User.objects.get(email='admin@gmail.com')       # for testing
