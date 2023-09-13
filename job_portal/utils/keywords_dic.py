@@ -1448,7 +1448,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'metaverse',
-        'exp': '(?i)(^|\W)(AR|VR|MR|XR|3D[-\s]apps|Metahuman[-\s]Creator|NFT[-\s]Metaverse|Virtual[-\s]World|meta[-\s]?verse|((Augmented|Virtual|Mixed|Extended)[-\s](Reality)))(\W|$)'
+        'exp': '(?i)(^|\W)((AR|VR|MR|XR)([-\s]technology)?|3D[-\s]apps|Metahuman[-\s]Creator|NFT[-\s]Metaverse|Virtual[-\s]World|meta[-\s]?verse|((Augmented|Virtual|Mixed|Extended)[-\s]Reality)|AR[-\s,]VR[-\s,]MR[-\s,]XR|arkit|ar[-\s]core|Gear[-\s]VR|Magic[-\s]Leap|PC[‑\s]VR|VIVE|Houdini|virtual[-\s](world|environment))(\W|$)'
     },
     {
         'tech_stack': 'Dynamics',
