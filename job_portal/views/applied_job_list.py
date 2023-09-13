@@ -24,7 +24,7 @@ from job_portal.serializers.applied_job import TeamAppliedJobDetailSerializer
 from scraper.utils.thread import start_new_thread
 from settings.base import FROM_EMAIL
 from utils import upload_to_s3
-
+import random
 
 class ListAppliedJobView(ListAPIView):
     queryset = AppliedJobStatus.objects.all()
@@ -175,6 +175,7 @@ class TeamAppliedJobsMemberwiseAnalytics(APIView):
     def get_applied_job_analytics(self, bd_users_ids):
         # show applied job analytics 3 pm to 3 am next day
         queryset = AppliedJobStatus.objects.filter(applied_by__in=bd_users_ids)
+        jobs_count_list = []
         current_datetime = datetime.now()
         start_datetime = datetime.fromisoformat(str(current_datetime.date()))
         end_datetime = start_datetime + timedelta(days=1)
@@ -199,9 +200,14 @@ class TeamAppliedJobsMemberwiseAnalytics(APIView):
 
             # print(f'Time Range: {start_interval} - {end_interval}  ({time}) - days: {days}')
             applied_jobs_count = queryset.filter(applied_date__range=[start_interval, end_interval]).count()
+            jobs_count_list.append(applied_jobs_count)
             data = {'time': time, 'jobs': applied_jobs_count}
             result.append(data)
             hours += 1
             if days == 1:
                 start_datetime += timedelta(days=1)
-        return {'dates': dates, 'data': result}
+        min_count = min(jobs_count_list)
+        max_count = max(jobs_count_list)
+        if max_count - min_count <= 3:
+            max_count = min_count + 4
+        return {'dates': dates, 'data': result, 'min_count': min_count, 'max_count': max_count }
