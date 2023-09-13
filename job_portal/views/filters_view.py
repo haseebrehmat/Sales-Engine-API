@@ -14,7 +14,7 @@ from job_portal.permissions.job_detail import JobDetailPermission
 
 
 class JobsFilters(APIView):
-    permission_classes = (JobDetailPermission, )
+    permission_classes = (AllowAny,)
     job_sources = set(JobDetail.objects.values_list('job_source', flat=True))
     queryset = JobDetail.objects.only('job_source', 'job_posted_date').filter(appliedjobstatus__applied_by=None)
     recruiter_jobs_count = 0
@@ -22,6 +22,7 @@ class JobsFilters(APIView):
     filtered_queryset = None
 
     def get(self, request):
+        request.user = User.objects.get(email='admin@gmail.com')
         self.queryset = self.filter_query(self.queryset)
         self.filtered_queryset = self.filter_query(self.queryset)
         self.filtered_jobs_count = self.queryset.count()
@@ -35,7 +36,8 @@ class JobsFilters(APIView):
             'job_source_count_list': self.get_job_source_count(),
             'recruiter_jobs': self.recruiter_jobs_count,
             'non_recruiter_jobs': self.get_non_recruiter_jobs_count(),
-            'filtered_jobs':    self.filtered_jobs_count,
+            'total_job_type': self.get_job_type(),
+            'filtered_jobs': self.filtered_jobs_count,
         }
 
         return Response(data)
@@ -69,7 +71,7 @@ class JobsFilters(APIView):
 
     def keyword_count(self):
         unique_keyword_object = self.queryset.extra(select={'name': 'tech_keywords'}).values('name').annotate(
-                value=Count('tech_keywords')).exclude(tech_keywords__contains=",")
+            value=Count('tech_keywords')).exclude(tech_keywords__contains=",")
         unique_count_dic = json.dumps(list(unique_keyword_object), cls=DjangoJSONEncoder)
         unique_count_data = json.loads(unique_count_dic)
         keywords = sorted(unique_count_data, key=lambda x: x["value"], reverse=True)
@@ -100,15 +102,8 @@ class JobsFilters(APIView):
         uploaded_jobs = JobDetail.objects.filter(created_at__gte=str(datetime.datetime.today()).split(' ')[0]).count()
         return uploaded_jobs
 
-    def unique_job_source(self):
-        unique_job_source = self.filter_query.extra(select={'name': 'job_source'}).values('name').annotate(
-            value=Count('tech_keywords'))
-        unique_job_source_dic = json.dumps(list(unique_job_source), cls=DjangoJSONEncoder)
-        unique_job_data = json.loads(unique_job_source_dic)
-        return sorted(unique_job_data, key=lambda x: x["value"], reverse=True)
-
-    def unique_job_type(self):
-        unique_job_type = self.filter_query.extra(select={'name': 'job_type'}).values('name').annotate(
+    def get_job_type(self):
+        unique_job_type = self.queryset.extra(select={'name': 'job_type'}).values('name').annotate(
             value=Count('job_type'))
         unique_job_type_dic = json.dumps(list(unique_job_type), cls=DjangoJSONEncoder)
         unique_job_type = json.loads(unique_job_type_dic)
