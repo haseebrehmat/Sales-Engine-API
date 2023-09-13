@@ -49,6 +49,7 @@ from scraper.jobs.smartrecruiter_scraping import smartrecruiter
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
+from scraper.models.group_scraper_query import GroupScraperQuery
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
@@ -746,41 +747,38 @@ def group_scraper_job(group_id):
                                            end_time=datetime.now(pakistan_timezone))
 
     try:
-        group_scraper_query = group_scraper.groupscraperquery
-        # print(f"The id is : {group_scraper_query.id}")
-        if group_scraper_query:
-            queries = group_scraper_query.queries
-            for query in queries:
-                query["status"] = "remaining"
-                query["start_time"] = None
-                query["end_time"] = None
-            group_scraper_query.save()
-            for query in queries:
-                job_source = query['job_source'].lower()
-                print(job_source)
-                if job_source in list(single_scrapers_functions.keys()):
-                    scraper_func = single_scrapers_functions[job_source]
-                    try:
-                        # start time and status running
-                        query["status"] = "running"
-                        query["start_time"] = str(datetime.now(pakistan_timezone))
-                        group_scraper_query.save()
-                        scraper_func(query['link'], query['job_type'])
-                        upload_jobs()
-                        remove_files(job_source)
-                        # end time and status successfully completed
-                        query["status"] = "completed"
-                        query["end_time"] = str(datetime.now(pakistan_timezone))
-                        group_scraper_query.save()
-                    except Exception as e:
-                        # end time and status of missed
-                        query["status"] = "failed"
-                        query["end_time"] = str(datetime.now(pakistan_timezone))
-                        group_scraper_query.save()
-                        print(e)
-                        saveLogs(e)
-            upload_jobs()
-            remove_files('all')
+        queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
+        for query in queries:
+            query.status = "remaining"
+            query.start_time = str(datetime.now(pakistan_timezone))
+            query.end_time = str(datetime.now(pakistan_timezone))
+            query.save()
+        for query in queries:
+            job_source = query.job_source.lower()
+            print(job_source)
+            if job_source in list(single_scrapers_functions.keys()):
+                scraper_func = single_scrapers_functions[job_source]
+                try:
+                    # start time and status running
+                    query.status = "running"
+                    query.start_time = str(datetime.now(pakistan_timezone))
+                    query.save()
+                    scraper_func(query.link, query.job_type)
+                    upload_jobs()
+                    remove_files(job_source)
+                    # end time and status successfully completed
+                    query.status = "completed"
+                    query.end_time = str(datetime.now(pakistan_timezone))
+                    query.save()
+                except Exception as e:
+                    # end time and status of missed
+                    query.status = "failed"
+                    query.end_time = str(datetime.now(pakistan_timezone))
+                    query.save()
+                    print(e)
+                    saveLogs(e)
+        upload_jobs()
+        remove_files('all')
     except Exception as e:
         upload_jobs()
         remove_files('all')
