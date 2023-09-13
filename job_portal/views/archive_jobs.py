@@ -58,7 +58,7 @@ class ArchiveJobs(APIView):
                     query |= Q(company_name=item.company_name, job_title=item.job_title)
 
             jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
-            filter_jobs = JobDetail.objects.filter(created_at__gte="2023-08-24")
+            filter_jobs = JobDetail.objects.filter(created_at__gte=last_30_days)
             if classify_data:
                 jobs.filter(query)
             print("Started")
