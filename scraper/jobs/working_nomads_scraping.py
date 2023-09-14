@@ -69,7 +69,7 @@ def find_jobs(driver, job_type):
     try:
         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "job-desktop")))
         try:
-            while True:
+            for i in range(0, 40):
                 show_more_btn = driver.find_element(By.CLASS_NAME, "show-more")
                 show_more_btn.click()
                 time.sleep(3)
@@ -81,7 +81,7 @@ def find_jobs(driver, job_type):
         job_urls = []
 
         for job in jobs:
-            job_posted_date = job.find_elements(By.CLASS_NAME, 'date')[1].text
+            job_posted_date = job.find_elements(By.CLASS_NAME, 'date')[2].text
             if 'days ago' in job_posted_date:
                 days = int(job_posted_date.split(' ')[0])
                 if days > 3:
