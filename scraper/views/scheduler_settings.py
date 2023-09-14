@@ -65,7 +65,8 @@ class SchedulerView(ListAPIView):
             'jooble': 'Jooble',
             'talent': 'Talent',
             'careerjet': 'CareerJet',
-            'rubynow': 'Ruby Now'
+            'rubynow': 'Ruby Now' ,
+            'hirenovice': 'Hire Novice'
         }
 
         if request.data.get('job_source') not in my_dict:

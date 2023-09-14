@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from scraper.models import GroupScraper, GroupScraperQuery
-from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
+#from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
 from scraper.serializers.group_scraper_scheduler import GroupScraperSerializer
 from scraper.serializers.scheduler_settings import SchedulerSerializer
 # from settings.celery import restart_server
@@ -52,7 +52,7 @@ class GroupScraperView(ListAPIView):
                 scheduler_settings=scheduler_settings_obj, name=name)
             data = "Group Scheduler created successfully"
             status_code = status.HTTP_201_CREATED
-            start_group_scraper_scheduler()
+            # start_group_scraper_scheduler()
             return Response({"detail": data}, status_code)
         else:
             data = serializer_errors(serializer)
@@ -111,7 +111,7 @@ class GroupScraperDetailView(APIView):
                 status_code = status.HTTP_200_OK
                 message = {
                     "detail": "Group Scheduler setting updated successfully"}
-                start_group_scraper_scheduler()
+                # start_group_scraper_scheduler()
                 return Response(message, status=status_code)
 
             data = serializer_errors(serializer)
@@ -132,7 +132,7 @@ class GroupScraperDetailView(APIView):
             message = {"detail": "Group Scraper deleted successfully!"}
             status_code = status.HTTP_200_OK
         else:
-            start_group_scraper_scheduler()
+            # start_group_scraper_scheduler()
             message = {"detail": "Group Scraper does not exist!"}
             status_code = status.HTTP_200_OK
         return Response(message, status_code)

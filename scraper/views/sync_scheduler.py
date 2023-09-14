@@ -39,7 +39,15 @@ def run_scrapers_manually(job_source='all'):
             "startwire",
             "jobgether",
             "startup",
-        ]
+            "receptix",
+            "builtin",
+            "workable",
+            "themuse",
+            "hirenovice",
+            "clearance",
+            "smartrecruiter",
+            "getwork",
+    ]
     if job_source.lower() not in valid_job_sources:
         return {"detail": f"{job_source} not a valid job source"}, status.HTTP_406_NOT_ACCEPTABLE
 
@@ -56,7 +64,7 @@ def run_scrapers_manually(job_source='all'):
         else:
             message = f"{job_source} sync in progress, It will take a while"
             load_job_scrappers(job_source)  # running on separate thread
-            return {"detail": message}, status.HTTP_200_OK
+        return {"detail": message}, status.HTTP_200_OK
     else:
         return {"detail": f'Scheduler setting is missing for {job_source}.'}, status.HTTP_400_BAD_REQUEST
 

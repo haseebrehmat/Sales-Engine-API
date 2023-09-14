@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from authentication.models import User
 from authentication.models.team_management import Team
@@ -23,7 +24,7 @@ from job_portal.serializers.applied_job import TeamAppliedJobDetailSerializer
 from scraper.utils.thread import start_new_thread
 from settings.base import FROM_EMAIL
 from utils import upload_to_s3
-
+import random
 
 class ListAppliedJobView(ListAPIView):
     queryset = AppliedJobStatus.objects.all()
@@ -87,7 +88,6 @@ class ListAppliedJobView(ListAPIView):
 
                 data.data['job_source_analytics'] = self.get_job_source_count(bd_id_list)
                 data.data['job_type_analytics'] = self.get_job_type_count(bd_id_list)
-
                 return data
 
             serializer = self.get_serializer(queryset, many=True)
@@ -177,3 +177,67 @@ class ListAppliedJobView(ListAPIView):
         except Exception as e:
             print("Error in exporting csv function", e)
             return False
+
+class TeamAppliedJobsMemberwiseAnalytics(APIView):
+    def get(self, request):
+        try:
+            member = request.GET.get('member')
+            bd_id_list = []
+            if member:
+                bd_id_list.append(member)
+            else:
+                if request.user.roles.name.lower() == "owner":
+                    queryset = Team.objects.filter(
+                        reporting_to__profile__company=request.user.profile.company).select_related()
+                    for x in queryset:
+                        members = [i for i in x.members.values_list("id", flat=True)]
+                        bd_id_list.extend(members)
+                else:
+                    bd_id_list = Team.objects.get(
+                        reporting_to=self.request.user).members.values_list('id', flat=True)
+            bd_users_ids = list(User.objects.filter(id__in=bd_id_list).values_list('id', flat=True))
+            analytics_result = self.get_applied_job_analytics(bd_users_ids)
+            return Response(analytics_result)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+    def get_applied_job_analytics(self, bd_users_ids):
+        # show applied job analytics 3 pm to 3 am next day
+        queryset = AppliedJobStatus.objects.filter(applied_by__in=bd_users_ids)
+        jobs_count_list = []
+        current_datetime = datetime.now()
+        start_datetime = datetime.fromisoformat(str(current_datetime.date()))
+        end_datetime = start_datetime + timedelta(days=1)
+        dates = {'start_date': str(start_datetime.date()), 'end_date': str(end_datetime.date())}
+        if current_datetime.hour <= 3:
+            start_datetime -= timedelta(days=1)
+        # 3 pm (2:01-3pm)
+        # (3:01 - 4:00pm)
+        hours = 15
+        result = []
+        for i in range(13):
+            days = hours // 24
+            if days == 1:
+                hours = hours % 24
+            if hours % 12 == 0:
+                time = f'12:00 '
+            else:
+                time = f'{hours%12}:00 '
+            time += 'PM' if hours >= 12 else 'AM'
+            start_interval = start_datetime + timedelta(days=days, minutes=1, hours=hours-1)
+            end_interval = start_datetime + timedelta(days=days, hours=hours)
+
+            # print(f'Time Range: {start_interval} - {end_interval}  ({time}) - days: {days}')
+            applied_jobs_count = queryset.filter(applied_date__range=[start_interval, end_interval]).count()
+            jobs_count_list.append(applied_jobs_count)
+            data = {'time': time, 'jobs': applied_jobs_count}
+            result.append(data)
+            hours += 1
+            if days == 1:
+                start_datetime += timedelta(days=1)
+        min_count = min(jobs_count_list)
+        max_count = max(jobs_count_list)
+        if max_count - min_count <= 3:
+            max_count = min_count + 4
+        return {'dates': dates, 'data': result, 'min_count': min_count, 'max_count': max_count }

@@ -38,8 +38,8 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'django_filters',
-    # 'django_celery_results',
-    # 'django_celery_beat',
+    'django_celery_results',
+    'django_celery_beat',
     'django_requests_logger',
 ]
 INSTALLED_APPS += CUSTOM_APPS + THIRD_PARTY_APPS
@@ -230,10 +230,16 @@ LOGGING = {
 }
 
 
-if env("ENVIRONMENT") != 'local':
+if env("ENVIRONMENT") == 'production':
     ROLLBAR = {
         'access_token': '9253e9ce8ed24d669401c0fb5d37d62c',
         'environment': env("ENVIRONMENT"),
         'code_version': '1.0',
         'root': BASE_DIR,
     }
+
+
+# settings.py
+
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'  # Replace with your RabbitMQ credentials
+CELERY_RESULT_BACKEND = 'rpc://'  # Use a placeholder result backend (can be updated as needed)
