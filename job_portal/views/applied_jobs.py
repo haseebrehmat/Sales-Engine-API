@@ -65,7 +65,7 @@ class AppliedJobView(ListAPIView):
                 if queryset:
                     excluded_params = ['download', 'page', 'ordering', 'page_size', 'applied_by']
                     filters = {x: request.GET[x] for x in request.query_params.keys() if x not in excluded_params}
-                    if DownloadLogs.objects.filter(user=request.user, query=filters, created_at__date=datetime.date()).exists():
+                    if DownloadLogs.objects.filter(user=request.user, query=filters, created_at__date=datetime.now().date()).exists():
                         message = "Job exports already exists, check logs"
                     else:
                         self.export_csv(queryset, self.request, filters)
