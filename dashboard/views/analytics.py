@@ -4,7 +4,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Count
+from django.db.models import Count, Func, F
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -23,6 +23,9 @@ from job_portal.models import AppliedJobStatus, JobDetail
 
 
 class DashboardAnalyticsView(ListAPIView):
+    expression = Func(F('tech_stacks'), function='unnest')
+    keywords = set(
+        JobDetail.objects.only('tech_stacks').annotate(keywords=expression).values_list('keywords', flat=True))
     queryset = AppliedJobStatus.objects.all()
     serializer_class = DashboardAnalyticsSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
@@ -53,11 +56,16 @@ class DashboardAnalyticsView(ListAPIView):
         return self.list(request, *args, **kwargs)
 
     def keyword_count(self):
-        unique_keyword_object = JobDetail.objects.extra(select={'name': 'tech_keywords'}).values('name').annotate(
-            value=Count('tech_keywords'))
-        unique_count_dic = json.dumps(list(unique_keyword_object), cls=DjangoJSONEncoder)
-        unique_count_data = json.loads(unique_count_dic)
-        return sorted(unique_count_data, key=lambda x: x["value"], reverse=True)
+        unique_keyword_object = []
+        for x in self.keywords:
+            unique_keyword_object.append(
+                {
+                    'name': x,
+                    'value': JobDetail.objects.filter(tech_stacks__contains=[x]).count()
+                }
+            )
+
+        return sorted(unique_keyword_object, key=lambda x: x['value'], reverse=True)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
