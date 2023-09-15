@@ -68,65 +68,71 @@ def find_jobs(driver, job_type):
                 driver.get(link)
                 id = link.split("-")[-1]
                 time.sleep(5)
-                job = driver.find_element(By.CLASS_NAME, f"job-{id}")
-                job_desc = driver.find_element(By.CLASS_NAME, "expandContents")
-            except:
-                print("error in scrapping")
+                job = WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, f"job-{id}")))
+                job_desc = WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, "expandContents")))
+                if job_desc:
+                    temp = job.find_element(
+                        By.CLASS_NAME, "company_and_position").text
+                    temp = temp.splitlines()
+                    job_title = remove_emojis(temp[0])
+                    append_data(data, job_title)
 
-            temp = job.find_element(By.CLASS_NAME, "company_and_position").text
-            temp = temp.splitlines()
-            job_title = remove_emojis(temp[0])
-            append_data(data, job_title)
+                    company_name = remove_emojis(temp[1])
+                    append_data(data, company_name)
 
-            company_name = remove_emojis(temp[1])
-            append_data(data, company_name)
+                    address = 'Remote'
+                    append_data(data, address)
 
-            address = 'Remote'
-            append_data(data, address)
+                    job_source_url = link
+                    append_data(data, job_source_url)
 
-            job_source_url = link
-            append_data(data, job_source_url)
+                    job_description = job_desc.text
+                    append_data(data, job_description)
 
-            job_description = job_desc.text
-            append_data(data, job_description)
+                    temp1 = job.find_element(By.CLASS_NAME, "time").text
+                    job_posted_date = temp1
+                    append_data(data, job_posted_date)
 
-            temp1 = job.find_element(By.CLASS_NAME, "time").text
-            job_posted_date = temp1
-            append_data(data, job_posted_date)
+                    salary_format = "yearly"
+                    append_data(data, salary_format)
 
-            salary_format = "yearly"
-            append_data(data, salary_format)
+                    temp2 = temp[-1].split(" ")
+                    if len(temp2[-3]) >= 4 and temp2[-3][0] == "$":
+                        salary_min = remove_emojis(temp2[-3])
+                    else:
+                        salary_min = "N/A"
+                    append_data(data, salary_min)
 
-            temp2 = temp[-1].split(" ")
-            if len(temp2[-3]) >= 4 and temp2[-3][0] == "$":
-                salary_min = remove_emojis(temp2[-3])
-            else:
-                salary_min = "N/A"
-            append_data(data, k_conversion(salary_min))
+                    if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
+                        salary_max = remove_emojis(temp2[-1])
+                    else:
+                        salary_max = "N/A"
+                    append_data(data, salary_max)
 
-            if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
-                salary_max = remove_emojis(temp2[-1])
-            else:
-                salary_max = "N/A"
-            append_data(data, k_conversion(salary_max))
+                    if salary_max == "N/A" or salary_min == "N/A":
+                        estimated_salary = "N/A"
+                    else:
+                        estimated_salary = f"{salary_min}-{salary_max}"
+                    append_data(data, estimated_salary)
 
-            if salary_max == "N/A" or salary_min == "N/A":
-                estimated_salary = "N/A"
-            else:
-                estimated_salary = f"{salary_min}-{salary_max}"
-            append_data(data, k_conversion(estimated_salary))
+                    job_source = ScraperNaming.Remote_Ok
+                    append_data(data, job_source)
 
-            job_source = ScraperNaming.REMOTE_OK
-            append_data(data, job_source)
+                    job_type = "remote"
+                    append_data(data, job_type)
 
-            job_type = "remote"
-            append_data(data, job_type)
+                    job_description_tags = job_desc.get_attribute("innerHTML")
+                    append_data(data, str(job_description_tags))
+            except Exception as e:
+                print('ERROR', e)
 
-            job_description_tags = job_desc.get_attribute("innerHTML")
-            append_data(data, str(job_description_tags))
+            scrapped_data.append(data)
 
-        scrapped_data.append(data)
-
+    print('Total Jobs', total_job)
     columns_name = [
         "job_title",
         "company_name",
@@ -179,4 +185,5 @@ def remoteok(link, job_type):
         print(e)
 
 
-# remoteok('https://remoteok.com/remote-api+engineer-jobs?order_by=date','full time remote')
+remoteok('https://remoteok.com/remote-dev+engineer-jobs?order_by=date',
+         'full time remote')
