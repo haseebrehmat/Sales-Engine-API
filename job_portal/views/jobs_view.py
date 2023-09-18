@@ -26,9 +26,9 @@ class JobsView(ListAPIView):
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
     permission_classes = (JobDetailPermission, )
+    # permission_classes = (AllowAny, )
 
     def get_queryset(self):
-        self.request.user = User.objects.get(email='admin@gmail.com')       # for testing
         return self.queryset
 
 
@@ -37,6 +37,7 @@ class JobDetailView(APIView):
     excluded = ['job_description']
     queryset = JobDetail.objects.defer(*excluded)
     permission_classes = (JobDetailPermission, )
+    # permission_classes = (AllowAny, )
 
     def get(self, request, pk):
         self.serializer_class.Meta.exclude = self.excluded
