@@ -1,6 +1,6 @@
 import datetime
 
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Func, F
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,6 +11,7 @@ from utils.helpers import saveLogs
 
 
 class ArchiveJobs(APIView):
+    permission_classes = (AllowAny,)
     contract_onsite_enums = [
         "contract onsite",
         "contract on site",
@@ -95,7 +96,9 @@ class ArchiveJobs(APIView):
     """
     def save_tech_stacks_stats(self, queryset, current_date):
         data = []
-        tech_keywords = set(queryset.values_list("tech_keywords", flat=True))
+        expression = Func(F('tech_stacks'), function='unnest')
+        tech_keywords = set(
+            JobDetail.objects.only('tech_stacks').annotate(keywords=expression).values_list('keywords', flat=True))
         for x in tech_keywords:
             qs = queryset.filter(tech_keywords=x).aggregate(
                 total=Count("id"),
