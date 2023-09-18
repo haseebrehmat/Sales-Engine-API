@@ -73,13 +73,17 @@ class DashboardAnalyticsView(ListAPIView):
             company = request.user.profile.company.id
         except:
             company = request.GET.get("company", "")
-        # get all users under the current user team
-        if request.user.is_superuser and company == "":
-            company = Company.objects.filter(status=True).first()
+            if company == 'undefined':
+                company = ''
 
-        user_team = Team.objects.filter(
-            reporting_to__profile__company_id=company
-        ).values_list('members__id', flat=True)
+        # get all users under the current user team
+        if request.user.is_superuser and not company:
+            company = Company.objects.filter(status=True)
+            teams = Team.objects.filter(reporting_to__profile__company_id__in=company)
+        else:
+            teams = Team.objects.filter(reporting_to__profile__company_id=company)
+
+        user_team = teams.values_list('members__id', flat=True)
 
         # get all statistics
         queryset = queryset.filter(applied_by__in=user_team)
