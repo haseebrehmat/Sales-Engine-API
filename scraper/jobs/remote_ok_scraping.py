@@ -132,7 +132,6 @@ def find_jobs(driver, job_type):
 
             scrapped_data.append(data)
 
-    print('Total Jobs', total_job)
     columns_name = [
         "job_title",
         "company_name",
