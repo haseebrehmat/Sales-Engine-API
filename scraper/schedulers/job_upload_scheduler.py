@@ -175,12 +175,13 @@ scraper_functions = {
 }
 
 
-def upload_jobs():
+def upload_jobs(scheduler_type, job_source):
     try:
         print('Uploading files ...')
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
+        SchedulerSync.objects.filter(job_source=job_source, type=scheduler_type).update(uploading=True)
         for file in files:
             try:
                 if not is_file_empty(file):
@@ -223,7 +224,7 @@ def is_file_empty(file):
         return True
 
 
-def remove_files(job_source="all"):
+def remove_files(scheduler_type, job_source="all"):
     try:
         print("removing files ...")
         if "simply" in job_source:
@@ -250,6 +251,7 @@ def remove_files(job_source="all"):
     except Exception as e:
         saveLogs(e)
         print(e)
+    SchedulerSync.objects.filter(job_source=job_source, type=scheduler_type).update(uploading=False)
 
 
 @transaction.atomic
@@ -410,8 +412,8 @@ def run_scrapers(scrapers):
                         saveLogs(e)
 
                     try:
-                        upload_jobs()
-                        remove_files(key)
+                        upload_jobs('instant', key)
+                        remove_files('instant', key)
                     except Exception as e:
                         print("Error in uploading jobs", e)
                         saveLogs(e)
@@ -768,8 +770,8 @@ def group_scraper_job(group_id):
                     query.start_time = str(datetime.now(pakistan_timezone))
                     query.save()
                     scraper_func(query.link, query.job_type)
-                    upload_jobs()
-                    remove_files(job_source)
+                    upload_jobs('group scraper', job_source)
+                    remove_files('group scraper', job_source)
                     # end time and status successfully completed
                     query.status = "completed"
                     query.end_time = str(datetime.now(pakistan_timezone))
@@ -781,11 +783,11 @@ def group_scraper_job(group_id):
                     query.save()
                     print(e)
                     saveLogs(e)
-        upload_jobs()
-        remove_files('all')
+        upload_jobs('group scraper', 'all')
+        remove_files('group scraper', 'all')
     except Exception as e:
-        upload_jobs()
-        remove_files('all')
+        upload_jobs('group scraper', 'all')
+        remove_files('group scraper', 'all')
         current_scraper = ''
         print(str(e))
         saveLogs(e)
