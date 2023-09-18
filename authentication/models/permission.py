@@ -15,6 +15,8 @@ class CustomPermission(TimeStamped):
     codename = models.CharField(blank=False, null=False, max_length=200, default="nothing")
     name = models.CharField(blank=False, null=False, max_length=200, default="nothing")
     level = models.CharField(blank=False, null=False, max_length=10, default=1)
+    child = models.JSONField(blank=True, null=True)
+    parent = models.JSONField(blank=True, null=True)
 
     class Meta:
         ordering = ("module",)

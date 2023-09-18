@@ -21,7 +21,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
         url = 'https://bd.devsinc.com/job_portal/api/v1/job_roles'  # API for getting role
         resp = requests.get(url, headers=headers)
         job_roles = json.loads(resp.text).get('job_roles', []) if resp.ok else []
-        excluded_jobs = ['others', 'others dev', 'other', 'other dev']
+        excluded_jobs = ['others', 'others dev', 'other']
 
         url = SALES_ENGINE_UPLOAD_JOBS_URL
         payload = json.dumps({
@@ -68,4 +68,21 @@ def check_job_role(tech, job_roles):
             if pattern.search(role):
                 return role
     else:
-        'N/A'
+        job_roles = {
+            "sqa": ['qa'],
+            "dev": ['shopify', 'ruby on rails', 'service now', 'ml engineer',
+                    'data engineering/data engineer', 'data science/data scientist', 'c#/dot net',
+                    'c/c++', 'php', 'python', 'go/golang', 'java', 'mern', 'javascript', 'ui/ux',
+                    'networking', 'database'],
+            "devops": ['devops'],
+            "mobile": ['ios', 'flutter', 'android', 'react native'],
+            "dynamic 365": ['dynamics'],
+            # "metaverse": '',
+            "blockchain": ['blockchain'],
+            "salesforce": ['salesforce']
+        }
+
+        for x in job_roles:
+            if tech.lower() in job_roles[x]:
+                return x
+        return 'N/A'

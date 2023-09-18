@@ -45,10 +45,10 @@ def data_exists(driver):
 
 
 def find_jobs(driver, job_type, total_jobs):
-    scrapped_data = []
-    count = 0
-    c_count = 4
     try:
+        scrapped_data = []
+        count = 0
+        c_count = 4
         jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
         links = driver.find_elements(By.CLASS_NAME, "job-listing-item")
         c_name = driver.find_elements(By.CLASS_NAME, "data-details")
@@ -91,7 +91,6 @@ def find_jobs(driver, job_type, total_jobs):
             except Exception as e:
                 print(e)
         print("Per Page Scrapped")
-        date_time = str(datetime.now())
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                         "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
@@ -100,7 +99,7 @@ def find_jobs(driver, job_type, total_jobs):
         ScraperLogs.objects.create(total_jobs=len(df), job_source="Career Builder", filename=filename)
         return total_jobs
     except Exception as e:
-        print(e)
+        saveLogs(e)
         return total_jobs
 
 
@@ -110,7 +109,6 @@ def load_jobs(driver, count):
         return False, count
     try:
         jobs = driver.find_elements(By.CLASS_NAME, "data-results-content-parent")
-        print(len(jobs), count)
         if len(jobs) == count:
             return False, count
 
@@ -139,6 +137,31 @@ def accept_cookie(driver):
         print(e)
 
 
+def check_us_region(driver):
+    try:
+        driver.find_element(By.ID, "international")
+        try:
+            raise Exception('We are sorry, we do not operate in your country yet.')
+        except Exception as e:
+            saveLogs(e)
+        return False
+    except Exception as e:
+        return True
+
+
+def not_blocked(driver):
+    try:
+        blocked = driver.find_element(By.CLASS_NAME, "cf-error-overview")
+        if 'Sorry, you have been blocked' in blocked.find_element(By.TAG_NAME, "h1").text:
+            try:
+                raise Exception('Sorry, you have been blocked')
+            except Exception as e:
+                saveLogs(e)
+        return False
+    except Exception as e:
+        return True
+
+
 # code starts from here
 def career_builder(link, job_type):
     total_job = 0
@@ -150,12 +173,14 @@ def career_builder(link, job_type):
         try:
             flag = True
             request_url(driver, link)
-            accept_cookie(driver)
-            while flag:
-                flag, total_count = load_jobs(driver, total_count)
-                print("Loading...")
-            total_job = find_jobs(driver, job_type, total_job)
-            print(SCRAPING_ENDED)
+            if not_blocked(driver):
+                if check_us_region(driver):
+                    accept_cookie(driver)
+                    while flag:
+                        flag, total_count = load_jobs(driver, total_count)
+                        print("Loading...")
+                    total_job = find_jobs(driver, job_type, total_job)
+                    print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)

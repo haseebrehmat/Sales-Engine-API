@@ -6,18 +6,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
 
 def get_job_url(job):
-    return job.find_element(By.CLASS_NAME, "open-button").get_attribute('href')
+    return job.find_element(By.CLASS_NAME, "JobCard_viewJobLink__Gesny").get_attribute('href')
 
 
 def get_job_detail(driver, job_source, job_url, job_type):
     try:
-        job_title = driver.find_element(By.CLASS_NAME, "job-title").text
-        company_name = driver.find_element(By.CLASS_NAME, "job-company").text
-        job_description = driver.find_element(By.CLASS_NAME, "job")
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, "JobIndividualHeader_jobHeaderTitle__wA3d3")))
+        job_title = driver.find_element(By.CLASS_NAME, "JobIndividualHeader_jobHeaderTitle__wA3d3").text
+        company_name = driver.find_element(By.CLASS_NAME, "JobIndividualHeader_jobHeaderCompanyName__PKqdn").text
+        job_description = driver.find_element(By.CLASS_NAME, "JobIndividualBody_jobBodyContainer__rQGA_")
 
         job = {
             "job_title": job_title,
@@ -25,7 +26,7 @@ def get_job_detail(driver, job_source, job_url, job_type):
             "address": "",
             "job_description": job_description.text,
             "job_source_url": job_url,
-            "job_posted_date": "",
+            "job_posted_date": 'N/A',
             "salary_format": "N/A",
             "estimated_salary": "N/A",
             "salary_min": "N/A",
@@ -35,26 +36,12 @@ def get_job_detail(driver, job_source, job_url, job_type):
             "job_description_tags": job_description.get_attribute('innerHTML')
         }
 
-        about_job_lines = driver.find_elements(By.CLASS_NAME, "about-job-line")
-
-        for about_line in about_job_lines:
-            # class_name is class of i icon, fetch data on the bases of icons classes
-            class_name = about_line.find_element(By.CLASS_NAME, 'fa').get_attribute('class')
-            about_line_text = about_line.find_element(By.CLASS_NAME, 'about-job-line-text').text
-            if 'fa-calendar' in class_name:
-                job['job_posted_date'] = about_line_text
-            elif 'fa-map-marker' in class_name:
-                job['address'] = about_line_text
-            elif 'fa-money' in class_name:
-                # save salary data
-                if 'year' in about_line_text:
-                    job['salary_format'] = 'yearly'
-                else:
-                    job['salary_format'] = 'N/A'
-                job['estimated_salary'] = k_conversion(about_line_text)
-                salary = about_line_text.split('-')
-                job['salary_min'] = k_conversion(salary[0] if '-' in about_line_text else about_line_text.split(' ')[0])
-                job['salary_max'] = k_conversion(salary[1].split(' ')[0] if '-' in about_line_text else about_line_text.split(' ')[0])
+        try:
+            job_info = driver.find_element(By.CLASS_NAME, 'JobIndividualHeader_jobHeaderSubHeading__nRAGH').text.split('•')
+            job['job_posted_date'] = job_info[0]
+            job['address'] = job_info[1]
+        except Exception as e:
+            print(e)
         return job, False
     except Exception as e:
         saveLogs(e)
@@ -67,26 +54,21 @@ def find_jobs(driver, job_type):
                     "salary_format", "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
                     "job_description_tags"]
     try:
-        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "job-desktop")))
+        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "JobCard_jobCardClickable__ZR6Sk")))
         try:
-            for i in range(0, 40):
-                show_more_btn = driver.find_element(By.CLASS_NAME, "show-more")
-                show_more_btn.click()
+            for i in range(45):
+                jobs = driver.find_elements(By.CLASS_NAME, "JobCard_jobCardClickable__ZR6Sk")
+                for job in jobs:
+                    job.location_once_scrolled_into_view
+                time.sleep(3)
+                driver.find_element(By.CLASS_NAME, 'LoadMore_loadMore__Gi4JP').click()
                 time.sleep(3)
         except Exception as e:
             print('Loaded all jobs ...')
             saveLogs(e)
 
-        jobs = driver.find_elements(By.CLASS_NAME, "job-desktop")
-        job_urls = []
-
-        for job in jobs:
-            job_posted_date = job.find_elements(By.CLASS_NAME, 'date')[2].text
-            if 'days ago' in job_posted_date:
-                days = int(job_posted_date.split(' ')[0])
-                if days > 3:
-                    break
-            job_urls.append(get_job_url(job))
+        jobs = driver.find_elements(By.CLASS_NAME, "JobCard_jobCardClickable__ZR6Sk")
+        job_urls = [get_job_url(job) for job in jobs]
 
         count = 0
         total_jobs = len(job_urls)
@@ -94,7 +76,7 @@ def find_jobs(driver, job_type):
         for job_url in job_urls:
             try:
                 driver.get(job_url)
-                job, error = get_job_detail(driver, 'workingnomads', job_url, job_type)
+                job, error = get_job_detail(driver, 'themuse', job_url, job_type)
                 if error:
                     break
                 data = [job[c] for c in columns_name]
@@ -104,9 +86,9 @@ def find_jobs(driver, job_type):
 
                 if scrapped_data and count > 0 and (count%20 == 0 or count == total_jobs - 1):
                     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-                    filename = generate_scraper_filename(ScraperNaming.WORKING_NOMADS)
+                    filename = generate_scraper_filename(ScraperNaming.THE_MUSE)
                     df.to_excel(filename, index=False)
-                    ScraperLogs.objects.create(total_jobs=len(df), job_source='Working Nomads', filename=filename)
+                    ScraperLogs.objects.create(total_jobs=len(df), job_source='The Muse', filename=filename)
                     scrapped_data = []
             except Exception as e:
                 print(e)
@@ -116,7 +98,7 @@ def find_jobs(driver, job_type):
         saveLogs(e)
 
 
-def working_nomads(link, job_type):
+def the_muse(link, job_type):
     try:
         print("Start in try portion. \n")
         driver = configure_webdriver()

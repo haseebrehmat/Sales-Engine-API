@@ -212,3 +212,7 @@ class EditHistory(TimeStamped):
 #     x.tech_stacks = x.tech_keywords.split(",")
 #
 # print(JobDetail.objects.bulk_update(qs, batch_size=500, fields=['tech_stacks']))
+class DownloadLogs(TimeStamped):
+    url = models.CharField(max_length=250, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    query = models.JSONField(blank=True, null=True)

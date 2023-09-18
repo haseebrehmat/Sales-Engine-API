@@ -55,6 +55,7 @@ class ScraperNaming(enum.Enum):
     DICE = 'dice'
     GOOGLE_CAREERS = 'google_careers'
     JOOBLE = 'jooble'
+    HIRENOVICE = 'hirenovice'
     DAILY_REMOTE = 'dailyremote'
     MONSTER = 'monster'
     SIMPLY_HIRED = 'simply_hired'
@@ -75,6 +76,10 @@ class ScraperNaming(enum.Enum):
     RECEPTIX = 'receptix'
     BUILTIN = 'builtin'
     WORKABLE = 'workable'
+    THE_MUSE = 'themuse'
+    CLEARANCE = 'clearance'
+    SMARTRECRUITER = 'smartrecruiter'
+    GETWORK = 'getwork'
 
     def __str__(self):
         return self.value
