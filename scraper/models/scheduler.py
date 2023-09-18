@@ -8,6 +8,7 @@ class SchedulerSync(TimeStamped):
     type = models.CharField(default="instant", max_length=250)
     start_time = models.DateTimeField(auto_now=True, blank=True, null=True)
     end_time = models.DateTimeField(auto_now=True, blank=True, null=True)
+    uploading = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ["job_source", "type"]
