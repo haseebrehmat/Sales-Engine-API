@@ -1,3 +1,6 @@
+from logging import exception
+import sys
+import traceback
 import pandas as pd
 import time
 from selenium import webdriver
@@ -16,7 +19,11 @@ from utils.helpers import saveLogs
 def load_jobs(driver):
     previous_len = len(driver.find_elements(
         By.CLASS_NAME, "company_and_position"))
+    count = 0
     while True:
+        if count == 5:
+            break
+        count += 1
         time.sleep(5)
         driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
         elements = driver.find_elements(By.CLASS_NAME, "company_and_position")
@@ -45,6 +52,16 @@ def get_job_urls(driver):
 # calls url
 
 
+def is_convertible_to_number(s):
+    if isinstance(s, str):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+    return False
+
+
 def request_url(driver, url):
     driver.get(url)
 
@@ -59,22 +76,26 @@ def find_jobs(driver, job_type):
 
     links = get_job_urls(driver)
 
-    total_job = len(links)
     links.pop(0)
+    total_job = len(links)
+    original_window = driver.current_window_handle
     for link in links:
         data = []
         if link:
             try:
+                driver.switch_to.new_window('tab')
                 driver.get(link)
-                id = link.split("-")[-1]
                 time.sleep(5)
-                job = WebDriverWait(driver, 30).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, f"job-{id}")))
-                job_desc = WebDriverWait(driver, 30).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, "expandContents")))
-                if job_desc:
+                id = link.split("-")[-1]
+                if is_convertible_to_number(id):
+                    id = int(id)
+                    job = WebDriverWait(driver, 40).until(
+                        EC.presence_of_element_located(
+                            (By.CLASS_NAME, f"job-{id}")))
+                    job_desc = WebDriverWait(driver, 40).until(
+                        EC.presence_of_element_located(
+                            (By.CLASS_NAME, "expandContents")))
+
                     temp = job.find_element(
                         By.CLASS_NAME, "company_and_position").text
                     temp = temp.splitlines()
@@ -119,7 +140,7 @@ def find_jobs(driver, job_type):
                         estimated_salary = f"{salary_min}-{salary_max}"
                     append_data(data, estimated_salary)
 
-                    job_source = ScraperNaming.Remote_Ok
+                    job_source = ScraperNaming.REMOTE_OK
                     append_data(data, job_source)
 
                     job_type = "remote"
@@ -127,8 +148,12 @@ def find_jobs(driver, job_type):
 
                     job_description_tags = job_desc.get_attribute("innerHTML")
                     append_data(data, str(job_description_tags))
-            except Exception as e:
-                print('ERROR', e)
+               
+            except exception as e:
+                print(e)
+
+            driver.close()
+            driver.switch_to.window(original_window)
 
             scrapped_data.append(data)
 
@@ -155,7 +180,6 @@ def find_jobs(driver, job_type):
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Remote ok", filename=filename
     )
-
     return False, total_job
 
 
