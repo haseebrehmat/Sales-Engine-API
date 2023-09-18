@@ -206,7 +206,3 @@ def remoteok(link, job_type):
     except Exception as e:
         saveLogs(e)
         print(e)
-
-
-remoteok('https://remoteok.com/remote-dev+engineer-jobs?order_by=date',
-         'full time remote')

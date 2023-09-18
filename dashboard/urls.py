@@ -1,11 +1,7 @@
 """job_portal URL Configuration"""
 
-from django.urls import path, include
-from rest_framework import routers
-
+from django.urls import path
 from dashboard.views import DashboardAnalyticsView
-from job_portal.views import JobDetailsView, JobDataUploadView, ChangeJobStatusView, AppliedJobDetailsView, \
-    ListAppliedJobView
 
 app_name = 'dashboard_analytics'
 urlpatterns = [
