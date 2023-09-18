@@ -13,3 +13,5 @@ def get_company_token(user_id):
         if user is None:
             return False
         return get_company_token(user.id)
+
+

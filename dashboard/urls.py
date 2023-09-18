@@ -8,7 +8,6 @@ from job_portal.views import JobDetailsView, JobDataUploadView, ChangeJobStatusV
     ListAppliedJobView
 
 app_name = 'dashboard_analytics'
-urlpatterns = \
-    [
-        path('dashboard_analytics/', DashboardAnalyticsView.as_view(),name='dashboard_analytics'),
+urlpatterns = [
+        path('dashboard_analytics/', DashboardAnalyticsView.as_view(), name='dashboard_analytics'),
     ]

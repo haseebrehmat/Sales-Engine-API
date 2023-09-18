@@ -14,11 +14,13 @@ from job_portal.views.detect_changes import EditHistoryView, DetectChangesView
 from job_portal.views.blacklist_jobs_source import BlackListJobsView, JobSourcesView, NonBlackListJobsView
 from job_portal.views.cover_letter.download import DownloadCoverView
 from job_portal.views.cover_letter.generate_cover import GenerateCoverView
+from job_portal.views.filters_view import JobsFilters
 from job_portal.views.generate_analytics import GenerateAnalytics
 from job_portal.views.get_tech_keywords import get_tech_keywords
 from job_portal.views.job_detail import RemoveDuplicateView, JobModification
 from job_portal.views.job_company import JobCompaniesList
 from job_portal.views.job_upload import JobSourceCleanerView, JobTypeCleanerView
+from job_portal.views.jobs_view import JobsView, JobDetailView
 from job_portal.views.manual_job_upload import ManualJobUploadView, ManualJobUploadDetail
 from job_portal.views.sales_engine_logs import SalesEngineJobsStatsView
 from job_portal.views.trends_analytics import TrendsAnalyticsListView, TrendsAnalyticsDetailView
@@ -33,6 +35,9 @@ urlpatterns = [
     path('upload_data/', JobDataUploadView.as_view(), name='upload_job_data'),
     path('manual_jobs/', ManualJobUploadView.as_view()),
     path('job_details/', include(router1.urls)),
+    path('jobs/', JobsView.as_view()),
+    path('jobs/<pk>/', JobDetailView.as_view()),
+    path('job_filters/', JobsFilters.as_view()),
     path('expired_jobs/', include(router2.urls)),
     path('job_status/', ChangeJobStatusView.as_view(), name='change_job_status'),
     path('applied_job_details/', AppliedJobDetailsView.as_view(),

@@ -5,6 +5,7 @@ from django_filters.rest_framework import FilterSet
 from job_portal.models import JobDetail, BlacklistJobs
 import datetime
 
+
 class CustomJobFilter(FilterSet):
     from_date = django_filters.DateFilter(method='from_date_field', field_name='job_posted_date')
     to_date = django_filters.DateFilter(method='to_date_field', field_name='job_posted_date')
@@ -29,13 +30,15 @@ class CustomJobFilter(FilterSet):
         from_date = self.request.GET.get('from_date')
         to_date = self.request.GET.get('to_date')
         if value:
-            queryset = queryset.filter(job_posted_date__lt=value+datetime.timedelta(days=1))
+            queryset = queryset.filter(job_posted_date__lt=value + datetime.timedelta(days=1))
         return queryset
 
     def tech_keywords_field(self, queryset, field_name, value):
         if value and value != "":
-            keyword_list = value.split(",")
-            return queryset.filter(tech_keywords__in=keyword_list)
+            keyword_list = value
+            if isinstance(value, str):
+                keyword_list = value.split(",")
+            return queryset.filter(tech_stacks__contains=keyword_list)
         return queryset
 
     def job_sources_field(self, queryset, field_name, value):
@@ -67,4 +70,3 @@ class CustomJobFilter(FilterSet):
             queryset = queryset.exclude(company_name__in=blacklist_company)
 
         return queryset
-

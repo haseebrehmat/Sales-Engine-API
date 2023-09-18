@@ -267,8 +267,8 @@ def upload_file(job_parser, filename):
         JobDetail(job_title=job_item.job_title, company_name=job_item.company_name, job_source=job_item.job_source,
                   job_type=job_item.job_type, address=job_item.address, job_description=job_item.job_description,
                   job_description_tags=job_item.job_description_tags,
-                  tech_keywords=job_item.tech_keywords.replace(
-                      " / ", "").lower(),
+                  tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
+                  tech_stacks=job_item.tech_keywords.replace(" / ", "").lower().split(','),
                   job_posted_date=job_item.job_posted_date,
                   job_source_url=job_item.job_source_url,
                   estimated_salary=job_item.estimated_salary,
