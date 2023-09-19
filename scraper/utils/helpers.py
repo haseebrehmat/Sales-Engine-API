@@ -81,6 +81,7 @@ class ScraperNaming(enum.Enum):
     SMARTRECRUITER = 'smartrecruiter'
     GETWORK = 'getwork'
     RUBY_ON_REMOTE = 'ruby_on_remote'
+    HUBSTAFF_TALENT = 'hubstaff_talent'
 
     def __str__(self):
         return self.value
