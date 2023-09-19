@@ -47,6 +47,7 @@ from scraper.jobs.hirenovice_scraping import hirenovice
 from scraper.jobs.clearance_scraping import clearance
 from scraper.jobs.smartrecruiter_scraping import smartrecruiter
 from scraper.jobs.getwork_scraping import getwork
+from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -171,6 +172,9 @@ scraper_functions = {
     ],
     "getwork": [
         getwork,
+    ],
+    "ruby_on_remote": [
+        ruby_on_remote,
     ],
 }
 
