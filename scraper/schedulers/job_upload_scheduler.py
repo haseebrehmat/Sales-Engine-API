@@ -52,6 +52,9 @@ from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
 from scraper.models.group_scraper_query import GroupScraperQuery
+from scraper.jobs.hubstaff_talent_scraping import hubstaff_talent
+
+from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
@@ -174,7 +177,10 @@ scraper_functions = {
         getwork,
     ],
     "ruby_on_remote": [
-        ruby_on_remote,
+        ruby_on_remote
+        ],
+    "hubstafftalent": [
+        hubstaff_talent,
     ],
 }
 
@@ -624,6 +630,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["startwire"])
+            elif scheduler.job_source.lower() == "hubstafftalent":
+                startwire_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["hubstafftalent"])    
             elif scheduler.job_source.lower() == "jobgether":
                 job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
@@ -730,6 +739,9 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["startwire"])
+            elif scheduler.job_source.lower() == "hubstafftalent":
+                startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                          args=["hubstafftalent"])    
             elif scheduler.job_source.lower() == "jobgether":
                 job_gether_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
                                           args=["jobgether"])
