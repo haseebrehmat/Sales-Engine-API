@@ -433,7 +433,7 @@ def run_scrapers(scrapers):
 def load_all_job_scrappers():
     SchedulerSync.objects.filter(job_source='all', type='Infinite Scrapper').update(running=True,
                                                                                     start_time=timezone.now(),
-                                                                                    end_time=timezone.now())
+                                                                                    end_time=None)
     while AllSyncConfig.objects.filter(status=True).first() is not None:
         print("Load All Scraper Function")
         try:
@@ -458,7 +458,7 @@ def load_job_scrappers(job_source):
     try:
         SchedulerSync.objects.filter(job_source=job_source, type='instant').update(running=True,
                                                                                    start_time=timezone.now(),
-                                                                                   end_time=timezone.now())
+                                                                                   end_time=None)
         scrapers = get_scrapers_list(job_source)
         run_scrapers(scrapers)
     except Exception as e:
@@ -473,7 +473,7 @@ def load_job_scrappers(job_source):
 def run_scheduler(job_source):
     SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=True,
                                                                                      start_time=timezone.now(),
-                                                                                     end_time=timezone.now())
+                                                                                     end_time=None)
     # job_source = job_source.replace('_', '').lower()
     if job_source in list(scraper_functions.keys()):
         run_scrapers(get_scrapers_list(job_source))
