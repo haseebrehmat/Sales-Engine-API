@@ -52,9 +52,10 @@ class LeadActivityNotesList(APIView):
             if notes:
                 lead_activity_notes = LeadActivityNotes.objects.create(lead_activity=lead_activity, message=notes,
                                                                        user=request.user)
-                filename = f'{str(datetime.datetime.now())}-{attachments.name}'
-                uploaded_file = upload_file(attachments, filename)
-                LeadActivityNotesAttachment.objects.create(lead_activity_notes=lead_activity_notes, attachment=uploaded_file, filename=filename)
+                if attachments:
+                    filename = f'{str(datetime.datetime.now())}-{attachments.name}'
+                    uploaded_file = upload_file(attachments, filename)
+                    LeadActivityNotesAttachment.objects.create(lead_activity_notes=lead_activity_notes, attachment=uploaded_file, filename=filename)
                 return Response({'detail': 'Lead Activity Notes Created Successfully!'}, status=status.HTTP_201_CREATED)
             else:
                 return Response({'detail': 'Notes should not be empty.'}, status=status.HTTP_406_NOT_ACCEPTABLE)
