@@ -9,6 +9,7 @@ from scraper.views.group_scraper import GroupScraperView, GroupScraperDetailView
 from scraper.views.group_scraper_queries import (GroupScraperQueriesView, GroupScraperQueriesDetailView,
                                                  GroupScraperQueriesStatusWise)
 from scraper.views.account import AccountView, AccountDetailView
+from scraper.views.job_sources import JobSourceView, JobSourceDetailView
 
 urlpatterns = [
     path('sync/', SyncScheduler.as_view(), name="jobs"),
@@ -22,6 +23,8 @@ urlpatterns = [
     path('accounts/', AccountView.as_view()),
     path('status_wise_queries/', GroupScraperQueriesStatusWise.as_view()),
     path('accounts/<str:pk>/', AccountDetailView.as_view()),
+    path('job_source/', JobSourceView.as_view()),
+    path('job_source/<str:pk>/', JobSourceDetailView.as_view()),
     path('group_scheduler/', GroupScraperView.as_view()),
     path('group_scheduler/<int:pk>/', GroupScraperDetailView.as_view()),
     path('group_scheduler_link/', GroupScraperQueriesView.as_view()),

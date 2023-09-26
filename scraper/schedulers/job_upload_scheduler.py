@@ -758,17 +758,20 @@ def group_scraper_job(group_id):
 
     try:
         queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
-        for query in queries:
-            query.status = "remaining"
-            query.start_time = str(datetime.now(pakistan_timezone))
-            query.end_time = str(datetime.now(pakistan_timezone))
-            query.save()
+        if group_scraper.running_link is None:
+            for query in queries:
+                query.status = "remaining"
+                query.start_time = str(datetime.now(pakistan_timezone))
+                query.end_time = str(datetime.now(pakistan_timezone))
+                query.save()
         for query in queries:
             job_source = query.job_source.lower()
             print(job_source)
-            if job_source in list(single_scrapers_functions.keys()):
+            if job_source in list(single_scrapers_functions.keys()) and query.status == "remaining":
                 scraper_func = single_scrapers_functions[job_source]
                 try:
+                    group_scraper.running_link = query
+                    group_scraper.save()
                     # start time and status running
                     query.status = "running"
                     query.start_time = str(datetime.now(pakistan_timezone))
@@ -787,6 +790,8 @@ def group_scraper_job(group_id):
                     query.save()
                     print(e)
                     saveLogs(e)
+            else:
+                print("")
         upload_jobs('group scraper', 'all')
         remove_files('group scraper', 'all')
     except Exception as e:
@@ -797,4 +802,7 @@ def group_scraper_job(group_id):
         saveLogs(e)
     SchedulerSync.objects.filter(
         job_source=current_scraper).update(running=False, end_time=datetime.now(pakistan_timezone))
+    if group_scraper.running_link == GroupScraperQuery.objects.filter(group_scraper_id=group_id).first():
+        group_scraper.running_link = None
+        group_scraper.save()
     print("Group Scraper is finished")
