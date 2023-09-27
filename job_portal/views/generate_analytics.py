@@ -5,6 +5,7 @@ from pprint import pprint
 from django.db import models
 from django.db.models import Count, F, Q, Value, Sum, FloatField, Avg
 from django.db.models.functions import ExtractMonth, ExtractYear, ExtractQuarter, Coalesce, Cast
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from job_portal.models import TrendsAnalytics, Analytics, TechStats
@@ -12,7 +13,8 @@ from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    permission_classes = (AnalyticsPermission,)
+    # permission_classes = (AnalyticsPermission,)
+    permission_classes = (AllowAny,)
     queryset = Analytics.objects.all().order_by('-job_posted_date')
     tech_keywords = ""
     job_types = ""
@@ -47,7 +49,8 @@ class GenerateAnalytics(APIView):
             "start_date": str(start_date.date()) if start_date else '',
             "end_date": str(end_date.date()) if end_date else '',
             "trend_analytics": self.get_trends_analytics(start_date, end_date),
-            "tech_growth": self.check_tech_growth("python", start_date, end_date)
+            "tech_growth": self.check_tech_growth("python", start_date, end_date),
+            "quarter_comparison": self.get_quarter_comparison(start_date)
         }
 
         return Response(data)
@@ -153,8 +156,7 @@ class GenerateAnalytics(APIView):
             quarter_number = int(quarter_filter.split("q")[-1])
 
             self.queryset = (self.queryset.annotate(
-                year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date'))
-            .filter(
+                year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date')).filter(
                 quarter=quarter_number, year=year
             ))
             weeks = []
@@ -267,6 +269,34 @@ class GenerateAnalytics(APIView):
             }
             for x in self.job_types
         ]
+        return data
+
+    def get_quarter_comparison(self, date):
+        data = []
+        year = date.year
+        for quarter in range(1, 5):
+            # if quarter == 1:
+            #     quarter_start_date = datetime(year, 1, 1)
+            #     quarter_end_date = datetime(year, 3, 31)
+            # elif quarter == 2:
+            #     quarter_start_date = datetime(year, 4, 1)
+            #     quarter_end_date = datetime(year, 6, 30)
+            # elif quarter == 3:
+            #     quarter_start_date = datetime(year, 7, 1)
+            #     quarter_end_date = datetime(year, 9, 30)
+            # elif quarter == 4:
+            #     quarter_start_date = datetime(year, 10, 1)
+            #     quarter_end_date = datetime(year, 12, 31)
+
+            qs = Analytics.objects.annotate(
+                year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date')).filter(
+                quarter=quarter, year=year
+            )
+            if qs.exists():
+                data.append(self.get_trends_analytics(qs.last().job_posted_date, qs.first().job_posted_date))
+
+            # print(quarter_start_date, quarter_end_date)
+
         return data
 
 # Generate Salary Range Graph
