@@ -13,8 +13,8 @@ from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    # permission_classes = (AnalyticsPermission,)
-    permission_classes = (AllowAny,)
+    permission_classes = (AnalyticsPermission,)
+    # permission_classes = (AllowAny,)
     queryset = Analytics.objects.all().order_by('-job_posted_date')
     tech_keywords = ""
     job_types = ""
@@ -50,7 +50,8 @@ class GenerateAnalytics(APIView):
             "end_date": str(end_date.date()) if end_date else '',
             "trend_analytics": self.get_trends_analytics(start_date, end_date),
             "tech_growth": self.check_tech_growth("python", start_date, end_date),
-            "quarter_comparison": self.get_quarter_comparison(start_date)
+            "quarter_comparison": self.get_quarter_comparison(start_date),
+            "month_comparison": self.get_month_comparison(start_date)
         }
 
         return Response(data)
@@ -274,29 +275,87 @@ class GenerateAnalytics(APIView):
     def get_quarter_comparison(self, date):
         data = []
         year = date.year
-        for quarter in range(1, 5):
-            # if quarter == 1:
-            #     quarter_start_date = datetime(year, 1, 1)
-            #     quarter_end_date = datetime(year, 3, 31)
-            # elif quarter == 2:
-            #     quarter_start_date = datetime(year, 4, 1)
-            #     quarter_end_date = datetime(year, 6, 30)
-            # elif quarter == 3:
-            #     quarter_start_date = datetime(year, 7, 1)
-            #     quarter_end_date = datetime(year, 9, 30)
-            # elif quarter == 4:
-            #     quarter_start_date = datetime(year, 10, 1)
-            #     quarter_end_date = datetime(year, 12, 31)
+        trends_analytics = TrendsAnalytics.objects.all()
+        for x in trends_analytics:
 
-            qs = Analytics.objects.annotate(
-                year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date')).filter(
-                quarter=quarter, year=year
-            )
-            if qs.exists():
-                data.append(self.get_trends_analytics(qs.last().job_posted_date, qs.first().job_posted_date))
+            tech_stacks = x.tech_stacks.split(',') if x.tech_stacks else []
 
-            # print(quarter_start_date, quarter_end_date)
+            for quarter in range(1, 5):
+                qs = TechStats.objects.annotate(
+                    year=ExtractYear('job_posted_date'),
+                    quarter=ExtractQuarter('job_posted_date'),
+                ).filter(
+                    quarter=quarter, year=year, name__in=tech_stacks
+                )
 
+                if qs:
+                    qs = qs.aggregate(total=Sum('total'))
+                    data.append(
+                        {
+                            f'q{quarter}': qs['total'],
+                            'category': x.category
+                        }
+                    )
+
+        result_list = []
+        merged_dict = {}
+
+        for d in data:
+            category = d["category"]
+            d.pop("category")
+
+            if category in merged_dict:
+                merged_dict[category].update(d)
+            else:
+                merged_dict[category] = d
+
+        for category, data in merged_dict.items():
+            data["category"] = category
+            result_list.append(data)
+        data = result_list
+        return data
+
+    def get_month_comparison(self, date):
+        data = []
+        year = date.year
+        trends_analytics = TrendsAnalytics.objects.all()
+        for x in trends_analytics:
+
+            tech_stacks = x.tech_stacks.split(',') if x.tech_stacks else []
+
+            for idx, month in enumerate(self.months):
+                qs = TechStats.objects.annotate(
+                    year=ExtractYear('job_posted_date'),
+                    month=ExtractMonth('job_posted_date'),
+                ).filter(
+                    month=idx + 1, year=year, name__in=tech_stacks
+                )
+
+                if qs:
+                    qs = qs.aggregate(total=Sum('total'))
+                    data.append(
+                        {
+                            month: qs['total'],
+                            'category': x.category
+                        }
+                    )
+
+        result_list = []
+        merged_dict = {}
+
+        for d in data:
+            category = d["category"]
+            d.pop("category")
+
+            if category in merged_dict:
+                merged_dict[category].update(d)
+            else:
+                merged_dict[category] = d
+
+        for category, data in merged_dict.items():
+            data["category"] = category
+            result_list.append(data)
+        data = result_list
         return data
 
 # Generate Salary Range Graph
