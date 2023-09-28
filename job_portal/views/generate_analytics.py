@@ -365,51 +365,71 @@ class GenerateAnalytics(APIView):
         return data
 
     def get_monthly_tech_data(self, date):
-        result = []
+        data = []
         year = date.year
-        for idx, x in enumerate(self.months):
+        for idx, month in enumerate(self.months):
             month_number = idx + 1
-            merged_dict = {}
-            qs = (TechStats.objects.annotate(year=ExtractYear('job_posted_date'), month=ExtractMonth('job_posted_date'))
-                  .filter(
-                name__in=self.tech_keywords, year=year, month=month_number
-            ).values('name').annotate(total=Sum('total'))).values('name', 'total')
+            month = month.lower()
+            qs = TechStats.objects.annotate(
+                year=ExtractYear('job_posted_date'),
+                month=ExtractMonth('job_posted_date'),
+            ).filter(
+                month=month_number, year=year, name__in=self.tech_keywords
+            ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
+            data.extend({'name': x['name'], month: x['total_jobs']} for x in qs)
+        result_list = []
+        merged_dict = {}
 
-            data = [{x['name']: x['total']} for x in qs]
-            if data:
-                for i in data:
-                    merged_dict.update(i)
+        for d in data:
+            name = d["name"]
+            d.pop("name")
+
+            if name in merged_dict:
+                merged_dict[name].update(d)
             else:
-                for x in self.tech_keywords:
-                    merged_dict.update({x: 0})
+                merged_dict[name] = d
 
-            merged_dict.update({'month': x})
-            result.append(merged_dict)
-        return result
-
+        for name, data in merged_dict.items():
+            for month in self.months:
+                if month.lower() not in data.keys():
+                    data[month] = 0
+            data["name"] = name
+            result_list.append(data)
+        data = result_list
+        return data
 
     def get_quarterly_tech_data(self, date):
-        result = []
         data = []
         year = date.year
         for quarter in range(1, 5):
-            merged_dict = {}
-            qs = (TechStats.objects.annotate(year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date'))
-                  .filter(
-                name__in=self.tech_keywords, year=year, quarter=quarter
-            ).values('name').annotate(total=Sum('total'))).values('name', 'total')
+            qs = TechStats.objects.annotate(
+                year=ExtractYear('job_posted_date'),
+                quarter=ExtractQuarter('job_posted_date'),
+            ).filter(
+                quarter=quarter, year=year, name__in=self.tech_keywords
+            ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
+            data.extend({'name': x['name'], 'Q' + str(quarter): x['total_jobs']} for x in qs)
+        result_list = []
+        merged_dict = {}
 
-            data = [{x['name']: x['total']} for x in qs]
-            if data:
-                for i in data:
-                    merged_dict.update(i)
+        for d in data:
+            name = d["name"]
+            d.pop("name")
+
+            if name in merged_dict:
+                merged_dict[name].update(d)
             else:
-                for x in self.tech_keywords:
-                    merged_dict.update({x: 0})
+                merged_dict[name] = d
 
-            merged_dict.update({'quarter': "Q" + str(quarter)})
-            result.append(merged_dict)
-        return result
+        quarters = ['Q1', 'Q2', 'Q3', 'Q4']
+        for name, data in merged_dict.items():
+            for q in quarters:
+                if q not in data.keys():
+                    data[q] = 0
+            data["name"] = name
+            result_list.append(data)
+        data = result_list
+        return data
 
 
 
