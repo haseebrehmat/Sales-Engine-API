@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from lead_management.models import Phase, Status, CompanyStatus
+from lead_management.models import Phase, Status, CompanyStatus, Lead
 from lead_management.serializers import PhaseSerializer
 from settings.utils.custom_pagination import CustomPagination
 from rest_framework import status
@@ -85,8 +85,16 @@ class PhaseDetail(APIView):
     def delete(self, request, pk):
         try:
             obj = Phase.objects.get(pk=pk)
-            obj.delete()
-            msg = 'Phase deleted successfully!'
+            leads = Lead.objects.filter(phase=obj)
+            lead_activities = Lead.objects.filter(phase=obj)
+            if leads or lead_activities:
+                msg = 'This status cannot be deleted because it is used by lead.'
+                status_code = status.HTTP_406_NOT_ACCEPTABLE
+            else:
+                obj.delete()
+                msg = 'Phase deleted successfully!'
+                status_code = status.HTTP_200_OK
         except Exception as e:
             msg = 'Phase doest not exist!'
-        return Response({'detail': msg})
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return Response({'detail': msg}, status=status_code)
