@@ -25,10 +25,23 @@ def check_alerts(driver):
     except:
         print("")
 
+
+def file_creation(scrapped_data):
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                    "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
+                    "job_description_tags"]
+    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+    filename = generate_scraper_filename(ScraperNaming.DAILY_REMOTE)
+
+    df.to_excel(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Daily Remote", filename=filename)
+
+
 def find_jobs(driver, job_type, total_job):
     scrapped_data = []
     date_time = str(datetime.now())
-    count = 0
     check_alerts(driver)
     original_window = driver.current_window_handle
     driver.switch_to.new_window('tab')
@@ -95,7 +108,12 @@ def find_jobs(driver, job_type, total_job):
                 scrapped_data.append(data)
             except Exception as e:
                 print(e)
-            count += 1
+        # Here is a file uploading code
+        file_creation(scrapped_data)
+        from scraper.schedulers.job_upload_scheduler import upload_jobs, remove_files
+        upload_jobs('instant scraper', job_source)
+        remove_files('instant scraper', job_source)
+        scrapped_data = []
         try:
             driver.switch_to.window(original_window)
             page_count = int(driver.find_elements(By.CLASS_NAME, "pagination-page")[-2].text)
@@ -105,13 +123,6 @@ def find_jobs(driver, job_type, total_job):
             flag_count += flag_count
         except:
             flag_count += flag_count
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.DAILY_REMOTE)
-    df.to_excel(filename, index=False)
-    ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="DailyRemote", filename=filename)
     return False, total_job
 
 

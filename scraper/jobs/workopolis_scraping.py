@@ -13,6 +13,16 @@ from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_co
 
 total_job = 0
 
+def file_creation(scrapped_data):
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                    "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+    filename = generate_scraper_filename(ScraperNaming.WORKOPOLIS)
+
+    df.to_excel(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Workopolis", filename=filename)
 def find_jobs(driver, job_type, total_job):
     scrapped_data = []
     date_time = str(datetime.now())
@@ -92,19 +102,17 @@ def find_jobs(driver, job_type, total_job):
             except Exception as e:
                 print(e)
             count += 1
+        file_creation(scrapped_data)
+        from scraper.schedulers.job_upload_scheduler import upload_jobs, remove_files
+        upload_jobs('instant scraper', job_source)
+        remove_files('instant scraper', job_source)
+        scrapped_data = []
         # Here is the login of next page and set the flag of while loop
         try:
             driver.get(driver.find_element(By.CLASS_NAME, "Pagination-link--next").get_attribute('href'))
             time.sleep(5)
         except:
             loop_flag = False
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.WORKOPOLIS)
-    df.to_excel(filename, index=False)
-    obj = ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="Workopolis", filename=filename)
     return False, total_job
 
 
