@@ -1,21 +1,25 @@
 import calendar
+import math
 from datetime import datetime, timedelta, date
-from pprint import pprint
-
 from django.db import models
-from django.db.models import Count, F, Q, Value, Sum, FloatField, Avg
+from django.db.models import Count, F, Q, Value, Sum, FloatField, Avg, Min, Max
 from django.db.models.functions import ExtractMonth, ExtractYear, ExtractQuarter, Coalesce, Cast
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from authentication.models import Role
 from job_portal.models import TrendsAnalytics, Analytics, TechStats
 from job_portal.permissions.analytics import AnalyticsPermission
 
 
 class GenerateAnalytics(APIView):
-    permission_classes = (AnalyticsPermission,)
+    # permission_classes = (AnalyticsPermission,)
+    permission_classes = (AllowAny,)
     queryset = Analytics.objects.all().order_by('-job_posted_date')
     tech_keywords = ""
     job_types = ""
+    percentage = None
     months = [
         "January",
         "February",
@@ -32,22 +36,35 @@ class GenerateAnalytics(APIView):
     ]
 
     def get(self, request):
+        self.percentage = request.GET.get('percentage')
+        if self.percentage:
+            self.percentage = (100 + float(self.percentage)) / 100
+        else:
+            self.percentage = 1
+        excluded_techs = request.GET.get('excluded_techs')
         filters, start_date, end_date = self.filter_queryset(request)
         if not self.queryset.values_list("job_type", flat=True):
             return Response({"detail": "No Analytics Exists"}, status=406)
         self.tech_keywords = set(TechStats.objects.values_list("name", flat=True))
+        if excluded_techs:
+            for x in excluded_techs.split(','):
+                self.tech_keywords.remove(x)
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
         limit = int(request.GET.get("limit", 10))
         tech_stack_data, trending = self.get_tech_count_stats(start_date, end_date, limit)
         data = {
-            "tech_stack_data": tech_stack_data,
-            "trending": trending,
+            # "tech_stack_data": tech_stack_data,
+            # "trending": trending,
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
             "start_date": str(start_date.date()) if start_date else '',
             "end_date": str(end_date.date()) if end_date else '',
             "trend_analytics": self.get_trends_analytics(start_date, end_date),
-            "tech_growth": self.check_tech_growth("python", start_date, end_date)
+            "tech_growth": self.check_tech_growth("python", start_date, end_date),
+            "quarterly_trends": self.get_quarterly_trends(start_date),
+            "monthly_trends": self.get_monthly_trends(start_date),
+            "monthly_tech_data": self.get_monthly_tech_data(start_date),
+            "quarterly_tech_data": self.get_quarterly_tech_data(start_date)
         }
 
         return Response(data)
@@ -68,12 +85,19 @@ class GenerateAnalytics(APIView):
 
         top_tech_stats = data.order_by('-total')[:limit]
 
+        total_expression = lambda x: [value for key, value in x.items() if isinstance(value, int) and key != 'total']
+        expression = lambda x: {
+            key: math.ceil(self.percentage * value) if isinstance(value, int) else value
+            for key, value in x.items()
+        }
+        data = [{**expression(x), 'total': sum(total_expression(x))} for x in data]
+
         return data, top_tech_stats
 
     def get_tech_counts(self, tech):
         data = [
             {
-                "value": self.queryset.filter(tech_keywords=tech, job_type=x).count(),
+                "value": math.ceil(self.percentage * self.queryset.filter(tech_keywords=tech, job_type=x).count()),
                 "key": x.lower().replace(" ", "_")
             }
             for x in self.job_types
@@ -153,8 +177,7 @@ class GenerateAnalytics(APIView):
             quarter_number = int(quarter_filter.split("q")[-1])
 
             self.queryset = (self.queryset.annotate(
-                year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date'))
-            .filter(
+                year=ExtractYear('job_posted_date'), quarter=ExtractQuarter('job_posted_date')).filter(
                 quarter=quarter_number, year=year
             ))
             weeks = []
@@ -231,6 +254,14 @@ class GenerateAnalytics(APIView):
                     hybrid_contract=Sum('hybrid_contract'),
                 )
                 result.update({'name': trends.category, 'tech_stacks': tech_stacks})
+                total_expression = lambda x: [value for key, value in x.items() if
+                                              isinstance(value, int) and key != 'total']
+                expression = lambda x: {
+                    key: math.ceil(self.percentage * value) if isinstance(value, int) else value
+                    for key, value in x.items()
+                }
+                result = expression(result)
+                result.update({'total': sum(total_expression(result))})
                 data.append(result)
             return data
         except Exception as e:
@@ -251,6 +282,7 @@ class GenerateAnalytics(APIView):
             month=F('job_posted_date__month'),
             year=F('job_posted_date__year')
         )
+
         return data
 
     def get_current_quarter(self):
@@ -269,45 +301,218 @@ class GenerateAnalytics(APIView):
         ]
         return data
 
+    def get_quarterly_trends(self, date):
+        data = []
+        year = date.year
+        trends_analytics = TrendsAnalytics.objects.all()
+        values_list = []
+        for x in trends_analytics:
+
+            tech_stacks = x.tech_stacks.split(',') if x.tech_stacks else []
+
+            for quarter in range(1, 5):
+                qs = TechStats.objects.annotate(
+                    year=ExtractYear('job_posted_date'),
+                    quarter=ExtractQuarter('job_posted_date'),
+                ).filter(
+                    quarter=quarter, year=year, name__in=tech_stacks
+                )
+
+                if qs:
+                    qs = qs.aggregate(total=Sum('total'))
+                    values_list.append(qs['total'])
+                    data.append(
+                        {
+                            f'q{quarter}': qs['total'],
+                            'category': x.category
+                        }
+                    )
+        result_list = []
+        merged_dict = {}
+        for d in data:
+            category = d["category"]
+            d.pop("category")
+
+            if category in merged_dict:
+                merged_dict[category].update(d)
+            else:
+                merged_dict[category] = d
+
+        for category, data in merged_dict.items():
+            data["category"] = category
+            result_list.append(data)
+        data = {'data': result_list, 'min_value': min(values_list), 'max_value': max(values_list)}
+        return data
+
+    def get_monthly_trends(self, date):
+        data = []
+        year = date.year
+        trends_analytics = TrendsAnalytics.objects.all()
+        values_list = []
+        for x in trends_analytics:
+
+            tech_stacks = x.tech_stacks.split(',') if x.tech_stacks else []
+
+            for idx, month in enumerate(self.months):
+                qs = TechStats.objects.annotate(
+                    year=ExtractYear('job_posted_date'),
+                    month=ExtractMonth('job_posted_date'),
+                ).filter(
+                    month=idx + 1, year=year, name__in=tech_stacks
+                )
+
+                if qs:
+                    qs = qs.aggregate(total=Sum('total'))
+                    total = qs['total']
+                else:
+                    total = 0
+                data.append(
+                    {
+                        month.lower(): total,
+                        'category': x.category
+                    }
+                )
+                values_list.append(total)
+        result_list = []
+        merged_dict = {}
+
+        for d in data:
+            category = d["category"]
+            d.pop("category")
+
+            if category in merged_dict:
+                merged_dict[category].update(d)
+            else:
+                merged_dict[category] = d
+
+        for category, data in merged_dict.items():
+            data["category"] = category
+            result_list.append(data)
+        data = {'data': result_list, 'min_value': min(values_list), 'max_value': max(values_list)}
+        return data
+
+    def get_monthly_tech_data(self, date):
+        data = []
+        year = date.year
+        values_list = []
+        for idx, month in enumerate(self.months):
+            month_number = idx + 1
+            month = month.lower()
+            qs = TechStats.objects.annotate(
+                year=ExtractYear('job_posted_date'),
+                month=ExtractMonth('job_posted_date'),
+            ).filter(
+                month=month_number, year=year, name__in=self.tech_keywords
+            ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
+            obj_exp = lambda x: ({'name': x['name'], month: x['total_jobs']}, values_list.append(x['total_jobs']))[0]
+            data.extend(obj_exp(x) for x in qs)
+        result_list = []
+        merged_dict = {}
+
+        for d in data:
+            name = d["name"]
+            d.pop("name")
+
+            if name in merged_dict:
+                merged_dict[name].update(d)
+            else:
+                merged_dict[name] = d
+
+        min_value = min(values_list)
+        for name, data in merged_dict.items():
+            for month in self.months:
+                if month.lower() not in data.keys():
+                    data[month.lower()] = 0
+                    min_value = 0
+            data["name"] = name
+            result_list.append(data)
+        data = {'data': result_list, 'min_value': min_value, 'max_value': max(values_list)}
+        return data
+
+    def get_quarterly_tech_data(self, date):
+        data = []
+        year = date.year
+        values_list = []
+        for quarter in range(1, 5):
+            qs = TechStats.objects.annotate(
+                year=ExtractYear('job_posted_date'),
+                quarter=ExtractQuarter('job_posted_date'),
+            ).filter(
+                quarter=quarter, year=year, name__in=self.tech_keywords
+            ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
+            quarter_obj_exp = lambda x: \
+                (values_list.append(x['total_jobs']), {'name': x['name'], 'q' + str(quarter): x['total_jobs']})[-1]
+            data.extend([quarter_obj_exp(x) for x in qs])
+        result_list = []
+        merged_dict = {}
+
+        for d in data:
+            name = d["name"]
+            d.pop("name")
+
+            if name in merged_dict:
+                merged_dict[name].update(d)
+            else:
+                merged_dict[name] = d
+
+        quarters = ['q1', 'q2', 'q3', 'q4']
+        min_value = min(values_list)
+        for name, data in merged_dict.items():
+            for q in quarters:
+                if q not in data.keys():
+                    data[q] = 0
+                    min_value = 0
+            data["name"] = name
+            result_list.append(data)
+        data = {'data': result_list, 'min_value': min_value, 'max_value': max(values_list)}
+        return data
+
+
+
+
+
+
+"""
 # Generate Salary Range Graph
-# class ExtractNumericValue(models.Func):
-#     function = 'REGEXP_REPLACE'
-#     template = "%(function)s(%(expressions)s, '[^0-9.]', '', 'g')"
-#     output_field = FloatField()
-#
-#
-# def calculate_salary_per_anum(salary):
-#     if salary > 20000:
-#         return float(salary)
-#     elif salary > 1000:
-#         return float(salary) * 12
-#     else:
-#         return float(salary) * 12 * 8 * 30
-#
-#
-# salary_stats = []
-# tech_keywords = set(JobDetail.objects.only('tech_keywords').values_list('tech_keywords', flat=True))
-# fields = ['salary_max', 'salary_min', 'salary_format']
-# for x in tech_keywords:
-#     qs = JobDetail.objects.only(*fields)
-#     max_salary = qs.filter(salary_max__isnull=False, tech_keywords=x).exclude(salary_max='').annotate(
-#         numeric_amount=Cast(ExtractNumericValue('salary_max'), output_field=FloatField())
-#     ).aggregate(average_salary=Coalesce(Avg('numeric_amount'), Value(0, output_field=FloatField())))['average_salary']
-#     min_salary = qs.filter(salary_min__isnull=False, tech_keywords=x).exclude(salary_min='').annotate(
-#         numeric_amount=Cast(ExtractNumericValue('salary_min'), output_field=FloatField())
-#     ).aggregate(average_salary=Coalesce(Avg('numeric_amount'), Value(0, output_field=FloatField())))['average_salary']
-#     if max_salary > 0:
-#         salary_format = qs.first().salary_format
-#         if not qs.first().salary_format:
-#             max_salary = calculate_salary_per_anum(max_salary)
-#             min_salary = calculate_salary_per_anum(min_salary)
-#         salary_stats.append(
-#             {
-#                 "tech_stack": x,
-#                 "max": round(max_salary, 2),
-#                 "min": round(min_salary, 2),
-#             }
-#         )
-#
-#
-# print(salary_stats)
+class ExtractNumericValue(models.Func):
+    function = 'REGEXP_REPLACE'
+    template = "%(function)s(%(expressions)s, '[^0-9.]', '', 'g')"
+    output_field = FloatField()
+
+
+def calculate_salary_per_anum(salary):
+    if salary > 20000:
+        return float(salary)
+    elif salary > 1000:
+        return float(salary) * 12
+    else:
+        return float(salary) * 12 * 8 * 30
+
+
+salary_stats = []
+tech_keywords = set(JobDetail.objects.only('tech_keywords').values_list('tech_keywords', flat=True))
+fields = ['salary_max', 'salary_min', 'salary_format']
+for x in tech_keywords:
+    qs = JobDetail.objects.only(*fields)
+    max_salary = qs.filter(salary_max__isnull=False, tech_keywords=x).exclude(salary_max='').annotate(
+        numeric_amount=Cast(ExtractNumericValue('salary_max'), output_field=FloatField())
+    ).aggregate(average_salary=Coalesce(Avg('numeric_amount'), Value(0, output_field=FloatField())))['average_salary']
+    min_salary = qs.filter(salary_min__isnull=False, tech_keywords=x).exclude(salary_min='').annotate(
+        numeric_amount=Cast(ExtractNumericValue('salary_min'), output_field=FloatField())
+    ).aggregate(average_salary=Coalesce(Avg('numeric_amount'), Value(0, output_field=FloatField())))['average_salary']
+    if max_salary > 0:
+        salary_format = qs.first().salary_format
+        if not qs.first().salary_format:
+            max_salary = calculate_salary_per_anum(max_salary)
+            min_salary = calculate_salary_per_anum(min_salary)
+        salary_stats.append(
+            {
+                "tech_stack": x,
+                "max": round(max_salary, 2),
+                "min": round(min_salary, 2),
+            }
+        )
+
+
+print(salary_stats)
+"""
