@@ -37,7 +37,6 @@ def get_job_urls(driver):
     links = []
     for job_url in job_urls:
         link = job_url.find_element(By.TAG_NAME, "a")
-        link.get_attribute("href")
         t = job_url.find_element(
             By.CLASS_NAME, "new-job-item__JobItemDate-sc-1qa4r36-5")
         links.append([link.get_attribute("href"), t.text])
@@ -85,20 +84,17 @@ def find_jobs(driver, job_type):
                 job_description = temp
                 append_data(data, job_description.text)
 
-               
                 job_posted_date = link[1]
                 append_data(data, job_posted_date)
 
                 salary_format = "N/A"
                 append_data(data, salary_format)
 
-              
                 salary_min = "N/A"
                 append_data(data, salary_min)
-                
+
                 salary_max = "N/A"
                 append_data(data, salary_max)
-               
 
                 estimated_salary = 'N/A'
                 append_data(data, estimated_salary)
@@ -134,7 +130,7 @@ def find_jobs(driver, job_type):
         "job_type",
         "job_description_tags",
     ]
-    
+
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.JUST_REMOTE)
     df.to_excel(filename, index=False)
