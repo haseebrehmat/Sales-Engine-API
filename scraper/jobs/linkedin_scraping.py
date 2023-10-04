@@ -113,27 +113,23 @@ def find_jobs(driver, job_type, total_jobs, url=None):
 
             WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.CLASS_NAME, "jobs-unified-top-card__job-insight"))
+                    (By.CLASS_NAME, "jobs-description-content__text"))
             )
 
             if len(job_posted_date) > 0:
-                job_title = driver.find_element(
-                    By.CLASS_NAME, "jobs-unified-top-card__job-title")
+                job_title = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-title")
                 append_data(data, job_title.text)
-                company_name = driver.find_element(
-                    By.CLASS_NAME, "job-card-container__primary-description")
+                company_name = driver.find_element(By.CLASS_NAME, "job-card-container__primary-description")
                 append_data(data, company_name.text)
                 append_data(data, address[count].text)
-                job_description = driver.find_element(
-                    By.CLASS_NAME, "jobs-description-content__text")
+                job_description = driver.find_element(By.CLASS_NAME, "jobs-description-content__text")
                 append_data(data, job_description.text)
-                job_source_url = driver.find_element(
-                    By.CLASS_NAME, "jobs-unified-top-card__content--two-pane")
+                job_source_url = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__content--two-pane")
                 url = job_source_url.find_element(By.TAG_NAME, 'a')
                 append_data(data, url.get_attribute('href'))
                 append_data(data, job_posted_date[count].text.split('\n')[0])
                 try:
-                    estimated_salary = driver.find_elements(By.CLASS_NAME, "jobs-unified-top-card__job-insight")[0].text
+                    estimated_salary = driver.find_elements(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight")[0].text
                     estimated_salary.split(' (')[0]
                     try:
                         if 'yr' in estimated_salary:
@@ -175,7 +171,6 @@ def find_jobs(driver, job_type, total_jobs, url=None):
             print(e)
         count += 1
 
-    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                     "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)

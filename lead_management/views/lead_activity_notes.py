@@ -12,17 +12,19 @@ from settings.utils.custom_pagination import CustomPagination
 from utils.upload_to_s3 import upload_file
 
 
-class LeadActivityNotesList(APIView):
+class LeadActivityNotesList(ListAPIView):
+    pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
+    serializer_class = LeadActivityNotesSerializer
 
-    def get(self, request):
+    def get_queryset(self):
         lead = self.request.GET.get('lead')
         lead = Lead.objects.filter(pk=lead).first()
         search = self.request.GET.get('search')
         if lead:
             company_status = self.request.GET.get('status')
             phase = self.request.GET.get('phase')
-            queryset = LeadActivity.objects.filter(lead_id=lead)
+            queryset = LeadActivity.objects.filter(lead=lead)
             if not company_status and not phase:
                 queryset = queryset.filter(company_status=lead.company_status, phase=lead.phase)
             else:
@@ -38,8 +40,7 @@ class LeadActivityNotesList(APIView):
         else:
             notes_queryset = LeadActivityNotes.objects.none()
         notes_queryset = notes_queryset.order_by("-created_at")
-        serializer = LeadActivityNotesSerializer(notes_queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return notes_queryset
 
     def post(self, request):
         lead = request.data.get('lead')
@@ -52,9 +53,10 @@ class LeadActivityNotesList(APIView):
             if notes:
                 lead_activity_notes = LeadActivityNotes.objects.create(lead_activity=lead_activity, message=notes,
                                                                        user=request.user)
-                filename = f'{str(datetime.datetime.now())}-{attachments.name}'
-                uploaded_file = upload_file(attachments, filename)
-                LeadActivityNotesAttachment.objects.create(lead_activity_notes=lead_activity_notes, attachment=uploaded_file, filename=filename)
+                if attachments:
+                    filename = f'{str(datetime.datetime.now())}-{attachments.name}'
+                    uploaded_file = upload_file(attachments, filename)
+                    LeadActivityNotesAttachment.objects.create(lead_activity_notes=lead_activity_notes, attachment=uploaded_file, filename=filename)
                 return Response({'detail': 'Lead Activity Notes Created Successfully!'}, status=status.HTTP_201_CREATED)
             else:
                 return Response({'detail': 'Notes should not be empty.'}, status=status.HTTP_406_NOT_ACCEPTABLE)

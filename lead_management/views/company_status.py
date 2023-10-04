@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from lead_management.models import CompanyStatus, Status
+from lead_management.models import CompanyStatus, Status, Lead
 from lead_management.serializers import CompanyStatusSerializer, CompanyStatusPhasesSerializer
 from settings.utils.custom_pagination import CustomPagination
 
@@ -80,8 +80,17 @@ class CompanyStatusDetail(APIView):
 
     def delete(self, request, pk):
         try:
-            CompanyStatus.objects.get(pk=pk).delete()
-            msg = 'Company Status removed successfully!'
+            obj = CompanyStatus.objects.get(pk=pk)
+            leads = Lead.objects.filter(company_status=obj)
+            lead_activities = Lead.objects.filter(company_status=obj)
+            if leads or lead_activities:
+                msg = 'This company status cannot be deleted because it is used in some leads.'
+                status_code = status.HTTP_406_NOT_ACCEPTABLE
+            else:
+                obj.delete()
+                msg = 'Company Status removed successfully!'
+                status_code = status.HTTP_200_OK
         except Exception as e:
             msg = 'Company Status doest not exist!'
-        return Response({'detail': msg})
+            status_code = status.HTTP_406_NOT_ACCEPTABLE
+        return Response({'detail': msg}, status=status_code)

@@ -4,7 +4,8 @@ try:
     import os
     import shutil
     from scraper.models import SchedulerSync, AllSyncConfig
-    SchedulerSync.objects.filter(type='instant').update(running=False)
+    SchedulerSync.objects.filter(type='instant').update(running=False, uploading=False)
+    SchedulerSync.objects.filter(type='group scraper').update(uploading=False)
     AllSyncConfig.objects.filter(status=True).update(status=False)
 
     if os.path.exists('scraper/job_data'):

@@ -46,7 +46,11 @@ def run_scrapers_manually(job_source='all'):
             "hirenovice",
             "clearance",
             "smartrecruiter",
-    ]
+            "getwork",
+            "ruby_on_remote",
+            "hubstafftalent"
+        ]
+    
     if job_source.lower() not in valid_job_sources:
         return {"detail": f"{job_source} not a valid job source"}, status.HTTP_406_NOT_ACCEPTABLE
 
@@ -111,14 +115,5 @@ class SchedulerStatusView(APIView):
         if len(queryset) is None:
             data = []
         else:
-            data = [{"job_source": x.job_source, "running": x.running, "type": x.type, "start_time": x.start_time, "end_time": x.end_time} for x in queryset]
-        # infinite_scraper_running_status = False
-        # if AllSyncConfig.objects.filter(status=True).first() is not None:
-        #     infinite_scraper_running_status = True
-        # data.append({"job_source": 'all', "running": infinite_scraper_running_status, "type": 'Infinite Scrapper'})
-        # try:
-        #     from scraper.schedulers.job_upload_scheduler import current_scraper
-        #     data.append({"job_source": current_scraper, "running": True if current_scraper else False, "type": 'Group Scraper'})
-        # except Exception as e:
-        #     print(e)
+            data = [{"job_source": x.job_source, "running": x.running, "type": x.type, "start_time": x.start_time, "end_time": x.end_time, "uploading": x.uploading} for x in queryset]
         return Response(data, status=status.HTTP_200_OK)

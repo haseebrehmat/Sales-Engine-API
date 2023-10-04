@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -25,6 +27,7 @@ from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailOutputSerializer, JobDetailSerializer
 from scraper.utils.thread import start_new_thread
 from settings.base import FROM_EMAIL
+from settings.utils.custom_pagination import CustomCursorPagination
 from utils import upload_to_s3
 
 from authentication.exceptions import InvalidUserException
@@ -227,7 +230,6 @@ class JobModification(APIView):
             request.data.get("job_description_tags", "") != ""
         ]
 
-
         if all(conditions):
             query = JobDetail.objects.filter(pk=pk)
             if query.exists():
@@ -285,7 +287,8 @@ class JobModification(APIView):
             message = {"detail": "Job deleted successfully"}
             return Response(message, status=status.HTTP_200_OK)
         return Response({"detail": "This job does not exist"},
-                            status=status.HTTP_404_NOT_FOUND)
+                        status=status.HTTP_404_NOT_FOUND)
+
 
 class MarkedAsExpiredView(ModelViewSet):
     queryset = JobDetail.objects.exclude(expired_at=None)

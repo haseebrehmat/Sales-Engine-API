@@ -1,6 +1,10 @@
+import json
+
 from django.apps import apps
 from django.db.models import F
+from django.db.models.functions import Lower
 from django.http import JsonResponse
+from numpy.core.defchararray import capitalize
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -14,25 +18,28 @@ from settings.utils.helpers import serializer_errors
 
 
 class PermissionView(APIView):
+    permission_classes = (AllowAny,)
     serializer_class = PermissionSerializer
 
     def get(self, request):
-        modules = set(CustomPermission.objects.values_list("module", flat=True))
+        modules = set(CustomPermission.objects.annotate(module_name=Lower("module")).values_list('module_name', flat=True))
         data = [{
-            'module': module,
+            'module': capitalize(module),
             'permissions': [
                 {
                     'id': x.id,
                     'name': x.name,
                     'codename': x.codename,
-                    'level': x.level
-                } for x in CustomPermission.objects.filter(module=module)]
+                    'level': x.level,
+                    'child': x.child,
+                    'parent': x.parent,
+                } for x in CustomPermission.objects.filter(module__iexact=module)]
         } for module in modules]
 
         return Response({'data': data, 'modules': modules})
 
     def post(self, request):
-        permissions = request.data["permissions"]
+        permissions = json.loads(json.dumps(request.data["permissions"]).lower())
         print(request.data)
         for permission in permissions:
             serializer = PermissionSerializer(data=permission)

@@ -176,12 +176,15 @@ class UserDetailView(APIView):
             Profile.objects.filter(user_id=user.id).update(company_id=company_id)
 
         role_id = request.data.get("roles", "")
-        roles = role_id.split(",")
-        if roles:
+        MultipleRoles.objects.filter(user=user).delete()
+        if role_id:
+            roles = role_id.split(",")
             user.roles_id = roles[0]
             for x in roles:
                 if not MultipleRoles.objects.filter(user=user, role_id=x).exists():
                     MultipleRoles.objects.create(user=user, role_id=x)
+        else:
+            user.roles_id = None
         user.save()
 
         # Update user regions

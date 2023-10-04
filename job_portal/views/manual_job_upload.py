@@ -36,6 +36,7 @@ class ManualJobUploadView(ListAPIView):
         if not ManualJobUploadSerializer.validate_url_field(self, request.data.get("job_source_url", "")):
             return Response({"detail": "Invalid URL"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         data = request.data
+        data['tech_stacks'] = data['tech_keywords'].split(',')
         data['job_posted_date'] = str(data['job_posted_date']) + ' ' + str(data['time']) + ':00'
         serializer = ManualJobUploadSerializer(data=data)
         if serializer.is_valid():

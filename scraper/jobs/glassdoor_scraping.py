@@ -56,70 +56,65 @@ def find_jobs(driver, job_type, total_job):
     c_count = 0
     time.sleep(3)
     try:
-        jobs = driver.find_elements(By.CLASS_NAME, "react-job-listing")
-        estimated_salary = driver.find_elements(By.CLASS_NAME, "salary-estimate")
+        jobs = driver.find_elements(By.CLASS_NAME, "JobsList_jobListItem__JBBUV")
         for job in jobs:
             try:
                 data = []
                 job.click()
                 time.sleep(3)
-                job_title = driver.find_elements(By.CLASS_NAME, "css-1vg6q84")
-                company_name = driver.find_element(
-                    By.CLASS_NAME, "e1tk4kwz1")
-                if job_title:
-                    append_data(data, job_title[0].text)
-                    append_data(data, company_name.text.split("\n")[0])
-                    address = driver.find_element(By.CLASS_NAME, "css-56kyx5")
-                    append_data(data, address.text)
-                    job_description = driver.find_element(
-                        By.CLASS_NAME, "jobDescriptionContent")
-                    append_data(data, job_description.text)
-                    url = driver.find_elements(By.CLASS_NAME, "jobCard")
-                    append_data(data, url[count].get_attribute('href'))
+                job_detail = job.text.split('\n')
+                append_data(data, job_detail[1])
+                append_data(data, job_detail[0])
+                append_data(data, job_detail[2])
+                try:
+                    driver.find_element(By.CLASS_NAME, "JobDetails_showMore__j5Z_h").click()
+                    time.sleep(0.5)
+                except:
+                    pass
+                job_description = driver.find_element(By.CLASS_NAME, "JobDetails_jobDescription__6VeBn")
+                append_data(data, job_description.text)
+                url = job.find_element(By.CLASS_NAME, "jobCard")
+                append_data(data, url.get_attribute('href'))
+                try:
+                    append_data(data, job_detail[-1])
+                except Exception as e:
+                    append_data(data, "24h")
+                try:
+                    estimated_salary = job.find_element(By.CLASS_NAME, "salary-estimate")
+                    es = estimated_salary.text.split(' (')[0]
+                    if 'Per' in es:
+                        es_salary = es.split(" Per ")
+                        salary_format = es_salary[1]
+                        if 'Hour' in salary_format:
+                            append_data(data, "hourly")
+                        elif 'Month' in salary_format:
+                            append_data(data, "monthly")
+                        elif ('Year' or 'Annum') in salary_format:
+                            append_data(data, "yearly")
+                        else:
+                            append_data(data, "N/A")
+                    else:
+                        append_data(data, 'N/A')
+                    append_data(data, k_conversion(es))
                     try:
-                        job_posted_date = driver.find_elements(
-                            By.CLASS_NAME, "listing-age")
-                        append_data(data, job_posted_date[count].text)
-                    except Exception as e:
-                        print(e)
-                        append_data(data, "24h")
-                    try:
-                        salary_exist = driver.find_element(By.CLASS_NAME, "css-1xe2xww")
-                        if salary_exist:
-                            es = estimated_salary[c_count].text.split(' (')[0]
-                            if 'Per' in es:
-                                es_salary = es.split(" Per ")
-                                salary_format = es_salary[1]
-                                if 'Hour' in salary_format:
-                                    append_data(data, "hourly")
-                                elif 'Month' in salary_format:
-                                    append_data(data, "monthly")
-                                elif ('Year' or 'Annum') in salary_format:
-                                    append_data(data, "yearly")
-                                else:
-                                    append_data(data, "N/A")
-                            else:
-                                append_data(data, 'N/A')
-                            append_data(data, k_conversion(es))
-                            try:
-                                append_data(data, k_conversion(es.split(" - ")[0].split(" Per")[0]))
-                            except:
-                                append_data(data, "N/A")
-                            try:
-                                append_data(data, k_conversion(es.split(" - ")[1].split(" Per")[0]))
-                            except:
-                                append_data(data, "N/A")
-
-                            c_count += 1
+                        append_data(data, k_conversion(es.split(" - ")[0].split(" Per")[0]))
                     except:
                         append_data(data, "N/A")
-                        append_data(data, "N/A")
-                        append_data(data, "N/A")
+                    try:
+                        append_data(data, k_conversion(es.split(" - ")[1].split(" Per")[0]))
+                    except:
                         append_data(data, "N/A")
 
-                    append_data(data, "Glassdoor")
-                    append_data(data, job_type)
-                    append_data(data, job_description.get_attribute('innerHTML'))
+                    c_count += 1
+                except:
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+                    append_data(data, "N/A")
+
+                append_data(data, "Glassdoor")
+                append_data(data, job_type)
+                append_data(data, job_description.get_attribute('innerHTML'))
                 scrapped_data.append(data)
                 count += 1
                 total_job += 1
@@ -133,19 +128,19 @@ def find_jobs(driver, job_type, total_job):
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
         df.to_excel(filename, index=False)
         ScraperLogs.objects.create(
-            total_jobs=len(df), job_source="GlassDoor", filename=filename)
+            total_jobs=len(df), job_source="Glassdoor", filename=filename)
     except Exception as e:
         saveLogs(e)
         print(e)
 
+
+def load_jobs(driver):
     try:
-        if driver.find_element(By.CLASS_NAME, "nextButton").is_enabled():
-            driver.find_element(By.CLASS_NAME, "nextButton").click()
-            return True, total_job
-        return False, total_job
+        time.sleep(3)
+        driver.find_element(By.CLASS_NAME, "button_Button__meEg5").click()
+        return True
     except Exception as e:
-        print(e)
-        return False, total_job
+        return False
 
 
 # code starts from here
@@ -155,7 +150,6 @@ def glassdoor(link, job_type):
     try:
         for x in Accounts.objects.all():
             total_job = 0
-            count = 0
             driver = configure_webdriver()
             driver.maximize_window()
             request_url(driver, GLASSDOOR_LOGIN_URL)
@@ -165,9 +159,8 @@ def glassdoor(link, job_type):
                     flag = True
                     request_url(driver, link)
                     while flag:
-                        flag, total_job = find_jobs(
-                            driver, job_type, total_job)
-                        count += 1
+                        flag = load_jobs(driver)
+                    find_jobs(driver, job_type, total_job)
                     print(SCRAPING_ENDED)
                     exit_scraping = True
                 else:

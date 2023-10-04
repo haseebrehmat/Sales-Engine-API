@@ -12,7 +12,9 @@ class JobDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = JobDetail
-        fields = "__all__"
+        exclude = [
+            'job_description', 'job_description_tags', 'salary_max', 'salary_min', 'salary_format', 'estimated_salary'
+        ]
 
     def get_total_vertical(self, obj):
         try:
