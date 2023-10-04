@@ -48,6 +48,7 @@ from scraper.jobs.clearance_scraping import clearance
 from scraper.jobs.smartrecruiter_scraping import smartrecruiter
 from scraper.jobs.getwork_scraping import getwork
 from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
+from scraper.jobs.just_remote_scraping import just_remote
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -178,9 +179,12 @@ scraper_functions = {
     ],
     "ruby_on_remote": [
         ruby_on_remote
-        ],
+    ],
     "hubstafftalent": [
         hubstaff_talent,
+    ],
+    "justremote": [
+        just_remote,
     ],
 }
 
@@ -191,7 +195,8 @@ def upload_jobs(scheduler_type, job_source):
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
-        SchedulerSync.objects.filter(job_source=job_source, type=scheduler_type).update(uploading=True)
+        SchedulerSync.objects.filter(
+            job_source=job_source, type=scheduler_type).update(uploading=True)
         for file in files:
             try:
                 if not is_file_empty(file):
@@ -261,7 +266,8 @@ def remove_files(scheduler_type, job_source="all"):
     except Exception as e:
         saveLogs(e)
         print(e)
-    SchedulerSync.objects.filter(job_source=job_source, type=scheduler_type).update(uploading=False)
+    SchedulerSync.objects.filter(
+        job_source=job_source, type=scheduler_type).update(uploading=False)
 
 
 @transaction.atomic
@@ -277,8 +283,10 @@ def upload_file(job_parser, filename):
         JobDetail(job_title=job_item.job_title, company_name=job_item.company_name, job_source=job_item.job_source,
                   job_type=job_item.job_type, address=job_item.address, job_description=job_item.job_description,
                   job_description_tags=job_item.job_description_tags,
-                  tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
-                  tech_stacks=list(set(job_item.tech_keywords.replace(" / ", "").lower().split(','))),
+                  tech_keywords=job_item.tech_keywords.replace(
+                      " / ", "").lower(),
+                  tech_stacks=list(
+                      set(job_item.tech_keywords.replace(" / ", "").lower().split(','))),
                   job_posted_date=job_item.job_posted_date,
                   job_source_url=job_item.job_source_url,
                   estimated_salary=job_item.estimated_salary,
@@ -305,7 +313,8 @@ def upload_file(job_parser, filename):
 def migrate_jobs_to_archive(classify_data=None):
     try:
         last_30_days = datetime.datetime.now() - datetime.timedelta(days=30)
-        excluded_id = JobArchive.objects.only("id").values_list("id", flat=True)
+        excluded_id = JobArchive.objects.only(
+            "id").values_list("id", flat=True)
         fields = [
             'id',
             'job_title',
@@ -326,9 +335,11 @@ def migrate_jobs_to_archive(classify_data=None):
         if classify_data:
             query = Q()
             for item in classify_data.data_frame.itertuples():
-                query |= Q(company_name=item.company_name, job_title=item.job_title)
+                query |= Q(company_name=item.company_name,
+                           job_title=item.job_title)
 
-        jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
+        jobs = JobDetail.objects.filter(
+            created_at__lte=last_30_days, job_applied="not applied")
         qs = JobDetail.objects.exclude(id__in=set(excluded_id)).only(*fields)
         print(jobs.count())
         if classify_data:
@@ -356,6 +367,7 @@ def migrate_jobs_to_archive(classify_data=None):
         print("Exception in migrating data => ", e)
 
 # migrate_jobs_to_archive()
+
 
 def get_job_source_quries(job_source):
     job_source_queries = list(JobSourceQuery.objects.filter(
@@ -458,6 +470,8 @@ def load_all_job_scrappers():
 def run_scraper_by_celery(job_source):
     time.sleep(5)
     return job_source
+
+
 @start_new_thread
 def load_job_scrappers(job_source):
     job_source = job_source.lower()
@@ -606,10 +620,12 @@ def scheduler_settings():
                     start_job_sync, 'interval', minutes=interval, args=["himalayas"])
 
             elif scheduler.job_source.lower() == "recruit":
-                recruit_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["recruit"])
+                recruit_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["recruit"])
 
             elif scheduler.job_source.lower() == "dynamite":
-                dynamite_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["dynamite"])
+                dynamite_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["dynamite"])
 
                 recruit_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["recruit"])
@@ -621,7 +637,8 @@ def scheduler_settings():
                     start_job_sync, 'interval', minutes=interval, args=["arcdev"])
 
             elif scheduler.job_source.lower() == "usjora":
-                us_jora_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["usjora"])
+                us_jora_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["usjora"])
 
             elif scheduler.job_source.lower() == "remoteok":
                 rubynow_scheduler.add_job(
@@ -632,13 +649,19 @@ def scheduler_settings():
                     start_job_sync, 'interval', minutes=interval, args=["startwire"])
             elif scheduler.job_source.lower() == "hubstafftalent":
                 startwire_scheduler.add_job(
-                    start_job_sync, 'interval', minutes=interval, args=["hubstafftalent"])    
+                    start_job_sync, 'interval', minutes=interval, args=["hubstafftalent"])
             elif scheduler.job_source.lower() == "jobgether":
-                job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["jobgether"])
+                job_gether_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
-                receptix_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["receptix"])
-            elif scheduler.job_source.lower() == "themuse":
-                the_muse_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["themuse"])
+                receptix_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["receptix"])
+            elif scheduler.job_source.lower() == "receptix":
+                receptix_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["justremote"])    
+            elif scheduler.job_source.lower() == "justremote":
+                the_muse_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["themuse"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -690,11 +713,11 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "hirenovice":
                 hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["hirenovice"])
+                                             args=["hirenovice"])
 
             elif scheduler.job_source.lower() == "hirenovice":
                 hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["hirenovice"])
+                                             args=["hirenovice"])
 
             elif scheduler.job_source.lower() == "talent":
                 talent_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
@@ -714,7 +737,7 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "himalayas":
                 himalayas_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                             args=["himalayas"])
+                                            args=["himalayas"])
 
             elif scheduler.job_source.lower() == "recruit":
                 recruit_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
@@ -730,7 +753,7 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "usjora":
                 us_jora_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["usjora"])
+                                          args=["usjora"])
 
             elif scheduler.job_source.lower() == "remoteok":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
@@ -738,19 +761,23 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["startwire"])
+                                            args=["startwire"])
             elif scheduler.job_source.lower() == "hubstafftalent":
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["hubstafftalent"])    
+                                            args=["hubstafftalent"])
             elif scheduler.job_source.lower() == "jobgether":
                 job_gether_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["jobgether"])
+                                             args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
                 receptix_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["receptix"])
+                                           args=["receptix"])
             elif scheduler.job_source.lower() == "themuse":
                 the_muse_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["themuse"])
+                                           args=["themuse"])
+            elif scheduler.job_source.lower() == "justremote":
+                the_muse_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                           args=["justremote"])    
+
 
 def group_scraper_job(group_id):
     pakistan_timezone = pytz.timezone('Asia/Karachi')
