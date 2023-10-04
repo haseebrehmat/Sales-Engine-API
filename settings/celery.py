@@ -1,4 +1,8 @@
 import subprocess
+import datetime
+from django.utils import timezone
+
+from scraper.models import ScraperLogs
 from scraper.utils.thread import start_new_thread
 from celery import Celery
 import django
@@ -34,13 +38,12 @@ def check_group_scraper():
     group_scrapper = check_current_group()
     check_status = SchedulerSync.objects.filter(
         type="group scraper", job_source=group_scrapper.name.lower()).first()
-    # print(f"This is the time of {group_scrapper.name}")
     if not check_status.running and group_scrapper.scheduler_settings.time_based:
-        # print("Group is stopped and celery start group scrapper again")
+        restart_script()
+    elif not int((timezone.now() - ScraperLogs.objects.all().last().updated_at).total_seconds()/60) < 30:
         restart_script()
     else:
         print("")
-        # print("Group is running already")
 @start_new_thread
 def restart_script():
     pid = None
