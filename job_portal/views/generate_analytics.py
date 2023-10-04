@@ -1,11 +1,14 @@
 import calendar
+import math
 from datetime import datetime, timedelta, date
 from django.db import models
-from django.db.models import Count, F, Q, Value, Sum, FloatField, Avg
+from django.db.models import Count, F, Q, Value, Sum, FloatField, Avg, Min, Max
 from django.db.models.functions import ExtractMonth, ExtractYear, ExtractQuarter, Coalesce, Cast
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from authentication.models import Role
 from job_portal.models import TrendsAnalytics, Analytics, TechStats
 from job_portal.permissions.analytics import AnalyticsPermission
 
@@ -16,6 +19,7 @@ class GenerateAnalytics(APIView):
     queryset = Analytics.objects.all().order_by('-job_posted_date')
     tech_keywords = ""
     job_types = ""
+    percentage = None
     months = [
         "January",
         "February",
@@ -32,16 +36,25 @@ class GenerateAnalytics(APIView):
     ]
 
     def get(self, request):
+        self.percentage = request.GET.get('percentage')
+        if self.percentage:
+            self.percentage = (100 + float(self.percentage)) / 100
+        else:
+            self.percentage = 1
+        excluded_techs = request.GET.get('excluded_techs')
         filters, start_date, end_date = self.filter_queryset(request)
         if not self.queryset.values_list("job_type", flat=True):
             return Response({"detail": "No Analytics Exists"}, status=406)
         self.tech_keywords = set(TechStats.objects.values_list("name", flat=True))
+        if excluded_techs:
+            for x in excluded_techs.split(','):
+                self.tech_keywords.remove(x)
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
         limit = int(request.GET.get("limit", 10))
         tech_stack_data, trending = self.get_tech_count_stats(start_date, end_date, limit)
         data = {
-            "tech_stack_data": tech_stack_data,
-            "trending": trending,
+            # "tech_stack_data": tech_stack_data,
+            # "trending": trending,
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
             "start_date": str(start_date.date()) if start_date else '',
@@ -72,12 +85,19 @@ class GenerateAnalytics(APIView):
 
         top_tech_stats = data.order_by('-total')[:limit]
 
+        total_expression = lambda x: [value for key, value in x.items() if isinstance(value, int) and key != 'total']
+        expression = lambda x: {
+            key: math.ceil(self.percentage * value) if isinstance(value, int) else value
+            for key, value in x.items()
+        }
+        data = [{**expression(x), 'total': sum(total_expression(x))} for x in data]
+
         return data, top_tech_stats
 
     def get_tech_counts(self, tech):
         data = [
             {
-                "value": self.queryset.filter(tech_keywords=tech, job_type=x).count(),
+                "value": math.ceil(self.percentage * self.queryset.filter(tech_keywords=tech, job_type=x).count()),
                 "key": x.lower().replace(" ", "_")
             }
             for x in self.job_types
@@ -234,6 +254,14 @@ class GenerateAnalytics(APIView):
                     hybrid_contract=Sum('hybrid_contract'),
                 )
                 result.update({'name': trends.category, 'tech_stacks': tech_stacks})
+                total_expression = lambda x: [value for key, value in x.items() if
+                                              isinstance(value, int) and key != 'total']
+                expression = lambda x: {
+                    key: math.ceil(self.percentage * value) if isinstance(value, int) else value
+                    for key, value in x.items()
+                }
+                result = expression(result)
+                result.update({'total': sum(total_expression(result))})
                 data.append(result)
             return data
         except Exception as e:
@@ -254,6 +282,7 @@ class GenerateAnalytics(APIView):
             month=F('job_posted_date__month'),
             year=F('job_posted_date__year')
         )
+
         return data
 
     def get_current_quarter(self):
@@ -276,6 +305,7 @@ class GenerateAnalytics(APIView):
         data = []
         year = date.year
         trends_analytics = TrendsAnalytics.objects.all()
+        values_list = []
         for x in trends_analytics:
 
             tech_stacks = x.tech_stacks.split(',') if x.tech_stacks else []
@@ -290,6 +320,7 @@ class GenerateAnalytics(APIView):
 
                 if qs:
                     qs = qs.aggregate(total=Sum('total'))
+                    values_list.append(qs['total'])
                     data.append(
                         {
                             f'q{quarter}': qs['total'],
@@ -298,7 +329,6 @@ class GenerateAnalytics(APIView):
                     )
         result_list = []
         merged_dict = {}
-
         for d in data:
             category = d["category"]
             d.pop("category")
@@ -311,13 +341,14 @@ class GenerateAnalytics(APIView):
         for category, data in merged_dict.items():
             data["category"] = category
             result_list.append(data)
-        data = result_list
+        data = {'data': result_list, 'min_value': min(values_list), 'max_value': max(values_list)}
         return data
 
     def get_monthly_trends(self, date):
         data = []
         year = date.year
         trends_analytics = TrendsAnalytics.objects.all()
+        values_list = []
         for x in trends_analytics:
 
             tech_stacks = x.tech_stacks.split(',') if x.tech_stacks else []
@@ -332,20 +363,16 @@ class GenerateAnalytics(APIView):
 
                 if qs:
                     qs = qs.aggregate(total=Sum('total'))
-                    data.append(
-                        {
-                            month.lower(): qs['total'],
-                            'category': x.category
-                        }
-                    )
+                    total = qs['total']
                 else:
-                    data.append(
-                        {
-                            month.lower(): 0,
-                            'category': x.category
-                        }
-                    )
-
+                    total = 0
+                data.append(
+                    {
+                        month.lower(): total,
+                        'category': x.category
+                    }
+                )
+                values_list.append(total)
         result_list = []
         merged_dict = {}
 
@@ -361,12 +388,13 @@ class GenerateAnalytics(APIView):
         for category, data in merged_dict.items():
             data["category"] = category
             result_list.append(data)
-        data = result_list
+        data = {'data': result_list, 'min_value': min(values_list), 'max_value': max(values_list)}
         return data
 
     def get_monthly_tech_data(self, date):
         data = []
         year = date.year
+        values_list = []
         for idx, month in enumerate(self.months):
             month_number = idx + 1
             month = month.lower()
@@ -376,7 +404,8 @@ class GenerateAnalytics(APIView):
             ).filter(
                 month=month_number, year=year, name__in=self.tech_keywords
             ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
-            data.extend({'name': x['name'], month: x['total_jobs']} for x in qs)
+            obj_exp = lambda x: ({'name': x['name'], month: x['total_jobs']}, values_list.append(x['total_jobs']))[0]
+            data.extend(obj_exp(x) for x in qs)
         result_list = []
         merged_dict = {}
 
@@ -389,18 +418,21 @@ class GenerateAnalytics(APIView):
             else:
                 merged_dict[name] = d
 
+        min_value = min(values_list)
         for name, data in merged_dict.items():
             for month in self.months:
                 if month.lower() not in data.keys():
-                    data[month] = 0
+                    data[month.lower()] = 0
+                    min_value = 0
             data["name"] = name
             result_list.append(data)
-        data = result_list
+        data = {'data': result_list, 'min_value': min_value, 'max_value': max(values_list)}
         return data
 
     def get_quarterly_tech_data(self, date):
         data = []
         year = date.year
+        values_list = []
         for quarter in range(1, 5):
             qs = TechStats.objects.annotate(
                 year=ExtractYear('job_posted_date'),
@@ -408,7 +440,9 @@ class GenerateAnalytics(APIView):
             ).filter(
                 quarter=quarter, year=year, name__in=self.tech_keywords
             ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
-            data.extend({'name': x['name'], 'Q' + str(quarter): x['total_jobs']} for x in qs)
+            quarter_obj_exp = lambda x: \
+                (values_list.append(x['total_jobs']), {'name': x['name'], 'q' + str(quarter): x['total_jobs']})[-1]
+            data.extend([quarter_obj_exp(x) for x in qs])
         result_list = []
         merged_dict = {}
 
@@ -421,15 +455,20 @@ class GenerateAnalytics(APIView):
             else:
                 merged_dict[name] = d
 
-        quarters = ['Q1', 'Q2', 'Q3', 'Q4']
+        quarters = ['q1', 'q2', 'q3', 'q4']
+        min_value = min(values_list)
         for name, data in merged_dict.items():
             for q in quarters:
                 if q not in data.keys():
                     data[q] = 0
+                    min_value = 0
             data["name"] = name
             result_list.append(data)
-        data = result_list
+        data = {'data': result_list, 'min_value': min_value, 'max_value': max(values_list)}
         return data
+
+
+
 
 
 

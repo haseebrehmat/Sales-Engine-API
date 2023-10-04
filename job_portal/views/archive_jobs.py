@@ -59,33 +59,33 @@ class ArchiveJobs(APIView):
                     query |= Q(company_name=item.company_name, job_title=item.job_title)
 
             jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
-            last_date = JobArchive.objects.first().created_at
-            print(str(last_date))
+            last_date = JobArchive.objects.order_by('-job_posted_date').first().job_posted_date
+            print("last Record date => ", str(last_date))
             filter_jobs = JobDetail.objects.filter(created_at__gte=last_date).defer('job_description_tags')
             print(filter_jobs.count())
             print("filtered_jobs => ", jobs.count())
             if classify_data:
                 jobs.filter(query)
             print("Started")
-            # bulk_data = [JobArchive(
-            #     id=x.id,
-            #     job_title=x.job_title,
-            #     company_name=x.company_name,
-            #     job_source=x.job_source,
-            #     job_type=x.job_type,
-            #     address=x.address,
-            #     job_description=x.job_description,
-            #     tech_keywords=x.tech_keywords,
-            #     job_posted_date=x.job_posted_date,
-            #     job_source_url=x.job_source_url,
-            #     block=x.block,
-            #     is_manual=x.is_manual,
-            #     created_at=x.created_at,
-            #     updated_at=x.updated_at
-            # ) for x in tqdm(filter_jobs.iterator())]
+            bulk_data = [JobArchive(
+                id=x.id,
+                job_title=x.job_title,
+                company_name=x.company_name,
+                job_source=x.job_source,
+                job_type=x.job_type,
+                address=x.address,
+                job_description=x.job_description,
+                tech_keywords=x.tech_keywords,
+                job_posted_date=x.job_posted_date,
+                job_source_url=x.job_source_url,
+                block=x.block,
+                is_manual=x.is_manual,
+                created_at=x.created_at,
+                updated_at=x.updated_at
+            ) for x in tqdm(filter_jobs.iterator())]
             #
-            # check = JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True, batch_size=500)
-            # print(check)
+            check = JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True, batch_size=500)
+            print(check)
             # jobs.delete()
             print("Terminated")
 
