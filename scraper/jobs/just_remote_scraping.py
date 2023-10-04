@@ -12,7 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming,  k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 
 
@@ -170,4 +170,4 @@ def just_remote(link, job_type):
         print(e)
 
 
-just_remote('https://justremote.co/remote-jobs', 'remote')
+# just_remote('https://justremote.co/remote-jobs', 'remote')

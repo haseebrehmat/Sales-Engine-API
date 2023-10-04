@@ -48,7 +48,8 @@ def run_scrapers_manually(job_source='all'):
             "smartrecruiter",
             "getwork",
             "ruby_on_remote",
-            "hubstafftalent"
+            "hubstafftalent",
+            "justremote"
         ]
     
     if job_source.lower() not in valid_job_sources:
