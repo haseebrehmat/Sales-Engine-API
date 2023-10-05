@@ -2,7 +2,7 @@ import subprocess
 import datetime
 from django.utils import timezone
 
-from scraper.models import ScraperLogs
+
 from scraper.utils.thread import start_new_thread
 from celery import Celery
 import django
@@ -30,6 +30,7 @@ app.conf.timezone = 'Asia/Karachi'
 app.autodiscover_tasks()
 
 from scraper.models.scheduler import SchedulerSync
+from scraper.models import ScraperLogs
 from scraper.management.commands.check_scraper import check_current_group
 
 SchedulerSync.objects.all().update(running=False)
