@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix, the_muse
+from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix, the_muse, remote_co
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -185,6 +185,9 @@ scraper_functions = {
     ],
     "justremote": [
         just_remote,
+    ],
+     "remoteco": [
+        remote_co,
     ],
 }
 
@@ -658,7 +661,7 @@ def scheduler_settings():
                     start_job_sync, 'interval', minutes=interval, args=["receptix"])
             elif scheduler.job_source.lower() == "receptix":
                 receptix_scheduler.add_job(
-                    start_job_sync, 'interval', minutes=interval, args=["justremote"])    
+                    start_job_sync, 'interval', minutes=interval, args=["justremote"])
             elif scheduler.job_source.lower() == "justremote":
                 the_muse_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["themuse"])
@@ -776,7 +779,7 @@ def scheduler_settings():
                                            args=["themuse"])
             elif scheduler.job_source.lower() == "justremote":
                 the_muse_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                           args=["justremote"])    
+                                           args=["justremote"])
 
 
 def group_scraper_job(group_id):
