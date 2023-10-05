@@ -25,7 +25,6 @@ class JobsFilters(APIView):
     filtered_queryset = None
 
     def get(self, request):
-        request.user = User.objects.get(email='admin@gmail.com')
         self.queryset = self.filter_query(self.queryset)
         self.filtered_queryset = self.filter_query(self.queryset)
         self.filtered_jobs_count = self.queryset.count()
