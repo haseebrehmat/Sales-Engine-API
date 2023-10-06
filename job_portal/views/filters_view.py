@@ -109,8 +109,10 @@ class JobsFilters(APIView):
             name=F('job_type'),
             value=Count('job_type')).values('name', 'value'))
 
+        available_types = [i['name'] for i in unique_job_type]
         for x in self.job_types:
-            if x not in unique_job_type:
+            print()
+            if x not in available_types:
                 unique_job_type.append({'name': x, 'value': 0})
 
         return unique_job_type
