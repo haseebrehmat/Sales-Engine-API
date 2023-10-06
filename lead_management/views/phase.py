@@ -88,7 +88,7 @@ class PhaseDetail(APIView):
             leads = Lead.objects.filter(phase=obj)
             lead_activities = Lead.objects.filter(phase=obj)
             if leads or lead_activities:
-                msg = 'This status cannot be deleted because it is used by lead.'
+                msg = 'This phase cannot be deleted because it is used by lead.'
                 status_code = status.HTTP_406_NOT_ACCEPTABLE
             else:
                 obj.delete()
