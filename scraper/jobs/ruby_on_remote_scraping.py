@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from scraper.models import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 from scraper.utils.helpers import configure_webdriver
 
@@ -101,8 +101,8 @@ def find_jobs(driver, job_type, total_job, link):
             data.append(estimated_salary)
             data.append(min_salary)
             data.append(max_salary)
-            data.append("RubyOnRemote")
-            data.append("Full time remote")
+            data.append("Ruby On Remote")
+            data.append(set_job_type("Full time remote"))
             scrapped_data.append(data)
             total_job += 1
 

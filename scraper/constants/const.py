@@ -53,3 +53,4 @@ YCOMBINATOR_LOGIN_URL = "https://account.ycombinator.com/?continue=https%3A%2F%2
 Y_EMAIL = "uzair.shahid@devsinc.com"
 Y_PASSWORD = "uzair@123"
 ERROR_TEXT = "Error occured while scraping"
+JOB_TYPE = ["Full Time Remote", "Full Time on Site", "Hybrid Full Time", "Hybrid Contract", "Contract Onsite", "Contract Remote"]

@@ -12,7 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, k_conversion, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 
@@ -144,11 +144,11 @@ def find_jobs(driver, job_type):
                     append_data(data, job_source)
 
                     job_type = "remote"
-                    append_data(data, job_type)
+                    append_data(data, set_job_type(job_type))
 
                     job_description_tags = job_desc.get_attribute("innerHTML")
                     append_data(data, str(job_description_tags))
-               
+
             except exception as e:
                 print(e)
 
