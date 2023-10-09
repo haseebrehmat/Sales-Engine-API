@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
 
 total_job = 0
 
@@ -95,7 +95,7 @@ def find_jobs(driver, job_type, total_job):
                     append_data(data, "N/A")
                     append_data(data, "N/A")
                 append_data(data, job_source)
-                append_data(data, job_type)
+                append_data(data, set_job_type(job_type))
                 append_data(data, job_description.get_attribute('innerHTML'))
                 total_job += 1
                 scrapped_data.append(data)

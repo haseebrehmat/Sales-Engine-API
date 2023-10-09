@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from scraper.constants.const import JOB_TYPE
 
 from scraper.models import GroupScraper, GroupScraperQuery
 
@@ -151,3 +152,13 @@ def remove_emojis(text):
 
 def k_conversion(text):
     return text.replace("k", ",000").replace( "K", ",000")
+
+def set_job_type(job_type):
+    if 'full time' in job_type.lower():
+        return JOB_TYPE[0] if 'remote' in job_type.lower() else JOB_TYPE[1] if 'site' in job_type.lower() else JOB_TYPE[2] if 'hybrid' in job_type.lower() else JOB_TYPE[1]
+    elif 'hybrid' in job_type.lower():
+        return JOB_TYPE[2] if 'full time' in job_type.lower() else JOB_TYPE[3] if 'contract' in job_type.lower() else JOB_TYPE[2]
+    elif 'contract' in job_type.lower():
+        return JOB_TYPE[4] if 'onsite' in job_type.lower() else JOB_TYPE[4] if 'site' in job_type.lower() else JOB_TYPE[5] if 'remote' in job_type.lower() else JOB_TYPE[4]
+    else:
+      return job_type.capitalize()

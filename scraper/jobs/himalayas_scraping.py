@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from utils.helpers import saveLogs
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
 
 total_job = 0
 
@@ -118,7 +118,7 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type):
                 append_data(data, k_conversion(salary_min))
                 append_data(data, k_conversion(salary_max))
                 append_data(data, job_source)
-                append_data(data, job_type)
+                append_data(data, set_job_type(job_type))
                 append_data(data, job_description_tags)
                 total_job += 1
                 scrapped_data.append(data)

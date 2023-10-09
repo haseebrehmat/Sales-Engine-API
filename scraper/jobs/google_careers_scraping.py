@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 
@@ -58,7 +58,7 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "Google Careers")
-            append_data(data, job_type)
+            append_data(data, set_job_type(job_type))
             append_data(data, job_description_1.get_attribute('innerHTML') + job_description_2.get_attribute('innerHTML'))
 
             count += 1

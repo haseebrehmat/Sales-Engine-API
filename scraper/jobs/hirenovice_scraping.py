@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 
 total_job = 0
 
@@ -121,7 +121,7 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type, remote
             append_data(data, salary_min)
             append_data(data, salary_max)
             append_data(data, job_source)
-            append_data(data, job_type)
+            append_data(data, set_job_type(job_type))
             append_data(data, job_description_tags)
             chunk_count += 1
             total_job += 1

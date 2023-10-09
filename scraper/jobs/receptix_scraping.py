@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, k_conversion
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type, k_conversion
 from utils.helpers import saveLogs
 
 
@@ -61,7 +61,7 @@ def get_job_detail(driver, job_source, job_url, job_type):
         job = {"job_title": job_title, "company_name": company_name, "address": "",
             "job_description": job_description.text, "job_source_url": job_url, "job_posted_date": "",
             "salary_format": "N/A", "estimated_salary": "N/A", "salary_min": "N/A", "salary_max": "N/A",
-            "job_source": job_source, "job_type": job_type,
+            "job_source": job_source, "job_type": set_job_type(job_type),
             "job_description_tags": job_description.get_attribute('innerHTML')}
 
 
