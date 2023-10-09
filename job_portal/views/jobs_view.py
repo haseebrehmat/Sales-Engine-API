@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from authentication.models import User
 from job_portal.filters.job_detail import CustomJobFilter
-from job_portal.models import JobDetail, AppliedJobStatus
+from job_portal.models import JobDetail, AppliedJobStatus, BlockJobCompany
 from job_portal.permissions.job_detail import JobDetailPermission
 from job_portal.serializers.job_detail import JobDetailSerializer
 from settings.utils.custom_pagination import CustomCursorPagination
@@ -29,6 +29,14 @@ class JobsView(ListAPIView):
     permission_classes = (AllowAny, )
 
     def get_queryset(self):
+        blocked = self.request.GET.get('blocked')
+        blocked_job_companies = list(
+            BlockJobCompany.objects.filter(company=self.request.user.profile.company).values_list('company_name',
+                                                                                                  flat=True))
+        if blocked == "true":
+            self.queryset = self.queryset.filter(company_name__in=blocked_job_companies)
+        elif blocked == "false":
+            self.queryset = self.queryset.exclude(company_name__in=blocked_job_companies)
         return self.queryset
 
 
