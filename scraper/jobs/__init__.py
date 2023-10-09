@@ -27,6 +27,7 @@ from scraper.jobs.remote_ok_scraping import remoteok
 from scraper.jobs.the_muse_scraping import the_muse
 from scraper.jobs.hubstaff_talent_scraping import hubstaff_talent
 from scraper.jobs.just_remote_scraping import just_remote
+from scraper.jobs.remote_co_scraping import remote_co
 
 single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': career_builder, 'dice': dice,
                              'glassdoor': glassdoor, 'indeed': indeed, 'linkedin': linkedin, 'monster': monster,
@@ -40,5 +41,5 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              'himalayas': himalayas, 'startwire': startwire, "jobgether": job_gether,
                              "remote_ok": remoteok,  "the_muse": the_muse, 'receptix': receptix, 'hirenovice': hirenovice,
                              'himalayas': himalayas, 'startwire': startwire, "jobgether": job_gether, "remoteok": remoteok,
-                             "hubstaff_talent": hubstaff_talent, "just_remote": just_remote,
+                             "hubstaff_talent": hubstaff_talent, "just_remote": just_remote, 'remote_co': remote_co, 'remoteco': remote_co
                              }
