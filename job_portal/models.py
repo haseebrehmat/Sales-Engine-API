@@ -90,6 +90,8 @@ class JobArchive(TimeStamped):
         return self.job_title
 
 
+
+
 class AppliedJobStatus(models.Model):
     vertical = models.ForeignKey(
         Verticals, on_delete=models.SET_NULL, blank=True, null=True)
@@ -216,3 +218,15 @@ class DownloadLogs(TimeStamped):
     url = models.CharField(max_length=250, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     query = models.JSONField(blank=True, null=True)
+
+class RestrictVertical(TimeStamped):
+    vertical = models.ForeignKey(Verticals, on_delete=models.CASCADE, blank=True, null=True)
+    company_name = models.CharField(max_length=200, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.vertical.name} - {self.comapny_name}"
+
+    class Meta:
+        default_permissions = ()
+        db_table = "Restrict_Verticals"
+        unique_together = (('company_name', 'vertical'),)

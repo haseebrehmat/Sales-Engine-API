@@ -1,5 +1,5 @@
 from io import BytesIO
-
+from settings.utils.helpers import serializer_errors
 from django.core.files.base import ContentFile
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -10,13 +10,14 @@ from rest_framework.response import Response
 from django.db import transaction
 from rest_framework.views import APIView
 from xhtml2pdf import pisa
-
+from authentication.exceptions import InvalidUserException
 from authentication.models import Team
 from job_portal.exceptions import NoActiveUserException
-from job_portal.models import AppliedJobStatus, JobDetail
+from job_portal.models import AppliedJobStatus, JobDetail, RestrictVertical
 from job_portal.permissions.applied_job_status import ApplyJobPermission
 from job_portal.permissions.change_job import JobStatusPermission
 from job_portal.serializers.applied_job import JobStatusSerializer
+from job_portal.serializers.restrict_verticals import RestrictVerticalSerializer
 from pseudos.models import Verticals
 from settings.utils.helpers import is_valid_uuid
 from utils.upload_to_s3 import upload_pdf
@@ -99,6 +100,22 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         if is_valid_uuid(job_id):
             result = JobDetail.objects.filter(pk=job_id)
             if result.count() > 0:
+                job_result = result.first()
+                job_company = job_result.company_name
+                vertical_id = request.data.get("vertical_id", "")
+                # status = RestrictVertical.objects.create(company_name=job_company, vertical_id = vertical_id)
+                data = {"company_name": job_company, "vertical": vertical_id}
+                serializer = RestrictVerticalSerializer(data=data, many=False)
+                if serializer.is_valid():
+                    data = serializer.validated_data
+                    serializer.create(data)
+                else:
+                    data = serializer_errors(serializer)
+                    if 'unique set' in data:
+                        data = 'Job already applied with this vertical in this company'
+                        raise InvalidUserException(data)
+                    else:
+                        raise InvalidUserException(data)
                 return self.create(request, *args, **kwargs)
             else:
                 msg = {'detail': f'No such job exist with id {job_id}'}
