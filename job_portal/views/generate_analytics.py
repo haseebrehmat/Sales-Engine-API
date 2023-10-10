@@ -17,6 +17,7 @@ class GenerateAnalytics(APIView):
     # permission_classes = (AnalyticsPermission,)
     permission_classes = (AllowAny,)
     queryset = Analytics.objects.all().order_by('-job_posted_date')
+    excluded_techs = []
     tech_keywords = ""
     job_types = ""
     percentage = None
@@ -41,13 +42,14 @@ class GenerateAnalytics(APIView):
             self.percentage = (100 + float(self.percentage)) / 100
         else:
             self.percentage = 1
-        excluded_techs = request.GET.get('excluded_techs')
+        self.excluded_techs = request.GET.get('excluded_techs')
         filters, start_date, end_date = self.filter_queryset(request)
         if not self.queryset.values_list("job_type", flat=True):
             return Response({"detail": "No Analytics Exists"}, status=406)
         self.tech_keywords = set(TechStats.objects.values_list("name", flat=True))
-        if excluded_techs:
-            for x in excluded_techs.split(','):
+        if self.excluded_techs:
+            self.excluded_techs = self.excluded_techs.split(',')
+            for x in self.excluded_techs:
                 self.tech_keywords.remove(x)
         self.job_types = set(self.queryset.values_list("job_type", flat=True))
         limit = int(request.GET.get("limit", 10))
@@ -55,7 +57,7 @@ class GenerateAnalytics(APIView):
         data = {
             "tech_stack_data": tech_stack_data,
             "trending": trending,
-            "job_type_data": self.get_job_type_stats(),
+            "job_type_data": self.get_job_type_stats(start_date, end_date),
             "filters": filters,
             "start_date": str(start_date.date()) if start_date else '',
             "end_date": str(end_date.date()) if end_date else '',
@@ -90,8 +92,11 @@ class GenerateAnalytics(APIView):
             key: math.ceil(self.percentage * value) if isinstance(value, int) else value
             for key, value in x.items()
         }
-        data = [{**expression(x), 'total': sum(total_expression(x))} for x in data]
+        data = [{**expression(x)} for x in data]
+        data = [{**x, 'total': sum(total_expression(x))}for x in data]
 
+        top_tech_stats = [{**expression(x)} for x in top_tech_stats]
+        top_tech_stats = [{**x, 'total': sum(total_expression(x))} for x in top_tech_stats]
         return data, top_tech_stats
 
     def get_tech_counts(self, tech):
@@ -282,6 +287,17 @@ class GenerateAnalytics(APIView):
             month=F('job_posted_date__month'),
             year=F('job_posted_date__year')
         )
+        if data:
+            total_expression = lambda x: [value for key, value in x.items() if
+                                          isinstance(value, int) and key != 'total']
+            expression = lambda x: {
+                key: math.ceil(self.percentage * value) if isinstance(value, int) else value
+                for key, value in x.items()
+            }
+            result = expression(data)
+            result.update({'total': sum(total_expression(result))})
+
+            data = [result]
 
         return data
 
@@ -290,11 +306,16 @@ class GenerateAnalytics(APIView):
         quarter = (now.month - 1) // 3 + 1
         return quarter, now.year
 
-    def get_job_type_stats(self):
+    def get_job_type_stats(self, start_date, end_date):
+        excluded_count = 0
+        if self.excluded_techs:
+            qs = TechStats.objects.filter(name__in=self.excluded_techs, job_posted_date__range=[start_date, end_date]).aggregate(total=Sum('total'))
+            excluded_count = qs['total']
+        caculated_value = lambda x: math.ceil(self.percentage * (abs(x - excluded_count)))
         data = [
             {
                 "name": x,
-                "value": self.queryset.filter(job_type__iexact=x).aggregate(count=Sum('jobs'))['count'],
+                "value": caculated_value(self.queryset.filter(job_type__iexact=x).aggregate(count=Sum('jobs'))['count']),
                 "key": x.lower().replace(" ", "_")
             }
             for x in self.job_types
@@ -320,10 +341,10 @@ class GenerateAnalytics(APIView):
 
                 if qs:
                     qs = qs.aggregate(total=Sum('total'))
-                    values_list.append(qs['total'])
+                    values_list.append(math.ceil(self.percentage * qs['total']))
                     data.append(
                         {
-                            f'q{quarter}': qs['total'],
+                            f'q{quarter}': math.ceil(self.percentage * qs['total']),
                             'category': x.category
                         }
                     )
@@ -341,7 +362,12 @@ class GenerateAnalytics(APIView):
         for category, data in merged_dict.items():
             data["category"] = category
             result_list.append(data)
+
+
         data = {'data': result_list, 'min_value': min(values_list), 'max_value': max(values_list)}
+
+
+
         return data
 
     def get_monthly_trends(self, date):
@@ -363,7 +389,7 @@ class GenerateAnalytics(APIView):
 
                 if qs:
                     qs = qs.aggregate(total=Sum('total'))
-                    total = qs['total']
+                    total = math.ceil(self.percentage * qs['total'])
                 else:
                     total = 0
                 data.append(
@@ -404,7 +430,10 @@ class GenerateAnalytics(APIView):
             ).filter(
                 month=month_number, year=year, name__in=self.tech_keywords
             ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
-            obj_exp = lambda x: ({'name': x['name'], month: x['total_jobs']}, values_list.append(x['total_jobs']))[0]
+            obj_exp = lambda x: ({
+                                     'name': x['name'],
+                                     month: math.ceil(self.percentage * x['total_jobs'])
+                                 }, values_list.append(math.ceil(self.percentage * x['total_jobs'])))[0]
             data.extend(obj_exp(x) for x in qs)
         result_list = []
         merged_dict = {}
@@ -441,7 +470,8 @@ class GenerateAnalytics(APIView):
                 quarter=quarter, year=year, name__in=self.tech_keywords
             ).values('name').annotate(total_jobs=Sum('total')).values('name', 'total_jobs')
             quarter_obj_exp = lambda x: \
-                (values_list.append(x['total_jobs']), {'name': x['name'], 'q' + str(quarter): x['total_jobs']})[-1]
+                (values_list.append(math.ceil(self.percentage * x['total_jobs'])),
+                 {'name': x['name'], 'q' + str(quarter): math.ceil(self.percentage * x['total_jobs'])})[-1]
             data.extend([quarter_obj_exp(x) for x in qs])
         result_list = []
         merged_dict = {}
