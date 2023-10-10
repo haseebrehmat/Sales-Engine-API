@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 from scraper.models.accounts import Accounts
 
@@ -35,7 +35,7 @@ def get_job_detail(driver, job_source, job_url, job_type):
             "salary_min": "N/A",
             "salary_max": "N/A",
             "job_source": job_source,
-            "job_type": job_type,
+            "job_type": set_job_type(job_type),
             "job_description_tags": job_description.get_attribute('innerHTML')
         }
 

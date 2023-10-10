@@ -1,3 +1,6 @@
+from logging import exception
+import sys
+import traceback
 import pandas as pd
 import time
 from selenium import webdriver
@@ -9,14 +12,18 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, k_conversion, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 
 def load_jobs(driver):
     previous_len = len(driver.find_elements(
         By.CLASS_NAME, "company_and_position"))
+    count = 0
     while True:
+        if count == 5:
+            break
+        count += 1
         time.sleep(5)
         driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
         elements = driver.find_elements(By.CLASS_NAME, "company_and_position")
@@ -45,6 +52,16 @@ def get_job_urls(driver):
 # calls url
 
 
+def is_convertible_to_number(s):
+    if isinstance(s, str):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+    return False
+
+
 def request_url(driver, url):
     driver.get(url)
 
@@ -59,73 +76,86 @@ def find_jobs(driver, job_type):
 
     links = get_job_urls(driver)
 
-    total_job = len(links)
     links.pop(0)
+    total_job = len(links)
+    original_window = driver.current_window_handle
     for link in links:
         data = []
         if link:
             try:
+                driver.switch_to.new_window('tab')
                 driver.get(link)
-                id = link.split("-")[-1]
                 time.sleep(5)
-                job = driver.find_element(By.CLASS_NAME, f"job-{id}")
-                job_desc = driver.find_element(By.CLASS_NAME, "expandContents")
-            except:
-                print("error in scrapping")
+                id = link.split("-")[-1]
+                if is_convertible_to_number(id):
+                    id = int(id)
+                    job = WebDriverWait(driver, 40).until(
+                        EC.presence_of_element_located(
+                            (By.CLASS_NAME, f"job-{id}")))
+                    job_desc = WebDriverWait(driver, 40).until(
+                        EC.presence_of_element_located(
+                            (By.CLASS_NAME, "expandContents")))
 
-            temp = job.find_element(By.CLASS_NAME, "company_and_position").text
-            temp = temp.splitlines()
-            job_title = remove_emojis(temp[0])
-            append_data(data, job_title)
+                    temp = job.find_element(
+                        By.CLASS_NAME, "company_and_position").text
+                    temp = temp.splitlines()
+                    job_title = remove_emojis(temp[0])
+                    append_data(data, job_title)
 
-            company_name = remove_emojis(temp[1])
-            append_data(data, company_name)
+                    company_name = remove_emojis(temp[1])
+                    append_data(data, company_name)
 
-            address = 'Remote'
-            append_data(data, address)
+                    address = 'Remote'
+                    append_data(data, address)
 
-            job_source_url = link
-            append_data(data, job_source_url)
+                    job_source_url = link
+                    append_data(data, job_source_url)
 
-            job_description = job_desc.text
-            append_data(data, job_description)
+                    job_description = job_desc.text
+                    append_data(data, job_description)
 
-            temp1 = job.find_element(By.CLASS_NAME, "time").text
-            job_posted_date = temp1
-            append_data(data, job_posted_date)
+                    temp1 = job.find_element(By.CLASS_NAME, "time").text
+                    job_posted_date = temp1
+                    append_data(data, job_posted_date)
 
-            salary_format = "yearly"
-            append_data(data, salary_format)
+                    salary_format = "yearly"
+                    append_data(data, salary_format)
 
-            temp2 = temp[-1].split(" ")
-            if len(temp2[-3]) >= 4 and temp2[-3][0] == "$":
-                salary_min = remove_emojis(temp2[-3])
-            else:
-                salary_min = "N/A"
-            append_data(data, k_conversion(salary_min))
+                    temp2 = temp[-1].split(" ")
+                    if len(temp2[-3]) >= 4 and temp2[-3][0] == "$":
+                        salary_min = remove_emojis(temp2[-3])
+                    else:
+                        salary_min = "N/A"
+                    append_data(data, salary_min)
 
-            if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
-                salary_max = remove_emojis(temp2[-1])
-            else:
-                salary_max = "N/A"
-            append_data(data, k_conversion(salary_max))
+                    if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
+                        salary_max = remove_emojis(temp2[-1])
+                    else:
+                        salary_max = "N/A"
+                    append_data(data, salary_max)
 
-            if salary_max == "N/A" or salary_min == "N/A":
-                estimated_salary = "N/A"
-            else:
-                estimated_salary = f"{salary_min}-{salary_max}"
-            append_data(data, k_conversion(estimated_salary))
+                    if salary_max == "N/A" or salary_min == "N/A":
+                        estimated_salary = "N/A"
+                    else:
+                        estimated_salary = f"{salary_min}-{salary_max}"
+                    append_data(data, estimated_salary)
 
-            job_source = ScraperNaming.REMOTE_OK
-            append_data(data, job_source)
+                    job_source = ScraperNaming.REMOTE_OK
+                    append_data(data, job_source)
 
-            job_type = "remote"
-            append_data(data, job_type)
+                    job_type = "remote"
+                    append_data(data, set_job_type(job_type))
 
-            job_description_tags = job_desc.get_attribute("innerHTML")
-            append_data(data, str(job_description_tags))
+                    job_description_tags = job_desc.get_attribute("innerHTML")
+                    append_data(data, str(job_description_tags))
 
-        scrapped_data.append(data)
+            except exception as e:
+                print(e)
+
+            driver.close()
+            driver.switch_to.window(original_window)
+
+            scrapped_data.append(data)
 
     columns_name = [
         "job_title",
@@ -150,7 +180,6 @@ def find_jobs(driver, job_type):
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Remote ok", filename=filename
     )
-
     return False, total_job
 
 
@@ -177,6 +206,3 @@ def remoteok(link, job_type):
     except Exception as e:
         saveLogs(e)
         print(e)
-
-
-# remoteok('https://remoteok.com/remote-api+engineer-jobs?order_by=date','full time remote')

@@ -11,7 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 total_jobs = 0
@@ -28,8 +28,8 @@ def append_data(data, field):
 
 
 def find_jobs(driver, job_type, total_jobs):
-    scrapped_data = []
     try:
+        scrapped_data = []
         time.sleep(3)
         jobs = driver.find_elements(By.CLASS_NAME, "show-job-description")
         for job in jobs:
@@ -62,7 +62,7 @@ def find_jobs(driver, job_type, total_jobs):
                 append_data(data, "N/A")
                 append_data(data, "N/A")
                 append_data(data, "US Jora")
-                append_data(data, job_type)
+                append_data(data, set_job_type(job_type))
                 append_data(data, job_description.get_attribute('innerHTML'))
                 scrapped_data.append(data)
                 total_jobs += 1
@@ -85,8 +85,10 @@ def find_jobs(driver, job_type, total_jobs):
                 return True, total_jobs
             return False, total_jobs
         except Exception as e:
+            saveLogs(e)
             return False, total_jobs
     except Exception as e:
+        saveLogs(e)
         return False, total_jobs
 
 # code starts from here
@@ -103,7 +105,6 @@ def us_jora(link, job_type):
                 flag, total_job = find_jobs(driver, job_type, total_job)
         except Exception as e:
             saveLogs(e)
-            print(LINK_ISSUE)
 
         driver.quit()
     except Exception as e:

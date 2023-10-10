@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from utils.helpers import saveLogs
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 
 total_job = 0
 
@@ -23,11 +23,23 @@ def check_alerts(driver):
             driver.find_element(By.CLASS_NAME, "js-email-join").send_keys("m.abubakartariq@devsinc.com")
             driver.find_element(By.CLASS_NAME, "js-join-community").click()
     except:
-        print("")
+        pass
+
+
+def file_creation(scrapped_data):
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                    "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
+                    "job_description_tags"]
+    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+    filename = generate_scraper_filename(ScraperNaming.DAILY_REMOTE)
+
+    df.to_excel(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Daily Remote", filename=filename)
+
 
 def find_jobs(driver, job_type, total_job):
-    scrapped_data = []
-    date_time = str(datetime.now())
     count = 0
     check_alerts(driver)
     original_window = driver.current_window_handle
@@ -47,7 +59,8 @@ def find_jobs(driver, job_type, total_job):
             for job in jobs:
                 job.location_once_scrolled_into_view
         except:
-            print("")
+            pass
+        scrapped_data = []
         for job in jobs:
             data = []
             try:
@@ -62,7 +75,6 @@ def find_jobs(driver, job_type, total_job):
                 company_name = driver.find_elements(By.CLASS_NAME, "company-info-block")[0]
                 company_name = company_name.find_elements(By.CLASS_NAME, "company-name")[0].text
                 job_posted_date = driver.find_elements(By.CLASS_NAME, "meta-holder")[0].text
-                salary_string = driver.find_elements(By.CLASS_NAME, "meta-holder")[2].text
                 location = driver.find_elements(By.CLASS_NAME, "meta-holder")[1].text
                 job_type = job_type
                 job_source = "dailyremote"
@@ -73,29 +85,23 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_description[0].text)
                 append_data(data, job_source_url)
                 append_data(data, job_posted_date)
-                if "$" and "-" in salary_string:
-                    salary_format = "N/A"
-                    append_data(data, salary_format)
-                    estimated_salary = salary_string
-                    append_data(data, k_conversion(estimated_salary))
-                    salary_min = salary_string.split("-")[0]
-                    append_data(data, k_conversion(salary_min))
-                    salary_max = salary_string.split("-")[1].split("k")[0]
-                    salary_max = "$"+salary_max+"k"
-                    append_data(data, k_conversion(salary_max))
-                else:
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
+                append_data(data, "N/A")
                 append_data(data, job_source)
-                append_data(data, job_type)
+                append_data(data, set_job_type(job_type))
                 append_data(data, job_description[0].get_attribute('innerHTML'))
                 total_job += 1
                 scrapped_data.append(data)
             except Exception as e:
                 print(e)
-            count += 1
+        # Here is a file uploading code
+        file_creation(scrapped_data)
+        from scraper.schedulers.job_upload_scheduler import upload_jobs, remove_files
+        upload_jobs('instant scraper', job_source)
+        remove_files('instant scraper', job_source)
+        scrapped_data = []
         try:
             driver.switch_to.window(original_window)
             page_count = int(driver.find_elements(By.CLASS_NAME, "pagination-page")[-2].text)
@@ -105,13 +111,6 @@ def find_jobs(driver, job_type, total_job):
             flag_count += flag_count
         except:
             flag_count += flag_count
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.DAILY_REMOTE)
-    df.to_excel(filename, index=False)
-    ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="DailyRemote", filename=filename)
     return False, total_job
 
 
@@ -121,6 +120,7 @@ def append_data(data, field):
 
 # Create your views here.
 def dailyremote(link, job_type):
+    print("Daily Remote")
     try:
         total_job = 0
         driver = configure_webdriver()

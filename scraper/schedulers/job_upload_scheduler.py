@@ -17,7 +17,7 @@ from rest_framework.views import APIView
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
-from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix, the_muse
+from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix, the_muse, remote_co
 from scraper.jobs.adzuna_scraping import adzuna_scraping
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
@@ -46,10 +46,16 @@ from scraper.jobs.workable_scraping import workable
 from scraper.jobs.hirenovice_scraping import hirenovice
 from scraper.jobs.clearance_scraping import clearance
 from scraper.jobs.smartrecruiter_scraping import smartrecruiter
+from scraper.jobs.getwork_scraping import getwork
+from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
+from scraper.jobs.just_remote_scraping import just_remote
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
 from scraper.models.group_scraper_query import GroupScraperQuery
+from scraper.jobs.hubstaff_talent_scraping import hubstaff_talent
+
+from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
 from scraper.utils.helpers import convert_time_into_minutes
@@ -168,15 +174,32 @@ scraper_functions = {
     "smartrecruiter": [
         smartrecruiter,
     ],
+    "getwork": [
+        getwork,
+    ],
+    "ruby_on_remote": [
+        ruby_on_remote
+    ],
+    "hubstafftalent": [
+        hubstaff_talent,
+    ],
+    "justremote": [
+        just_remote,
+    ],
+     "remoteco": [
+        remote_co,
+    ],
 }
 
 
-def upload_jobs():
+def upload_jobs(scheduler_type, job_source):
     try:
         print('Uploading files ...')
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
+        SchedulerSync.objects.filter(
+            job_source=job_source, type=scheduler_type).update(uploading=True)
         for file in files:
             try:
                 if not is_file_empty(file):
@@ -219,7 +242,7 @@ def is_file_empty(file):
         return True
 
 
-def remove_files(job_source="all"):
+def remove_files(scheduler_type, job_source="all"):
     try:
         print("removing files ...")
         if "simply" in job_source:
@@ -246,6 +269,8 @@ def remove_files(job_source="all"):
     except Exception as e:
         saveLogs(e)
         print(e)
+    SchedulerSync.objects.filter(
+        job_source=job_source, type=scheduler_type).update(uploading=False)
 
 
 @transaction.atomic
@@ -263,6 +288,8 @@ def upload_file(job_parser, filename):
                   job_description_tags=job_item.job_description_tags,
                   tech_keywords=job_item.tech_keywords.replace(
                       " / ", "").lower(),
+                  tech_stacks=list(
+                      set(job_item.tech_keywords.replace(" / ", "").lower().split(','))),
                   job_posted_date=job_item.job_posted_date,
                   job_source_url=job_item.job_source_url,
                   estimated_salary=job_item.estimated_salary,
@@ -289,7 +316,8 @@ def upload_file(job_parser, filename):
 def migrate_jobs_to_archive(classify_data=None):
     try:
         last_30_days = datetime.datetime.now() - datetime.timedelta(days=30)
-        excluded_id = JobArchive.objects.only("id").values_list("id", flat=True)
+        excluded_id = JobArchive.objects.only(
+            "id").values_list("id", flat=True)
         fields = [
             'id',
             'job_title',
@@ -310,9 +338,11 @@ def migrate_jobs_to_archive(classify_data=None):
         if classify_data:
             query = Q()
             for item in classify_data.data_frame.itertuples():
-                query |= Q(company_name=item.company_name, job_title=item.job_title)
+                query |= Q(company_name=item.company_name,
+                           job_title=item.job_title)
 
-        jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
+        jobs = JobDetail.objects.filter(
+            created_at__lte=last_30_days, job_applied="not applied")
         qs = JobDetail.objects.exclude(id__in=set(excluded_id)).only(*fields)
         print(jobs.count())
         if classify_data:
@@ -340,6 +370,7 @@ def migrate_jobs_to_archive(classify_data=None):
         print("Exception in migrating data => ", e)
 
 # migrate_jobs_to_archive()
+
 
 def get_job_source_quries(job_source):
     job_source_queries = list(JobSourceQuery.objects.filter(
@@ -406,8 +437,8 @@ def run_scrapers(scrapers):
                         saveLogs(e)
 
                     try:
-                        upload_jobs()
-                        remove_files(key)
+                        upload_jobs('instant', key)
+                        remove_files('instant', key)
                     except Exception as e:
                         print("Error in uploading jobs", e)
                         saveLogs(e)
@@ -423,7 +454,7 @@ def run_scrapers(scrapers):
 def load_all_job_scrappers():
     SchedulerSync.objects.filter(job_source='all', type='Infinite Scrapper').update(running=True,
                                                                                     start_time=timezone.now(),
-                                                                                    end_time=timezone.now())
+                                                                                    end_time=None)
     while AllSyncConfig.objects.filter(status=True).first() is not None:
         print("Load All Scraper Function")
         try:
@@ -442,13 +473,15 @@ def load_all_job_scrappers():
 def run_scraper_by_celery(job_source):
     time.sleep(5)
     return job_source
+
+
 @start_new_thread
 def load_job_scrappers(job_source):
     job_source = job_source.lower()
     try:
         SchedulerSync.objects.filter(job_source=job_source, type='instant').update(running=True,
                                                                                    start_time=timezone.now(),
-                                                                                   end_time=timezone.now())
+                                                                                   end_time=None)
         scrapers = get_scrapers_list(job_source)
         run_scrapers(scrapers)
     except Exception as e:
@@ -463,7 +496,7 @@ def load_job_scrappers(job_source):
 def run_scheduler(job_source):
     SchedulerSync.objects.filter(job_source=job_source, type="time/interval").update(running=True,
                                                                                      start_time=timezone.now(),
-                                                                                     end_time=timezone.now())
+                                                                                     end_time=None)
     # job_source = job_source.replace('_', '').lower()
     if job_source in list(scraper_functions.keys()):
         run_scrapers(get_scrapers_list(job_source))
@@ -590,10 +623,12 @@ def scheduler_settings():
                     start_job_sync, 'interval', minutes=interval, args=["himalayas"])
 
             elif scheduler.job_source.lower() == "recruit":
-                recruit_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["recruit"])
+                recruit_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["recruit"])
 
             elif scheduler.job_source.lower() == "dynamite":
-                dynamite_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["dynamite"])
+                dynamite_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["dynamite"])
 
                 recruit_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["recruit"])
@@ -605,7 +640,8 @@ def scheduler_settings():
                     start_job_sync, 'interval', minutes=interval, args=["arcdev"])
 
             elif scheduler.job_source.lower() == "usjora":
-                us_jora_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["usjora"])
+                us_jora_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["usjora"])
 
             elif scheduler.job_source.lower() == "remoteok":
                 rubynow_scheduler.add_job(
@@ -614,12 +650,21 @@ def scheduler_settings():
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(
                     start_job_sync, 'interval', minutes=interval, args=["startwire"])
+            elif scheduler.job_source.lower() == "hubstafftalent":
+                startwire_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["hubstafftalent"])
             elif scheduler.job_source.lower() == "jobgether":
-                job_gether_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["jobgether"])
+                job_gether_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
-                receptix_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["receptix"])
-            elif scheduler.job_source.lower() == "themuse":
-                the_muse_scheduler.add_job(start_job_sync, 'interval', minutes=interval, args=["themuse"])
+                receptix_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["receptix"])
+            elif scheduler.job_source.lower() == "receptix":
+                receptix_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["justremote"])
+            elif scheduler.job_source.lower() == "justremote":
+                the_muse_scheduler.add_job(
+                    start_job_sync, 'interval', minutes=interval, args=["themuse"])
 
         elif scheduler.time_based:
             now = datetime.datetime.now()
@@ -671,11 +716,11 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "hirenovice":
                 hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["hirenovice"])
+                                             args=["hirenovice"])
 
             elif scheduler.job_source.lower() == "hirenovice":
                 hirenovice_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["hirenovice"])
+                                             args=["hirenovice"])
 
             elif scheduler.job_source.lower() == "talent":
                 talent_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
@@ -695,7 +740,7 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "himalayas":
                 himalayas_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                             args=["himalayas"])
+                                            args=["himalayas"])
 
             elif scheduler.job_source.lower() == "recruit":
                 recruit_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
@@ -711,7 +756,7 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "usjora":
                 us_jora_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                         args=["usjora"])
+                                          args=["usjora"])
 
             elif scheduler.job_source.lower() == "remoteok":
                 rubynow_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
@@ -719,16 +764,23 @@ def scheduler_settings():
 
             elif scheduler.job_source.lower() == "startwire":
                 startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["startwire"])
+                                            args=["startwire"])
+            elif scheduler.job_source.lower() == "hubstafftalent":
+                startwire_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                            args=["hubstafftalent"])
             elif scheduler.job_source.lower() == "jobgether":
                 job_gether_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["jobgether"])
+                                             args=["jobgether"])
             elif scheduler.job_source.lower() == "receptix":
                 receptix_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["receptix"])
+                                           args=["receptix"])
             elif scheduler.job_source.lower() == "themuse":
                 the_muse_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
-                                          args=["themuse"])
+                                           args=["themuse"])
+            elif scheduler.job_source.lower() == "justremote":
+                the_muse_scheduler.add_job(start_background_job, "interval", hours=24, next_run_time=start_time,
+                                           args=["justremote"])
+
 
 def group_scraper_job(group_id):
     pakistan_timezone = pytz.timezone('Asia/Karachi')
@@ -748,24 +800,27 @@ def group_scraper_job(group_id):
 
     try:
         queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
-        for query in queries:
-            query.status = "remaining"
-            query.start_time = str(datetime.now(pakistan_timezone))
-            query.end_time = str(datetime.now(pakistan_timezone))
-            query.save()
+        if group_scraper.running_link is None:
+            for query in queries:
+                query.status = "remaining"
+                query.start_time = str(datetime.now(pakistan_timezone))
+                query.end_time = str(datetime.now(pakistan_timezone))
+                query.save()
         for query in queries:
             job_source = query.job_source.lower()
             print(job_source)
-            if job_source in list(single_scrapers_functions.keys()):
+            if job_source in list(single_scrapers_functions.keys()) and query.status == "remaining":
                 scraper_func = single_scrapers_functions[job_source]
                 try:
+                    group_scraper.running_link = query
+                    group_scraper.save()
                     # start time and status running
                     query.status = "running"
                     query.start_time = str(datetime.now(pakistan_timezone))
                     query.save()
                     scraper_func(query.link, query.job_type)
-                    upload_jobs()
-                    remove_files(job_source)
+                    upload_jobs('group scraper', job_source)
+                    remove_files('group scraper', job_source)
                     # end time and status successfully completed
                     query.status = "completed"
                     query.end_time = str(datetime.now(pakistan_timezone))
@@ -777,14 +832,19 @@ def group_scraper_job(group_id):
                     query.save()
                     print(e)
                     saveLogs(e)
-        upload_jobs()
-        remove_files('all')
+            else:
+                print("")
+        upload_jobs('group scraper', 'all')
+        remove_files('group scraper', 'all')
     except Exception as e:
-        upload_jobs()
-        remove_files('all')
+        upload_jobs('group scraper', 'all')
+        remove_files('group scraper', 'all')
         current_scraper = ''
         print(str(e))
         saveLogs(e)
     SchedulerSync.objects.filter(
         job_source=current_scraper).update(running=False, end_time=datetime.now(pakistan_timezone))
+    if group_scraper.running_link == GroupScraperQuery.objects.filter(group_scraper_id=group_id).first():
+        group_scraper.running_link = None
+        group_scraper.save()
     print("Group Scraper is finished")

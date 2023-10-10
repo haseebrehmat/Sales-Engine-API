@@ -1,9 +1,10 @@
 import datetime
 
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Func, F
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from tqdm import tqdm
 
 from job_portal.models import JobArchive, Analytics, TechStats, JobDetail
 from scraper.utils.thread import start_new_thread
@@ -11,6 +12,7 @@ from utils.helpers import saveLogs
 
 
 class ArchiveJobs(APIView):
+    permission_classes = (AllowAny, )
     contract_onsite_enums = [
         "contract onsite",
         "contract on site",
@@ -57,7 +59,9 @@ class ArchiveJobs(APIView):
                     query |= Q(company_name=item.company_name, job_title=item.job_title)
 
             jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
-            filter_jobs = JobDetail.objects.filter(created_at__gte="2023-08-15")
+            last_date = JobArchive.objects.order_by('-job_posted_date').first().job_posted_date
+            print("last Record date => ", str(last_date))
+            filter_jobs = JobDetail.objects.filter(created_at__gte=last_date).defer('job_description_tags')
             print(filter_jobs.count())
             print("filtered_jobs => ", jobs.count())
             if classify_data:
@@ -78,11 +82,11 @@ class ArchiveJobs(APIView):
                 is_manual=x.is_manual,
                 created_at=x.created_at,
                 updated_at=x.updated_at
-            ) for x in filter_jobs.iterator()]
-
+            ) for x in tqdm(filter_jobs.iterator())]
+            #
             check = JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True, batch_size=500)
             print(check)
-            jobs.delete()
+            # jobs.delete()
             print("Terminated")
 
             self.save_analytics()
@@ -95,7 +99,9 @@ class ArchiveJobs(APIView):
     """
     def save_tech_stacks_stats(self, queryset, current_date):
         data = []
-        tech_keywords = set(queryset.values_list("tech_keywords", flat=True))
+        expression = Func(F('tech_stacks'), function='unnest')
+        tech_keywords = set(
+            JobDetail.objects.only('tech_stacks').annotate(keywords=expression).values_list('keywords', flat=True))
         for x in tech_keywords:
             qs = queryset.filter(tech_keywords=x).aggregate(
                 total=Count("id"),

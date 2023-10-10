@@ -4,13 +4,24 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 
 total_job = 0
 
+def file_creation(scrapped_data):
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                    "salary_format",
+                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+    filename = generate_scraper_filename(ScraperNaming.HIRENOVICE)
+
+    df.to_excel(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Hirenovice", filename=filename)
 def find_jobs(driver, job_type, total_job, search_keyword, location_type, remote_status):
     scrapped_data = []
     count = 0
+    chunk_count = 0
 
     # here is a logic of open 2 tabs and shifting from one to another
     original_window = driver.current_window_handle
@@ -110,31 +121,26 @@ def find_jobs(driver, job_type, total_job, search_keyword, location_type, remote
             append_data(data, salary_min)
             append_data(data, salary_max)
             append_data(data, job_source)
-            append_data(data, job_type)
+            append_data(data, set_job_type(job_type))
             append_data(data, job_description_tags)
-
+            chunk_count += 1
             total_job += 1
             scrapped_data.append(data)
         except Exception as e:
             print(e)
+        if chunk_count >= 20:
+            file_creation(scrapped_data)
+            from scraper.schedulers.job_upload_scheduler import upload_jobs, remove_files
+            upload_jobs('instant scraper', job_source)
+            remove_files('instant scraper', job_source)
+            chunk_count = 0
+            scrapped_data = []
         count += 1
-
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.HIRENOVICE)
-    df.to_excel(filename, index=False)
-    ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="Hirenovice", filename=filename)
+    file_creation(scrapped_data)
     return False, total_job
-
 
 def append_data(data, field):
     data.append(str(field).strip("+"))
-
-
-
 
 def hirenovice(link, job_type):
     print("Hirenovice Scraper")

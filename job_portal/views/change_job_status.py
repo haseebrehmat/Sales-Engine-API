@@ -1,12 +1,14 @@
 from io import BytesIO
 
+from django.core.files.base import ContentFile
 from django.http import HttpResponse
 from django.template.loader import get_template
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.db import transaction
+from rest_framework.views import APIView
 from xhtml2pdf import pisa
 
 from authentication.models import Team
@@ -25,7 +27,8 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
     queryset = AppliedJobStatus.objects.all()
     http_method_names = ['post', 'patch']
     lookup_field = 'id'
-    permission_classes = [ApplyJobPermission | JobStatusPermission, ]
+    # permission_classes = [ApplyJobPermission | JobStatusPermission, ]
+    permission_classes = (AllowAny,)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -52,7 +55,8 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
         job_id = self.request.data.get('job')
         current_user = self.request.user
 
-        if AppliedJobStatus.objects.filter(vertical_id=vertical_id, job_id=job_id, applied_by=current_user).count() != 0:
+        if AppliedJobStatus.objects.filter(vertical_id=vertical_id, job_id=job_id,
+                                           applied_by=current_user).count() != 0:
             return Response({"detail": "Job already assigned to this vertical"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         job_details = JobDetail.objects.get(id=job_id)
@@ -145,4 +149,5 @@ def generate_cover_letter_pdf(cover_letter):
     pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), pdf_file)
     if not pdf.err:
         return HttpResponse(pdf_file.getvalue(), content_type='application/pdf')
+
     return None

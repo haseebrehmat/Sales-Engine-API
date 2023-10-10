@@ -66,3 +66,5 @@ class GroupDetailView(APIView):
         Group.objects.filter(pk=pk).delete()
         return Response("Group deleted successfully", status=status.HTTP_200_OK)
 
+
+

@@ -11,7 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 total_jobs = 0
@@ -82,7 +82,7 @@ def find_jobs(driver, job_type, total_jobs):
                 append_data(data, "N/A")
                 append_data(data, "N/A")
                 append_data(data, "Careerbuilder")
-                append_data(data, job_type)
+                append_data(data, set_job_type(job_type))
                 append_data(data, job_description.get_attribute('innerHTML'))
                 scrapped_data.append(data)
                 count += 1
@@ -149,6 +149,19 @@ def check_us_region(driver):
         return True
 
 
+def not_blocked(driver):
+    try:
+        blocked = driver.find_element(By.CLASS_NAME, "cf-error-overview")
+        if 'Sorry, you have been blocked' in blocked.find_element(By.TAG_NAME, "h1").text:
+            try:
+                raise Exception('Sorry, you have been blocked')
+            except Exception as e:
+                saveLogs(e)
+        return False
+    except Exception as e:
+        return True
+
+
 # code starts from here
 def career_builder(link, job_type):
     total_job = 0
@@ -160,13 +173,14 @@ def career_builder(link, job_type):
         try:
             flag = True
             request_url(driver, link)
-            if check_us_region(driver):
-                accept_cookie(driver)
-                while flag:
-                    flag, total_count = load_jobs(driver, total_count)
-                    print("Loading...")
-                total_job = find_jobs(driver, job_type, total_job)
-                print(SCRAPING_ENDED)
+            if not_blocked(driver):
+                if check_us_region(driver):
+                    accept_cookie(driver)
+                    while flag:
+                        flag, total_count = load_jobs(driver, total_count)
+                        print("Loading...")
+                    total_job = find_jobs(driver, job_type, total_job)
+                    print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)

@@ -10,16 +10,36 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 total_job = 0
 
+def hide_alerts(driver):
+    try:
+        WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.CLASS_NAME, 'hide-control')))
+        driver.find_element(By.CLASS_NAME, 'hide-control').click()
+    except Exception as e:
+        print(e)
+    time.sleep(2)
+    try:
+        WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.CLASS_NAME, 'close-modal')))
+        driver.find_element(By.CLASS_NAME, 'close-modal').click()
+    except Exception as e:
+        print(e)
+    time.sleep(2)
+    try:
+        WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.ID, 'job-notification')))
+        driver.find_element(By.ID, 'job-notification').find_element(By.CLASS_NAME, 'close').click()
+    except Exception as e:
+        print(e)
+    time.sleep(2)
 
 def find_jobs(driver, job_type, total_job):
     scrapped_data = []
     count = 0
     try:
+        hide_alerts(driver)
         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "result-item")))
         time.sleep(3)
         jobs = driver.find_elements(By.CLASS_NAME, "result-item")
@@ -55,7 +75,7 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, "N/A")
                 append_data(data, "N/A")
                 append_data(data, job_source)
-                append_data(data, job_type)
+                append_data(data, set_job_type(job_type))
                 append_data(data, 'N/A')
                 total_job += 1
                 scrapped_data.append(data)
@@ -67,6 +87,7 @@ def find_jobs(driver, job_type, total_job):
         saveLogs(e)
 
     update_job_description(driver, scrapped_data)
+    hide_alerts(driver)
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "salary_format", "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
                     "job_description_tags"]
@@ -83,6 +104,7 @@ def find_jobs(driver, job_type, total_job):
             return False
         else:
             pagination[-1].click()
+            hide_alerts(driver)
             return True
     except Exception as e:
         saveLogs(e)

@@ -1,10 +1,9 @@
 from django.db import models
-from scraper.models.group_scraper import GroupScraper
 from utils.model_fields.timestamped import TimeStamped
 
 
 class GroupScraperQuery(TimeStamped):
-    group_scraper = models.ForeignKey(GroupScraper, on_delete=models.SET_NULL, blank=True, null=True)
+    group_scraper = models.ForeignKey('GroupScraper', on_delete=models.SET_NULL, blank=True, null=True)
     link = models.TextField(blank=True, null=True)
     job_type = models.CharField(max_length=250, blank=True, null=True)
     job_source = models.CharField(max_length=250, blank=True, null=True)

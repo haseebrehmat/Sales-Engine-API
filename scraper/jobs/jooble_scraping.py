@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
 
 total_job = 0
 
@@ -19,30 +19,31 @@ def find_jobs(driver, job_type, total_job):
     scrapped_data = []
     date_time = str(datetime.now())
     count = 0
-    WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "LKpaAN"))
-    )
     time.sleep(3)
-    alert = driver.find_elements(By.CLASS_NAME, "jMkAzG")
+    alert = driver.find_elements(By.CLASS_NAME, "_8VULLY")
     if len(alert) > 0:
-        alert[0].click()
-    jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
+        try:
+            driver.find_element(By.CLASS_NAME, "bLprmr").click()
+        except:
+            print("")
+    jobs = driver.find_elements(By.TAG_NAME, "article")
     try:
         flag = True
         while(flag):
+
             for job in jobs:
                 job.location_once_scrolled_into_view
             # this is the logic for click load more jobs button in this scraper 2 loaders are running
             time.sleep(5)
-            jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
+            jobs = driver.find_elements(By.TAG_NAME, "article")
             for job in jobs:
                 job.location_once_scrolled_into_view
             time.sleep(5)
-            jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
+            jobs = driver.find_elements(By.TAG_NAME, "article")
             for job in jobs:
                 job.location_once_scrolled_into_view
             time.sleep(5)
-            if len(jobs) > 450:
+            if len(jobs) > 600:
                 break
             try:
                 driver.find_elements(By.CLASS_NAME, "jkit_AySJs")[1].click()
@@ -51,41 +52,54 @@ def find_jobs(driver, job_type, total_job):
     except:
         print("")
     time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "LKpaAN")
+    jobs = driver.find_elements(By.TAG_NAME, "article")
+    chunk_count = 0
     for job in jobs:
         data = []
         try:
-            job_title = job.find_element(By.CLASS_NAME, "jkit_Efecu")
-            job_description = job.find_element(By.CLASS_NAME, "EIQN28")
-            job_posted_date = job.find_element(By.CLASS_NAME, "klAi0x")
-            location = job.find_element(By.CLASS_NAME, "lroapG")
+            job_title = job.find_element(By.TAG_NAME, "h2").find_element(By.TAG_NAME, "a")
+            job_source_url = job_title.get_attribute(
+                'href')
+            job_title = job_title.text
+            job_description = job.find_element(By.CLASS_NAME, "PAM72f")
+            section = job.find_element(By.TAG_NAME, "section")
+            company_name = section.find_element(By.CLASS_NAME, "z6WlhX").text
+            job_posted_date = section.find_element(By.CLASS_NAME, "Vk-5Da").text
+            location = section.find_element(By.CLASS_NAME, "NTRJBV").text
             job_type = job_type
             job_source = "jooble"
-            job_source_url = job.find_element(By.CLASS_NAME, "jkit_ff9zU").get_attribute(
-                'href')
-            append_data(data, job_title.text)
-            try:
-                company_name = job.find_element(By.CLASS_NAME, "iGX6uI").text
-            except:
-                company_name = "N/A"
+            append_data(data, job_title)
             append_data(data, company_name)
-            append_data(data, location.text)
+            append_data(data, location)
             append_data(data, job_description.text)
             append_data(data, job_source_url)
-            append_data(data, job_posted_date.text)
+            append_data(data, job_posted_date)
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, job_source)
-            append_data(data, job_type)
+            append_data(data, set_job_type(job_type))
             append_data(data, job_description.get_attribute('innerHTML'))
             total_job += 1
             scrapped_data.append(data)
+            chunk_count += 1
         except Exception as e:
             print(e)
+        if chunk_count >= 20:
+            file_creation(scrapped_data)
+            from scraper.schedulers.job_upload_scheduler import upload_jobs, remove_files
+            upload_jobs('instant scraper', job_source)
+            remove_files('instant scraper', job_source)
+            chunk_count = 0
+            scrapped_data = []
         count += 1
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+    file_creation(scrapped_data)
+    return False, total_job
+
+def file_creation(scrapped_data):
+    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
+                    "salary_format",
                     "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.JOOBLE)
@@ -93,8 +107,6 @@ def find_jobs(driver, job_type, total_job):
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Jooble", filename=filename)
-    return False, total_job
-
 
 def append_data(data, field):
     data.append(str(field).strip("+"))

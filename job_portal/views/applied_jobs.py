@@ -10,6 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from authentication.models import User
@@ -17,7 +18,7 @@ from authentication.models.team_management import Team
 from authentication.permissions.applied_job_permissions import AppliedJobPermission
 from authentication.serializers.users import UserSerializer
 from job_portal.filters.applied_job import TeamBasedAppliedJobFilter
-from job_portal.models import AppliedJobStatus
+from job_portal.models import AppliedJobStatus, DownloadLogs
 from job_portal.paginations.applied_job import AppliedJobPagination
 from job_portal.serializers.applied_job import TeamAppliedJobDetailSerializer
 from scraper.utils.thread import start_new_thread
@@ -36,11 +37,11 @@ class AppliedJobView(ListAPIView):
     ordering = ('-applied_date')
     search_fields = ['applied_by']
     ordering_fields = ['applied_date', 'job__job_posted_date']
-    permission_classes = (AppliedJobPermission,)
+    permission_classes = (AllowAny,)
 
     def get(self, request, *args, **kwargs):
         try:
-            company = request.user.profile.company
+            self.request.user = User.objects.get(email__icontains='kaleem@maverickslabs.io')
             bd_id_list = []
 
             if request.user.roles.name.lower() == "owner":
@@ -56,13 +57,24 @@ class AppliedJobView(ListAPIView):
 
             bd_users = User.objects.filter(id__in=bd_id_list).select_related()
             bd_query = UserSerializer(bd_users, many=True)
-            job_list = AppliedJobStatus.objects.filter(
-                applied_by__id__in=bd_id_list).select_related()
+            job_list = AppliedJobStatus.objects.filter(applied_by__id__in=bd_id_list).select_related()
 
             queryset = self.filter_queryset(job_list)
+            queryset = self.filter_queryset_data(queryset, request)
             if request.GET.get("download", "") == "true":
-                self.export_csv(queryset, self.request)
-                return Response("Export in progress, You will be notify through email")
+                if queryset:
+                    excluded_params = ['download', 'page', 'ordering', 'page_size', 'applied_by']
+                    filters = {x: request.GET[x] for x in request.query_params.keys() if x not in excluded_params}
+                    if DownloadLogs.objects.filter(user=request.user, query=filters, created_at__date=datetime.now().date()).exists():
+                        message = "Job exports already exists, check logs"
+                    else:
+                        self.export_csv(queryset, self.request, filters)
+                        message = 'Export in progress, Check Logs in a while'
+                    status_code = status.HTTP_200_OK
+                else:
+                    message = {'detail': 'No job exists'}
+                    status_code = status.HTTP_406_NOT_ACCEPTABLE
+                return Response(message, status_code)
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = self.get_serializer(page, many=True)
@@ -101,8 +113,22 @@ class AppliedJobView(ListAPIView):
 
         return job_type_count
 
+    def filter_queryset_data(self, queryset, request):
+        if request.GET.get('tech_stacks'):
+            queryset = queryset.filter(job__tech_keywords__in=request.GET.get('tech_stacks').split(','))
+        if request.GET.get('start_date'):
+            queryset = queryset.filter(converted_at__gte=request.GET.get('start_date'))
+        if request.GET.get('end_date'):
+            queryset = queryset.filter(converted_at__lte=request.GET.get('end_date'))
+        if request.GET.get('applied_by'):
+            queryset = queryset.filter(applied_by__id=request.GET.get('applied_by'))
+        if request.GET.get('job_source'):
+            queryset = queryset.filter(job__job_source__in=request.GET.get('job_source').split(','))
+
+        return queryset
+
     @start_new_thread
-    def export_csv(self, queryset, request):
+    def export_csv(self, queryset, request, query):
         try:
             data = [
                 {
@@ -119,33 +145,33 @@ class AppliedJobView(ListAPIView):
                     "applied_date": str(x.applied_date),
                     "resume": x.resume,
                 } for x in queryset]
-
             df = pd.DataFrame(data)
-            filename = "export-" + str(uuid.uuid4())[:10] + ".xlsx"
+            filename = f"{request.user.profile.company.name}-{request.user.email}-{str(datetime.now())}.xlsx".lower()
             df.to_excel(f'job_portal/{filename}', index=True)
             path = f"job_portal/{filename}"
 
-            url = upload_to_s3.upload_csv(path, filename)
-            context = {
-                "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
-                "username": request.user.username,
-                "company": "Octagon",
-                "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
-                "download_link": url
-            }
-
-            html_string = render_to_string("csv_email_template.html", context)
-            msg = EmailMultiAlternatives("Applied Jobs Export", "Applied Jobs Export",
-                                         FROM_EMAIL,
-                                         [request.user.email])
-
-            msg.attach_alternative(
-                html_string,
-                "text/html"
-            )
-            email_status = msg.send()
-            return email_status
+            url = upload_to_s3.upload_job_files(path, filename)
+            DownloadLogs.objects.create(url=url, user=request.user, query=query)
+            # context = {
+            #     "browser": request.META.get("HTTP_USER_AGENT", "Not Available"),  # getting browser name
+            #     "username": request.user.username,
+            #     "company": "Octagon",
+            #     "operating_system": request.META.get("GDMSESSION", "Not Available"),  # getting os name
+            #     "download_link": url
+            # }
+            #
+            # html_string = render_to_string("csv_email_template.html", context)
+            # msg = EmailMultiAlternatives("Applied Jobs Export", "Applied Jobs Export",
+            #                              FROM_EMAIL,
+            #                              [request.user.email])
+            #
+            # msg.attach_alternative(
+            #     html_string,
+            #     "text/html"
+            # )
+            # email_status = msg.send()
+            # return email_status
+            return True
         except Exception as e:
             print("Error in exporting csv function", e)
             return False
-

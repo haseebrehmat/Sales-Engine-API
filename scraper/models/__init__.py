@@ -6,3 +6,4 @@ from scraper.models.scraper_logs import ScraperLogs
 from scraper.models.group_scraper import GroupScraper
 from scraper.models.group_scraper_query import GroupScraperQuery
 from scraper.models.accounts import Accounts
+from scraper.models.job_sources import JobSource

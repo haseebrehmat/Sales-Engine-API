@@ -1,8 +1,9 @@
 import datetime
 import json
 
+from django.contrib.postgres.fields import ArrayField
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Count
+from django.db.models import Count, Func, CharField, F, Value, TextField
 from django.utils import timezone
 from rest_framework import pagination
 from rest_framework.response import Response
@@ -66,8 +67,7 @@ class CustomPagination(pagination.PageNumberPagination):
         queryset = self.filtered_queryset
 
         unique_keyword_object = queryset.extra(select={'name': 'tech_keywords'}).values('name').annotate(
-            value=Count('tech_keywords'))
-
+            value=Count('tech_keywords')).exclude(tech_keywords__contains=",")
         unique_count_dic = json.dumps(list(unique_keyword_object), cls=DjangoJSONEncoder)
         unique_count_data = json.loads(unique_count_dic)
         keywords = sorted(unique_count_data, key=lambda x: x["value"], reverse=True)

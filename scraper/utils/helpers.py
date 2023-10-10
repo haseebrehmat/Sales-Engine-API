@@ -1,10 +1,14 @@
 import datetime
-
 import re
-from scraper.models import GroupScraper, GroupScraperQuery
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from scraper.constants.const import JOB_TYPE
+
+from scraper.models import GroupScraper, GroupScraperQuery
+
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -79,6 +83,11 @@ class ScraperNaming(enum.Enum):
     THE_MUSE = 'themuse'
     CLEARANCE = 'clearance'
     SMARTRECRUITER = 'smartrecruiter'
+    GETWORK = 'getwork'
+    RUBY_ON_REMOTE = 'ruby_on_remote'
+    HUBSTAFF_TALENT = 'hubstaff_talent'
+    JUST_REMOTE = 'just_remote'
+    REMOTE_CO = 'remote_co'
 
     def __str__(self):
         return self.value
@@ -90,11 +99,31 @@ def generate_scraper_filename(job_source):
 
 
 
-def configure_webdriver(open_browser=False):
+def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
     options = webdriver.ChromeOptions()
 
     if not open_browser:
         options.add_argument("--headless")
+
+    prefs = {'profile.default_content_setting_values': {'cookies': 2, 'images': 2, 'javascript': 2,
+                                                        'plugins': 2, 'popups': 2, 'geolocation': 2,
+                                                        'notifications': 2, 'auto_select_certificate': 2,
+                                                        'fullscreen': 2,
+                                                        'mouselock': 2, 'mixed_script': 2, 'media_stream': 2,
+                                                        'media_stream_mic': 2, 'media_stream_camera': 2,
+                                                        'protocol_handlers': 2,
+                                                        'ppapi_broker': 2, 'automatic_downloads': 2, 'midi_sysex': 2,
+                                                        'push_messaging': 2, 'ssl_cert_decisions': 2,
+                                                        'metro_switch_to_desktop': 2,
+                                                        'protected_media_identifier': 2, 'app_banner': 2,
+                                                        'site_engagement': 2,
+                                                        'durable_storage': 2}}
+
+    if stop_loading_images_and_css:
+        options.add_argument('--disable-features=EnableNetworkService')
+        options.add_argument('--blink-settings=imagesEnabled=false')
+        options.add_experimental_option('prefs', prefs)
+
 
     options.add_argument("window-size=1200,1100")
     options.add_argument('--no-sandbox')
@@ -105,6 +134,14 @@ def configure_webdriver(open_browser=False):
 
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
+    if stop_loading_images_and_css:
+        # Enable Chrome DevTools Protocol
+        driver.execute_cdp_cmd("Page.enable", {})
+        driver.execute_cdp_cmd("Network.enable", {})
+
+        # Set blocked URL patterns to disable images and stylesheets
+        blocked_patterns = ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.css", "*.js"]
+        driver.execute_cdp_cmd("Network.setBlockedURLs", {"urls": blocked_patterns})
     return driver
 
 
@@ -115,3 +152,13 @@ def remove_emojis(text):
 
 def k_conversion(text):
     return text.replace("k", ",000").replace( "K", ",000")
+
+def set_job_type(job_type):
+    if 'full time' in job_type.lower():
+        return JOB_TYPE[0] if 'remote' in job_type.lower() else JOB_TYPE[1] if 'site' in job_type.lower() else JOB_TYPE[2] if 'hybrid' in job_type.lower() else JOB_TYPE[1]
+    elif 'hybrid' in job_type.lower():
+        return JOB_TYPE[2] if 'full time' in job_type.lower() else JOB_TYPE[3] if 'contract' in job_type.lower() else JOB_TYPE[2]
+    elif 'contract' in job_type.lower():
+        return JOB_TYPE[4] if 'onsite' in job_type.lower() else JOB_TYPE[4] if 'site' in job_type.lower() else JOB_TYPE[5] if 'remote' in job_type.lower() else JOB_TYPE[4]
+    else:
+      return job_type.capitalize()
