@@ -18,7 +18,7 @@ class JobsFilters(APIView):
     expression = Func(F('tech_stacks'), function='unnest')
     job_sources = set(JobDetail.objects.values_list('job_source', flat=True))
     keywords = set(JobDetail.objects.only('tech_stacks').annotate(keywords=expression).values_list('keywords', flat=True))
-    queryset = JobDetail.objects.only('job_source', 'job_posted_date').filter(appliedjobstatus__applied_by=None)
+    queryset = JobDetail.objects.only('job_source', 'job_posted_date', 'job_title')
     job_types = set(JobDetail.objects.values_list('job_type', flat=True))
     recruiter_jobs_count = 0
     filtered_jobs_count = 0
@@ -27,8 +27,6 @@ class JobsFilters(APIView):
     def get(self, request):
         self.queryset = self.filter_query(self.queryset)
         self.filtered_queryset = self.filter_query(self.queryset)
-        self.filtered_jobs_count = self.queryset.count()
-        self.recruiter_jobs_count = self.get_recruiter_jobs_count()
         data = {
             'total_jobs': self.total_job_count(),
             'from_date': self.from_date(),
@@ -36,10 +34,10 @@ class JobsFilters(APIView):
             'today_uploaded_jobs': self.get_today_uploaded_jobs_count(),
             'tech_keywords_count_list': self.keyword_count(),
             'job_source_count_list': self.get_job_source_count(),
-            'recruiter_jobs': self.recruiter_jobs_count,
+            'recruiter_jobs': self.get_recruiter_jobs_count(),
             'non_recruiter_jobs': self.get_non_recruiter_jobs_count(),
             'total_job_type': self.get_job_type(),
-            'filtered_jobs': self.filtered_jobs_count,
+            'filtered_jobs': self.queryset.count(),
         }
 
         return Response(data)
