@@ -36,7 +36,7 @@ class GenerateAnalytics(APIView):
     ]
 
     def get(self, request):
-        self.percentage = request.GET.get('percentage')
+        self.percentage = request.GET.get('percent')
         if self.percentage:
             self.percentage = (100 + float(self.percentage)) / 100
         else:
@@ -53,8 +53,8 @@ class GenerateAnalytics(APIView):
         limit = int(request.GET.get("limit", 10))
         tech_stack_data, trending = self.get_tech_count_stats(start_date, end_date, limit)
         data = {
-            # "tech_stack_data": tech_stack_data,
-            # "trending": trending,
+            "tech_stack_data": tech_stack_data,
+            "trending": trending,
             "job_type_data": self.get_job_type_stats(),
             "filters": filters,
             "start_date": str(start_date.date()) if start_date else '',
