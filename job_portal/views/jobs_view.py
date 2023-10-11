@@ -22,13 +22,16 @@ class JobsView(ListAPIView):
     pagination_class = CustomCursorPagination
     filterset_class = CustomJobFilter
     ordering = ('-job_posted_date',)
-    search_fields = ['job_title']
+    # search_fields = ['job_title']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
     # permission_classes = (JobDetailPermission, )
     permission_classes = (AllowAny, )
 
     def get_queryset(self):
+        job_title = self.request.GET.get('search')
+        if job_title:
+            self.queryset = self.queryset.filter(job_title__icontains=job_title)
         blocked = self.request.GET.get('blocked')
         blocked_job_companies = list(
             BlockJobCompany.objects.filter(company=self.request.user.profile.company).values_list('company_name',
