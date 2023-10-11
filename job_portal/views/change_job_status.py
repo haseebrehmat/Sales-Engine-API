@@ -107,12 +107,11 @@ class ChangeJobStatusView(CreateAPIView, UpdateAPIView):
                 data = {"company_name": job_company, "vertical": vertical_id}
                 serializer = RestrictVerticalSerializer(data=data, many=False)
                 if serializer.is_valid():
-                    data = serializer.validated_data
-                    serializer.create(data)
+                    print("")
                 else:
                     data = serializer_errors(serializer)
                     if 'unique set' in data:
-                        data = 'Job already applied with this vertical in this company'
+                        data = 'This vertical is already hired in this company'
                         raise InvalidUserException(data)
                     else:
                         raise InvalidUserException(data)
