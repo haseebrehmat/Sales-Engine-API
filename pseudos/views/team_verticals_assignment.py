@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from authentication.models import Profile, UserRegions, Role, MultipleRoles
 from authentication.serializers.team_management import TeamManagementSerializer
-from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs
+from job_portal.models import JobDetail, AppliedJobStatus, BlacklistJobs, RestrictVertical
 from job_portal.serializers.job_detail import JobDetailSerializer
 from pseudos.models.verticals import Verticals
 from authentication.models.team_management import Team, TeamRoleVerticalAssignment
@@ -171,7 +171,8 @@ class UserVerticals(APIView):
                                 {
                                     "id": vertical.id,
                                     "name": vertical.name,
-                                    "identity": vertical.identity
+                                    "identity": vertical.identity,
+                                    "applied_status": True if RestrictVertical.objects.filter(vertical=vertical.id, company_name=job.company_name).exists() else False,
                                 } for vertical in self.get_verticals(team.id, request)
                             ]
                         } for team in teams

@@ -4,13 +4,14 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from job_portal.models import RestrictVertical
 from job_portal.utils.detect_changes import detect_model_changes
 from lead_management.models import Lead, LeadActivity, LeadActivityNotes
 from lead_management.serializers import LeadSerializer
 from lead_management.serializers.lead_serializer import LeadDetailSerializer
+from job_portal.serializers.restrict_verticals import RestrictVerticalSerializer
 from settings.utils.custom_pagination import CustomPagination
-
+from lead_management.models.company_status import CompanyStatus
 
 class LeadList(ListAPIView):
     pagination_class = CustomPagination
@@ -69,6 +70,17 @@ class LeadDetail(APIView):
                 old_data['company_status_id'] = lead.first().company_status_id
                 old_data['phase_id'] = lead.first().phase_id
                 lead.update(company_status_id=company_status, phase_id=phase)
+                # here is a logic of create object in restrict_vertical
+                if CompanyStatus.objects.filter(pk=company_status).first().status.name == 'hired':
+                    job_company, vertical_id = self.get_company_vertical(lead.first().id)
+                    data = {"company_name": job_company, "vertical": vertical_id}
+                    serializer = RestrictVerticalSerializer(data=data, many=False)
+                    if serializer.is_valid():
+                        data = serializer.validated_data
+                        serializer.create(data)
+                    else:
+                        print("Error")
+
                 lead.update(edited=True)
                 new_data['company_status_id'] = company_status
                 new_data['phase_id'] = phase
@@ -104,10 +116,19 @@ class LeadDetail(APIView):
 
     def delete(self, request, pk):
         try:
-            Lead.objects.get(pk=pk).delete()
+            lead = Lead.objects.get(pk=pk)
+            job_company, vertical_id = self.get_company_vertical(lead.id)
+            RestrictVertical.objects.filter(company_name=job_company, vertical=vertical_id).first().delete()
+            lead.delete()
             msg = 'Lead removed successfully!'
             status_code = status.HTTP_200_OK
         except Exception as e:
             msg = 'Lead doest not exist!'
             status_code = status.HTTP_406_NOT_ACCEPTABLE
         return Response({'detail': msg}, status=status_code)
+
+    def get_company_vertical(self, lead_id):
+        lead = Lead.objects.filter(pk=lead_id).first()
+        company_name = lead.applied_job_status.job.company_name
+        vertical = lead.applied_job_status.vertical_id
+        return company_name, vertical
