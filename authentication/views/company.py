@@ -41,7 +41,6 @@ class CompanyDetailView(APIView):
         company = Company.objects.filter(pk=pk).first()
         serializer = CompanySerializer(company, many=False)
         data = serializer.data
-
         return Response(data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):

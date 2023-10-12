@@ -800,6 +800,10 @@ def group_scraper_job(group_id):
 
     try:
         queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
+        change_status = GroupScraperQuery.objects.filter(status='running')
+        for query in change_status:
+            query.status = "remaining"
+            query.save()
         if group_scraper.running_link is None:
             for query in queries:
                 query.status = "remaining"
@@ -848,3 +852,5 @@ def group_scraper_job(group_id):
         group_scraper.running_link = None
         group_scraper.save()
     print("Group Scraper is finished")
+
+
