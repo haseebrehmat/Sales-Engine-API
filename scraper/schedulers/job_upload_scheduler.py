@@ -790,6 +790,7 @@ def group_scraper_job(group_id):
         pk=current_group_scraper_id).first()
 
     current_scraper = group_scraper.name
+    print(f"This is the time of group : {current_scraper}")
     current_scraper = current_scraper.lower()
 
     SchedulerSync.objects.filter(
@@ -800,10 +801,15 @@ def group_scraper_job(group_id):
 
     try:
         queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
-        change_status = GroupScraperQuery.objects.filter(status='running')
+        change_status = GroupScraperQuery.objects.filter(status='running').exclude(group_scraper_id=group_id)
         for query in change_status:
             query.status = "remaining"
             query.save()
+        change_status = GroupScraperQuery.objects.filter(status='running', group_scraper_id=group_id)
+        for query in change_status:
+            query.status = "failed"
+            query.save()
+
         if group_scraper.running_link is None:
             for query in queries:
                 query.status = "remaining"
@@ -837,6 +843,13 @@ def group_scraper_job(group_id):
                     print(e)
                     saveLogs(e)
             else:
+                group_scraper.running_link = query
+                group_scraper.save()
+                if job_source not in list(single_scrapers_functions.keys()):
+                    query.status = "failed"
+                    query.start_time = str(datetime.now(pakistan_timezone))
+                    query.end_time = str(datetime.now(pakistan_timezone))
+                    query.save()
                 print("")
         upload_jobs('group scraper', 'all')
         remove_files('group scraper', 'all')
