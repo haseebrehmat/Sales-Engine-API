@@ -9,6 +9,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 # from django.contrib.postgres.fields.jsonb import JSONField
 from django.utils import timezone
+
 from authentication.models import User, Team
 from authentication.models.company import Company
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
@@ -207,12 +208,38 @@ class EditHistory(TimeStamped):
         return f"{self.user.email} - {self.model}"
 
 
-# qs = JobDetail.objects.only('tech_keywords', 'tech_stacks')
-# for x in qs:
-#     x.tech_stacks = x.tech_keywords.split(",")
-#
-# print(JobDetail.objects.bulk_update(qs, batch_size=500, fields=['tech_stacks']))
+def migrate_data():
+    from tqdm import tqdm
+    batch_size = 500
+    qs = JobDetail.objects.only('tech_keywords', 'tech_stacks').filter(tech_stacks=None)
+    print(qs.count())
+    # for idx, x in enumerate(tqdm(qs)):
+    #     print(idx)
+    #     # Your processing logic here
+    #     x.tech_stacks = x.tech_keywords.split(",")
+    #     print(x.tech_keywords)
+    # try:
+    #     print('updating started')
+    #     JobDetail.objects.bulk_update(qs, batch_size=batch_size, fields=['tech_stacks'])
+    #     print('Terminated')
+    # except Exception as e:
+    #     print("exception => ", e)
+
+
 class DownloadLogs(TimeStamped):
     url = models.CharField(max_length=250, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     query = models.JSONField(blank=True, null=True)
+
+
+class RestrictVertical(TimeStamped):
+    vertical = models.ForeignKey(Verticals, on_delete=models.CASCADE, blank=True, null=True)
+    company_name = models.CharField(max_length=200, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.vertical.name} - {self.comapny_name}"
+
+    class Meta:
+        default_permissions = ()
+        db_table = "Restrict_Verticals"
+        unique_together = (('company_name', 'vertical'),)

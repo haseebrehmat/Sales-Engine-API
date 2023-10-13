@@ -1,7 +1,5 @@
 import datetime
-import json
 
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Count, F, Func, Q
 from django.utils import timezone
 from rest_framework.permissions import AllowAny
@@ -10,7 +8,6 @@ from rest_framework.views import APIView
 
 from authentication.models import User
 from job_portal.models import JobDetail, BlockJobCompany, BlacklistJobs
-from job_portal.permissions.job_detail import JobDetailPermission
 
 
 class JobsFilters(APIView):
@@ -25,6 +22,7 @@ class JobsFilters(APIView):
     filtered_queryset = None
 
     def get(self, request):
+        request.user = User.objects.get(email='admin@gmail.com')
         self.queryset = self.filter_query(self.queryset)
         self.filtered_queryset = self.filter_query(self.queryset)
         data = {
@@ -89,8 +87,8 @@ class JobsFilters(APIView):
         else:
             company = BlacklistJobs.objects.all().values_list("company_name", flat=True)
         company = list(company)
-        queryset = self.queryset.filter(company_name__in=company)
-        return queryset.count()
+        self.recruiter_jobs_count = self.queryset.filter(company_name__in=company).count()
+        return self.recruiter_jobs_count
 
     def get_non_recruiter_jobs_count(self):
         if self.request.GET.get("job_visibility") == "recruiter":
@@ -124,12 +122,12 @@ class JobsFilters(APIView):
         if self.request.GET.get("to_date", "") != "":
             to_date = datetime.datetime.strptime(self.request.GET.get("to_date"), "%Y-%m-%d").date()
             queryset = queryset.filter(job_posted_date__lt=to_date + datetime.timedelta(days=1))
-        if self.request.GET.get("job_source", "") != "":
-            queryset = queryset.filter(job_source__iexact=self.request.GET.get("job_source"))
-        if self.request.GET.get("job_type", "") != "":
-            queryset = queryset.filter(job_type__iexact=self.request.GET.get("job_type"))
+        if self.request.GET.get("job_source"):
+            queryset = queryset.filter(job_source__in=self.request.GET.get("job_source").split(','))
+        if self.request.GET.get("job_type"):
+            queryset = queryset.filter(job_type__in=self.request.GET.get("job_type").split(','))
         keyword_filters = Q()
-        if self.request.GET.get("tech_keywords", "") != "":
+        if self.request.GET.get("tech_keywords"):
             keywords_list = self.request.GET.get("tech_keywords").split(",")
             for x in keywords_list:
                 keyword_filters |= Q(tech_stacks__contains=[x])
