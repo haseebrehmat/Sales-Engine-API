@@ -16,7 +16,11 @@ class CandidateTeamsListView(APIView):
     pagination_class = CustomPagination
 
     def get(self, request):
+        # Teams belongs to users Company
         queryset = CandidateTeam.objects.filter(company=self.request.user.profile.company_id)
+        search = self.request.GET.get("search", "")
+        if search != "":
+            queryset = queryset.filter(name__icontains=search)
         data = {}
         serializer = CandidateTeamsSerializer(queryset, many=True)
         data["teams"] = serializer.data

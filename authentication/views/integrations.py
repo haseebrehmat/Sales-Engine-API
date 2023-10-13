@@ -9,6 +9,7 @@ from authentication.permissions import IntegrationPermissions
 from authentication.serializers.company import CompanyAPIIntegrationSerializer
 from settings.utils.custom_pagination import CustomPagination
 from settings.utils.helpers import serializer_errors
+from django.db.models import Q
 
 
 class IntegrationView(ListAPIView):
@@ -17,16 +18,17 @@ class IntegrationView(ListAPIView):
     serializer_class = CompanyAPIIntegrationSerializer
 
     def get_queryset(self):
-        names = self.request.GET.get("integrations", "")
-        companies = self.request.GET.get("companies", "")
+        search = self.request.GET.get("search", "")
         if self.request.user.is_superuser:
             queryset = CompanyAPIIntegration.objects.all()
+            if search != "":
+                name_query = Q(name__icontains=search)
+                company_query = Q(company__name__icontains=search)
+                queryset = queryset.filter(name_query | company_query)
         else:
             queryset = CompanyAPIIntegration.objects.filter(company__profile__user=self.request.user)
-        if companies != "":
-            queryset = queryset.filter(company__id__in=companies.split(","))
-        if names != "":
-            queryset = queryset.filter(name__in=names.split(","))
+            if search != "":
+                queryset = queryset.filter(name__icontains=search)
         return queryset
 
     def post(self, request):

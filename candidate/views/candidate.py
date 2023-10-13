@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.db.models import Q
 from authentication.exceptions import InvalidUserException
 from authentication.models import User, Profile
 from candidate.models import Candidate, Skills, ExposedCandidate, SelectedCandidate, Regions
@@ -17,12 +17,22 @@ class CandidateListView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
+        name_query = Q()
+        phone_query = Q()
+        email_query = Q()
         data = dict()
         company = self.request.user.profile.company
         queryset = Candidate.objects.filter(
             company=company)
-        candidates = ExposedCandidate.objects.filter(company=company).values_list("candidate_id", flat=True)
-        queryset |= Candidate.objects.filter(id__in=candidates)
+        search = self.request.GET.get("search", "")
+        if search != "":
+            name_query = Q(name__icontains=search)
+            phone_query = Q(phone__icontains=search)
+            email_query = Q(email__icontains=search)
+            queryset = queryset.filter(name_query | phone_query | email_query)
+        else:
+            candidates = ExposedCandidate.objects.filter(company=company).values_list("candidate_id", flat=True)
+            queryset |= Candidate.objects.filter(id__in=candidates)
         return queryset
 
     def post(self, request):

@@ -24,7 +24,12 @@ class ExposedCandidateListAPIView(APIView):
         data = []
 
         if len(queryset) > 0:
-            serializer = ExposedCandidateSerializer(queryset, many=True)
+            search = self.request.GET.get("search", "")
+            if search != "":
+                queryset = queryset.filter(candidate__name__icontains=search)
+                serializer = ExposedCandidateSerializer(queryset, many=True)
+            else:
+                serializer = ExposedCandidateSerializer(queryset, many=True)
             data = {"candidates": serializer.data}
             queryset = Company.objects.filter(status=True).exclude(id=request.user.profile.company.id)
             companies = [{"id": x.id, "name": x.name} for x in queryset]
