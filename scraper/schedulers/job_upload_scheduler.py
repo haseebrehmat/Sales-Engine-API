@@ -861,9 +861,7 @@ def group_scraper_job(group_id):
         saveLogs(e)
     SchedulerSync.objects.filter(
         job_source=current_scraper).update(running=False, end_time=datetime.now(pakistan_timezone))
-    if group_scraper.running_link == GroupScraperQuery.objects.filter(group_scraper_id=group_id).first():
+    if len(GroupScraperQuery.objects.filter(group_scraper_id=group_id, status='remaining')) == 0:
         group_scraper.running_link = None
         group_scraper.save()
     print("Group Scraper is finished")
-
-
