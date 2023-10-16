@@ -85,7 +85,11 @@ class GenericSkillView(ListAPIView):
         }
 
     def get_queryset(self):
-        return GenericSkills.objects.filter(company_id=self.request.user.profile.company_id).exclude(company_id=None)
+        queryset = GenericSkills.objects.filter(company_id=self.request.user.profile.company_id).exclude(company_id=None)
+        search = self.request.GET.get("search", "")
+        if search != "":
+            queryset = queryset.filter(name__icontains=search)
+        return queryset
 
     def post(self, request):
         conditions = [
