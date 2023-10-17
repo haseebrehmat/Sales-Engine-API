@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from authentication.models import Team
 from candidate.utils.custom_pagination import LeadManagementPagination, LeadManagementDataPagination
 from job_portal.models import AppliedJobStatus
+from job_portal.serializers.restrict_verticals import RestrictVerticalSerializer
 from lead_management.models import Lead, CompanyStatus, LeadActivity, LeadActivityNotes
 from lead_management.serializers import LeadSerializer
 from lead_management.serializers.lead_management_serializer import LeadManagementSerializer, CustomLeadSerializer
@@ -45,6 +46,20 @@ class StatusLeadManagement(ListAPIView):
 
 
     def post(self, request):
+        if CompanyStatus.objects.filter(pk=request.data.get('status', '')).first().status.name == 'hired':
+            applied_job_status = AppliedJobStatus.objects.filter(pk=request.data.get('job', '')).first()
+            vertical_id = applied_job_status.vertical_id
+            company = applied_job_status.job.company_name
+            data = {"company_name": company, "vertical": vertical_id}
+            serializer = RestrictVerticalSerializer(data=data, many=False)
+            if serializer.is_valid():
+                data = serializer.validated_data
+                serializer.create(data)
+            else:
+                msg = {'detail': 'Already hired with this vertical in this company'}
+                status_code = status.HTTP_406_NOT_ACCEPTABLE
+                return Response(msg, status=status_code)
+
         data, status_code = self.convert_to_lead(request)
         return Response(data, status=status_code)
 
