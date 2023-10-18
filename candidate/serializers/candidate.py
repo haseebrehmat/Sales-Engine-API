@@ -116,7 +116,8 @@ class CandidateSerializer(serializers.ModelSerializer):
             user.save()
         else:
             print("User Already Exit")
-
+            
+    @transaction.atomic
     def update(self, instance, validated_data):
         skills = validated_data.pop("skills")
         tools = validated_data.pop("tools")
@@ -167,7 +168,17 @@ class CandidateSerializer(serializers.ModelSerializer):
         designation = validated_data.get(
             "designation_id", instance.designation)
         instance.designation = Designation.objects.filter(id=designation).first()
+        
+        if Candidate.objects.exclude(pk=instance.pk).filter(email=validated_data["email"], company_id=validated_data["company_id"]).exists():
+            raise ValidationError({"detail": "Candidate email is already existed"}, code=406)
+        
+        new_email = validated_data.get("email", instance.email)
+        old_email = instance.email 
+        instance.email = new_email
         instance.save()
+        
+        self.verify_or_edit_user(new_email, old_email, validated_data["company_id"])
+          
         CandidateSkills.objects.filter(candidate_id=instance.id).delete()
         CandidateTools.objects.filter(candidate_id=instance.id).delete()
         CandidateRegions.objects.filter(candidate_id=instance.id).delete()
@@ -182,3 +193,30 @@ class CandidateSerializer(serializers.ModelSerializer):
         data = [CandidateRegions(candidate_id=instance.id, region_id=re) for re in regions]
         CandidateRegions.objects.bulk_create(data, ignore_conflicts=True)
         return instance
+    
+    def verify_or_edit_user(self, new_email, old_email, company_id):
+        old_user = User.objects.filter(email=old_email).first()
+        
+        if old_user.profile and str(old_user.profile.company_id) != str(company_id):
+            raise ValidationError({'detail': 'You are not allowed to edit this candidate.'}, code=406)
+        
+        if old_user:
+            new_user = User.objects.exclude(pk=old_user.id).filter(email=new_email)
+            if new_user:
+                raise ValidationError({'detail': 'This email is already taken by another user.'}, code=406)
+            else:
+                old_user.email = new_email
+                old_user.save()
+       
+    def create_candidate_role(self):
+        role = None
+        try:
+            role = Role.objects.get(name="candidate")
+        except Role.DoesNotExist:
+            role = Role.objects.create(name="candidate")
+        except Role.MultipleObjectsReturned:
+            role = Role.objects.filter(name="candidate").first()
+        
+        return role
+            
+         
