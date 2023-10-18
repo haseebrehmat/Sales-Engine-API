@@ -111,7 +111,7 @@ keyword = {
         "ROR Solutions Developer",
         "Ruby on Rails Technical Lead"
     ],
-    "Ml Engineer": [
+    "ai/ml engineer": [
         "Machine Learning Engineer",
         "Machine Learning Developer",
         "Artificial Intelligence Engineer",
@@ -622,7 +622,7 @@ languages = {
         "automated test",
         "UI & UX testing",
     ],
-    "Ml Engineer": [
+    "ai/ml engineer": [
         "ai ml",
         "Ml Engineer",
         "ml data engineer",
@@ -1431,7 +1431,7 @@ regular_expressions = [
         'exp': '(?i)(^|\W)(android|kotlin|mobile[-\s]?app|mobile[-\s]?developers?)(\W|$)'
     },
     {
-        'tech_stack': 'Ml Engineer',
+        'tech_stack': 'ai/ml engineer',
         'exp': '(?i)(^|\W)(ai|ml|(machine|deep|Scikit)[-\s](learning|learn)|nlp|Keras|PyTorch|image[-\s]processing|Natural Language Processing|Predictive[-\s]Modeler|Computer[-\s]Vision|Open[-\s]?CV|ml[-]?pack|Text[-\s](Mining|Classification)|Artificial[-\s]Intelligence|Voice[-\s]Classification|Re[-\s]?inforcement[-\s]Learning|Artificial|Neural[-\s](Network|Networks))(\W|$)'
     },
     {
