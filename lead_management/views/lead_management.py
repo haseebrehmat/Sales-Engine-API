@@ -8,6 +8,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from authentication.models import Team
 from candidate.utils.custom_pagination import LeadManagementPagination, LeadManagementDataPagination
@@ -46,19 +47,19 @@ class StatusLeadManagement(ListAPIView):
 
 
     def post(self, request):
-        if CompanyStatus.objects.filter(pk=request.data.get('status', '')).first().status.name == 'hired':
-            applied_job_status = AppliedJobStatus.objects.filter(pk=request.data.get('job', '')).first()
-            vertical_id = applied_job_status.vertical_id
-            company = applied_job_status.job.company_name
-            data = {"company_name": company, "vertical": vertical_id}
-            serializer = RestrictVerticalSerializer(data=data, many=False)
-            if serializer.is_valid():
-                data = serializer.validated_data
-                serializer.create(data)
-            else:
-                msg = {'detail': 'Already hired with this vertical in this company'}
-                status_code = status.HTTP_406_NOT_ACCEPTABLE
-                return Response(msg, status=status_code)
+        # if CompanyStatus.objects.filter(pk=request.data.get('status', '')).first().status.name == 'hired':
+        #     applied_job_status = AppliedJobStatus.objects.filter(pk=request.data.get('job', '')).first()
+        #     vertical_id = applied_job_status.vertical_id
+        #     company = applied_job_status.job.company_name
+        #     data = {"company_name": company, "vertical": vertical_id}
+        #     serializer = RestrictVerticalSerializer(data=data, many=False)
+        #     if serializer.is_valid():
+        #         data = serializer.validated_data
+        #         serializer.create(data)
+        #     else:
+        #         msg = {'detail': 'Already hired with this vertical in this company'}
+        #         status_code = status.HTTP_406_NOT_ACCEPTABLE
+        #         return Response(msg, status=status_code)
 
         data, status_code = self.convert_to_lead(request)
         return Response(data, status=status_code)
@@ -79,6 +80,19 @@ class StatusLeadManagement(ListAPIView):
                 # convert to lead
                 lead = Lead.objects.create(applied_job_status_id=applied_job_status, company_status_id=company_status,
                                            phase_id=phase, candidate_id=candidate, converter=request.user)
+                
+                # here is a logic of create object in restrict_vertical
+                if CompanyStatus.objects.filter(pk=company_status).first().status.name == 'hired':
+                    company_name = lead.applied_job_status.job.company_name
+                    vertical = lead.applied_job_status.vertical_id
+                    data = {"company_name": company_name, "vertical": vertical}
+                    serializer = RestrictVerticalSerializer(data=data, many=False)
+                    if serializer.is_valid():
+                        data = serializer.validated_data
+                        serializer.create(data)
+                    else:
+                        raise ValidationError({"detail": "You have already hired in this company"}, code=406)
+                        
                 # change applied job for applied job
                 AppliedJobStatus.objects.filter(id=applied_job_status)\
                     .update(is_converted=True, converted_at=datetime.datetime.now())
