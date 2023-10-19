@@ -177,7 +177,7 @@ scraper_functions = {
     "getwork": [
         getwork,
     ],
-    "ruby_on_remote": [
+    "rubyonremote": [
         ruby_on_remote
     ],
     "hubstafftalent": [
