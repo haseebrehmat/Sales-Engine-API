@@ -66,7 +66,9 @@ class GenerateAnalytics(APIView):
             "quarterly_trends": self.get_quarterly_trends(start_date),
             "monthly_trends": self.get_monthly_trends(start_date),
             "monthly_tech_data": self.get_monthly_tech_data(start_date),
-            "quarterly_tech_data": self.get_quarterly_tech_data(start_date)
+            "quarterly_tech_data": self.get_quarterly_tech_data(start_date),
+            "quarterly_job_types": self.get_quarterly_job_types(start_date),
+            "montly_job_types": self.get_monthly_job_types(start_date),
         }
 
         return Response(data)
@@ -363,10 +365,7 @@ class GenerateAnalytics(APIView):
             data["category"] = category
             result_list.append(data)
 
-
         data = {'data': result_list, 'min_value': min(values_list), 'max_value': max(values_list)}
-
-
 
         return data
 
@@ -497,6 +496,92 @@ class GenerateAnalytics(APIView):
         data = {'data': result_list, 'min_value': min_value, 'max_value': max(values_list)}
         return data
 
+    def get_quarterly_job_types(self, date):
+        data_obj = []
+        year = date.year
+        values_list = []
+        for quarter in range(1, 5):
+            excluded_count = 0
+            if self.excluded_techs:
+                qs = TechStats.objects.annotate(quarter=ExtractQuarter('job_posted_date')).filter(
+                    name__in=self.excluded_techs,
+                    quarter=quarter).aggregate(total=Sum('total'))
+                excluded_count = qs['total']
+            caculated_value = lambda x: math.ceil(self.percentage * (abs(x - excluded_count)))
+            data = [
+                {
+                    "name": x,
+                    "value": caculated_value(
+                        self.queryset.annotate(
+                            quarter=ExtractQuarter('job_posted_date'),
+                            year=ExtractYear('job_posted_date')
+                        ).filter(
+                            job_type__iexact=x,
+                            quarter=quarter,
+                            year=year
+                        ).aggregate(count=Sum('jobs'))['count']
+                        if self.queryset.annotate(
+                            quarter=ExtractQuarter('job_posted_date'),
+                            year=ExtractYear('job_posted_date')
+                        ).filter(
+                            job_type__iexact=x,
+                            quarter=quarter,
+                            year=year
+                        ).exists() else 0
+                    ),
+                    "key": x.lower().replace(" ", "_")
+                }
+                for x in self.job_types
+            ]
+            data_obj.append(data)
+
+        return data_obj
+
+    def get_monthly_job_types(self, date):
+        data_obj = []
+        year = date.year
+        values_list = []
+        for idx, month in enumerate(self.months):
+            excluded_count = 0
+            month_number = idx + 1
+
+            if self.excluded_techs:
+                qs = TechStats.objects.annotate(month=ExtractMonth('job_posted_date')).filter(
+                    name__in=self.excluded_techs,
+                    month=month_number).aggregate(total=Sum('total'))
+                excluded_count = qs['total']
+            caculated_value = lambda x: math.ceil(self.percentage * (abs(x - excluded_count)))
+            data = [
+                {
+                    "name": x,
+                    "value": caculated_value(
+                        self.queryset.annotate(
+                            month=ExtractMonth('job_posted_date'),
+                            year=ExtractYear('job_posted_date')
+                        ).filter(
+                            job_type__iexact=x,
+                            month=month_number,
+                            year=year
+                        ).aggregate(count=Sum('jobs'))['count']
+                        if self.queryset.annotate(
+                            month=ExtractMonth('job_posted_date'),
+                            year=ExtractYear('job_posted_date')
+                        ).filter(
+                            job_type__iexact=x,
+                            month=month_number,
+                            year=year
+                        ).exists() else 0
+                    ),
+                    "key": x.lower().replace(" ", "_")
+                }
+                for x in self.job_types
+            ]
+            data_obj.append({
+                'month': month,
+                'data': data
+            })
+
+        return data_obj
 
 
 
