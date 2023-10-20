@@ -24,29 +24,32 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
         excluded_jobs = ['others', 'others dev', 'other']
 
         url = SALES_ENGINE_UPLOAD_JOBS_URL
-        payload = json.dumps({
-            "jobs": [
-                {
-                    'salary_min': job.salary_min,
-                    'salary_max': job.salary_max,
-                    'tech_stacks': job.tech_keywords,
-                    'job_role': check_job_role(job.tech_keywords, job_roles) if job_roles else "N/A",
-                    'salary_format': '',
-                    "job_title": job.job_title,
-                    "job_source_url": job.job_source_url,
-                    "job_type": job.job_type,
-                    "job_posted_date": job.job_posted_date.strftime('%Y-%m-%d'),
-                    "job_source": job.job_source,
-                    "job_description": job.job_description,
-                    "company_name": job.company_name,
-                    "address": job.address
-                } for job in jobs_data if job.tech_keywords not in excluded_jobs]
-        }
+        jobs = [
+            {
+                'salary_min': job.salary_min,
+                'salary_max': job.salary_max,
+                'tech_stacks': job.tech_keywords,
+                'job_role': check_job_role(job.tech_keywords, job_roles) if job_roles else "N/A",
+                'salary_format': '',
+                "job_title": job.job_title,
+                "job_source_url": job.job_source_url,
+                "job_type": job.job_type,
+                "job_posted_date": job.job_posted_date.strftime('%Y-%m-%d'),
+                "job_source": job.job_source,
+                "job_description": job.job_description,
+                "company_name": job.company_name,
+                "address": job.address
+            } for job in jobs_data if job.tech_keywords not in excluded_jobs]
+
+        payload = json.dumps(
+            {
+                "jobs": jobs
+            }
         )
 
-        # if env("ENVIRONMENT") == 'local':
-        #     for x in json.loads(payload)['jobs']:
-        #         print('Title => ', x['job_title'], 'Job Role => ', x['job_role'])
+        if env("ENVIRONMENT") == 'local':
+            for x in json.loads(payload)['jobs']:
+                print('Title => ', x['job_title'], 'Job Role => ', x['job_role'])
 
         if env("ENVIRONMENT") == "production":
             response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
@@ -58,7 +61,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 else:
                     if jobs_data:
                         job_source = jobs_data[0].job_source
-                obj = SalesEngineJobsStats.objects.create(job_source=job_source, jobs_count=len(jobs_data))
+                obj = SalesEngineJobsStats.objects.create(job_source=job_source, jobs_count=len(jobs))
 
     except Exception as e:
         saveLogs(e)
