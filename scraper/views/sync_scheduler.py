@@ -47,7 +47,7 @@ def run_scrapers_manually(job_source='all'):
             "clearance",
             "smartrecruiter",
             "getwork",
-            "ruby_on_remote",
+            "rubyonremote",
             "hubstafftalent",
             "justremote",
             "remoteco"
