@@ -1,12 +1,12 @@
 from rest_framework import status
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.exceptions import InvalidUserException
 from scraper.models import GroupScraper, GroupScraperQuery
-#from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
+# from scraper.schedulers.job_upload_scheduler import start_group_scraper_scheduler
 from scraper.serializers.group_scraper_scheduler import GroupScraperSerializer
 from scraper.serializers.scheduler_settings import SchedulerSerializer
 # from settings.celery import restart_server
@@ -15,6 +15,7 @@ from settings.utils.helpers import serializer_errors
 
 class GroupScraperView(ListAPIView):
     serializer_class = GroupScraperSerializer
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         return GroupScraper.objects.all()
@@ -31,7 +32,8 @@ class GroupScraperView(ListAPIView):
             "interval_type": request.data.get("interval_type", ""),
             "time": None if request.data.get("time", "") == "" else request.data.get("time"),
             "is_group": True,
-            "week_days": request.data.get('week_days', "")
+            "week_days": request.data.get('week_days', ""),
+            "disabled": request.data.get('disabled', False)
         }
 
         name = request.data.get("name", "").lower()
@@ -73,6 +75,8 @@ class GroupScraperView(ListAPIView):
 
 
 class GroupScraperDetailView(APIView):
+    permission_classes = (AllowAny,)
+
     def get(self, request, pk):
         obj = GroupScraper.objects.filter(pk=pk).first()
         if obj:
@@ -107,6 +111,7 @@ class GroupScraperDetailView(APIView):
                 serializer.save()
                 if obj.name != name.lower():
                     obj.name = name
+                    obj.disabled = query_dict.get("disabled", False)
                     obj.save()
                 status_code = status.HTTP_200_OK
                 message = {
