@@ -30,33 +30,41 @@ def append_data(data, field):
 # find's job name
 def find_jobs(driver, job_type, total_job):
     scrapped_data = []
-    count = 0
+    count = -1
     WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.CLASS_NAME, "card-title-link"))
     )
     jobs = driver.find_elements(By.TAG_NAME, "dhi-search-card")
 
     job_title = driver.find_elements(By.CLASS_NAME, "card-title-link")
+    original_window = driver.current_window_handle
     for job in jobs:
+        driver.switch_to.window(original_window)
+        count += 1
         try:
             data = []
             append_data(data, job_title[count].text)
             c_name = driver.find_elements(By.CLASS_NAME, "card-company")
-            company_name = c_name[count].find_elements(By.TAG_NAME, "a")
-            for company in company_name:
-                append_data(data, company.text)
+            company_name = c_name[count].find_element(By.TAG_NAME, "a")
+            append_data(data, company_name.text)
             address = driver.find_elements(By.CLASS_NAME, "search-result-location")
             append_data(data, address[count].text)
-            job_url = job_title[count].get_attribute('href')
-            original_window = driver.current_window_handle
-            driver.switch_to.new_window('tab')
-            driver.get(job_url)
-            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "job-description")))
+            # original_window = driver.current_window_handle
+            job_title[count].click()
+            time.sleep(2)
+            driver.switch_to.window(driver.window_handles[-1])
+            job_url = driver.current_url
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "job-description")))
+            try:
+                driver.find_element(By.ID, "descriptionToggle").click()
+            except:
+                driver.close()
+                continue
             job_description = driver.find_element(By.CLASS_NAME, "job-description")
             append_data(data, job_description.text)
             append_data(data, job_url)
             job_posted_date = driver.find_element(By.CLASS_NAME, "sc-dhi-time-ago")
-            append_data(data, job_posted_date.text.split(" |")[0])
+            append_data(data, job_posted_date.text)
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "N/A")
@@ -64,11 +72,11 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, "Dice")
             append_data(data, set_job_type(job_type))
             append_data(data, job_description.get_attribute('innerHTML'))
-            count += 1
+
             total_job += 1
             scrapped_data.append(data)
             driver.close()
-            driver.switch_to.window(original_window)
+            # driver.switch_to.window(original_window)
             time.sleep(0.5)
         except Exception as e:
             print(e)
@@ -81,7 +89,7 @@ def find_jobs(driver, job_type, total_job):
     df.to_excel(filename, index=False)
 
     ScraperLogs.objects.create(total_jobs=len(df), job_source="Dice", filename=filename)
-
+    driver.switch_to.window(original_window)
     finished = "disabled"
     pagination = driver.find_elements(By.CLASS_NAME, "pagination-next")
     try:
