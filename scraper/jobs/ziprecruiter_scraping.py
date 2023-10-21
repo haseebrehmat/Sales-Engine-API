@@ -1,6 +1,6 @@
 from datetime import datetime
 import time
-
+from tqdm import tqdm
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -37,10 +37,31 @@ def submit_email_alert(driver):
 def get_job_url(job):
     return job.find_element(By.CLASS_NAME, "job_link").get_attribute('href')
 
+def skip_verify_email_banner(driver):
+    try:
+        WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.CLASS_NAME, "auto_banner_close")))
+        driver.find_element(By.CLASS_NAME, 'auto_banner_close').click()
+    except Exception as e:
+        print(e)
+
+def skip_phone_input(driver):
+    # skip the phone number dialog box
+    try:
+        WebDriverWait(driver, 7).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="footer"]')))
+        footer_divs = driver.find_elements(By.CSS_SELECTOR,'div[data-testid="footer"]')
+        for fdiv in footer_divs:
+            try:
+                fdiv.find_element(By.TAG_NAME, 'button').click()
+                break
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
 
 def get_job_detail(driver, job_source, job_url, job_type):
     try:
         WebDriverWait(driver, 7).until(EC.presence_of_element_located((By.CLASS_NAME, "job_title")))
+        skip_verify_email_banner(driver)
         job_title = driver.find_element(By.CLASS_NAME, "job_title").text
         company_name = driver.find_element(By.CLASS_NAME, "hiring_company").text
         job_description = driver.find_element(By.CLASS_NAME, "job_description")
@@ -103,14 +124,17 @@ def pagination_available(driver):
         print(e)
         return True
 
-def find_jobs(driver, job_type):
+def find_jobs(driver, link, job_type):
     scrapped_data = []
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
                     "salary_format", "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
                     "job_description_tags"]
     try:
         submit_email_alert(driver)
+        skip_phone_input(driver)
         time.sleep(4)
+        driver.get(link)
+        time.sleep(2)
         pagination_flag = pagination_available(driver)
         job_urls = []
         if pagination_flag:
@@ -120,13 +144,14 @@ def find_jobs(driver, job_type):
                     job_links = [job.find_element(By.TAG_NAME, 'a').get_attribute('href') for job in jobs]
                     job_urls.extend(job_links)
                     next_page_link = driver.find_elements(By.CLASS_NAME, 'prev_next_page_btn')[1].get_attribute('href')
+                    skip_verify_email_banner(driver)
                     if driver.current_url != next_page_link:
                         driver.get(next_page_link)
-                        time.sleep(3)
                     else:
                         break
                 except Exception as e:
-                    print(e)
+                    saveLogs(e)
+                    break
         else:
             WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "job_item")))
             try:
@@ -157,14 +182,13 @@ def find_jobs(driver, job_type):
         job_urls = list(filter(lambda link: 'https://www.ziprecruiter.com/k' in link, job_urls))
         total_jobs = len(job_urls)
 
-        for job_url in job_urls:
+        for job_url in tqdm(job_urls):
             try:
                 driver.get(job_url)
                 job, error = get_job_detail(driver, 'ziprecruiter', job_url, job_type)
                 if not error:
                     data = [job[c] for c in columns_name]
                     scrapped_data.append(data)
-                    time.sleep(2)
                 count += 1
 
                 # upload jobs in chunks of 20 size
@@ -186,17 +210,18 @@ def find_jobs(driver, job_type):
 def ziprecruiter_scraping(link, job_type):
     print('Zip Recruiter')
     try:
-        print("Start in try portion. \n")
+        print("Start in try portion.\n")
         driver = configure_webdriver()
         driver.maximize_window()
         try:
             driver.get(link)
             print("Fetching...")
-            find_jobs(driver, job_type)
+            find_jobs(driver, link, job_type)
         except Exception as e:
             saveLogs(e)
-            print("out from for loop")
-        driver.quit()
+            print("Error occurred during scraping. Details: ", e)
+        finally:
+            driver.close()
     except Exception as e:
         saveLogs(e)
-        print("Error Occurs. \n")
+        print("Error occurred. Details: ", e)
