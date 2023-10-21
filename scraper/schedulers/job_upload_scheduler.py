@@ -308,7 +308,7 @@ def upload_file(job_parser, filename):
 
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
-    if env("ENVIRONMENT") == "stagging" or env("ENVIRONMENT") == "development":
+    if env("ENVIRONMENT") != 'production':
         upload_jobs_in_production(model_instances, filename)
     upload_jobs_in_sales_engine(model_instances, filename)
     after_uploading_jobs_count = JobDetail.objects.count()
@@ -875,3 +875,6 @@ def group_scraper_job(group_id):
         group_scraper.running_link = None
         group_scraper.save()
     print("Group Scraper is finished")
+
+
+upload_jobs('Infinite Scrapper', 'linkedin_group')

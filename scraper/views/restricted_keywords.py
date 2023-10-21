@@ -17,7 +17,6 @@ class RestrictedJobTagsView(ListAPIView):
         return RestrictedJobsTags.objects.all()
 
     def post(self, request):
-        print(type(request.data))
         if type(request.data) == dict:
             many = False
         else:
@@ -56,7 +55,6 @@ class RestrictedJobTagsDetailView(APIView):
 
         data = serializer_errors(serializer)
         raise InvalidUserException(data)
-
 
     def delete(self, request, pk):
         RestrictedJobsTags.objects.filter(pk=pk).delete()

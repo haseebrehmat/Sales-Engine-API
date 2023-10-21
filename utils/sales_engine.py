@@ -84,7 +84,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
             for x in json.loads(payload)['jobs']:
                 print('Title => ', x['job_title'], 'Job Role => ', x['job_role'])
 
-        if env("ENVIRONMENT") == "production" or env("ENVIRONMENT") == "development" or env("ENVIRONMENT") == "stagging":
+        if env("ENVIRONMENT") == "production":
             response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
 
             print(response.text)
@@ -141,7 +141,10 @@ def upload_jobs_in_production(jobs_data, filename=None):
             'Content-Type': 'application/json'
         }
 
-        url = 'http://18.208.86.195/api/job_portal/jobs_stagging_to_production/'
+        host = 'http://18.208.86.195/'
+        if env('ENVIRONMENT') == 'local':
+            host = 'http://127.0.0.1:8000/'
+        url = host + 'api/job_portal/jobs_stagging_to_production/'
         jobs = [
             {
                 'salary_min': job.salary_min,
@@ -166,7 +169,7 @@ def upload_jobs_in_production(jobs_data, filename=None):
             }
         )
 
-        if env("ENVIRONMENT") == "stagging" or env("ENVIRONMENT") == "development":
+        if env("ENVIRONMENT") != 'production':
             response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
             print(response.text)
             if response.ok:

@@ -8,6 +8,8 @@ from job_portal.serializers.stagging_to_production import JobDetailSerializer
 from rest_framework.response import Response
 from datetime import datetime
 
+from utils.sales_engine import upload_jobs_in_sales_engine
+
 
 class JobsStaggingToProduction(ListAPIView):
     permission_classes = (AllowAny,)
@@ -39,7 +41,7 @@ class JobsStaggingToProduction(ListAPIView):
                 ]
                 JobDetail.objects.bulk_create(
                     model_instances, ignore_conflicts=True, batch_size=1000)
-                # upload_jobs_in_sales_engine(model_instances, None)
+                upload_jobs_in_sales_engine(model_instances, None)
                 message = "Jobs posted successfully"
                 status_code = status.HTTP_201_CREATED
                 return Response({"detail": message}, status_code)
