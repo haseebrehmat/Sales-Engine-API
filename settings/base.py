@@ -183,6 +183,11 @@ AWS_QUERYSTRING_AUTH = False
 SALES_ENGINE_UPLOAD_JOBS_URL=env('SALES_ENGINE_UPLOAD_JOBS_URL')
 SALES_ENGINE_API_TOKEN=env('SALES_ENGINE_API_TOKEN')
 
+
+# Production Jobs posting from Stagging
+STAGGING_TO_PRODUCTION_API_TOKEN=env('STAGGING_TO_PRODUCTION_TOKEN')
+
+
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
