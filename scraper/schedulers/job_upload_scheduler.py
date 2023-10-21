@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from settings.base import env
 
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
@@ -63,7 +64,7 @@ from scraper.utils.thread import start_new_thread
 from settings.base import env
 from utils import upload_to_s3
 from utils.helpers import saveLogs
-from utils.sales_engine import upload_jobs_in_sales_engine
+from utils.sales_engine import upload_jobs_in_sales_engine, upload_jobs_in_production
 from django.utils import timezone
 
 # from error_logger.models import Log
@@ -302,6 +303,8 @@ def upload_file(job_parser, filename):
 
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
+    if env("ENVIRONMENT") == "stagging" or env("ENVIRONMENT") == "development":
+        upload_jobs_in_production(model_instances, filename)
     upload_jobs_in_sales_engine(model_instances, filename)
     after_uploading_jobs_count = JobDetail.objects.count()
     scraper_log = ScraperLogs.objects.filter(
