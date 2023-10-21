@@ -4,10 +4,41 @@ import re
 import requests
 from job_portal.models import SalesEngineJobsStats, JobDetail
 from job_portal.utils.keywords_dic import keyword, regular_expressions
+from scraper.models import RestrictedJobsTags
 from scraper.utils.thread import start_new_thread
 from utils.helpers import saveLogs
 from settings.base import SALES_ENGINE_UPLOAD_JOBS_URL, SALES_ENGINE_API_TOKEN, env
 from utils.requests_logger import requests_logger_hooks
+
+# restricted_job_tags = ['banking', 'government', 'federal', 'crypto', 'ether', 'clearance',
+#                        'army, navy, seals, air force', 'government advisory services', 'gambling', 'clearance',
+#                        'adult', 'music', 'alcohol', 'wine', 'dating', 'lgbt', 'weapons']
+
+# removing 'insurance' from restricted job tags, Having conflicts with health insurance
+
+excluded_jobs_tech = ['others', 'others dev', 'other']
+
+job_roles_dict = {
+    "sqa": ['qa'],
+    "dev": ['shopify', 'ruby on rails', 'service now', 'ml engineer',
+            'data engineering/data engineer', 'data science/data scientist', 'c#/dot net',
+            'c/c++', 'php', 'python', 'go/golang', 'java', 'mern', 'javascript', 'ui/ux',
+            'networking', 'database'],
+    "devops": ['devops'],
+    "mobile": ['ios', 'flutter', 'android', 'react native'],
+    "dynamic 365": ['dynamics'],
+    "metaverse": ['metaverse'],
+    "blockchain": ['blockchain'],
+    "salesforce": ['salesforce']
+}
+
+
+def filter_restricted_jobs(jobs):
+    restricted_job_tags = RestrictedJobsTags.objects.exclude(tag=None).values_list('tag', flat=True)
+    jobs = [job for job in jobs if
+            all(i not in job['job_title'] and i not in job['job_description'] for i in restricted_job_tags)]
+
+    return jobs
 
 
 @start_new_thread
@@ -21,7 +52,6 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
         url = 'https://bd.devsinc.com/job_portal/api/v1/job_roles'  # API for getting role
         resp = requests.get(url, headers=headers)
         job_roles = json.loads(resp.text).get('job_roles', []) if resp.ok else []
-        excluded_jobs = ['others', 'others dev', 'other']
 
         url = SALES_ENGINE_UPLOAD_JOBS_URL
         jobs = [
@@ -39,7 +69,9 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 "job_description": job.job_description,
                 "company_name": job.company_name,
                 "address": job.address
-            } for job in jobs_data if job.tech_keywords not in excluded_jobs]
+            } for job in jobs_data if job.tech_keywords not in excluded_jobs_tech]
+        before_filter = jobs
+        jobs = filter_restricted_jobs(jobs)
 
         payload = json.dumps(
             {
@@ -65,21 +97,6 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
 
     except Exception as e:
         saveLogs(e)
-
-
-job_roles_dict = {
-    "sqa": ['qa'],
-    "dev": ['shopify', 'ruby on rails', 'service now', 'ml engineer',
-            'data engineering/data engineer', 'data science/data scientist', 'c#/dot net',
-            'c/c++', 'php', 'python', 'go/golang', 'java', 'mern', 'javascript', 'ui/ux',
-            'networking', 'database'],
-    "devops": ['devops'],
-    "mobile": ['ios', 'flutter', 'android', 'react native'],
-    "dynamic 365": ['dynamics'],
-    "metaverse": ['metaverse'],
-    "blockchain": ['blockchain'],
-    "salesforce": ['salesforce']
-}
 
 
 def check_job_role(techstacks, job_roles):
