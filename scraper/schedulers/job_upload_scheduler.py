@@ -49,6 +49,7 @@ from scraper.jobs.smartrecruiter_scraping import smartrecruiter
 from scraper.jobs.getwork_scraping import getwork
 from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 from scraper.jobs.just_remote_scraping import just_remote
+from scraper.jobs.linkedin_group_scraping import linkedin_group
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -189,6 +190,10 @@ scraper_functions = {
      "remoteco": [
         remote_co,
     ],
+     "linkedin_group": [
+        linkedin_group,
+    ],
+
 }
 
 
@@ -452,18 +457,20 @@ def run_scrapers(scrapers):
 
 @start_new_thread
 def load_all_job_scrappers():
-    SchedulerSync.objects.filter(job_source='all', type='Infinite Scrapper').update(running=True,
+    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=True,
                                                                                     start_time=timezone.now(),
                                                                                     end_time=None)
     while AllSyncConfig.objects.filter(status=True).first() is not None:
-        print("Load All Scraper Function")
+        print("Linkedin Group in load all jobs")
         try:
-            scrapers = get_scrapers_list('all')
-            run_scrapers(scrapers)
+            group_query = GroupScraperQuery.objects.all()
+            linkedin_group(group_query)
+            upload_jobs('Infinite Scrapper', 'linkedin_group')
+            remove_files('Infinite Scrapper', 'linkedin_group')
         except Exception as e:
             print(e)
             saveLogs(e)
-    SchedulerSync.objects.filter(job_source='all', type='Infinite Scrapper').update(running=False,
+    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=False,
                                                                                     end_time=timezone.now())
     print("Script Terminated")
     return True

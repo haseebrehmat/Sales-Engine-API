@@ -56,6 +56,7 @@ class ScraperNaming(enum.Enum):
     CAREERJET = 'careerjet'
     INDEED = 'indeed'
     LINKEDIN = 'linkedin'
+    LINKEDIN_GROUP = 'linkedin_group'
     DICE = 'dice'
     GOOGLE_CAREERS = 'google_careers'
     JOOBLE = 'jooble'
