@@ -18,7 +18,7 @@ import requests
 import json
 
 from utils.helpers import saveLogs
-from utils.sales_engine import upload_jobs_in_sales_engine
+from utils.sales_engine import upload_jobs_in_sales_engine, upload_jobs_in_production
 from settings.base import env
 
 
@@ -57,7 +57,7 @@ class JobDataUploadView(CreateAPIView):
                       job_type=job_item.job_type, address=job_item.address, job_description=job_item.job_description,
                       tech_keywords=job_item.tech_keywords.replace(" / ", "").lower(),
                       tech_stacks=list(set(job_item.tech_keywords.replace(" / ", "").lower().split(','))),
-                      job_posted_date=job_item.job_posted_date, job_source_url=job_item.job_source_url, ) for job_item
+                      job_posted_date=job_item.job_posted_date, job_source_url=job_item.job_source_url) for job_item
             in classify_data.data_frame.itertuples() if
             job_item.job_source_url != "" and isinstance(job_item.job_source_url, str)]
 
@@ -66,6 +66,8 @@ class JobDataUploadView(CreateAPIView):
 
         if env("ENVIRONMENT") == "production":
             upload_jobs_in_sales_engine(model_instances)
+        if env('ENVIRONMENT') != "production":
+            upload_jobs_in_production(jobs_data, filename=None)
 
 
 class JobCleanerView(APIView):

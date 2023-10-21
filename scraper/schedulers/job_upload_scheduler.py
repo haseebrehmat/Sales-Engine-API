@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from settings.base import env
 
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
@@ -49,6 +50,7 @@ from scraper.jobs.smartrecruiter_scraping import smartrecruiter
 from scraper.jobs.getwork_scraping import getwork
 from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 from scraper.jobs.just_remote_scraping import just_remote
+from scraper.jobs.linkedin_group_scraping import linkedin_group
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -63,7 +65,7 @@ from scraper.utils.thread import start_new_thread
 from settings.base import env
 from utils import upload_to_s3
 from utils.helpers import saveLogs
-from utils.sales_engine import upload_jobs_in_sales_engine
+from utils.sales_engine import upload_jobs_in_sales_engine, upload_jobs_in_production
 from django.utils import timezone
 
 # from error_logger.models import Log
@@ -189,6 +191,10 @@ scraper_functions = {
      "remoteco": [
         remote_co,
     ],
+     "linkedin_group": [
+        linkedin_group,
+    ],
+
 }
 
 
@@ -302,6 +308,8 @@ def upload_file(job_parser, filename):
 
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
+    if env("ENVIRONMENT") != 'production':
+        upload_jobs_in_production(model_instances, filename)
     upload_jobs_in_sales_engine(model_instances, filename)
     after_uploading_jobs_count = JobDetail.objects.count()
     scraper_log = ScraperLogs.objects.filter(
@@ -452,18 +460,20 @@ def run_scrapers(scrapers):
 
 @start_new_thread
 def load_all_job_scrappers():
-    SchedulerSync.objects.filter(job_source='all', type='Infinite Scrapper').update(running=True,
+    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=True,
                                                                                     start_time=timezone.now(),
                                                                                     end_time=None)
     while AllSyncConfig.objects.filter(status=True).first() is not None:
-        print("Load All Scraper Function")
+        print("Linkedin Group in load all jobs")
         try:
-            scrapers = get_scrapers_list('all')
-            run_scrapers(scrapers)
+            group_query = GroupScraperQuery.objects.all()
+            linkedin_group(group_query)
+            upload_jobs('Infinite Scrapper', 'linkedin_group')
+            remove_files('Infinite Scrapper', 'linkedin_group')
         except Exception as e:
             print(e)
             saveLogs(e)
-    SchedulerSync.objects.filter(job_source='all', type='Infinite Scrapper').update(running=False,
+    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=False,
                                                                                     end_time=timezone.now())
     print("Script Terminated")
     return True
@@ -865,3 +875,6 @@ def group_scraper_job(group_id):
         group_scraper.running_link = None
         group_scraper.save()
     print("Group Scraper is finished")
+
+
+upload_jobs('Infinite Scrapper', 'linkedin_group')

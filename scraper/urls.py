@@ -2,6 +2,7 @@ from django.urls import path
 
 from scraper.schedulers.job_upload_scheduler import upload_jobs
 from scraper.views.job_source_queries import JobQueriesDetailView, JobQueriesView
+from scraper.views.restricted_keywords import RestrictedJobTagsView, RestrictedJobTagsDetailView
 from scraper.views.scheduler_settings import SchedulerView, SchedulerDetailView
 from scraper.views.sync_scheduler import SyncScheduler, SchedulerStatusView, SyncAllScrapersView
 from scraper.views.scraper_logs import ScraperLogView
@@ -30,4 +31,6 @@ urlpatterns = [
     path('group_scheduler_link/', GroupScraperQueriesView.as_view()),
     path('group_scheduler_link/<int:pk>/', GroupScraperQueriesDetailView.as_view()),
     path('group_scheduler_start/', RunGroupScraper.as_view()),
+    path('restricted_keywords/', RestrictedJobTagsView.as_view()),
+    path('restricted_keywords/<str:pk>/', RestrictedJobTagsDetailView.as_view()),
 ]

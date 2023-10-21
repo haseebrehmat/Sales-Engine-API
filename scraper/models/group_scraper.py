@@ -9,4 +9,5 @@ class GroupScraper(TimeStamped):
     running_link = models.ForeignKey('GroupScraperQuery', on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=50, null=True, unique=True)
     is_active = models.BooleanField(default=True)
+    disabled = models.BooleanField(default=False)
 

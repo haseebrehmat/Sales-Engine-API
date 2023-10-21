@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import time
 from datetime import datetime
 
@@ -16,8 +17,9 @@ from utils.helpers import saveLogs
 
 total_job = 0
 
-
 # calls url
+
+
 def request_url(driver, url):
     driver.get(url)
 
@@ -31,13 +33,14 @@ def append_data(data, field):
 def loading(driver, count):
     try:
         time.sleep(3)
-        load = driver.find_element(By.CLASS_NAME, "jobsList__button-container--3FEJ-")
+        load = driver.find_element(
+            By.CLASS_NAME, "jobsList__button-container--3FEJ-")
         btn = load.find_element(By.TAG_NAME, "button")
         btn.location_once_scrolled_into_view
         btn.click()
         count += 1
         if count == 30:
-          return False, count
+            return False, count
         return True, count
     except Exception as e:
         return False, count
@@ -46,36 +49,52 @@ def loading(driver, count):
 # click accept cookie modal
 def accept_cookie(driver):
     try:
-        driver.find_element(By.CLASS_NAME, "styles__accept-button--1eW01").click()
+        driver.find_element(
+            By.CLASS_NAME, "styles__accept-button--1eW01").click()
     except Exception as e:
         print(e)
 
 
+def find_job_link(job):
+    return job.find_element(By.TAG_NAME, "a").get_attribute("href")
+
 # find's job
+
+
 def find_jobs(driver, job_type):
     try:
         scrapped_data = []
         count = 0
         time.sleep(3)
-        jobs = driver.find_elements(By.CLASS_NAME, "styles__job-title--E1757")
-        for job in jobs:
+        jobs = driver.find_elements(
+            By.CLASS_NAME, "jobsList__list-item--3HLIF")
+        job_urls = [find_job_link(job) for job in jobs]
+        print('total jobs', len(jobs))
+        for url in tqdm(job_urls):
             try:
                 data = []
-                job.find_element(By.TAG_NAME, "a").click()
+                driver.get(url)
+
                 WebDriverWait(driver, 30).until(
-                    EC.presence_of_element_located((By.CLASS_NAME, "JobBreakdown__job-breakdown--3whe3"))
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, "JobBreakdown__job-breakdown--3whe3"))
                 )
 
-                job_title = driver.find_element(By.CLASS_NAME, "jobOverview__job-title--kuTAQ")
+                job_title = driver.find_element(
+                    By.CLASS_NAME, "jobOverview__job-title--kuTAQ")
                 append_data(data, job_title.text)
-                company_name = driver.find_element(By.CLASS_NAME, "companyName__link--2ntbf")
+                company_name = driver.find_element(
+                    By.CLASS_NAME, "companyName__link--2ntbf")
                 append_data(data, company_name.text)
-                address = driver.find_elements(By.CLASS_NAME, "jobDetails__job-detail--3As6F")[1]
+                address = driver.find_elements(
+                    By.CLASS_NAME, "jobDetails__job-detail--3As6F")[1]
                 append_data(data, address.text)
-                job_description = driver.find_element(By.CLASS_NAME, "JobBreakdown__job-breakdown--3whe3")
+                job_description = driver.find_element(
+                    By.CLASS_NAME, "JobBreakdown__job-breakdown--3whe3")
                 append_data(data, job_description.text)
                 append_data(data, driver.current_url)
-                job_posted_date = driver.find_element(By.CLASS_NAME, "jobOverview__date-posted-container--9wC0t")
+                job_posted_date = driver.find_element(
+                    By.CLASS_NAME, "jobOverview__date-posted-container--9wC0t")
                 append_data(data, job_posted_date.text)
                 append_data(data, "N/A")
                 append_data(data, "N/A")
@@ -84,12 +103,11 @@ def find_jobs(driver, job_type):
                 append_data(data, "Workable")
                 append_data(data, set_job_type(job_type))
                 append_data(data, job_description.get_attribute('innerHTML'))
-
                 scrapped_data.append(data)
                 count += 1
             except Exception as e:
-                print(e)
-
+                saveLogs(e)
+                
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                         "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
@@ -108,7 +126,7 @@ def find_jobs(driver, job_type):
 def workable(link, job_type):
     print("Workable")
     try:
-        driver = configure_webdriver()
+        driver = configure_webdriver(False, False)
         driver.maximize_window()
         try:
             flag = True
@@ -128,3 +146,6 @@ def workable(link, job_type):
         driver.quit()
     except Exception as e:
         saveLogs(e)
+
+
+# workable('https://jobs.workable.com/search?query=developer&location=United%20States&remote=true', 'remote')
