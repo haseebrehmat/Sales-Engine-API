@@ -20,7 +20,7 @@ def custom_function():
 
 def check_current_group():
     group_scrapper = None
-    queryset = GroupScraper.objects.all().order_by('scheduler_settings__time')
+    queryset = GroupScraper.objects.filter(disabled=False).order_by('scheduler_settings__time')
     for index, groupscraper in enumerate(queryset):
         pakistan_timezone = pytz.timezone('Asia/Karachi')
         current_time = datetime.now(pakistan_timezone)
@@ -37,5 +37,4 @@ def check_current_group():
             group_scrapper = queryset[index]
             break
     return group_scrapper
-
 
