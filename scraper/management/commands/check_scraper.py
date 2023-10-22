@@ -16,7 +16,8 @@ def custom_function():
     group_scrapper = check_current_group()
     check_status = SchedulerSync.objects.filter(
             type="group scraper", job_source=group_scrapper.name.lower()).first()
-    group_scraper_job(group_scrapper.id)
+    # group_scraper_job(group_scrapper.id)
+    group_scraper_job(6)
 
 def check_current_group():
     group_scrapper = None
