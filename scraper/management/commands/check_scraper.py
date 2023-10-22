@@ -16,12 +16,11 @@ def custom_function():
     group_scrapper = check_current_group()
     check_status = SchedulerSync.objects.filter(
             type="group scraper", job_source=group_scrapper.name.lower()).first()
-    # group_scraper_job(group_scrapper.id)
-    group_scraper_job(6)
+    group_scraper_job(group_scrapper.id)
 
 def check_current_group():
     group_scrapper = None
-    queryset = GroupScraper.objects.all().order_by('scheduler_settings__time')
+    queryset = GroupScraper.objects.filter(disabled=False).order_by('scheduler_settings__time')
     for index, groupscraper in enumerate(queryset):
         pakistan_timezone = pytz.timezone('Asia/Karachi')
         current_time = datetime.now(pakistan_timezone)
@@ -38,5 +37,4 @@ def check_current_group():
             group_scrapper = queryset[index]
             break
     return group_scrapper
-
 
