@@ -466,21 +466,22 @@ def run_scrapers(scrapers):
 
 @start_new_thread
 def load_all_job_scrappers():
-    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=True,
-                                                                                    start_time=timezone.now(),
-                                                                                    end_time=None)
-    while AllSyncConfig.objects.filter(status=True).first() is not None:
-        print("Linkedin Group in load all jobs")
-        try:
-            group_query = GroupScraperQuery.objects.all()
-            linkedin_group(group_query)
-            upload_jobs('Infinite Scrapper', 'linkedin_group')
-            remove_files('Infinite Scrapper', 'linkedin_group')
-        except Exception as e:
-            print(e)
-            saveLogs(e)
-    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=False,
-                                                                                    end_time=timezone.now())
+    queryset = SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper')
+    if queryset:
+        queryset.update(running=True, start_time=timezone.now(), end_time=None)
+        while AllSyncConfig.objects.filter(status=True).first() is not None:
+            print("Linkedin Group in load all jobs")
+            try:
+                group_query = GroupScraperQuery.objects.all()
+                linkedin_group(group_query)
+                upload_jobs('Infinite Scrapper', 'linkedin_group')
+                remove_files('Infinite Scrapper', 'linkedin_group')
+            except Exception as e:
+                print(e)
+                saveLogs(e)
+        queryset = SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper')
+        if queryset:
+            queryset.update(running=False, end_time=timezone.now())
     print("Script Terminated")
     return True
 

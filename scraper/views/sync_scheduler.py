@@ -96,8 +96,10 @@ class SyncAllScrapersView(APIView):
         sync_status = bool(AllSyncConfig.objects.all().first().status)
         if sync_status:
             AllSyncConfig.objects.all().update(status=False)
-            SchedulerSync.objects.filter(
-                job_source='linkedin_group', type='Infinite Scrapper').update(running=False, end_time=timezone.now())
+            queryset = SchedulerSync.objects.filter(
+                job_source='linkedin_group', type='Infinite Scrapper')
+            if queryset:
+                queryset.update(running=False, end_time=timezone.now())
             return Response({"Sync stopped"}, status=status.HTTP_200_OK)
         else:
             AllSyncConfig.objects.all().update(status=True)

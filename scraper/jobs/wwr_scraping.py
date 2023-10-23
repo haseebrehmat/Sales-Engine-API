@@ -13,13 +13,14 @@ from selenium.webdriver.support.wait import WebDriverWait
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
+from typing import List
 
 
 class WeWorkRemotelyScraper:
     def __init__(self, driver, url) -> None:
         self.driver: WebDriver = driver
         self.url: str = url
-        self.scraped_jobs: list[dict] = []
+        self.scraped_jobs: List[dict] = []
 
     def request_page(self) -> None:
         self.driver.get(self.url)
@@ -55,7 +56,7 @@ class WeWorkRemotelyScraper:
                     break
         return loaded
 
-    def extract_links(self) -> list[str]:
+    def extract_links(self) -> List[str]:
         job_links: list[str] = []
         if self.home_page_loaded():
             time.sleep(1)
