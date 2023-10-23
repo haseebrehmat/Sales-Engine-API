@@ -1,13 +1,20 @@
 import datetime
 import re
+import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import JOB_TYPE
 
 from scraper.models import GroupScraper, GroupScraperQuery
+from selenium.webdriver.support import expected_conditions as EC
+import random
+
+from settings.base import PIA_USERNAME, PIA_PASSWORD
+from utils.helpers import saveLogs
 
 
 def convert_time_into_minutes(interval, interval_type):
@@ -104,8 +111,11 @@ def generate_scraper_filename(job_source):
 def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
     options = webdriver.ChromeOptions()
 
+    # Install the extension
+    extension_path = 'scraper/utils/pia.crx'
+
     if not open_browser:
-        options.add_argument("--headless")
+        options.add_argument("--headless=new")
 
     prefs = {'profile.default_content_setting_values': {'cookies': 2, 'images': 2, 'javascript': 2,
                                                         'plugins': 2, 'popups': 2, 'geolocation': 2,
@@ -131,8 +141,13 @@ def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
+
     options.add_argument(
         "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36")
+
+    options.add_extension(extension_path)
 
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
@@ -146,6 +161,33 @@ def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
         driver.execute_cdp_cmd("Network.setBlockedURLs", {"urls": blocked_patterns})
     return driver
 
+
+def run_pia_proxy(driver, location=None):
+    driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
+    driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
+        0].send_keys(PIA_USERNAME)
+    driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
+        0].send_keys(PIA_PASSWORD)
+    driver.find_element(By.CLASS_NAME, 'btn').click()
+    WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn-success')))
+    driver.find_element(By.CLASS_NAME, 'btn-success').click()
+    driver.find_element(By.CLASS_NAME, 'btn-skip').click()
+    driver.find_element(By.CLASS_NAME, 'region-content').click()
+
+    # if no location found then select US Miami
+    if location:
+        driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys(location)
+        driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
+    else:
+        driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US ")
+        us_locations = [location_btn for location_btn in driver.find_elements(By.CLASS_NAME, "region-list-item")[1:]]
+        if us_locations:
+            random_location = random.randrange(len(us_locations))
+            us_locations[random_location].click()
+        else:
+            driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US Miami")
+            driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
+    time.sleep(5)
 
 def remove_emojis(text):
     pattern =  r'[\w\s.,!?\'"“”‘’#$%^&*()_+=\-{}\[\]:;<>\|\\/~`]+'

@@ -11,7 +11,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
+    set_job_type, run_pia_proxy
 from utils.helpers import saveLogs
 from settings.utils.helpers import generate_random_email
 
@@ -47,7 +48,7 @@ def skip_verify_email_banner(driver):
 def skip_phone_input(driver):
     # skip the phone number dialog box
     try:
-        WebDriverWait(driver, 7).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="footer"]')))
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="footer"]')))
         footer_divs = driver.find_elements(By.CSS_SELECTOR,'div[data-testid="footer"]')
         for fdiv in footer_divs:
             try:
@@ -213,6 +214,7 @@ def ziprecruiter_scraping(link, job_type):
         print("Start in try portion.\n")
         driver = configure_webdriver()
         driver.maximize_window()
+        run_pia_proxy(driver)
         try:
             driver.get(link)
             print("Fetching...")
