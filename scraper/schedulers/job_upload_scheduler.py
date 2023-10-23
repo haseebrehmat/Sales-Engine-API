@@ -51,6 +51,7 @@ from scraper.jobs.getwork_scraping import getwork
 from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 from scraper.jobs.just_remote_scraping import just_remote
 from scraper.jobs.linkedin_group_scraping import linkedin_group
+from scraper.jobs.wwr_scraping import weworkremotely
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.group_scraper import GroupScraper
@@ -194,7 +195,9 @@ scraper_functions = {
      "linkedin_group": [
         linkedin_group,
     ],
-
+    "weworkremotely": [
+        weworkremotely,
+    ],
 }
 
 

@@ -50,7 +50,8 @@ def run_scrapers_manually(job_source='all'):
             "rubyonremote",
             "hubstafftalent",
             "justremote",
-            "remoteco"
+            "remoteco",
+            "weworkremotely"
         ]
 
     if job_source.lower() not in valid_job_sources:
