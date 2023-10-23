@@ -1,4 +1,5 @@
 import re
+from re import Match
 import time
 
 import pandas as pd
@@ -30,7 +31,7 @@ class WeWorkRemotelyScraper:
 
     def home_page_loaded(self) -> bool:
         loaded: bool = False
-        for retry in range(5):
+        for retry in range(1, 6):
             try:
                 self.request_page()
                 homepage_element: WebElement = WebDriverWait(self.driver, 10).until(
@@ -42,12 +43,12 @@ class WeWorkRemotelyScraper:
                     time.sleep(3)
                 main_element: list[WebElement] = self.driver.find_elements(
                     By.CLASS_NAME, 'listing_column')
-                if len(main_element) > 0:
+                if main_element:
                     loaded = True
                     break
             except WebDriverException as e:
-                if retry + 1 < 5:
-                    print(f"Retry {retry + 1}/{5} due to: {e}")
+                if retry < 5:
+                    print(f"Retry {retry}/{5} due to: {e}")
                 else:
                     self.log_error(e, save=True)
                     self.driver.quit()
@@ -67,7 +68,7 @@ class WeWorkRemotelyScraper:
                 anchor_elements: list[WebElement] = WebDriverWait(item, 10).until(
                     EC.presence_of_all_elements_located((By.TAG_NAME, 'a'))
                 )
-                if len(anchor_elements) > 0 and anchor_elements[1]:
+                if anchor_elements and anchor_elements[1]:
                     job_links.append(anchor_elements[1].get_attribute('href'))
         return job_links
 
@@ -99,12 +100,13 @@ class WeWorkRemotelyScraper:
         if match:
             min_salary = match.group("min") or ""
             max_salary = match.group("max") or min_salary
-            currency_format = match.group("format") or "USD"
+            unit = match.group("format") or "USD"
+            currency_format = "yearly" if int(max_salary.replace(',', '')) > 1000 else "monthly"
             return {
                 "min": f"${min_salary}",
                 "max": f"${max_salary}",
                 "format": currency_format,
-                "estimated": f"{min_salary} - {max_salary} {currency_format}"
+                "estimated": f"{min_salary} - {max_salary} {unit}"
             }
         else:
             return {
@@ -145,10 +147,9 @@ class WeWorkRemotelyScraper:
                     ))
                 job_title: str = job_title_element.text
                 # Job Description & Job Description Tags
-                description_element: WebElement = self.load_content()
-                description_tags: str = description_element.get_attribute(
+                description_tags: str = content.get_attribute(
                     'innerHTML')
-                description: str = description_element.text
+                description: str = content.text
                 # Company Name
                 company_name_element: WebElement = WebDriverWait(company, 10).until(
                     EC.presence_of_element_located((By.TAG_NAME, 'h2'))
