@@ -194,7 +194,7 @@ def data_exists(driver):
         return True
 
 
-def jobs_types(driver, url, total_job):
+def jobs_types(driver, link, job_type, total_job):
     count = 0
     for link in url:
       print("Link started")
@@ -221,29 +221,27 @@ def jobs_types(driver, url, total_job):
 
 
 # code starts from here
-def linkedin_group(links):
+def linkedin_group(driver, link, job_type):
     print("linkedin group")
+    count = 0
     total_job = 0
     try:
-        for x in Accounts.objects.all():
-            driver = configure_webdriver()
-            request_url(driver, LOGIN_URL)
-            logged_in = login(driver, x.email, x.password)
-            try:
-                if logged_in:
-                    jobs_types(driver, links, total_job)
-                    print(SCRAPING_ENDED)
-                    driver.quit()
-                    break
+        # jobs_types(driver, link, job_type, total_job)
+        more_than_3 = 0
+        request_url(driver, link)
+        flag = True
+        flag, total_job, more_than_3 = find_jobs(driver, job_type, total_job, more_than_3)
+        if flag:
+            count += 25
+
+            while flag:
+                if more_than_3 < 5:
+                    flag, total_job, more_than_3 = find_jobs(driver, job_type, total_job, more_than_3, "&start=" + str(count))
+                    count += 25
                 else:
-                    print(LOGIN_FAILED)
-                    driver.quit()
-            except Exception as e:
-                print("Exception in linkedin => ", e)
-                saveLogs(e)
-                print(LINK_ISSUE)
-                driver.quit()
-                break
+                  break
+        else:
+            print(NO_JOB_RESULT)
     except Exception as e:
         saveLogs(e)
         print(e)

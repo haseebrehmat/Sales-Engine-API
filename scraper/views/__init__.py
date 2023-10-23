@@ -1,4 +1,4 @@
-from scraper.schedulers.job_upload_scheduler import load_all_job_scrappers
+from scraper.schedulers.job_upload_scheduler import group_scraper_job, load_all_job_scrappers
 from settings.base import env
 
 try:
@@ -21,5 +21,6 @@ try:
         pass
     else:
         os.makedirs('scraper/job_data')
+    # group_scraper_job("4")
 except Exception as e:
     print("Error in job_upload_scheduler init - file", str(e))
