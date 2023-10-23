@@ -1,7 +1,7 @@
 import json
 import re
 from datetime import datetime, timedelta
-
+from job_portal.utils.helpers import SalesEngineLogsNaming
 import requests
 from job_portal.models import SalesEngineJobsStats, JobDetail
 from job_portal.utils.keywords_dic import keyword, regular_expressions
@@ -96,6 +96,11 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                     if jobs_data:
                         job_source = jobs_data[0].job_source
                 obj = SalesEngineJobsStats.objects.create(job_source=job_source, jobs_count=len(jobs))
+            else:
+                if jobs_data:
+                    job_source = jobs_data[0].job_source
+                    SalesEngineJobsStats.objects.create(job_source=job_source, jobs_count=len(jobs), upload_status=False)
+
 
     except Exception as e:
         saveLogs(e)

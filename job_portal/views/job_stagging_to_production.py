@@ -3,11 +3,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from settings.base import STAGGING_TO_PRODUCTION_API_TOKEN
 from authentication.exceptions import InvalidUserException
-from job_portal.models import JobDetail
+from job_portal.models import JobDetail, SalesEngineJobsStats
 from job_portal.serializers.stagging_to_production import JobDetailSerializer
 from rest_framework.response import Response
 from datetime import datetime
-
+from job_portal.utils.helpers import SalesEngineLogsNaming
 from utils.sales_engine import upload_jobs_in_sales_engine
 
 
@@ -41,15 +41,31 @@ class JobsStaggingToProduction(ListAPIView):
                     )
                     for job_item in jobs
                 ]
+
                 JobDetail.objects.bulk_create(
                     model_instances, ignore_conflicts=True, batch_size=1000)
                 upload_jobs_in_sales_engine(model_instances, None)
                 message = "Jobs posted successfully"
                 status_code = status.HTTP_201_CREATED
+                try:
+                    job_source = model_instances[0].job_source
+                    obj = SalesEngineJobsStats.objects.create(job_source=model_instances[0].job_source,
+                                                              jobs_count=len(model_instances),
+                                                              source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION)
+                except:
+                    print("")
                 return Response({"detail": message}, status_code)
             except Exception as e:
                 message = str(e)
                 status_code = status.HTTP_406_NOT_ACCEPTABLE
+                try:
+                    job_source = model_instances[0].job_source
+                    obj = SalesEngineJobsStats.objects.create(job_source=model_instances[0].job_source,
+                                                              jobs_count=len(model_instances),
+                                                              source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION,
+                                                              upload_status=False)
+                except:
+                    print("")
                 return Response({"detail": message}, status_code)
         else:
             message = "You do not have permission to this end point"

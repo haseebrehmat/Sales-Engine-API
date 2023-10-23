@@ -9,7 +9,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 # from django.contrib.postgres.fields.jsonb import JSONField
 from django.utils import timezone
-
+from job_portal.utils.helpers import SalesEngineLogsNaming
 from authentication.models import User, Team
 from authentication.models.company import Company
 from job_portal.utils.job_status import JOB_STATUS_CHOICE
@@ -164,6 +164,8 @@ class BlockJobCompany(TimeStamped):
 class SalesEngineJobsStats(TimeStamped):
     job_source = models.CharField(max_length=30, blank=True, null=True)
     jobs_count = models.IntegerField()
+    upload_status = models.BooleanField(default=True)
+    source = models.CharField(max_length=250, default=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE)
 
 
 class JobUploadLogs(TimeStamped):
