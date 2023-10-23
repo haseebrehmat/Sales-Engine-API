@@ -65,7 +65,8 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 "job_title": job.job_title,
                 "job_source_url": job.job_source_url,
                 "job_type": job.job_type,
-                "job_posted_date": job.job_posted_date.strftime('%Y-%m-%d'),
+                "job_posted_date": job.job_posted_date if isinstance(job.job_posted_date,
+                                                                     str) else job.job_posted_date.strftime('%Y-%m-%d'),
                 "job_source": job.job_source,
                 "job_description": job.job_description,
                 "company_name": job.company_name,
@@ -149,19 +150,21 @@ def upload_jobs_in_production(jobs_data, filename=None):
             {
                 'salary_min': job.salary_min,
                 'salary_max': job.salary_max,
-                'tech_stacks': job.tech_keywords,
+                'tech_stacks': job.tech_stacks,
+                'tech_keywords': job.tech_keywords,
                 'job_role': "N/A",
-                'salary_format': '',
+                'salary_format': job.salary_format,
                 "job_title": job.job_title,
                 "job_source_url": job.job_source_url,
+                "estimated_salary": job.estimated_salary,
                 "job_type": job.job_type,
                 "job_posted_date": job.job_posted_date.strftime('%Y-%m-%d'),
                 "job_source": job.job_source,
                 "job_description": job.job_description,
+                "job_description_tags": job.job_description_tags,
                 "company_name": job.company_name,
                 "address": job.address
             } for job in jobs_data]
-
 
         payload = json.dumps(
             {
