@@ -1,35 +1,30 @@
 import re
 import time
 
-from pprint import pprint
-
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
+
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
-
 from utils.helpers import saveLogs
-from selenium.webdriver.common.by import By
-
-from selenium.common.exceptions import WebDriverException
 
 
 class WeWorkRemotelyScraper:
     def __init__(self, driver, url) -> None:
-        self.driver = driver
-        self.url = url
+        self.driver: WebDriver = driver
+        self.url: str = url
         self.scraped_jobs: list[dict] = []
 
     def request_page(self) -> None:
         self.driver.get(self.url)
 
     @staticmethod
-    def log_error(exception: str, save: bool = False) -> None:
+    def log_error(exception: Exception or str, save: bool = False) -> None:
         print(exception)
         saveLogs(exception) if save else None
 
@@ -54,8 +49,7 @@ class WeWorkRemotelyScraper:
                 if retry + 1 < 5:
                     print(f"Retry {retry + 1}/{5} due to: {e}")
                 else:
-                    self.log_error(
-                        "Last Element Not loaded with an error of " + e.msg)
+                    self.log_error(e, save=True)
                     self.driver.quit()
                     break
         return loaded
@@ -198,23 +192,27 @@ class WeWorkRemotelyScraper:
         self.driver.switch_to.window(self.driver.window_handles[0])
 
     def find_jobs(self) -> None:
-        urls: list[str] = self.extract_links()
-        if len(urls) > 0:
-            for url in urls:
-                try:
-                    self.driver.execute_script(
-                        "window.open('" + url + "', '_blank');")
-                    self.visit_tab(self.driver.window_handles[-1])
-                except WebDriverException as e:
-                    self.log_error(
-                        "During scraping data from job view details: " + e.msg)
-                    continue
-
-        if len(self.scraped_jobs) > 0:
-            self.export_to_excel()
+        try:
+            urls: list[str] = self.extract_links()
+            if len(urls) > 0:
+                for url in urls:
+                    try:
+                        self.driver.execute_script(
+                            "window.open('" + url + "', '_blank');")
+                        self.visit_tab(self.driver.window_handles[-1])
+                    except WebDriverException as e:
+                        self.log_error(e, save=True)
+                        continue
+            if len(self.scraped_jobs) > 0:
+                self.export_to_excel()
+            self.driver.quit()
+        except Exception as e:
+            self.driver.quit()
+            self.log_error(e, save=True)
 
     def export_to_excel(self) -> None:
-        columns_name: list[str] = ["job_title", "company_name", "job_posted_date", "address", "job_description", 'job_source_url',
+        columns_name: list[str] = ["job_title", "company_name", "job_posted_date", "address", "job_description",
+                                   'job_source_url',
                                    "salary_format",
                                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
                                    "job_description_tags"]
@@ -225,34 +223,17 @@ class WeWorkRemotelyScraper:
             total_jobs=len(df), job_source="WeWorkRemotely", filename=filename)
 
 
-def run() -> None:
-    options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    options.add_argument("window-size=1200,1100")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument(
-        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (HTML, like Gecko) "
-        "Chrome/97.0.4692.99 Safari/537.36"
-    )
-
-    with webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) as driver:
+def weworkremotely() -> None:
+    print("Running We Work Remotely...")
+    try:
+        driver: WebDriver = configure_webdriver()
         driver.maximize_window()
-
-        start_time = time.time()
-
         wwr_scraper = WeWorkRemotelyScraper(
             driver=driver,
             url="https://weworkremotely.com/remote-jobs/search?search_uuid=&term=&sort=past_week&categories%5B%5D=2"
                 "&categories%5B%5D=17&categories%5B%5D=18&categories%5B%5D=6&categories%5B%5D=11")
-
         wwr_scraper.find_jobs()
-
-        end_time = time.time()
-
-        execution_time = end_time - start_time
-
-        import math
-        pprint(f"Scraper takes {math.ceil(execution_time / 60)} minutes")
+    except Exception as e:
+        print(e)
+        saveLogs(e)
+    print("Done We Work Remotely...")
