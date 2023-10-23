@@ -11,7 +11,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type, \
+    run_pia_proxy
 from utils.helpers import saveLogs
 
 total_jobs = 0
@@ -170,6 +171,7 @@ def career_builder(link, job_type):
     try:
         driver = configure_webdriver()
         driver.maximize_window()
+        run_pia_proxy(driver, location='US Miami')
         try:
             flag = True
             request_url(driver, link)

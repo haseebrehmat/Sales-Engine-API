@@ -18,8 +18,10 @@ from settings.base import env
 from job_portal.classifier import JobClassifier
 from job_portal.data_parser.job_parser import JobParser
 from job_portal.models import JobDetail, JobUploadLogs, JobArchive, SalesEngineJobsStats
+from scraper.constants.const import LOGIN_URL
 from scraper.jobs import single_scrapers_functions, working_nomads, dynamite, arc_dev, job_gether, receptix, the_muse, remote_co
-from scraper.jobs.adzuna_scraping import adzuna_scraping
+from scraper.jobs.adzuna_scraping import adzuna_scraping, request_url
+from scraper.jobs.linkedin_group_scraping import login
 from scraper.jobs.careerbuilder_scraping import career_builder
 from scraper.jobs.careerjet_scraping import careerjet
 from scraper.jobs.dice_scraping import dice
@@ -51,8 +53,10 @@ from scraper.jobs.getwork_scraping import getwork
 from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 from scraper.jobs.just_remote_scraping import just_remote
 from scraper.jobs.linkedin_group_scraping import linkedin_group
+from scraper.jobs.wwr_scraping import weworkremotely
 
 from scraper.models import JobSourceQuery, ScraperLogs
+from scraper.models.accounts import Accounts
 from scraper.models.group_scraper import GroupScraper
 from scraper.models.group_scraper_query import GroupScraperQuery
 from scraper.jobs.hubstaff_talent_scraping import hubstaff_talent
@@ -60,7 +64,7 @@ from scraper.jobs.hubstaff_talent_scraping import hubstaff_talent
 from scraper.models import JobSourceQuery, GroupScraper, ScraperLogs
 from scraper.models import SchedulerSettings, AllSyncConfig
 from scraper.models.scheduler import SchedulerSync
-from scraper.utils.helpers import convert_time_into_minutes
+from scraper.utils.helpers import configure_webdriver, convert_time_into_minutes
 from scraper.utils.thread import start_new_thread
 from settings.base import env
 from utils import upload_to_s3
@@ -194,7 +198,9 @@ scraper_functions = {
      "linkedin_group": [
         linkedin_group,
     ],
-
+    "weworkremotely": [
+        weworkremotely,
+    ],
 }
 
 
@@ -308,7 +314,7 @@ def upload_file(job_parser, filename):
 
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
-    if env("ENVIRONMENT") != 'production':
+    if env("ENVIRONMENT") == 'staging' or env("ENVIRONMENT") == 'development':
         upload_jobs_in_production(model_instances, filename)
     upload_jobs_in_sales_engine(model_instances, filename)
     after_uploading_jobs_count = JobDetail.objects.count()
@@ -460,21 +466,22 @@ def run_scrapers(scrapers):
 
 @start_new_thread
 def load_all_job_scrappers():
-    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=True,
-                                                                                    start_time=timezone.now(),
-                                                                                    end_time=None)
-    while AllSyncConfig.objects.filter(status=True).first() is not None:
-        print("Linkedin Group in load all jobs")
-        try:
-            group_query = GroupScraperQuery.objects.all()
-            linkedin_group(group_query)
-            upload_jobs('Infinite Scrapper', 'linkedin_group')
-            remove_files('Infinite Scrapper', 'linkedin_group')
-        except Exception as e:
-            print(e)
-            saveLogs(e)
-    SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper').update(running=False,
-                                                                                    end_time=timezone.now())
+    queryset = SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper')
+    if queryset:
+        queryset.update(running=True, start_time=timezone.now(), end_time=None)
+        while AllSyncConfig.objects.filter(status=True).first() is not None:
+            print("Linkedin Group in load all jobs")
+            try:
+                group_query = GroupScraperQuery.objects.all()
+                linkedin_group(group_query)
+                upload_jobs('Infinite Scrapper', 'linkedin_group')
+                remove_files('Infinite Scrapper', 'linkedin_group')
+            except Exception as e:
+                print(e)
+                saveLogs(e)
+        queryset = SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper')
+        if queryset:
+            queryset.update(running=False, end_time=timezone.now())
     print("Script Terminated")
     return True
 
@@ -807,74 +814,94 @@ def group_scraper_job(group_id):
         type="group scraper").update(running=False, end_time=datetime.now(pakistan_timezone))
     SchedulerSync.objects.filter(
         job_source=current_scraper).update(running=True, start_time=datetime.now(pakistan_timezone),
-                                           end_time=datetime.now(pakistan_timezone))
-
-    try:
+                                        end_time=datetime.now(pakistan_timezone))
+    if env("ENVIRONMENT") == "staging" or env("ENVIRONMENT") == "development":
+        print("Group started")
         queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
-        change_status = GroupScraperQuery.objects.filter(status='running').exclude(group_scraper_id=group_id)
-        for query in change_status:
-            query.status = "remaining"
-            query.save()
-        change_status = GroupScraperQuery.objects.filter(status='running', group_scraper_id=group_id)
-        for query in change_status:
-            query.status = "failed"
-            query.save()
-
-        if group_scraper.running_link is None:
-            for query in queries:
+        queries.update(status='remaining')
+        for x in Accounts.objects.all():
+            driver = configure_webdriver()
+            request_url(driver, LOGIN_URL)
+            logged_in = login(driver, x.email, x.password)
+            if logged_in:
+                for query in queries:
+                    if 'linkedin.com' in query.link:
+                        query.status='running'
+                        query.save()
+                        linkedin_group(driver, query.link, query.job_type)
+                        job_source = query.job_source.lower()
+                        upload_jobs('group scraper', job_source)
+                        remove_files('group scraper', job_source)
+                        query.status='completed'
+                        query.save()
+        print("Group ended")
+    else:
+        try:
+            queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
+            change_status = GroupScraperQuery.objects.filter(status='running').exclude(group_scraper_id=group_id)
+            for query in change_status:
                 query.status = "remaining"
-                query.start_time = str(datetime.now(pakistan_timezone))
-                query.end_time = str(datetime.now(pakistan_timezone))
                 query.save()
-        for query in queries:
-            job_source = query.job_source.lower()
-            print(job_source)
-            if job_source in list(single_scrapers_functions.keys()) and query.status == "remaining":
-                scraper_func = single_scrapers_functions[job_source]
-                try:
+            change_status = GroupScraperQuery.objects.filter(status='running', group_scraper_id=group_id)
+            for query in change_status:
+                query.status = "failed"
+                query.save()
+
+            if group_scraper.running_link is None:
+                for query in queries:
+                    query.status = "remaining"
+                    query.start_time = str(datetime.now(pakistan_timezone))
+                    query.end_time = str(datetime.now(pakistan_timezone))
+                    query.save()
+            for query in queries:
+                job_source = query.job_source.lower()
+                print(job_source)
+                if job_source in list(single_scrapers_functions.keys()) and query.status == "remaining":
+                    scraper_func = single_scrapers_functions[job_source]
+                    try:
+                        group_scraper.running_link = query
+                        group_scraper.save()
+                        # start time and status running
+                        query.status = "running"
+                        query.start_time = str(datetime.now(pakistan_timezone))
+                        query.save()
+                        scraper_func(query.link, query.job_type)
+                        upload_jobs('group scraper', job_source)
+                        remove_files('group scraper', job_source)
+                        # end time and status successfully completed
+                        query.status = "completed"
+                        query.end_time = str(datetime.now(pakistan_timezone))
+                        query.save()
+                    except Exception as e:
+                        # end time and status of missed
+                        query.status = "failed"
+                        query.end_time = str(datetime.now(pakistan_timezone))
+                        query.save()
+                        print(e)
+                        saveLogs(e)
+                else:
                     group_scraper.running_link = query
                     group_scraper.save()
-                    # start time and status running
-                    query.status = "running"
-                    query.start_time = str(datetime.now(pakistan_timezone))
-                    query.save()
-                    scraper_func(query.link, query.job_type)
-                    upload_jobs('group scraper', job_source)
-                    remove_files('group scraper', job_source)
-                    # end time and status successfully completed
-                    query.status = "completed"
-                    query.end_time = str(datetime.now(pakistan_timezone))
-                    query.save()
-                except Exception as e:
-                    # end time and status of missed
-                    query.status = "failed"
-                    query.end_time = str(datetime.now(pakistan_timezone))
-                    query.save()
-                    print(e)
-                    saveLogs(e)
-            else:
-                group_scraper.running_link = query
-                group_scraper.save()
-                if job_source not in list(single_scrapers_functions.keys()):
-                    query.status = "failed"
-                    query.start_time = str(datetime.now(pakistan_timezone))
-                    query.end_time = str(datetime.now(pakistan_timezone))
-                    query.save()
-                print("")
-        upload_jobs('group scraper', 'all')
-        remove_files('group scraper', 'all')
-    except Exception as e:
-        upload_jobs('group scraper', 'all')
-        remove_files('group scraper', 'all')
-        current_scraper = ''
-        print(str(e))
-        saveLogs(e)
-    SchedulerSync.objects.filter(
-        job_source=current_scraper).update(running=False, end_time=datetime.now(pakistan_timezone))
-    if len(GroupScraperQuery.objects.filter(group_scraper_id=group_id, status='remaining')) == 0:
-        group_scraper.running_link = None
-        group_scraper.save()
-    print("Group Scraper is finished")
+                    if job_source not in list(single_scrapers_functions.keys()):
+                        query.status = "failed"
+                        query.start_time = str(datetime.now(pakistan_timezone))
+                        query.end_time = str(datetime.now(pakistan_timezone))
+                        query.save()
+                    print("")
+            upload_jobs('group scraper', 'all')
+            remove_files('group scraper', 'all')
+        except Exception as e:
+            upload_jobs('group scraper', 'all')
+            remove_files('group scraper', 'all')
+            current_scraper = ''
+            print(str(e))
+            saveLogs(e)
+        SchedulerSync.objects.filter(
+            job_source=current_scraper).update(running=False, end_time=datetime.now(pakistan_timezone))
+        if len(GroupScraperQuery.objects.filter(group_scraper_id=group_id, status='remaining')) == 0:
+            group_scraper.running_link = None
+            group_scraper.save()
+        print("Group Scraper is finished")
 
 
 # upload_jobs('Infinite Scrapper', 'linkedin_group')

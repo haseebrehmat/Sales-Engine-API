@@ -38,6 +38,7 @@ from scraper.jobs.us_jora_scraping import us_jora
 from scraper.jobs.workable_scraping import workable
 from scraper.jobs.ycombinator_scraping import ycombinator
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
+from scraper.jobs.wwr_scraping import weworkremotely
 
 single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': career_builder, 'dice': dice,
                              'glassdoor': glassdoor, 'indeed': indeed, 'linkedin': linkedin, 'monster': monster,
@@ -54,4 +55,5 @@ single_scrapers_functions = {'careerbuilder': career_builder, 'career_builder': 
                              "hubstaff_talent": hubstaff_talent, "just_remote": just_remote, 'remote_co': remote_co, 'remoteco': remote_co, 'built_in': builtin, 'builtin': builtin,
                              'startup': startup, 'getwork': getwork, 'get_work': getwork, 'ruby_on_remote': ruby_on_remote, 'rubyonremote': ruby_on_remote, 'smartrecruiter': smartrecruiter,
                              'smart_recruiter': smartrecruiter, 'clearance': clearance, 'usjora': us_jora, 'us_jora': us_jora, 'workable': workable,
-                             'ycombinator': ycombinator, 'y_combinator': ycombinator, 'ziprecruiter_scraping': ziprecruiter_scraping, 'ziprecruiter': ziprecruiter_scraping}
+                             'ycombinator': ycombinator, 'y_combinator': ycombinator, 'ziprecruiter_scraping': ziprecruiter_scraping, 'ziprecruiter': ziprecruiter_scraping,
+                             'weworkremotely': weworkremotely, 'we_work_remotely': weworkremotely}

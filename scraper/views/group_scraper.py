@@ -109,10 +109,10 @@ class GroupScraperDetailView(APIView):
 
             if serializer.is_valid():
                 serializer.save()
+                obj.disabled = query_dict.get("disabled", obj.disabled)
                 if obj.name != name.lower():
                     obj.name = name
-                    obj.disabled = query_dict.get("disabled", False)
-                    obj.save()
+                obj.save()
                 status_code = status.HTTP_200_OK
                 message = {
                     "detail": "Group Scheduler setting updated successfully"}
