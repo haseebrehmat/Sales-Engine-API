@@ -104,7 +104,7 @@ class WeWorkRemotelyScraper:
                 "min": f"${min_salary}",
                 "max": f"${max_salary}",
                 "format": currency_format,
-                "estimated": f"${min_salary} - ${max_salary} ${currency_format}"
+                "estimated": f"{min_salary} - {max_salary} {currency_format}"
             }
         else:
             return {
@@ -223,15 +223,14 @@ class WeWorkRemotelyScraper:
             total_jobs=len(df), job_source="WeWorkRemotely", filename=filename)
 
 
-def weworkremotely() -> None:
+def weworkremotely(url: str, job_type: str = 'full time remote') -> None:
     print("Running We Work Remotely...")
     try:
         driver: WebDriver = configure_webdriver()
         driver.maximize_window()
         wwr_scraper = WeWorkRemotelyScraper(
             driver=driver,
-            url="https://weworkremotely.com/remote-jobs/search?search_uuid=&term=&sort=past_week&categories%5B%5D=2"
-                "&categories%5B%5D=17&categories%5B%5D=18&categories%5B%5D=6&categories%5B%5D=11")
+            url=url)
         wwr_scraper.find_jobs()
     except Exception as e:
         print(e)
