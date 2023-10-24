@@ -47,6 +47,8 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_detail[2])
                 driver.switch_to.new_window('tab')
                 driver.get(url)
+                import pdb
+                pdb.set_trace()
                 time.sleep(4)
                 try:
                     driver.find_element(By.ID, "read-more-description-toggle").click()
@@ -95,7 +97,16 @@ def find_jobs(driver, job_type, total_job):
                     append_data(data, "N/A")
                     append_data(data, "N/A")
                 append_data(data, "Builtin")
-                append_data(data, set_job_type('Full time'))
+                try:
+                    job_type_check = driver.find_element(By.CLASS_NAME, "company-info")
+                    if 'remote' in job_type_check.text.lower():
+                        if 'hybrid' in job_type_check.text.lower():
+                            append_data(data, set_job_type('Hybrid'))
+                        else:
+                            append_data(data, set_job_type('Full time'))
+                except Exception as e:
+                    print(e)
+                    append_data(data, set_job_type(job_type))
                 append_data(data, job_description.get_attribute('innerHTML'))
 
                 scrapped_data.append(data)
