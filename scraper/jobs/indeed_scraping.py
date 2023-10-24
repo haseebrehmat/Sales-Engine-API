@@ -138,7 +138,7 @@ def indeed(link, job_type):
     try:
         total_job = 0
         count = 0
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
