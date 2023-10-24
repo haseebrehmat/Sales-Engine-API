@@ -47,8 +47,6 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_detail[2])
                 driver.switch_to.new_window('tab')
                 driver.get(url)
-                import pdb
-                pdb.set_trace()
                 time.sleep(4)
                 try:
                     driver.find_element(By.ID, "read-more-description-toggle").click()
