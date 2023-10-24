@@ -46,7 +46,7 @@ def find_jobs(driver, job_type, total_job):
 
             job_title = driver.find_element(
                 By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
-            append_data(data, job_title.text.split('-')[0])
+            append_data(data, job_title.text)
             company_name = driver.find_element(By.CLASS_NAME, "css-1saizt3")
             append_data(data, company_name.text)
             address = driver.find_element(By.CLASS_NAME, "css-6z8o9s")
