@@ -102,7 +102,7 @@ def find_jobs(driver, job_type, total_jobs, more_than_3, url=None):
         except Exception as e:
             print(e)
 
-    address = driver.find_elements(By.CLASS_NAME, "job-card-container__metadata-item")
+    address = driver.find_elements(By.CLASS_NAME, "artdeco-entity-lockup__caption")
     count = 0
     for job in jobs:
         try:
@@ -130,32 +130,45 @@ def find_jobs(driver, job_type, total_jobs, more_than_3, url=None):
                 if int(job_date[0]) > 3:
                   more_than_3 += 1
             append_data(data, job_date)
+
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight"))
+            )
+
             try:
                 estimated_salary = driver.find_elements(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight")[0].text
-                estimated_salary.split(' (')[0]
-                try:
-                    if 'yr' in estimated_salary:
-                        append_data(data, "yearly")
-                    elif 'hr' in estimated_salary:
-                        append_data(data, "hourly")
-                    else:
+                if '$' in estimated_salary:
+                    estimated_salary = estimated_salary.split('Full-time')[0]
+                    estimated_salary = estimated_salary.split('Remote')[0]
+                    try:
+                        if 'yr' in estimated_salary:
+                            append_data(data, "yearly")
+                        elif 'hr' in estimated_salary:
+                            append_data(data, "hourly")
+                        else:
+                            append_data(data, "N/A")
+                    except:
                         append_data(data, "N/A")
-                except:
-                    append_data(data, "N/A")
-                try:
-                    append_data(data, k_conversion(estimated_salary))
-                except:
+                    try:
+                        append_data(data, k_conversion(estimated_salary))
+                    except:
+                        append_data(data, 'N/A')
+                    try:
+                        salary_min = estimated_salary.split('$')[1]
+                        salary_min = salary_min.split(' ')[0]
+                        append_data(data, k_conversion(salary_min.split('-')[0]))
+                    except:
+                        append_data(data, 'N/A')
+                    try:
+                        salary_max = estimated_salary.split('$')[2]
+                        append_data(data, k_conversion(salary_max.split(' ')[0]))
+                    except:
+                        append_data(data, 'N/A')
+                else:
                     append_data(data, 'N/A')
-                try:
-                    salary_min = estimated_salary.split('$')[1]
-                    salary_min = salary_min.split(' ')[0]
-                    append_data(data, k_conversion(salary_min.split('-')[0]))
-                except:
                     append_data(data, 'N/A')
-                try:
-                    salary_max = estimated_salary.split('$')[2]
-                    append_data(data, k_conversion(salary_max.split(' ')[0]))
-                except:
+                    append_data(data, 'N/A')
                     append_data(data, 'N/A')
             except:
                 append_data(data, 'N/A')
@@ -164,7 +177,17 @@ def find_jobs(driver, job_type, total_jobs, more_than_3, url=None):
                 append_data(data, 'N/A')
 
             append_data(data, "Linkedin")
-            append_data(data, set_job_type(job_type))
+            try:
+                job_type_check = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight")
+                if 'Contract' in job_type_check.text:
+                    append_data(data, set_job_type('Contract'))
+                elif 'Full-time' in job_type_check.text:
+                    append_data(data, set_job_type('Full time'))
+                else:
+                    append_data(data, set_job_type(job_type))
+            except Exception as e:
+                print(e)
+                append_data(data, set_job_type(job_type))
             append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
@@ -192,32 +215,6 @@ def data_exists(driver):
         return True if page_exists[0].text == '' else False
     except Exception as e:
         return True
-
-
-def jobs_types(driver, link, job_type, total_job):
-    count = 0
-    for link in url:
-      print("Link started")
-      try:
-        more_than_3 = 0
-        request_url(driver, link.link)
-        flag = True
-        flag, total_job, more_than_3 = find_jobs(driver, link.job_type, total_job, more_than_3)
-        if flag:
-            count += 25
-
-            while flag:
-                if more_than_3 < 5:
-                    flag, total_job, more_than_3 = find_jobs(driver, link.job_type, total_job, more_than_3, "&start=" + str(count))
-                    count += 25
-                else:
-                  break
-        else:
-            print(NO_JOB_RESULT)
-      except Exception as e:
-        saveLogs(e)
-        print(e)
-      print("Link finished")
 
 
 # code starts from here

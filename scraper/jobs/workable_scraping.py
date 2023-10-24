@@ -101,13 +101,24 @@ def find_jobs(driver, job_type):
                 append_data(data, "N/A")
                 append_data(data, "N/A")
                 append_data(data, "Workable")
-                append_data(data, set_job_type(job_type))
+                try:
+                    job_type_check = driver.find_element(
+                        By.CLASS_NAME, "jobOverview__job-details--3JOit")
+                    if 'contract' in job_type_check.text.lower():
+                        append_data(data, set_job_type('Contract'))
+                    elif 'full time' in job_type_check.text.lower():
+                        append_data(data, set_job_type('Full time'))
+                    else:
+                        append_data(data, set_job_type(job_type))
+                except Exception as e:
+                    print(e)
+                    append_data(data, set_job_type(job_type))
                 append_data(data, job_description.get_attribute('innerHTML'))
                 scrapped_data.append(data)
                 count += 1
             except Exception as e:
                 saveLogs(e)
-                
+
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                         "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)

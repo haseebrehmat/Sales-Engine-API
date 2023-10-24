@@ -95,7 +95,7 @@ def find_jobs(driver, job_type, total_job):
                     append_data(data, "N/A")
                     append_data(data, "N/A")
                 append_data(data, "Builtin")
-                append_data(data, set_job_type(job_type))
+                append_data(data, set_job_type('Full time'))
                 append_data(data, job_description.get_attribute('innerHTML'))
 
                 scrapped_data.append(data)
