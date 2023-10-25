@@ -175,6 +175,21 @@ class JobClassifier(object):
         else:
             return job_date
 
+    def classify_week(self, job_date):
+        value = None
+        regex_month = r'(?i)^(a?n? )?(\d*\s?)(weeks|week)( ago)?'
+        value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
+        if value and len(value.groups()) > 1:
+            if value.group(2):
+                weeks = -int(value.group(2))
+                today_date_time = timezone.now() + timezone.timedelta(days=weeks * 7)
+                return today_date_time
+            else:
+                today_date_time = timezone.now() + timezone.timedelta(days=-7)
+                return today_date_time
+        else:
+            return job_date
+
     def classify_day(self, job_date):
         # apply regex patterns to get the days value
         job_date = job_date
@@ -256,6 +271,8 @@ class JobClassifier(object):
             lambda x: self.classify_month(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
             lambda x: self.classify_year(str(x)) if (x is not None) else None)
+        self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
+            lambda x: self.classify_week(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
             lambda x: self.convert_date(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].astype(object).where(

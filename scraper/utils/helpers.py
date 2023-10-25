@@ -13,9 +13,11 @@ from scraper.models import GroupScraper, GroupScraperQuery
 from selenium.webdriver.support import expected_conditions as EC
 import random
 
-from settings.base import PIA_USERNAME, PIA_PASSWORD
-from utils.helpers import saveLogs
 
+from utils.helpers import saveLogs
+from scraper.models.accounts import Accounts
+
+pia_instance = Accounts.objects.filter(source='pia').first()
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -165,9 +167,9 @@ def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
 def run_pia_proxy(driver, location=None):
     driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
     driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
-        0].send_keys(PIA_USERNAME)
+        0].send_keys(pia_instance.email)
     driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
-        0].send_keys(PIA_PASSWORD)
+        0].send_keys(pia_instance.password)
     driver.find_element(By.CLASS_NAME, 'btn').click()
     WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn-success')))
     driver.find_element(By.CLASS_NAME, 'btn-success').click()

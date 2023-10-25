@@ -152,7 +152,7 @@ def glassdoor(link, job_type):
         driver = configure_webdriver()
         driver.maximize_window()
         run_pia_proxy(driver)
-        for x in Accounts.objects.all():
+        for x in Accounts.objects.filter(source='glassdoor'):
             driver.get(GLASSDOOR_LOGIN_URL)
             logged_in = login(driver, x.email, x.password)
             if logged_in:
