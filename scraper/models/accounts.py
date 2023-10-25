@@ -1,10 +1,14 @@
 from django.db import models
 from utils.model_fields.timestamped import TimeStamped
-from settings.utils.model_fields import LowercaseEmailField
+from ..utils.custom_validators import source_validator
 
 class Accounts(TimeStamped):
-    email = LowercaseEmailField(unique=True)
+    email = models.CharField(max_length=500, blank=False, null=False)
     password = models.CharField(max_length=200, blank=False, null=False)
+    source = models.CharField(max_length=200, validators=[source_validator])
+
+    class Meta:
+        unique_together = ('email', 'source')
 
     def __str__(self):
-        return f"{self.email}"
+        return f"{self.email} {self.source}"
