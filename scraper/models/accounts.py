@@ -5,7 +5,7 @@ from ..utils.custom_validators import source_validator
 class Accounts(TimeStamped):
     email = models.CharField(max_length=500, blank=False, null=False)
     password = models.CharField(max_length=200, blank=False, null=False)
-    source = models.CharField(max_length=200, validators=[source_validator])
+    source = models.CharField(max_length=200, null=True, blank=True, validators=[source_validator])
 
     class Meta:
         unique_together = ('email', 'source')
