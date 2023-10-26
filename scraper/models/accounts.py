@@ -1,6 +1,8 @@
 from django.db import models
+
+from scraper.utils.custom_validators import source_validator
 from utils.model_fields.timestamped import TimeStamped
-from ..utils.custom_validators import source_validator
+
 
 class Accounts(TimeStamped):
     email = models.CharField(max_length=500, blank=False, null=False)
