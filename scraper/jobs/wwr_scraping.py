@@ -1,7 +1,8 @@
-import re
-from datetime import datetime
-import time
 import math
+import re
+import time
+from datetime import datetime
+from typing import List
 
 import pandas as pd
 from selenium.common.exceptions import WebDriverException
@@ -14,7 +15,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
-from typing import List
 
 
 class WeWorkRemotelyScraper:
@@ -22,6 +22,7 @@ class WeWorkRemotelyScraper:
         self.driver: WebDriver = driver
         self.url: str = url
         self.scraped_jobs: List[dict] = []
+        self.errs: List[str] = []
 
     def request_page(self) -> None:
         self.driver.get(self.url)
@@ -74,26 +75,46 @@ class WeWorkRemotelyScraper:
                     job_links.append(anchor_elements[1].get_attribute('href'))
         return job_links
 
+    def get_element(self, locator: str, parent: WebElement = None, selector: str = 'class',
+                    alls: bool = False) -> WebElement or List[WebElement] or None:
+        try:
+            by: str = By.CLASS_NAME
+            if selector == 'css':
+                by = By.CSS_SELECTOR
+            if selector == 'xpath':
+                by = By.XPATH
+            if selector == 'tag':
+                by = By.TAG_NAME
+            if selector == 'name':
+                by = By.NAME  # For Input fields
+            wait: WebDriverWait = WebDriverWait(parent or self.driver, 10)
+            ec: EC = EC.presence_of_all_elements_located((by, locator)) if alls else EC.presence_of_element_located(
+                (by, locator))
+            return wait.until(ec)
+        except WebDriverException as e:
+            self.errs.append(e.msg)
+            return None
+
     def load_content(self) -> WebElement:
-        element: WebElement = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'section.job div.listing-container')
-            ))
-        return element
+        # element: WebElement = WebDriverWait(self.driver, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.CSS_SELECTOR, 'section.job div.listing-container')
+        #     ))
+        return self.get_element(locator='section.job div.listing-container', selector='css')
 
     def load_company_details(self) -> WebElement:
-        element: WebElement = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[4]/div[2]/div[2]')
-            ))
-        return element
+        # element: WebElement = WebDriverWait(self.driver, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, '/html/body/div[4]/div[2]/div[2]')
+        #     ))
+        return self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
 
     def load_header(self) -> WebElement:
-        element: WebElement = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[4]/div[2]/div[1]')
-            ))
-        return element
+        # element: WebElement = WebDriverWait(self.driver, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, '/html/body/div[4]/div[2]/div[1]')
+        #     ))
+        return self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
 
     @staticmethod
     def extract_salary(salary: str) -> dict:
@@ -136,14 +157,10 @@ class WeWorkRemotelyScraper:
             datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ")
             current_time = datetime.utcnow()
             time_difference = (current_time.timestamp() - datetime_obj.timestamp())
-
-            # Calculate days, hours, and minutes
             days_difference = math.ceil(time_difference / 86400)
             seconds_difference = int(time_difference % 86400)
             hours = seconds_difference // 36000
             minutes = (seconds_difference % 3600) // 60
-
-            # Format the result according to the specified cases
             if days_difference == 0 and hours == 0:
                 result = f"{minutes} minutes ago"
             elif days_difference == 0:
@@ -155,6 +172,7 @@ class WeWorkRemotelyScraper:
         return result
 
     def visit_tab(self, tab: str) -> None:
+        element: WebElement or None = None
         self.driver.switch_to.window(tab)
         try:
             header: WebElement = self.load_header()
@@ -162,37 +180,21 @@ class WeWorkRemotelyScraper:
             company: WebElement = self.load_company_details()
             if header and company and content:
                 time.sleep(1)
-                # Posted Date
-                posted_date_element: WebElement = WebDriverWait(header, 10).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, '.listing-header-container time')
-                    ))
-                posted_date: str = self.parse_posted_date(
-                    posted_date_element.get_attribute(
-                        'datetime')
-                )
+                # Job Posted Date
+                element = self.get_element(locator='.listing-header-container time', selector='css', parent=header)
+                posted_date: str = self.parse_posted_date(element.get_attribute('datetime'))
                 # Job Title
-                job_title_element: WebElement = WebDriverWait(header, 10).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, '.listing-header-container h1')
-                    ))
-                job_title: str = job_title_element.text
-                # Job Description & Job Description Tags
-                description_tags: str = content.get_attribute(
-                    'innerHTML')
-                description: str = content.text
-                # Company Name
-                company_name_element: WebElement = WebDriverWait(company, 10).until(
-                    EC.presence_of_element_located((By.TAG_NAME, 'h2'))
-                )
-                company_name: str = company_name_element.get_attribute('innerText')
-                # Company Address
-                company_address_element: WebElement = WebDriverWait(company, 10).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, 'h3:not(.listing-pill)'))
-                )
-                company_address: str = company_address_element.text
-                # Salary
+                element = self.get_element(locator='.listing-header-container h1', selector='css', parent=header)
+                job_title: str = element.text if element else "N/A"
+                # Job Description & Tags
+                description_tags: str = content.get_attribute('innerHTML') if content else "N/A"
+                description: str = content.text if content else "N/A"
+                # Company Name & Address
+                element = self.get_element(locator='h2', selector='tag', parent=company)
+                company_name: str = element.text if element else "N/A"
+                element = self.get_element(selector='css', locator='h3:not(.listing-pill)', parent=company)
+                company_address: str = element.text if element else "N/A"
+                # Salary Details
                 badges_anchor_elements: list[WebElement] = WebDriverWait(header, 10).until(
                     EC.presence_of_all_elements_located(
                         (By.CSS_SELECTOR, 'a span.listing-tag'))
@@ -258,7 +260,7 @@ class WeWorkRemotelyScraper:
 def weworkremotely(url: str, job_type: str = 'full time remote') -> None:
     print("Running We Work Remotely...")
     try:
-        driver: WebDriver = configure_webdriver()
+        driver: WebDriver = configure_webdriver(True)
         driver.maximize_window()
         wwr_scraper = WeWorkRemotelyScraper(
             driver=driver,
