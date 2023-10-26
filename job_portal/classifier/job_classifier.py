@@ -147,11 +147,11 @@ class JobClassifier(object):
     def classify_month(self, job_date):
         # apply regex patterns to get the hours value
         value = None
-        regex_month = r'(?i)^(a?n? )?(\d*\s?)(months|month)( ago)?'
+        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(months|month)( ago)?'
         value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
-            if value.group(2):
-                days = -int(value.group(2))
+            if value.group(3):
+                days = -int(value.group(3))
                 today_date_time = timezone.now() + timezone.timedelta(days=days * 30)
                 return today_date_time
             else:
@@ -162,11 +162,11 @@ class JobClassifier(object):
 
     def classify_year(self, job_date):
         value = None
-        regex_month = r'(?i)^(a?n? )?(\d*\s?)(years|year)( ago)?'
+        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(years|year)( ago)?'
         value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
-            if value.group(2):
-                years = -int(value.group(2))
+            if value.group(3):
+                years = -int(value.group(3))
                 today_date_time = timezone.now() + timezone.timedelta(days=years * 365)
                 return today_date_time
             else:
@@ -177,11 +177,11 @@ class JobClassifier(object):
 
     def classify_week(self, job_date):
         value = None
-        regex_month = r'(?i)^(a?n? )?(\d*\s?)(weeks|week)( ago)?'
+        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(weeks|week)( ago)?'
         value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
-            if value.group(2):
-                weeks = -int(value.group(2))
+            if value.group(3):
+                weeks = -int(value.group(3))
                 today_date_time = timezone.now() + timezone.timedelta(days=weeks * 7)
                 return today_date_time
             else:
