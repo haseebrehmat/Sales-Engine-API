@@ -96,24 +96,12 @@ class WeWorkRemotelyScraper:
             return None
 
     def load_content(self) -> WebElement:
-        # element: WebElement = WebDriverWait(self.driver, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.CSS_SELECTOR, 'section.job div.listing-container')
-        #     ))
         return self.get_element(locator='section.job div.listing-container', selector='css')
 
     def load_company_details(self) -> WebElement:
-        # element: WebElement = WebDriverWait(self.driver, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, '/html/body/div[4]/div[2]/div[2]')
-        #     ))
         return self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
 
     def load_header(self) -> WebElement:
-        # element: WebElement = WebDriverWait(self.driver, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, '/html/body/div[4]/div[2]/div[1]')
-        #     ))
         return self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
 
     @staticmethod
@@ -133,10 +121,10 @@ class WeWorkRemotelyScraper:
             }
         else:
             return {
-                "min": "",
-                "max": "",
-                "format": "",
-                "estimated": ""
+                "min": "N/A",
+                "max": "N/A",
+                "format": "N/A",
+                "estimated": "N/A"
             }
 
     @staticmethod
@@ -172,7 +160,7 @@ class WeWorkRemotelyScraper:
         return result
 
     def visit_tab(self, tab: str) -> None:
-        element: WebElement or None = None
+        element: WebElement or List[WebElement] or None
         self.driver.switch_to.window(tab)
         try:
             header: WebElement = self.load_header()
@@ -181,43 +169,40 @@ class WeWorkRemotelyScraper:
             if header and company and content:
                 time.sleep(1)
                 # Job Posted Date
-                element = self.get_element(locator='.listing-header-container time', selector='css', parent=header)
+                element: WebElement = self.get_element(locator='.listing-header-container time', selector='css',
+                                                       parent=header)
                 posted_date: str = self.parse_posted_date(element.get_attribute('datetime'))
                 # Job Title
-                element = self.get_element(locator='.listing-header-container h1', selector='css', parent=header)
+                element: WebElement = self.get_element(locator='.listing-header-container h1', selector='css',
+                                                       parent=header)
                 job_title: str = element.text if element else "N/A"
                 # Job Description & Tags
                 description_tags: str = content.get_attribute('innerHTML') if content else "N/A"
                 description: str = content.text if content else "N/A"
                 # Company Name & Address
-                element = self.get_element(locator='h2', selector='tag', parent=company)
+                element: WebElement = self.get_element(locator='h2', selector='tag', parent=company)
                 company_name: str = element.text if element else "N/A"
-                element = self.get_element(selector='css', locator='h3:not(.listing-pill)', parent=company)
-                company_address: str = element.text if element else "N/A"
-                # Salary Details
-                badges_anchor_elements: list[WebElement] = WebDriverWait(header, 10).until(
-                    EC.presence_of_all_elements_located(
-                        (By.CSS_SELECTOR, 'a span.listing-tag'))
-                )
-                salary_details: dict = self.extract_salary(
-                    badges_anchor_elements[-1].text if badges_anchor_elements[-1] else '')
-                # Job Type
-                job_type_tag: str = badges_anchor_elements[0].text if badges_anchor_elements[0] else ''
-                job_type: str = self.get_job_type(job_type=job_type_tag)
+                element: WebElement = self.get_element(selector='css', locator='h3:not(.listing-pill)', parent=company)
+                company_address: str = element.text if element else "Remote"
+                # Salary Details & Job Type
+                element: list[WebElement] = self.get_element(selector='css', locator='a span.listing-tag',
+                                                             parent=header, alls=True)
+                salary_details: dict = self.extract_salary(element[-1].text if element and element[-1] else '')
+                job_type: str = self.get_job_type(job_type=element[0].text if element and element[0] else '')
                 self.scraped_jobs.append({
-                    "job_title": job_title or "N/A",
-                    "company_name": company_name or "N/A",
+                    "job_title": job_title,
+                    "company_name": company_name,
                     "job_posted_date": posted_date,
-                    "address": company_address or "Remote",
-                    "job_description": description or "N/A",
+                    "address": company_address,
+                    "job_description": description,
                     "job_source_url": self.driver.current_url,
-                    "salary_format": salary_details.get("format", "N/A"),
-                    "estimated_salary": salary_details.get("estimated", "N/A"),
-                    "salary_min": salary_details.get("min", "N/A"),
-                    "salary_max": salary_details.get("max", "N/A"),
+                    "salary_format": salary_details['format'],
+                    "estimated_salary": salary_details['estimated'],
+                    "salary_min": salary_details['min'],
+                    "salary_max": salary_details['max'],
                     "job_source": "weworkremotely",
                     "job_type": job_type,
-                    "job_description_tags": description_tags or "N/A",
+                    "job_description_tags": description_tags,
                 })
                 self.driver.close()
         except WebDriverException:
