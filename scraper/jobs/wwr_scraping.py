@@ -114,8 +114,8 @@ class WeWorkRemotelyScraper:
             unit = match.group("format") or "USD"
             currency_format = "yearly" if int(max_salary.replace(',', '')) > 1000 else "monthly"
             return {
-                "min": f"${min_salary}",
-                "max": f"${max_salary}",
+                "min": f"{min_salary}",
+                "max": f"{max_salary}",
                 "format": currency_format,
                 "estimated": f"{min_salary} - {max_salary} {unit}"
             }
