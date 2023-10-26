@@ -13,8 +13,10 @@ from scraper.models import GroupScraper, GroupScraperQuery
 from selenium.webdriver.support import expected_conditions as EC
 import random
 
-from settings.base import PIA_USERNAME, PIA_PASSWORD
+
 from utils.helpers import saveLogs
+from scraper.models.accounts import Accounts
+
 
 
 def convert_time_into_minutes(interval, interval_type):
@@ -163,31 +165,37 @@ def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
 
 
 def run_pia_proxy(driver, location=None):
-    driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
-    driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
-        0].send_keys(PIA_USERNAME)
-    driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
-        0].send_keys(PIA_PASSWORD)
-    driver.find_element(By.CLASS_NAME, 'btn').click()
-    WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn-success')))
-    driver.find_element(By.CLASS_NAME, 'btn-success').click()
-    driver.find_element(By.CLASS_NAME, 'btn-skip').click()
-    driver.find_element(By.CLASS_NAME, 'region-content').click()
+    pia_instances = Accounts.objects.filter(source='pia')
+    for pia_instance in pia_instances:
+        try:
+            driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
+            driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
+                0].send_keys(pia_instance.email)
+            driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
+                0].send_keys(pia_instance.password)
+            driver.find_element(By.CLASS_NAME, 'btn').click()
+            WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn-success')))
+            driver.find_element(By.CLASS_NAME, 'btn-success').click()
+            driver.find_element(By.CLASS_NAME, 'btn-skip').click()
+            driver.find_element(By.CLASS_NAME, 'region-content').click()
 
-    # if no location found then select US Miami
-    if location:
-        driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys(location)
-        driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
-    else:
-        driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US ")
-        us_locations = [location_btn for location_btn in driver.find_elements(By.CLASS_NAME, "region-list-item")[1:]]
-        if us_locations:
-            random_location = random.randrange(len(us_locations))
-            us_locations[random_location].click()
-        else:
-            driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US Miami")
-            driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
-    time.sleep(5)
+            # if no location found then select US Miami
+            if location:
+                driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys(location)
+                driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
+            else:
+                driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US ")
+                us_locations = [location_btn for location_btn in driver.find_elements(By.CLASS_NAME, "region-list-item")[1:]]
+                if us_locations:
+                    random_location = random.randrange(len(us_locations))
+                    us_locations[random_location].click()
+                else:
+                    driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US Miami")
+                    driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
+            time.sleep(5)
+            break
+        except Exception as e:
+            print(str(e))
 
 def remove_emojis(text):
     pattern =  r'[\w\s.,!?\'"“”‘’#$%^&*()_+=\-{}\[\]:;<>\|\\/~`]+'

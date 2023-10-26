@@ -4,6 +4,8 @@ import environ
 
 from pathlib import Path
 
+
+
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
@@ -248,8 +250,3 @@ if env("ENVIRONMENT") == 'production':
 
 CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'  # Replace with your RabbitMQ credentials
 CELERY_RESULT_BACKEND = 'rpc://'  # Use a placeholder result backend (can be updated as needed)
-
-
-# PIA Credentials
-PIA_USERNAME = env('PIA_USERNAME')
-PIA_PASSWORD = env('PIA_PASSWORD')

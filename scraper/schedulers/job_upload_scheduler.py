@@ -819,7 +819,7 @@ def group_scraper_job(group_id):
         print("Group started")
         queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
         queries.update(status='remaining')
-        for x in Accounts.objects.all():
+        for x in Accounts.objects.filter(source='linkedin'):
             driver = configure_webdriver()
             request_url(driver, LOGIN_URL)
             logged_in = login(driver, x.email, x.password)
