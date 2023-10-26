@@ -1148,7 +1148,6 @@ languages = {
         "ruby on rails developer",
         "ruby systems engineer",
         "backend developer - ruby",
-        "rspec",
         "test engineer - ruby",
         "ruby/rails",
     ],
@@ -1408,7 +1407,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Ruby on Rails',
-        'exp': '(?i)(^|\W)(ror|ruby|ruby[-\s]?on[-\s]?rails|turbo[-\s]?links|side[-\s]?kiq|rails|capybara|hot[-\s]?wire|r[-\s]?spec|mini[-\s]?test)(\W|$)'
+        'exp': '(?i)(^|\W)(ror|ruby|rspec|ruby[-\s]?on[-\s]?rails|turbo[-\s]?links|side[-\s]?kiq|rails|capybara|hot[-\s]?wire|r[-\s]?spec|mini[-\s]?test)(\W|$)'
     },
     {
         'tech_stack': 'Service Now',
