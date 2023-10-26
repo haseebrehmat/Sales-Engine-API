@@ -170,9 +170,9 @@ def run_pia_proxy(driver, location=None):
         try:
             driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
             driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
-                0].send_keys(pia_instance.first().email)
+                0].send_keys(pia_instance.email)
             driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
-                0].send_keys(pia_instance.first().password)
+                0].send_keys(pia_instance.password)
             driver.find_element(By.CLASS_NAME, 'btn').click()
             WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn-success')))
             driver.find_element(By.CLASS_NAME, 'btn-success').click()
