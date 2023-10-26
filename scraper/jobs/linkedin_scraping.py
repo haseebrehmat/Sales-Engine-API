@@ -237,7 +237,7 @@ def linkedin(link, job_type):
     print("linkedin")
     total_job = 0
     try:
-        for x in Accounts.objects.all():
+        for x in Accounts.objects.filter(source='linkedin'):
             driver = configure_webdriver()
             request_url(driver, LOGIN_URL)
             logged_in = login(driver, x.email, x.password)

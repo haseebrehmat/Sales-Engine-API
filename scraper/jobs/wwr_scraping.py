@@ -185,7 +185,7 @@ class WeWorkRemotelyScraper:
                 company_name_element: WebElement = WebDriverWait(company, 10).until(
                     EC.presence_of_element_located((By.TAG_NAME, 'h2'))
                 )
-                company_name: str = company_name_element.text
+                company_name: str = company_name_element.get_attribute('innerText')
                 # Company Address
                 company_address_element: WebElement = WebDriverWait(company, 10).until(
                     EC.presence_of_element_located(

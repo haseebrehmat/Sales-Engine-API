@@ -259,7 +259,9 @@ class JobModification(APIView):
                     detect_model_changes(queryset, request.data, JobDetail, request.user)
                     request.data['time'] = time
                     request.data["expired"] = expired
-                    request.data["job_posted_date"] = job_posted_date
+                    posted_at = f'{job_posted_date} {time}'
+                    serializer.validated_data["job_posted_date"] = datetime.strptime(posted_at,
+                                                                        "%Y-%m-%d %H:%M")
 
                     serializer.validated_data['edited'] = True
                     serializer.save()
