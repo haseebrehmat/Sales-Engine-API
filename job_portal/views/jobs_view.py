@@ -25,8 +25,8 @@ class JobsView(ListAPIView):
     # search_fields = ['job_title']
     http_method_names = ['get']
     ordering_fields = ['job_title', 'job_type', 'job_posted_date', 'company_name']
-    # permission_classes = (JobDetailPermission, )
-    permission_classes = (AllowAny, )
+    permission_classes = (JobDetailPermission, )
+    # permission_classes = (AllowAny, )
 
     def get_queryset(self):
         job_title = self.request.GET.get('search')
@@ -63,6 +63,8 @@ class JobDetailView(APIView):
                                          for
                                          x in jobs]
             data["job_details"] = serializer.data
+            if not data["job_details"]["job_description_tags"]:
+                data["job_details"]["job_description_tags"] = qs.job_description
             data["total_applied_count"] = len(data["applied_verticals"])
         else:
             data = []

@@ -13,8 +13,10 @@ from scraper.models import GroupScraper, GroupScraperQuery
 from selenium.webdriver.support import expected_conditions as EC
 import random
 
-from settings.base import PIA_USERNAME, PIA_PASSWORD
+
 from utils.helpers import saveLogs
+from scraper.models.accounts import Accounts
+
 
 
 def convert_time_into_minutes(interval, interval_type):
@@ -163,31 +165,37 @@ def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
 
 
 def run_pia_proxy(driver, location=None):
-    driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
-    driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
-        0].send_keys(PIA_USERNAME)
-    driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
-        0].send_keys(PIA_PASSWORD)
-    driver.find_element(By.CLASS_NAME, 'btn').click()
-    WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn-success')))
-    driver.find_element(By.CLASS_NAME, 'btn-success').click()
-    driver.find_element(By.CLASS_NAME, 'btn-skip').click()
-    driver.find_element(By.CLASS_NAME, 'region-content').click()
+    pia_instances = Accounts.objects.filter(source='pia')
+    for pia_instance in pia_instances:
+        try:
+            driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
+            driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
+                0].send_keys(pia_instance.email)
+            driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
+                0].send_keys(pia_instance.password)
+            driver.find_element(By.CLASS_NAME, 'btn').click()
+            WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn-success')))
+            driver.find_element(By.CLASS_NAME, 'btn-success').click()
+            driver.find_element(By.CLASS_NAME, 'btn-skip').click()
+            driver.find_element(By.CLASS_NAME, 'region-content').click()
 
-    # if no location found then select US Miami
-    if location:
-        driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys(location)
-        driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
-    else:
-        driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US ")
-        us_locations = [location_btn for location_btn in driver.find_elements(By.CLASS_NAME, "region-list-item")[1:]]
-        if us_locations:
-            random_location = random.randrange(len(us_locations))
-            us_locations[random_location].click()
-        else:
-            driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US Miami")
-            driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
-    time.sleep(5)
+            # if no location found then select US Miami
+            if location:
+                driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys(location)
+                driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
+            else:
+                driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US ")
+                us_locations = [location_btn for location_btn in driver.find_elements(By.CLASS_NAME, "region-list-item")[1:]]
+                if us_locations:
+                    random_location = random.randrange(len(us_locations))
+                    us_locations[random_location].click()
+                else:
+                    driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US Miami")
+                    driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
+            time.sleep(5)
+            break
+        except Exception as e:
+            print(str(e))
 
 def remove_emojis(text):
     pattern =  r'[\w\s.,!?\'"“”‘’#$%^&*()_+=\-{}\[\]:;<>\|\\/~`]+'
@@ -198,11 +206,18 @@ def k_conversion(text):
     return text.replace("k", ",000").replace( "K", ",000")
 
 def set_job_type(job_type):
+    # if 'full time' in job_type.lower():
+    #     return JOB_TYPE[0] if 'remote' in job_type.lower() else JOB_TYPE[1] if 'site' in job_type.lower() else JOB_TYPE[2] if 'hybrid' in job_type.lower() else JOB_TYPE[1]
+    # elif 'hybrid' in job_type.lower():
+    #     return JOB_TYPE[2] if 'full time' in job_type.lower() else JOB_TYPE[3] if 'contract' in job_type.lower() else JOB_TYPE[2]
+    # elif 'contract' in job_type.lower():
+    #     return JOB_TYPE[4] if 'onsite' in job_type.lower() else JOB_TYPE[4] if 'site' in job_type.lower() else JOB_TYPE[5] if 'remote' in job_type.lower() else JOB_TYPE[4]
+    # else:
+    #   return job_type.capitalize()
+
     if 'full time' in job_type.lower():
-        return JOB_TYPE[0] if 'remote' in job_type.lower() else JOB_TYPE[1] if 'site' in job_type.lower() else JOB_TYPE[2] if 'hybrid' in job_type.lower() else JOB_TYPE[1]
-    elif 'hybrid' in job_type.lower():
-        return JOB_TYPE[2] if 'full time' in job_type.lower() else JOB_TYPE[3] if 'contract' in job_type.lower() else JOB_TYPE[2]
+        return JOB_TYPE[0]
     elif 'contract' in job_type.lower():
-        return JOB_TYPE[4] if 'onsite' in job_type.lower() else JOB_TYPE[4] if 'site' in job_type.lower() else JOB_TYPE[5] if 'remote' in job_type.lower() else JOB_TYPE[4]
+        return JOB_TYPE[1]
     else:
       return job_type.capitalize()

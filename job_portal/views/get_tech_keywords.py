@@ -6,9 +6,9 @@ from job_portal.models import JobDetail
 
 
 @api_view(['GET'])
-@permission_classes((AllowAny, ))
+#@permission_classes((AllowAny, ))
 def get_tech_keywords(request):
-    keywords = JobDetail.objects.all().values_list("tech_stacks", flat=True)
+    keywords = JobDetail.objects.exclude(tech_stacks=None).values_list("tech_stacks", flat=True)
     data = []
     for x in keywords:
         data.extend(x)

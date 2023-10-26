@@ -1,6 +1,7 @@
 import re
-from re import Match
+from datetime import datetime
 import time
+import math
 
 import pandas as pd
 from selenium.common.exceptions import WebDriverException
@@ -126,6 +127,33 @@ class WeWorkRemotelyScraper:
         else:
             'full time remote'
 
+    @staticmethod
+    def parse_posted_date(datetime_str: str) -> str:
+        pattern = r'^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)$'
+        match = re.match(pattern, datetime_str)
+        if match:
+            datetime_str = match.group(1)
+            datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ")
+            current_time = datetime.utcnow()
+            time_difference = (current_time.timestamp() - datetime_obj.timestamp())
+
+            # Calculate days, hours, and minutes
+            days_difference = math.ceil(time_difference / 86400)
+            seconds_difference = int(time_difference % 86400)
+            hours = seconds_difference // 36000
+            minutes = (seconds_difference % 3600) // 60
+
+            # Format the result according to the specified cases
+            if days_difference == 0 and hours == 0:
+                result = f"{minutes} minutes ago"
+            elif days_difference == 0:
+                result = f"{hours} hours ago"
+            else:
+                result = f"{days_difference} days ago"
+        else:
+            result = datetime_str
+        return result
+
     def visit_tab(self, tab: str) -> None:
         self.driver.switch_to.window(tab)
         try:
@@ -139,8 +167,10 @@ class WeWorkRemotelyScraper:
                     EC.presence_of_element_located(
                         (By.CSS_SELECTOR, '.listing-header-container time')
                     ))
-                posted_date: str = posted_date_element.get_attribute(
-                    'datetime')
+                posted_date: str = self.parse_posted_date(
+                    posted_date_element.get_attribute(
+                        'datetime')
+                )
                 # Job Title
                 job_title_element: WebElement = WebDriverWait(header, 10).until(
                     EC.presence_of_element_located(
@@ -155,7 +185,7 @@ class WeWorkRemotelyScraper:
                 company_name_element: WebElement = WebDriverWait(company, 10).until(
                     EC.presence_of_element_located((By.TAG_NAME, 'h2'))
                 )
-                company_name: str = company_name_element.text
+                company_name: str = company_name_element.get_attribute('innerText')
                 # Company Address
                 company_address_element: WebElement = WebDriverWait(company, 10).until(
                     EC.presence_of_element_located(

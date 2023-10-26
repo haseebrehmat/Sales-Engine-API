@@ -147,11 +147,46 @@ class JobClassifier(object):
     def classify_month(self, job_date):
         # apply regex patterns to get the hours value
         value = None
-        regex_month = r'(?i)^(a?.*\s)?(month)\s*(ago)?'
+        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(months|month)( ago)?'
         value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
-            today_date_time = timezone.now() + timezone.timedelta(days=-1)
-            return today_date_time
+            if value.group(3):
+                days = -int(value.group(3))
+                today_date_time = timezone.now() + timezone.timedelta(days=days * 30)
+                return today_date_time
+            else:
+                today_date_time = timezone.now() + timezone.timedelta(days=-30)
+                return today_date_time
+        else:
+            return job_date
+
+    def classify_year(self, job_date):
+        value = None
+        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(years|year)( ago)?'
+        value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
+        if value and len(value.groups()) > 1:
+            if value.group(3):
+                years = -int(value.group(3))
+                today_date_time = timezone.now() + timezone.timedelta(days=years * 365)
+                return today_date_time
+            else:
+                today_date_time = timezone.now() + timezone.timedelta(days=-365)
+                return today_date_time
+        else:
+            return job_date
+
+    def classify_week(self, job_date):
+        value = None
+        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(weeks|week)( ago)?'
+        value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
+        if value and len(value.groups()) > 1:
+            if value.group(3):
+                weeks = -int(value.group(3))
+                today_date_time = timezone.now() + timezone.timedelta(days=weeks * 7)
+                return today_date_time
+            else:
+                today_date_time = timezone.now() + timezone.timedelta(days=-7)
+                return today_date_time
         else:
             return job_date
 
@@ -234,6 +269,10 @@ class JobClassifier(object):
             lambda x: self.classify_min(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
             lambda x: self.classify_month(str(x)) if (x is not None) else None)
+        self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
+            lambda x: self.classify_year(str(x)) if (x is not None) else None)
+        self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
+            lambda x: self.classify_week(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].apply(
             lambda x: self.convert_date(str(x)) if (x is not None) else None)
         self.data_frame['job_posted_date'] = self.data_frame['job_posted_date'].astype(object).where(
