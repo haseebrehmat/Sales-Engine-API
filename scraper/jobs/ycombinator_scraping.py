@@ -38,6 +38,7 @@ def save_data(scrapped_data, job_title, company_name, address, job_description, 
 
 def finding_job(driver, company_name, scrapped_data):
     try:
+        flag = True
         WebDriverWait(driver, 60).until(
             EC.presence_of_element_located(
                 (By.CLASS_NAME, "bg-beige-lighter"))
@@ -46,7 +47,13 @@ def finding_job(driver, company_name, scrapped_data):
         details = driver.find_elements(By.CLASS_NAME, "company-details")
         details_loc = details[1].find_elements(By.TAG_NAME, "div")
         address = details_loc[0].text
-        job_type = details_loc[2].text
+        job_type_check = details_loc[2].text
+        if 'full-time' in job_type_check.lower():
+            job_type = 'full time'
+        elif 'contract' in job_type_check.lower():
+            job_type = 'contract'
+        else:
+            flag = False
         description = driver.find_element(By.CLASS_NAME, "bg-beige-lighter")
         job_description = description.find_elements(By.TAG_NAME, "div")
 
@@ -74,8 +81,8 @@ def finding_job(driver, company_name, scrapped_data):
             estimated_salary = 'N/A'
             salary_min = 'N/A'
             salary_max = 'N/A'
-
-        save_data(scrapped_data, job_title, company_name, address, desc, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, desc_tags)
+        if flag:
+            save_data(scrapped_data, job_title, company_name, address, desc, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, desc_tags)
     except Exception as e:
         print(e)
 
@@ -201,7 +208,6 @@ def ycombinator(link, job_type):
         driver = configure_webdriver()
         driver.maximize_window()
         try:
-            flag = True
             request_url(driver, YCOMBINATOR_LOGIN_URL)
             driver.maximize_window()
             if login(driver):
