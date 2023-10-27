@@ -26,6 +26,19 @@ class WeWorkRemotelyScraper:
         self.job: dict = {}
         self.errs: List[dict] = []
 
+    @classmethod
+    def call(cls, url):
+        print("Running We Work Remotely...")
+        try:
+            driver: WebDriver = configure_webdriver(True)
+            driver.maximize_window()
+            wwr_scraper: cls.__class__ = cls(driver=driver, url=url)
+            wwr_scraper.find_jobs()
+        except Exception as e:
+            print(e)
+            saveLogs(e)
+        print("Done We Work Remotely...")
+
     def request_page(self) -> None:
         self.driver.get(self.url)
 
@@ -197,7 +210,7 @@ class WeWorkRemotelyScraper:
     def tab_visited(self, tab: str) -> bool:
         self.driver.switch_to.window(tab)
         try:
-            header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
+            header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
             content: WebElement = self.get_element(locator='section.job div.listing-container', selector='css')
             company: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
             if header and company and content:
@@ -262,15 +275,4 @@ class WeWorkRemotelyScraper:
 
 
 def weworkremotely(url: str, job_type: str = 'full time remote') -> None:
-    print("Running We Work Remotely...")
-    try:
-        driver: WebDriver = configure_webdriver()
-        driver.maximize_window()
-        wwr_scraper = WeWorkRemotelyScraper(
-            driver=driver,
-            url=url)
-        wwr_scraper.find_jobs()
-    except Exception as e:
-        print(e)
-        saveLogs(e)
-    print("Done We Work Remotely...")
+    WeWorkRemotelyScraper.call(url)
