@@ -163,7 +163,7 @@ class BlockJobCompany(TimeStamped):
 
 class SalesEngineJobsStats(TimeStamped):
     job_source = models.CharField(max_length=30, blank=True, null=True)
-    jobs_count = models.IntegerField()
+    jobs_count = models.IntegerField(default=0)
     upload_status = models.BooleanField(default=True)
     source = models.CharField(max_length=250, default=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE)
 
