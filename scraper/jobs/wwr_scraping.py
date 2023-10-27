@@ -1,6 +1,7 @@
 import math
 import re
 import time
+import traceback
 from datetime import datetime
 from typing import List
 
@@ -23,15 +24,22 @@ class WeWorkRemotelyScraper:
         self.url: str = url
         self.scraped_jobs: List[dict] = []
         self.job: dict = {}
-        self.errs: List[str] = []
+        self.errs: List[dict] = []
 
     def request_page(self) -> None:
         self.driver.get(self.url)
 
-    @staticmethod
-    def log_error(exception: Exception or str, save: bool = False) -> None:
+    def handle_exception(self, exception: Exception or str) -> None:
         print(exception)
-        # saveLogs(exception) if save else None
+        traceback.format_exc()
+        traceback_data = traceback.extract_tb(exception.__traceback__)
+        if traceback_data and traceback_data[0]:
+            self.errs.append({
+                'path': traceback_data[0].filename or "",
+                'line': traceback_data[0].line or "",
+                'line_number': traceback_data[0].lineno or "",
+                'function': traceback_data[0].name or ""
+            })
 
     def get_element(self, locator: str, parent: WebElement = None, selector: str = 'class',
                     alls: bool = False) -> WebElement or List[WebElement] or None:
@@ -50,7 +58,7 @@ class WeWorkRemotelyScraper:
                 (by, locator))
             return wait.until(ec)
         except WebDriverException as e:
-            self.log_error(e)
+            self.handle_exception(e)
             return None
 
     def home_page_loaded(self) -> bool:
@@ -69,7 +77,7 @@ class WeWorkRemotelyScraper:
                 if retry < 5:
                     print(f"Retry {retry}/{5} due to: {e}")
                 else:
-                    self.log_error(e)
+                    self.handle_exception(e)
                     self.driver.quit()
                     break
         return loaded
@@ -159,7 +167,7 @@ class WeWorkRemotelyScraper:
                 # Job Type
                 self.get_job_type(job_type=element[0].text if element and element[0] else '')
         except Exception as e:
-            self.log_error(e)
+            self.handle_exception(e)
 
     def extract_values_from_content(self, content: WebElement or None):
         try:
@@ -170,7 +178,7 @@ class WeWorkRemotelyScraper:
                 # Job Description without Tags
                 self.job['job_description']: str = content.text if content else "N/A"
         except Exception as e:
-            self.log_error(e)
+            self.handle_exception(e)
 
     def extract_values_from_company_section(self, company_section: WebElement or None):
         try:
@@ -184,12 +192,12 @@ class WeWorkRemotelyScraper:
                                                        parent=company_section)
                 self.job['address']: str = element.text if element else "Remote"
         except Exception as e:
-            self.log_error(e)
+            self.handle_exception(e)
 
     def tab_visited(self, tab: str) -> bool:
         self.driver.switch_to.window(tab)
         try:
-            header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
+            header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
             content: WebElement = self.get_element(locator='section.job div.listing-container', selector='css')
             company: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
             if header and company and content:
@@ -201,8 +209,10 @@ class WeWorkRemotelyScraper:
                 self.scraped_jobs.append(job)
                 self.driver.close()
                 return True
+            else:
+                self.driver.close()
         except WebDriverException as e:
-            self.log_error(e)
+            self.handle_exception(e)
             self.driver.close()
             return False
 
@@ -221,15 +231,14 @@ class WeWorkRemotelyScraper:
                         else:
                             continue
                     except Exception as e:
-                        self.log_error(e)
+                        self.handle_exception(e)
                         continue
             if len(self.scraped_jobs) > 0:
                 self.export_to_excel()
             self.driver.quit()
         except Exception as e:
-            self.log_error(e)
+            self.handle_exception(e)
             self.driver.quit()
-        print(self.errs)
 
     def export_to_excel(self) -> None:
         columns_name: list[str] = ["job_title", "company_name", "job_posted_date", "address", "job_description",
@@ -247,7 +256,7 @@ class WeWorkRemotelyScraper:
 def weworkremotely(url: str, job_type: str = 'full time remote') -> None:
     print("Running We Work Remotely...")
     try:
-        driver: WebDriver = configure_webdriver(True)
+        driver: WebDriver = configure_webdriver()
         driver.maximize_window()
         wwr_scraper = WeWorkRemotelyScraper(
             driver=driver,
