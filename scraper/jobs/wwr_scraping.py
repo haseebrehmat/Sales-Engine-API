@@ -22,6 +22,7 @@ class WeWorkRemotelyScraper:
         self.driver: WebDriver = driver
         self.url: str = url
         self.scraped_jobs: List[dict] = []
+        self.job: dict = {}
         self.errs: List[str] = []
 
     def request_page(self) -> None:
@@ -30,22 +31,37 @@ class WeWorkRemotelyScraper:
     @staticmethod
     def log_error(exception: Exception or str, save: bool = False) -> None:
         print(exception)
-        saveLogs(exception) if save else None
+        # saveLogs(exception) if save else None
+
+    def get_element(self, locator: str, parent: WebElement = None, selector: str = 'class',
+                    alls: bool = False) -> WebElement or List[WebElement] or None:
+        try:
+            by: str = By.CLASS_NAME
+            if selector == 'css':
+                by: str = By.CSS_SELECTOR
+            if selector == 'xpath':
+                by: str = By.XPATH
+            if selector == 'tag':
+                by: str = By.TAG_NAME
+            if selector == 'name':
+                by: str = By.NAME  # For Input fields
+            wait: WebDriverWait = WebDriverWait(parent or self.driver, 10)
+            ec: EC = EC.presence_of_all_elements_located((by, locator)) if alls else EC.presence_of_element_located(
+                (by, locator))
+            return wait.until(ec)
+        except WebDriverException as e:
+            self.log_error(e)
+            return None
 
     def home_page_loaded(self) -> bool:
         loaded: bool = False
         for retry in range(1, 6):
             try:
                 self.request_page()
-                homepage_element: WebElement = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, 'listing_column')
-                    )
-                )
+                homepage_element: WebElement = self.get_element(locator='listing_column')
                 if not homepage_element:
                     time.sleep(3)
-                main_element: list[WebElement] = self.driver.find_elements(
-                    By.CLASS_NAME, 'listing_column')
+                main_element: list[WebElement] = self.driver.find_elements(By.CLASS_NAME, 'listing_column')
                 if main_element:
                     loaded = True
                     break
@@ -53,7 +69,7 @@ class WeWorkRemotelyScraper:
                 if retry < 5:
                     print(f"Retry {retry}/{5} due to: {e}")
                 else:
-                    self.log_error(e, save=True)
+                    self.log_error(e)
                     self.driver.quit()
                     break
         return loaded
@@ -75,37 +91,7 @@ class WeWorkRemotelyScraper:
                     job_links.append(anchor_elements[1].get_attribute('href'))
         return job_links
 
-    def get_element(self, locator: str, parent: WebElement = None, selector: str = 'class',
-                    alls: bool = False) -> WebElement or List[WebElement] or None:
-        try:
-            by: str = By.CLASS_NAME
-            if selector == 'css':
-                by = By.CSS_SELECTOR
-            if selector == 'xpath':
-                by = By.XPATH
-            if selector == 'tag':
-                by = By.TAG_NAME
-            if selector == 'name':
-                by = By.NAME  # For Input fields
-            wait: WebDriverWait = WebDriverWait(parent or self.driver, 10)
-            ec: EC = EC.presence_of_all_elements_located((by, locator)) if alls else EC.presence_of_element_located(
-                (by, locator))
-            return wait.until(ec)
-        except WebDriverException as e:
-            self.errs.append(e.msg)
-            return None
-
-    def load_content(self) -> WebElement:
-        return self.get_element(locator='section.job div.listing-container', selector='css')
-
-    def load_company_details(self) -> WebElement:
-        return self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
-
-    def load_header(self) -> WebElement:
-        return self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
-
-    @staticmethod
-    def extract_salary(salary: str) -> dict:
+    def extract_salary(self, salary: str) -> None:
         pattern = r"\$(?P<min>[0-9,]+)(?:\s*-\s*\$(?P<max>[0-9,]+))?(\s+OR\s+MORE)?\s+(?P<format>[A-Z]+)"
         match = re.search(pattern, salary)
         if match:
@@ -113,28 +99,23 @@ class WeWorkRemotelyScraper:
             max_salary = match.group("max") or min_salary
             unit = match.group("format") or "USD"
             currency_format = "yearly" if int(max_salary.replace(',', '')) > 1000 else "monthly"
-            return {
-                "min": f"{min_salary}",
-                "max": f"{max_salary}",
-                "format": currency_format,
-                "estimated": f"{min_salary} - {max_salary} {unit}"
-            }
+            self.job['salary_min']: str = f"{min_salary}"
+            self.job['salary_max']: str = f"{max_salary}"
+            self.job['salary_format']: str = currency_format
+            self.job['estimated_salary']: str = f"{min_salary} - {max_salary} {unit}"
         else:
-            return {
-                "min": "N/A",
-                "max": "N/A",
-                "format": "N/A",
-                "estimated": "N/A"
-            }
+            self.job['salary_min']: str = "N/A"
+            self.job['salary_max']: str = "N/A"
+            self.job['salary_format']: str = "N/A"
+            self.job['estimated_salary']: str = "N/A"
 
-    @staticmethod
-    def get_job_type(job_type: str) -> str:
+    def get_job_type(self, job_type: str) -> None:
+        default_type: str = 'full time remote'
         if job_type == 'FULL-TIME':
-            return 'full time remote'
-        elif job_type == 'CONTRACT':
-            return 'contract remote'
-        else:
-            'full time remote'
+            default_type: str = 'full time remote'
+        if job_type == 'CONTRACT':
+            default_type: str = 'contract remote'
+        self.job['job_type']: str = default_type
 
     @staticmethod
     def parse_posted_date(datetime_str: str) -> str:
@@ -159,56 +140,71 @@ class WeWorkRemotelyScraper:
             result = datetime_str
         return result
 
-    def visit_tab(self, tab: str) -> None:
-        element: WebElement or List[WebElement] or None
-        self.driver.switch_to.window(tab)
+    def extract_values_from_header(self, header: WebElement or None) -> None:
         try:
-            header: WebElement = self.load_header()
-            content: WebElement = self.load_content()
-            company: WebElement = self.load_company_details()
-            if header and company and content:
-                time.sleep(1)
+            element: WebElement or List[WebElement] or None
+            if header:
                 # Job Posted Date
                 element: WebElement = self.get_element(locator='.listing-header-container time', selector='css',
                                                        parent=header)
-                posted_date: str = self.parse_posted_date(element.get_attribute('datetime'))
+                self.job['job_posted_date']: str = self.parse_posted_date(element.get_attribute('datetime'))
                 # Job Title
                 element: WebElement = self.get_element(locator='.listing-header-container h1', selector='css',
                                                        parent=header)
-                job_title: str = element.text if element else "N/A"
-                # Job Description & Tags
-                description_tags: str = content.get_attribute('innerHTML') if content else "N/A"
-                description: str = content.text if content else "N/A"
-                # Company Name & Address
-                element: WebElement = self.get_element(locator='h2', selector='tag', parent=company)
-                company_name: str = element.text if element else "N/A"
-                element: WebElement = self.get_element(selector='css', locator='h3:not(.listing-pill)', parent=company)
-                company_address: str = element.text if element else "Remote"
-                # Salary Details & Job Type
+                self.job['job_title']: str = element.text if element else "N/A"
+                # Salary Details
                 element: list[WebElement] = self.get_element(selector='css', locator='a span.listing-tag',
                                                              parent=header, alls=True)
-                salary_details: dict = self.extract_salary(element[-1].text if element and element[-1] else '')
-                job_type: str = self.get_job_type(job_type=element[0].text if element and element[0] else '')
-                self.scraped_jobs.append({
-                    "job_title": job_title,
-                    "company_name": company_name,
-                    "job_posted_date": posted_date,
-                    "address": company_address,
-                    "job_description": description,
-                    "job_source_url": self.driver.current_url,
-                    "salary_format": salary_details['format'],
-                    "estimated_salary": salary_details['estimated'],
-                    "salary_min": salary_details['min'],
-                    "salary_max": salary_details['max'],
-                    "job_source": "weworkremotely",
-                    "job_type": job_type,
-                    "job_description_tags": description_tags,
-                })
+                self.extract_salary(element[-1].text if element and element[-1] else '')
+                # Job Type
+                self.get_job_type(job_type=element[0].text if element and element[0] else '')
+        except Exception as e:
+            self.log_error(e)
+
+    def extract_values_from_content(self, content: WebElement or None):
+        try:
+            element: WebElement or List[WebElement] or None
+            if content:
+                # Job Description with Tags
+                self.job['job_description_tags']: str = content.get_attribute('innerHTML') if content else "N/A"
+                # Job Description without Tags
+                self.job['job_description']: str = content.text if content else "N/A"
+        except Exception as e:
+            self.log_error(e)
+
+    def extract_values_from_company_section(self, company_section: WebElement or None):
+        try:
+            element: WebElement or List[WebElement] or None
+            if company_section:
+                # Company Name & Address
+                element: WebElement = self.get_element(locator='h2', selector='tag', parent=company_section)
+                self.job['company_name']: str = element.text if element else "N/A"
+                # Company Address
+                element: WebElement = self.get_element(selector='css', locator='h3:not(.listing-pill)',
+                                                       parent=company_section)
+                self.job['address']: str = element.text if element else "Remote"
+        except Exception as e:
+            self.log_error(e)
+
+    def tab_visited(self, tab: str) -> bool:
+        self.driver.switch_to.window(tab)
+        try:
+            header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
+            content: WebElement = self.get_element(locator='section.job div.listing-container', selector='css')
+            company: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[2]', selector='xpath')
+            if header and company and content:
+                time.sleep(1)
+                self.extract_values_from_header(header=header)
+                self.extract_values_from_content(content=content)
+                self.extract_values_from_company_section(company_section=company)
+                job = self.job.copy()
+                self.scraped_jobs.append(job)
                 self.driver.close()
-        except WebDriverException:
+                return True
+        except WebDriverException as e:
+            self.log_error(e)
             self.driver.close()
-            raise WebDriverException()
-        self.driver.switch_to.window(self.driver.window_handles[0])
+            return False
 
     def find_jobs(self) -> None:
         try:
@@ -218,16 +214,22 @@ class WeWorkRemotelyScraper:
                     try:
                         self.driver.execute_script(
                             "window.open('" + url + "', '_blank');")
-                        self.visit_tab(self.driver.window_handles[-1])
-                    except WebDriverException as e:
-                        self.log_error(e, save=True)
+                        visited: bool = self.tab_visited(self.driver.window_handles[-1])
+                        if visited:
+                            self.job.clear()
+                            self.driver.switch_to.window(self.driver.window_handles[0])
+                        else:
+                            continue
+                    except Exception as e:
+                        self.log_error(e)
                         continue
             if len(self.scraped_jobs) > 0:
                 self.export_to_excel()
             self.driver.quit()
         except Exception as e:
+            self.log_error(e)
             self.driver.quit()
-            self.log_error(e, save=True)
+        print(self.errs)
 
     def export_to_excel(self) -> None:
         columns_name: list[str] = ["job_title", "company_name", "job_posted_date", "address", "job_description",
