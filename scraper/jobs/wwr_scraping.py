@@ -30,15 +30,15 @@ class WeWorkRemotelyScraper:
         self.driver.get(self.url)
 
     def handle_exception(self, exception: Exception or str) -> None:
-        print(exception)
         traceback.format_exc()
         traceback_data = traceback.extract_tb(exception.__traceback__)
         if traceback_data and traceback_data[0]:
             self.errs.append({
-                'path': traceback_data[0].filename or "",
-                'line': traceback_data[0].line or "",
+                'scraper': 'weworkremotely',
+                'file_path': traceback_data[0].filename or "",
                 'line_number': traceback_data[0].lineno or "",
-                'function': traceback_data[0].name or ""
+                'error_line': traceback_data[0].line or "",
+                'from_function': traceback_data[0].name or ""
             })
 
     def get_element(self, locator: str, parent: WebElement = None, selector: str = 'class',
@@ -233,11 +233,12 @@ class WeWorkRemotelyScraper:
                     except Exception as e:
                         self.handle_exception(e)
                         continue
-            if len(self.scraped_jobs) > 0:
-                self.export_to_excel()
+            self.export_to_excel() if len(self.scraped_jobs) > 0 else None
+            self.log_error_if_any() if len(self.errs) > 0 else None
             self.driver.quit()
         except Exception as e:
             self.handle_exception(e)
+            self.log_error_if_any() if len(self.errs) > 0 else None
             self.driver.quit()
 
     def export_to_excel(self) -> None:
@@ -250,7 +251,14 @@ class WeWorkRemotelyScraper:
         filename: str = generate_scraper_filename(ScraperNaming.WE_WORK_REMOTELY)
         df.to_excel(filename, index=False)
         ScraperLogs.objects.create(
-            total_jobs=len(df), job_source="WeWorkRemotely", filename=filename)
+            total_jobs=len(df), job_source="We Work Remotely", filename=filename)
+
+    def log_error_if_any(self) -> List[dict]:
+        df = pd.DataFrame(self.errs)
+        unique_df = df.drop_duplicates()
+        errors = unique_df.to_dict(orient='records')
+        unique_df.to_csv('scraper/job_data/weworkremotely_errors.csv', index=False)
+        return errors
 
 
 def weworkremotely(url: str, job_type: str = 'full time remote') -> None:
