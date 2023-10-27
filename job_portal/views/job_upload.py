@@ -103,7 +103,7 @@ class JobCleanerView(APIView):
             start_index = i
             end_index = min(i + batch_size, num_records)
             user_bulk_update_list = updated_job_details[start_index:end_index]
-            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'], batch_size=500)
+            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords', 'tech_stacks'], batch_size=500)
         return num_records
 
 

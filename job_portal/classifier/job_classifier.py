@@ -117,6 +117,8 @@ class JobClassifier(object):
             critical_keywords = set({'ui/ux', 'qa'})
             result = tech_keywords_result.difference(critical_keywords)
             tech_keywords_result = result if result else tech_keywords_result.intersection(critical_keywords)
+            if 'c#' in tech_keywords_result and '.net' in tech_keywords_result:
+                tech_keywords_result.remove('c#')
             return ','.join(list(tech_keywords_result))
 
     def classify_hour(self, job_date):
