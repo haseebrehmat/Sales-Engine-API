@@ -135,7 +135,7 @@ class JobClassifier(object):
     def classify_month(self, job_date):
         # apply regex patterns to get the hours value
         value = None
-        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(months|month)( ago)?'
+        regex_month = r'(?i)^([a-zA-Z]*\s)?([a-zA-Z]*\s)?(\d*\s?)(months|month)( ago)?'
         value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
             if value.group(3):
@@ -150,7 +150,7 @@ class JobClassifier(object):
 
     def classify_year(self, job_date):
         value = None
-        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(years|year)( ago)?'
+        regex_month = r'(?i)^([a-zA-Z]*\s)?([a-zA-Z]*\s)?(\d*\s?)(years|year)( ago)?'
         value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
             if value.group(3):
@@ -165,7 +165,7 @@ class JobClassifier(object):
 
     def classify_week(self, job_date):
         value = None
-        regex_month = r'(?i)^([a-zA-Z]*\s)?(a?n? )?(\d*\s?)(weeks|week)( ago)?'
+        regex_month = r'(?i)^([a-zA-Z]*\s)?([a-zA-Z]*\s)?(\d*\s?)(weeks|week)( ago)?'
         value = re.search(regex_month, string=job_date, flags=re.IGNORECASE)
         if value and len(value.groups()) > 1:
             if value.group(3):
