@@ -59,7 +59,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
             {
                 'salary_min': job.salary_min,
                 'salary_max': job.salary_max,
-                'tech_stacks': job.tech_keywords,
+                'tech_stacks': job.tech_keywords.replace('ai/ml engineer', 'ai/ml engineer,ai engineer,ml engineer'),
                 'job_role': check_job_role(job.tech_keywords, job_roles) if job_roles else "N/A",
                 'salary_format': '',
                 "job_title": job.job_title,

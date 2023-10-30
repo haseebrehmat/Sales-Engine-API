@@ -1148,7 +1148,6 @@ languages = {
         "ruby on rails developer",
         "ruby systems engineer",
         "backend developer - ruby",
-        "rspec",
         "test engineer - ruby",
         "ruby/rails",
     ],
@@ -1169,15 +1168,34 @@ languages = {
         "go web developer",
         "api developer - go"
     ],
-    "C#/Dot Net": [
-        "C# Dot Net",
-        ".net core",
-        "sql server",
+    "C#": [
+        "C#",
+        "C Sharp",
+        "CSharp",
+        "C-Sharp",
         "xamarin.forms",
         "xamarin",
+        "WPF",
+        "C# Developer",
+        "Software Engineer (C#)",
+        "C# Programmer",
+        "C# Software Developer",
+        "C# Software Engineer",
+        "C# Application Developer",
+        "C# Systems Developer",
+        "C# Solutions Developer",
+        "C# Technical Lead",
+        "C# Development Team Lead",
+        "C# Systems Analyst",
+        "C# Back-End Developer",
+        "C# Senior Developer",
+        "C# Technical Consultant",
+    ],
+    ".NET": [
+        "C# Dot Net",
+        ".net core",
         "asp.net core",
         "asp.net",
-        "blaserc# developer",
         "dot net",
         "dotnet",
         "dot-net",
@@ -1204,22 +1222,8 @@ languages = {
         "Dot Net Core Application Developer",
         "Dot Net Core Consultant",
         "Dot Net Core Backend Developer",
-        "C# Developer",
-        "Software Engineer (C#)",
-        "C# Programmer",
-        "C# Software Developer",
         "C# Web Developer",
         "C# Web-Developer",
-        "C# Software Engineer",
-        "C# Application Developer",
-        "C# Systems Developer",
-        "C# Solutions Developer",
-        "C# Technical Lead",
-        "C# Development Team Lead",
-        "C# Systems Analyst",
-        "C# Back-End Developer",
-        "C# Senior Developer",
-        "C# Technical Consultant",
     ],
     "C/C++": [
         "c++ engineer",
@@ -1408,7 +1412,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Ruby on Rails',
-        'exp': '(?i)(^|\W)(ror|ruby|ruby[-\s]?on[-\s]?rails|turbo[-\s]?links|side[-\s]?kiq|rails|capybara|hot[-\s]?wire|r[-\s]?spec|mini[-\s]?test)(\W|$)'
+        'exp': '(?i)(^|\W)(ror|ruby|rspec|ruby[-\s]?on[-\s]?rails|turbo[-\s]?links|side[-\s]?kiq|rails|capybara|hot[-\s]?wire|r[-\s]?spec|mini[-\s]?test)(\W|$)'
     },
     {
         'tech_stack': 'Service Now',
@@ -1455,8 +1459,12 @@ regular_expressions = [
         'exp': '(?i)(^|\W)((ms[-_\s]?)?dynamics(365)?|D[-\s]365)(\W|$)'
     },
     {
-        'tech_stack': 'C#/Dot Net',
-        'exp': '(?i)(^|\W)(C[-\s]?Sharp|unity|dot[-_\s]?net|c#|asp|net|.net|wpf|net[\s]?core)(\W|$)'
+        'tech_stack': 'C#',
+        'exp': '(?i)(^|\W)(C[-\s]?Sharp|ado|wcf|vb|visual[-\s]basic|windows[-\s]forms?|unity|c#|wpf)(\W|$)'
+    },
+    {
+        'tech_stack': '.NET',
+        'exp': '(?i)(^|\W)(dot[-_\s]?net|asp|net|.net|net[\s]?core)(\W|$)'
     },
     {
         'tech_stack': 'C/C++',

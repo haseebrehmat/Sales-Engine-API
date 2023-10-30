@@ -20,7 +20,7 @@ import json
 from utils.helpers import saveLogs
 from utils.sales_engine import upload_jobs_in_sales_engine, upload_jobs_in_production
 from settings.base import env
-
+from tqdm import tqdm
 
 class JobDataUploadView(CreateAPIView):
     serializer_class = JobDataUploadSerializer
@@ -75,7 +75,7 @@ class JobCleanerView(APIView):
 
     def put(self, request):
         try:
-            job_data = JobDetail.objects.all().only('pk', 'job_title', 'tech_keywords', 'job_description').select_related()
+            job_data = JobDetail.objects.all().only('pk', 'job_title', 'tech_keywords', 'tech_stacks', 'job_description').select_related()
             self.update_data(job_data)
             return Response({'detail': f'jobs updated successfully with new tech keywords!'}, status=204)
         except Exception as e:
@@ -83,7 +83,7 @@ class JobCleanerView(APIView):
 
     @start_new_thread
     def update_data(self, job_data):
-        data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'job_description')))
+        data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'tech_stacks', 'job_description')))
         classify_data = JobClassifier(data)
         classify_data.update_tech_stack()
 
@@ -92,17 +92,18 @@ class JobCleanerView(APIView):
             update_item = job_data.get(id=key.pk)
             if update_item.tech_keywords != key.tech_keywords.lower():
                 update_item.tech_keywords = key.tech_keywords.lower()
+                update_item.tech_stacks = key.tech_keywords.lower().split(',')
                 # append the updated user object to the list
                 updated_job_details.append(update_item)
 
         # update jobs in bulks in small batches
         num_records = len(updated_job_details)
         batch_size = 500
-        for i in range(0, num_records, batch_size):
+        for i in tqdm(range(0, num_records, batch_size)):
             start_index = i
             end_index = min(i + batch_size, num_records)
             user_bulk_update_list = updated_job_details[start_index:end_index]
-            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords'], batch_size=500)
+            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords', 'tech_stacks'], batch_size=500)
         return num_records
 
 
