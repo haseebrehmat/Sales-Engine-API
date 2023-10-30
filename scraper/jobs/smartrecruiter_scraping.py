@@ -59,7 +59,13 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, "N/A")
                 append_data(data, "N/A")
                 append_data(data, "Smart Recruiter")
-                append_data(data, set_job_type(job_type))
+                job_type_check = driver.find_element(By.CLASS_NAME, "job-details").text.lower()
+                if 'contract' in job_type_check:
+                    append_data(data, set_job_type('contract'))
+                elif 'full-time' in job_type_check:
+                    append_data(data, set_job_type('full time'))
+                else:
+                    append_data(data, set_job_type('full time'))
                 append_data(data, job_description.get_attribute('innerHTML'))
 
                 scrapped_data.append(data)

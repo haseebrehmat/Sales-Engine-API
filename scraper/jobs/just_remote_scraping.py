@@ -12,7 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming,  k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming,  k_conversion, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 
@@ -69,6 +69,8 @@ def find_jobs(driver, job_type):
                     By.CLASS_NAME, "JpOdR")
                 job_title = temp.find_element(
                     By.CLASS_NAME, "job-title__StyledJobTitle-sc-10irtcq-0")
+                job_type_check = driver.find_elements(By.CLASS_NAME, "job-meta__Wrapper-oh0pn7-0")[0].text.lower()
+
                 append_data(data, job_title.text)
 
                 company_name = driver.find_element(
@@ -102,8 +104,12 @@ def find_jobs(driver, job_type):
                 job_source = ScraperNaming.JUST_REMOTE
                 append_data(data, job_source)
 
-                job_type = "remote"
-                append_data(data, job_type)
+                if 'contract' in job_type_check:
+                    append_data(data, set_job_type('contract'))
+                elif 'permanent' in job_type_check:
+                    append_data(data, set_job_type('full time'))
+                else:
+                    continue
 
                 job_description_tags = temp.get_attribute("innerHTML")
                 append_data(data, str(job_description_tags))
