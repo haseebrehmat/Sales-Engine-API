@@ -99,15 +99,11 @@ class WeWorkRemotelyScraper:
         job_links: list[str] = []
         if self.home_page_loaded():
             time.sleep(1)
-            jobs_list: list[WebElement] = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_all_elements_located(
-                    (By.CSS_SELECTOR, 'section.jobs ul li:not(.view-all)')
-                )
-            )
+            jobs_list: list[WebElement] = self.get_element(locator='section.jobs ul li:not(.view-all)', selector='css',
+                                                           alls=True)
             for item in jobs_list:
-                anchor_elements: list[WebElement] = WebDriverWait(item, 10).until(
-                    EC.presence_of_all_elements_located((By.TAG_NAME, 'a'))
-                )
+                anchor_elements: list[WebElement] = self.get_element(selector='tag', locator='a', parent=item,
+                                                                     alls=True)
                 if anchor_elements and anchor_elements[1]:
                     job_links.append(anchor_elements[1].get_attribute('href'))
         return job_links
@@ -264,7 +260,7 @@ class WeWorkRemotelyScraper:
         filename: str = generate_scraper_filename(ScraperNaming.WE_WORK_REMOTELY)
         df.to_excel(filename, index=False)
         ScraperLogs.objects.create(
-            total_jobs=len(df), job_source="We Work Remotely", filename=filename)
+            total_jobs=len(df), job_source="WeWorkRemotely", filename=filename)
 
     def log_error_if_any(self) -> List[dict]:
         df = pd.DataFrame(self.errs)
