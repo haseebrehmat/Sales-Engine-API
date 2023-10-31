@@ -911,7 +911,30 @@ languages = {
     ],
     "mern": [
         "mern",
-        "mean",
+        "mean/mern",
+        "mean stack",
+        "mean developer",
+        "mean full stack",
+        "mean | mern",
+        "mean & mern",
+        "mean/ mern,",
+        "sr. mean",
+        "mean stack intern",
+        "mean stack developer",
+        "mean stack lead",
+        "angular and mean",
+        "laravel/mean stack",
+        "mern/mean developer",
+        "mern or mean developer",
+        "Senior mean stack",
+        "mean + mern",
+        "mern + mean",
+        "mern & mean",
+        "mean & mern",
+        "Mean JS",
+        "meanstack",
+        "mean.js",
+        "mean-stack",
         "mevn",
         "js developer",
         "Full Stack Developer (MERN)",
@@ -1476,7 +1499,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Python',
-        'exp': '(?i)(^|\W)(python|django|flask|fast[-\s]?api|sql[-\s]?achemy)(\W|$)'
+        'exp': '(?i)(^|\W)(python|django|flask|fast[-\s]?api|sql[-\s]?alchemy)(\W|$)'
     },
     {
         'tech_stack': 'Go/Golang',
@@ -1492,7 +1515,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'mern',
-        'exp': '(?i)(^|\W)(mern|mean|mven|JavaScript Developers?|React[-.\s]?js|express[-.\s]?js|node[-.\s]?(js)?|Frontend\/React|react)(\W|$)'
+        'exp': '(?i)(^|\W)(mern|mven|(junior|senior|sr.|jr.|full[-\s]stack)[-\s]mean|mean[-\s](full[-\s]?stack|stack)|mean[-\s](developer|engineer)|mean[-\s.]?js|JavaScript Developers?|React[-.\s]?js|express[-.\s]?js|node[-.\s]?(js)?|Frontend\/React|react)(\W|$)'
     },
     {
         'tech_stack': 'JavaScript',
