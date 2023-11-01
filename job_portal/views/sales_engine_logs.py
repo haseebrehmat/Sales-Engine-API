@@ -1,8 +1,8 @@
 import datetime
-
+from django.db.models import Count, Sum
 from django.db.models import Q
 from rest_framework.generics import ListAPIView
-
+from job_portal.utils.helpers import SalesEngineLogsNaming
 from job_portal.models import SalesEngineJobsStats
 from job_portal.paginations.sales_engine import SalesEngineJobsStatsPagination
 from job_portal.serializers.Sales_engine_jobs_stats import SalesEngineJobsStatsSerializer
@@ -41,3 +41,45 @@ class SalesEngineJobsStatsView(ListAPIView):
 
         queryset = SalesEngineJobsStats.objects.filter(search_query, from_date_query, to_date_query, job_sources_query).order_by('-created_at')
         return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        response = super(SalesEngineJobsStatsView, self).list(request, *args, **kwargs)
+        serialized_data = response.data
+        additional_stats = {
+            "total_hits_stagging_to_production": queryset.filter(
+                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION).count(),
+            "total_success_hits_stagging_to_production": queryset.filter(
+                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=True).count(),
+            "total_failed_hits_stagging_to_production": queryset.filter(
+                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=False).count(),
+            "total_jobs_count_from_stagging_to_production": queryset.filter(
+                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION).aggregate(
+                jobs=Sum('jobs_count'))['jobs'],
+            "total_success_jobs_count_from_stagging_to_production": queryset.filter(
+                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=True).aggregate(
+                jobs=Sum('jobs_count'))['jobs'],
+            "total_failed_jobs_count_from_stagging_to_production": queryset.filter(
+                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=False).aggregate(
+                jobs=Sum('jobs_count'))['jobs'],
+
+
+
+            "total_hits_production_to_sales_engine": queryset.filter(
+                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE).count(),
+            "total_success_hits_production_to_sales_engine": queryset.filter(
+                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=True).count(),
+            "total_failed_hits_production_to_sales_engine": queryset.filter(
+                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=False).count(),
+            "total_jobs_count_from_production_to_sales_engine": queryset.filter(
+                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE).aggregate(
+                jobs=Sum('jobs_count'))['jobs'],
+            "total_success_jobs_count_from_production_to_sales_engine": queryset.filter(
+                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=True).aggregate(jobs=Sum('jobs_count'))['jobs'],
+            "total_failed_jobs_count_from_production_to_sales_engine": queryset.filter(
+                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=False).aggregate(jobs=Sum('jobs_count'))['jobs'],
+
+        }
+        serialized_data['additional_stats'] = additional_stats
+        response.data = serialized_data
+        return response
