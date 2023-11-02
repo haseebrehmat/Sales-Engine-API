@@ -101,13 +101,19 @@ class JobClassifier(object):
     def classify_job(self, job_title, job_description):
         tech_keywords_result = set()
         job_title = job_title.strip().lower()
-        job_description = job_description.strip().lower()
+        job_description_lower = job_description.strip().lower()
         regular_expression_list = regular_expressions
         self.find_job_techkeyword(job_title, regular_expression_list, languages, tech_keywords_result)
 
-        if job_description:
-            self.match_text_with_regex(job_description, regular_expression_list, tech_keywords_result)
-            self.classify_job_with_languages(job_description, languages, tech_keywords_result)
+        if job_description_lower:
+            self.match_text_with_regex(job_description_lower, regular_expression_list, tech_keywords_result)
+            self.classify_job_with_languages(job_description_lower, languages, tech_keywords_result)
+
+        if 'go/golang' not in tech_keywords_result:
+            pattern = re.compile(pattern='(^|\W)Go(\W|$)')
+            if pattern.search(job_description):
+                tech_keywords_result.add('go/golang')
+
 
         if not tech_keywords_result:
             r1 = self.job_classifier_other_dev_stage(job_title)

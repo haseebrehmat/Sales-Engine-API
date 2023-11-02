@@ -1503,7 +1503,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Go/Golang',
-        'exp': '(?i)(^|\W)(go|golang|distributed[-\s]systems?)(\W|$)'
+        'exp': '(?i)(^|\W)(go[-\s]?lang|go[-\s]?routines?|(senior|us(es?|ing)|junior|jr.|sr.|backend in)[-\s]go|go[-\s]?cd|\(go\)|go[-\s](code(base)?|program(ming)?|develop(er|ment)?|engineer|modules|skill|channels?|Convey|test(ing)?|api|backend|CD|templat(es?|ing)|language|task|software|system|roles?|frameworks?|applications?|compiles?|cli))(\W|$)'
     },
     {
         'tech_stack': 'Java',
