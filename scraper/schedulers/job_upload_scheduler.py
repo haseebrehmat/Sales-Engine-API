@@ -311,7 +311,6 @@ def upload_file(job_parser, filename):
         for job_item in classify_data.data_frame.itertuples() if
         job_item.job_source_url != "" and isinstance(job_item.job_source_url,
                                                      str)]
-
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
     if env("ENVIRONMENT") == 'staging' or env("ENVIRONMENT") == 'development':

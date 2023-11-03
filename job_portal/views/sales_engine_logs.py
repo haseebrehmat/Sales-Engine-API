@@ -47,38 +47,41 @@ class SalesEngineJobsStatsView(ListAPIView):
         response = super(SalesEngineJobsStatsView, self).list(request, *args, **kwargs)
         serialized_data = response.data
         additional_stats = {
-            "total_hits_stagging_to_production": queryset.filter(
-                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION).count(),
-            "total_success_hits_stagging_to_production": queryset.filter(
-                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=True).count(),
-            "total_failed_hits_stagging_to_production": queryset.filter(
-                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=False).count(),
-            "total_jobs_count_from_stagging_to_production": queryset.filter(
-                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION).aggregate(
-                jobs=Sum('jobs_count'))['jobs'],
-            "total_success_jobs_count_from_stagging_to_production": queryset.filter(
-                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=True).aggregate(
-                jobs=Sum('jobs_count'))['jobs'],
-            "total_failed_jobs_count_from_stagging_to_production": queryset.filter(
-                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=False).aggregate(
-                jobs=Sum('jobs_count'))['jobs'],
-
-
-
-            "total_hits_production_to_sales_engine": queryset.filter(
-                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE).count(),
-            "total_success_hits_production_to_sales_engine": queryset.filter(
-                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=True).count(),
-            "total_failed_hits_production_to_sales_engine": queryset.filter(
-                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=False).count(),
-            "total_jobs_count_from_production_to_sales_engine": queryset.filter(
-                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE).aggregate(
-                jobs=Sum('jobs_count'))['jobs'],
-            "total_success_jobs_count_from_production_to_sales_engine": queryset.filter(
-                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=True).aggregate(jobs=Sum('jobs_count'))['jobs'],
-            "total_failed_jobs_count_from_production_to_sales_engine": queryset.filter(
-                source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=False).aggregate(jobs=Sum('jobs_count'))['jobs'],
-
+            "stagging_to_production": {
+                "total_hits": queryset.filter(
+                    source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION).count() or 0,
+                "total_success_hits": queryset.filter(
+                    source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=True).count() or 0,
+                "total_failed_hits": queryset.filter(
+                    source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=False).count() or 0,
+                "total_jobs_count": queryset.filter(
+                    source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION).aggregate(
+                    jobs=Sum('jobs_count'))['jobs'] or 0,
+                "total_success_jobs_count": queryset.filter(
+                    source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=True).aggregate(
+                    jobs=Sum('jobs_count'))['jobs'] or 0,
+                "total_failed_jobs_count": queryset.filter(
+                    source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION, upload_status=False).aggregate(
+                    jobs=Sum('jobs_count'))['jobs'] or 0
+            }
+            ,
+            "production_to_sales_engine": {
+                "total_hits": queryset.filter(
+                    source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE).count() or 0,
+                "total_success_hits": queryset.filter(
+                    source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=True).count() or 0,
+                "total_failed_hits": queryset.filter(
+                    source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=False).count() or 0,
+                "total_jobs_count_from": queryset.filter(
+                    source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE).aggregate(
+                    jobs=Sum('jobs_count'))['jobs'] or 0,
+                "total_success_jobs_count": queryset.filter(
+                    source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=True).aggregate(
+                    jobs=Sum('jobs_count'))['jobs'] or 0,
+                "total_failed_jobs_count": queryset.filter(
+                    source=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE, upload_status=False).aggregate(
+                    jobs=Sum('jobs_count'))['jobs'] or 0
+            }
         }
         serialized_data['additional_stats'] = additional_stats
         response.data = serialized_data
