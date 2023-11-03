@@ -61,8 +61,8 @@ class JobsTrendingStats(APIView):
 
 
         # Get array of current month jobs's tech stacks
-        tech_keywords_60_days = [word for job in job_detail_queryset_60_days for word in job.tech_keywords.split(",")]
-        tech_keywords_30_days = [word for job in job_detail_queryset_30_days for word in job.tech_keywords.split(",")]
+        tech_keywords_60_days = [word for job in queryset_60_days for word in job.tech_keywords.split(",")]
+        tech_keywords_30_days = [word for job in queryset_30_days for word in job.tech_keywords.split(",")]
         # Get count of each tech stack and set all the tech stacks descending order
         element_counts_60_days = Counter(tech_keywords_60_days)
         element_counts_30_days = Counter(tech_keywords_30_days)
