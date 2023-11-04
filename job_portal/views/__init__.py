@@ -6,3 +6,5 @@ from job_portal.views.job_detail import MarkedAsExpiredView
 from job_portal.views.job_upload import JobDataUploadView, JobCleanerView
 from job_portal.views.manual_job_upload import ManualJobUploadView
 from job_portal.views.jobs_trending_stats import JobsTrendingStats
+from job_portal.views.top_five_titles import find_top_five_job_titles
+find_top_five_job_titles()

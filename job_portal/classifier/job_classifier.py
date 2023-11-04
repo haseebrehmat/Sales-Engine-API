@@ -114,7 +114,6 @@ class JobClassifier(object):
             if pattern.search(job_description):
                 tech_keywords_result.add('go/golang')
 
-
         if not tech_keywords_result:
             r1 = self.job_classifier_other_dev_stage(job_title)
             r2 = self.job_classifier_other_dev_stage(job_description)
@@ -265,10 +264,13 @@ class JobClassifier(object):
     def classify(self):
         custom_columns = self.data_frame.columns.values.tolist()
         custom_columns.remove("job_source_url")
+        custom_columns.remove("job_description")
         my_job_sources = self.data_frame["job_source_url"]
+        job_descriptions_data = self.data_frame['job_description']
         custom_df = self.data_frame[custom_columns]
         self.data_frame = custom_df.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame["job_source_url"] = my_job_sources
+        self.data_frame["job_description"] = job_descriptions_data
 
         self.data_frame['tech_keywords'] = self.data_frame.apply(
             lambda row: self.classify_job(str(row['job_title']), str(row['job_description'])) if (
