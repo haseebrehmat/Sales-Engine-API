@@ -166,6 +166,8 @@ class SalesEngineJobsStats(TimeStamped):
     jobs_count = models.IntegerField(default=0)
     upload_status = models.BooleanField(default=True)
     source = models.CharField(max_length=250, default=SalesEngineLogsNaming.PRODUCTION_TO_SALES_ENGINE)
+    response = models.TextField(blank=True, null=True)
+    payload = models.TextField(blank=True, null=True)
 
 
 class JobUploadLogs(TimeStamped):

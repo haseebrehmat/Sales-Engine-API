@@ -1,5 +1,7 @@
+import pdb
+
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from collections import Counter
@@ -30,56 +32,37 @@ class JobsTrendingStats(APIView):
 
         if previous_month_jobs_count <= current_month_jobs_count:
             over_all_jobs_alteration = "up"
-            lower_value = previous_month_jobs_count
-            higher_value = current_month_jobs_count
+            lower_value, higher_value = previous_month_jobs_count, current_month_jobs_count
         else:
             over_all_jobs_alteration = "down"
-            lower_value = current_month_jobs_count
-            higher_value = previous_month_jobs_count
-        if lower_value != 0:
-            over_all_jobs_count_percentage = ((higher_value - lower_value) / lower_value) * 100
-        else:
-            over_all_jobs_count_percentage = higher_value
-
+            lower_value, higher_value = current_month_jobs_count, previous_month_jobs_count
+        over_all_jobs_count_percentage = percentage(higher_value, lower_value) if lower_value != 0 else higher_value
 
         temp1 = job_detail_queryset_30_days.values('job_source').annotate(source_count=Count('job_source'))
         temp2 = job_archive_queryset_30_days.values('job_source').annotate(source_count=Count('job_source'))
-        source_count_30_days = self.source_counts(temp1, temp2, True)
+        source_count_30_days = source_counts(temp1, temp2, True)
         source_count_30_days_reverse_order = sorted(source_count_30_days, key=lambda x: x['source_count'], reverse=False)
 
         temp3 = job_detail_queryset_60_days.values('job_source').annotate(source_count=Count('job_source'))
         temp4 = job_archive_queryset_60_days.values('job_source').annotate(source_count=Count('job_source'))
-        source_count_60_days = self.source_counts(temp3, temp4, True)
-        previous_2_months_count_difference = self.source_counts(source_count_30_days,source_count_60_days, False)
+        source_count_60_days = source_counts(temp3, temp4, True)
+        previous_2_months_count_difference = source_counts(source_count_30_days,source_count_60_days, False)
         # Here is a logic of thriving_source using previous_2_months_count_difference
-        previous_2_months_source_counts_percentage = self.percentage_of_counts(source_count_60_days, source_count_30_days, previous_2_months_count_difference)
-
-        positive_source_count_percentage = []
-        negative_source_count_percentage = []
-        for x in previous_2_months_source_counts_percentage:
-            if x["alteration"] == "up":
-                positive_source_count_percentage.append(x)
-            else:
-                negative_source_count_percentage.append(x)
-
+        previous_2_months_source_counts_percentage = percentage_of_counts(source_count_60_days, source_count_30_days, previous_2_months_count_difference, "source")
+        positive_source_count_percentage, negative_source_count_percentage = positive_negative_percentage_lists(previous_2_months_source_counts_percentage)
         positive_source_count_percentage = sorted(positive_source_count_percentage, key=lambda x: x['percentage'], reverse=True)
         negative_source_count_percentage = sorted(negative_source_count_percentage, key=lambda x: x['percentage'], reverse=True)
+        if len(positive_source_count_percentage) == 0:
+            source_percentage_array_positive = percentage_of_counts(source_count_60_days, source_count_30_days, source_count_30_days, "source")
+        if len(negative_source_count_percentage) == 0:
+            source_percentage_array_negative = percentage_of_counts(source_count_60_days, source_count_30_days, source_count_30_days_reverse_order, "source")
 
 
 
 
         # Get array of current month jobs's tech stacks
-        tech_keywords_60_days = []
-        for job in queryset_60_days:
-            tech_stack_array = job.tech_keywords.split(",")
-            for word in tech_stack_array:
-                tech_keywords_60_days.append(word)
-        # Get array of previous month jobs's tech stacks
-        tech_keywords_30_days = []
-        for job in queryset_30_days:
-            tech_stack_array = job.tech_keywords.split(",")
-            for word in tech_stack_array:
-                tech_keywords_30_days.append(word)
+        tech_keywords_60_days = [word for job in queryset_60_days for word in job.tech_keywords.split(",")]
+        tech_keywords_30_days = [word for job in queryset_30_days for word in job.tech_keywords.split(",")]
         # Get count of each tech stack and set all the tech stacks descending order
         element_counts_60_days = Counter(tech_keywords_60_days)
         element_counts_30_days = Counter(tech_keywords_30_days)
@@ -90,22 +73,19 @@ class JobsTrendingStats(APIView):
         tech_stack_counts_30_days = sorted(tech_stack_counts_30_days, key=lambda x: x['source_count'], reverse=True)
         tech_stack_counts_30_days_reverse_order = sorted(tech_stack_counts_30_days, key=lambda x: x['source_count'], reverse=False)
 
-        combined_tech_stacks_difference = self.source_counts(tech_stack_counts_30_days, tech_stack_counts_60_days,False)
+        combined_tech_stacks_difference = source_counts(tech_stack_counts_30_days, tech_stack_counts_60_days,False)
 
-        previous_2_months_tech_stacks_percentage = self.percentage_of_counts(tech_stack_counts_60_days, tech_stack_counts_30_days, combined_tech_stacks_difference)
+        previous_2_months_tech_stacks_percentage = percentage_of_counts(tech_stack_counts_60_days, tech_stack_counts_30_days, combined_tech_stacks_difference, "stack")
 
-        positive_tech_stack_count_percentage = []
-        negative_tech_stack_count_percentage = []
-        for x in previous_2_months_tech_stacks_percentage:
-            if x["alteration"] == "up":
-                positive_tech_stack_count_percentage.append(x)
-            else:
-                negative_tech_stack_count_percentage.append(x)
-
+        positive_tech_stack_count_percentage, negative_tech_stack_count_percentage = positive_negative_percentage_lists(previous_2_months_tech_stacks_percentage)
         positive_tech_stack_count_percentage = sorted(positive_tech_stack_count_percentage, key=lambda x: x['percentage'],
                                                   reverse=True)
         negative_tech_stack_count_percentage = sorted(negative_tech_stack_count_percentage, key=lambda x: x['percentage'],
                                                   reverse=True)
+        if len(positive_tech_stack_count_percentage) == 0:
+            tech_stack_percentage_array_positive = percentage_of_counts(tech_stack_counts_60_days, tech_stack_counts_30_days, tech_stack_counts_30_days, "stack")
+        if len(negative_tech_stack_count_percentage) == 0:
+            tech_stack_percentage_array_negative = percentage_of_counts(tech_stack_counts_60_days, tech_stack_counts_30_days, tech_stack_counts_30_days_reverse_order, "stack")
 
 
         over_all_jobs_titles = [job.job_title for job in queryset_30_days]
@@ -113,143 +93,108 @@ class JobsTrendingStats(APIView):
         for job_title in job_titles_last_60_days:
             over_all_jobs_titles.append(job_title)
         emerging_titles = Counter(over_all_jobs_titles)
-        emerging_titles = [{"job_title": element, "count": count} for element, count in emerging_titles.items()]
+        emerging_titles = [{"title": element, "count": count} for element, count in emerging_titles.items()]
         emerging_titles = sorted(emerging_titles, key=lambda x: x['count'], reverse=True)
-
-        data["jobs"] = {"month":
-                            {"current_count":current_month_jobs_count, "previous_count":previous_month_jobs_count,
-                             "percentage":over_all_jobs_count_percentage, "alteration":over_all_jobs_alteration},
-                        "week":{}}
-        data["thriving_source_status"] = True if len(positive_source_count_percentage) > 0 else False
-        data["thriving_sources"] = {"month":
-                                        [{"source":x["source"], "current_count":x["current_count"],
-                                          "previous_count":x["previous_count"],"percentage":x["percentage"],
-                                          "alteration":x["alteration"]} for x in positive_source_count_percentage[:5]] if len(positive_source_count_percentage) > 0 else [{"source": x["job_source"], "current_count": x["source_count"],
-                                          "previous_count": 0, "percentage": 0,
-                                          "alteration": "N/A"} for x in source_count_30_days[:5]]
-                                    ,
-                                    "week":[]}
-        data["declining_source_status"] = True if len(negative_source_count_percentage) > 0 else False
-        data["declining_sources"] = {"month":
-                                        [{"source": x["source"], "current_count": x["current_count"],
-                                          "previous_count": x["previous_count"], "percentage": x["percentage"],
-                                          "alteration": x["alteration"]} for x in
-                                         negative_source_count_percentage[:5]] if len(
-                                            negative_source_count_percentage) > 0 else [
-                                            {"source": x["job_source"], "current_count": x["source_count"],
-                                             "previous_count": 0, "percentage": 0,
-                                             "alteration": "N/A"} for x in source_count_30_days_reverse_order[:5]]
-            ,
-                                    "week": []}
-
-        data["thriving_tech_stack_status"] = True if len(positive_tech_stack_count_percentage) > 0 else False
-        data["thriving_tech_stacks"] = {"month":
-                                        [{"stack": x["source"], "current_count": x["current_count"],
-                                          "previous_count": x["previous_count"], "percentage": x["percentage"],
-                                          "alteration": x["alteration"]} for x in
-                                         positive_tech_stack_count_percentage[:5]] if len(
-                                            positive_tech_stack_count_percentage) > 0 else [
-                                            {"stack": x["job_source"], "current_count": x["source_count"],
-                                             "previous_count": 0, "percentage": 0,
-                                             "alteration": "N/A"} for x in tech_stack_counts_30_days[:5]]
-            ,
-                                    "week": []}
-        data["declining_tech_stack_status"] = True if len(negative_tech_stack_count_percentage) > 0 else False
-        data["declining_tech_stacks"] = {"month":
-                                         [{"stack": x["source"], "current_count": x["current_count"],
-                                           "previous_count": x["previous_count"], "percentage": x["percentage"],
-                                           "alteration": x["alteration"]} for x in
-                                          negative_tech_stack_count_percentage[:5]] if len(
-                                             negative_tech_stack_count_percentage) > 0 else [
-                                             {"stack": x["job_source"], "current_count": x["source_count"],
-                                              "previous_count": 0, "percentage": 0,
-                                              "alteration": "N/A"} for x in tech_stack_counts_30_days_reverse_order[:5]]
-            ,
-                                     "week": []}
-        data["thriving_titles"] = {"month": [{"title":x["job_title"], "count":x["count"]}
-                                             for x in emerging_titles[:5]],
-                                   "week": []}
+        data["jobs"] = {"month": {
+            "current_count": current_month_jobs_count,
+            "previous_count": previous_month_jobs_count,
+            "percentage": over_all_jobs_count_percentage,
+            "alteration": over_all_jobs_alteration
+        }, "week": {}}
+        data["thriving_source_status"] = bool(positive_source_count_percentage)
+        data["thriving_sources"] = {"month": positive_source_count_percentage[:5] if positive_source_count_percentage else source_percentage_array_positive[:5], "week": []}
+        data["declining_source_status"] = bool(negative_source_count_percentage)
+        data["declining_sources"] = {"month": negative_source_count_percentage[:5] if negative_source_count_percentage else  source_percentage_array_negative[:5], "week": []}
+        data["thriving_tech_stack_status"] = bool(positive_tech_stack_count_percentage)
+        data["thriving_tech_stacks"] = {"month": positive_tech_stack_count_percentage[:5] if positive_tech_stack_count_percentage else tech_stack_percentage_array_positive[:5], "week": []}
+        data["declining_tech_stack_status"] = bool(negative_tech_stack_count_percentage)
+        data["declining_tech_stacks"] = {"month": negative_tech_stack_count_percentage[:5] if negative_tech_stack_count_percentage else tech_stack_percentage_array_negative[:5], "week": []}
+        data["thriving_titles"] = {"month": emerging_titles[:5], "week": []}
         return Response(data)
-    def source_counts(self, queryset1, queryset2, flag):
+def source_counts(queryset1, queryset2, flag):
+    if flag:
+        queryset1_list = list(queryset1)
+        queryset2_list = list(queryset2)
+    else:
+        queryset1_list = queryset1
+        queryset2_list = queryset2
+
+    # Create a dictionary to store the source counts
+    source_counts = {}
+
+    # Iterate over the first queryset and add the counts to the dictionary
+    for entry in queryset1_list:
+        source = entry['job_source']
+        count = entry['source_count']
         if flag:
-            queryset1_list = list(queryset1)
-            queryset2_list = list(queryset2)
+            source_counts[source] = source_counts.get(source, 0) + count
         else:
-            queryset1_list = queryset1
-            queryset2_list = queryset2
+            source_counts[source] = count
 
-        # Create a dictionary to store the source counts
-        source_counts = {}
+    # Iterate over the second queryset and add the counts to the dictionary
+    for entry in queryset2_list:
+        source = entry['job_source']
+        count = entry['source_count']
+        if flag:
+            source_counts[source] = source_counts.get(source, 0) + count
+        else:
+            source_counts[source] = source_counts.get(source, 0) - count
 
-        # Iterate over the first queryset and add the counts to the dictionary
-        for entry in queryset1_list:
-            source = entry['job_source']
-            count = entry['source_count']
-            if flag:
-                source_counts[source] = source_counts.get(source, 0) + count
-            else:
-                source_counts[source] = count
+    # Convert the dictionary to a list of dictionaries
+    result = [{'job_source': source, 'source_count': count} for source, count in source_counts.items()]
 
-        # Iterate over the second queryset and add the counts to the dictionary
-        for entry in queryset2_list:
-            source = entry['job_source']
-            count = entry['source_count']
-            if flag:
-                source_counts[source] = source_counts.get(source, 0) + count
-            else:
-                source_counts[source] = source_counts.get(source, 0) - count
+    # If you want to sort the result by 'source_count' in descending order:
+    result = sorted(result, key=lambda x: x['source_count'], reverse=True)
 
-        # Convert the dictionary to a list of dictionaries
-        result = [{'job_source': source, 'source_count': count} for source, count in source_counts.items()]
+    # Print the consolidated result
+    return result
 
-        # If you want to sort the result by 'source_count' in descending order:
-        result = sorted(result, key=lambda x: x['source_count'], reverse=True)
-
-        # Print the consolidated result
-        return result
-
-    def percentage_of_counts(self, list1, list2, final_list):
-        source_percentage = []
-        for x in final_list:
-            source = x['job_source']
-            count_previous_month = next((entry['source_count'] for entry in list1 if entry.get('job_source') == source), 0)
-            count_this_month = next((entry['source_count'] for entry in list2 if entry.get('job_source') == source), 0)
-            dict = {}
-            if count_previous_month >= count_this_month:
-                alteration = "down"
-            else:
-                alteration = "up"
-            if count_previous_month == 0:
-                dict['percentage'] = count_this_month
-                dict['alteration'] = alteration
-                dict['current_count'] = count_this_month
-                dict['previous_count'] = count_previous_month
-                dict['source'] = source
-                source_percentage.append(dict)
-                continue
-            elif count_this_month == 0:
-                dict['percentage'] = count_previous_month
-                dict['alteration'] = alteration
-                dict['current_count'] = count_this_month
-                dict['previous_count'] = count_previous_month
-                dict['source'] = source
-                source_percentage.append(dict)
-                continue
-            if count_previous_month >= count_this_month:
-                per = self.percentage(count_previous_month, count_this_month)
-            else:
-                per = self.percentage(count_this_month, count_previous_month)
-            dict['percentage'] = per
+def percentage_of_counts(list1, list2, final_list, text):
+    source_percentage = []
+    for x in final_list:
+        source = x['job_source']
+        count_previous_month = next((entry['source_count'] for entry in list1 if entry.get('job_source') == source), 0)
+        count_this_month = next((entry['source_count'] for entry in list2 if entry.get('job_source') == source), 0)
+        dict = {}
+        if count_previous_month >= count_this_month:
+            alteration = "down"
+        else:
+            alteration = "up"
+        if count_previous_month == 0:
+            dict['percentage'] = count_this_month
             dict['alteration'] = alteration
             dict['current_count'] = count_this_month
             dict['previous_count'] = count_previous_month
-            dict['source'] = source
+            dict[text] = source
             source_percentage.append(dict)
-        return source_percentage
+            continue
+        elif count_this_month == 0:
+            dict['percentage'] = count_previous_month
+            dict['alteration'] = alteration
+            dict['current_count'] = count_this_month
+            dict['previous_count'] = count_previous_month
+            dict[text] = source
+            source_percentage.append(dict)
+            continue
+        if count_previous_month >= count_this_month:
+            per = percentage(count_previous_month, count_this_month)
+        else:
+            per = percentage(count_this_month, count_previous_month)
+        dict['percentage'] = per
+        dict['alteration'] = alteration
+        dict['current_count'] = count_this_month
+        dict['previous_count'] = count_previous_month
+        dict[text] = source
+        source_percentage.append(dict)
+    return source_percentage
 
 
-    def percentage(self, max_value, min_value):
-        return ((max_value - min_value) / min_value) * 100
+def percentage(max_value, min_value):
+    return ((max_value - min_value) / min_value) * 100
+def positive_negative_percentage_lists(percentage_list):
+    positive_percentage = [x for x in percentage_list if x["alteration"] == "up"]
+    negative_percentage = [x for x in percentage_list if x["alteration"] == "down"]
+    return positive_percentage, negative_percentage
 
 
 
