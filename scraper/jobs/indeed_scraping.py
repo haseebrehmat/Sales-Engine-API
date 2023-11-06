@@ -49,14 +49,14 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, job_title.text)
             company_name = driver.find_element(By.CLASS_NAME, "css-1saizt3")
             append_data(data, company_name.text)
-            address = driver.find_element(By.CLASS_NAME, "css-6z8o9s")
+            address = driver.find_element(By.CLASS_NAME, "css-9yl11a")
             append_data(data, address.text)
             job_description = driver.find_element(
                 By.CLASS_NAME, "jobsearch-jobDescriptionText")
             append_data(data, job_description.text)
             append_data(data, driver.current_url)
             try:
-                estimated_salary = driver.find_element(By.CLASS_NAME, "css-tvvxwd")
+                estimated_salary = driver.find_element(By.CLASS_NAME, "css-2iqe2o")
                 if '$' in estimated_salary.text:
                     a_an = ''
                     if 'an' in estimated_salary.text:
