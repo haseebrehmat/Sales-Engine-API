@@ -116,7 +116,7 @@ def find_jobs(driver, job_type, total_jobs, more_than_3, url=None):
 
             job_title = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-title")
             append_data(data, job_title.text)
-            company_name = driver.find_element(By.CLASS_NAME, "job-card-container__primary-description")
+            company_name = job.find_element(By.CLASS_NAME, "job-card-container__primary-description")
             append_data(data, company_name.text)
             append_data(data, address[count].text)
             job_description = driver.find_element(By.CLASS_NAME, "jobs-description-content__text")
