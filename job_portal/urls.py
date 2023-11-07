@@ -25,6 +25,7 @@ from job_portal.views.manual_job_upload import ManualJobUploadView, ManualJobUpl
 from job_portal.views.sales_engine_logs import SalesEngineJobsStatsView
 from job_portal.views.trends_analytics import TrendsAnalyticsListView, TrendsAnalyticsDetailView
 from job_portal.views.job_stagging_to_production import JobsStaggingToProduction
+from job_portal.views.jobs_trending_stats import JobsTrendingStats
 
 router1 = routers.DefaultRouter()
 router2 = routers.DefaultRouter()
@@ -70,6 +71,7 @@ urlpatterns = [
     path('download_logs/', AppliedJobDownloadsView.as_view()),
     path('jobs_stagging_to_production/', JobsStaggingToProduction.as_view()),
     path('applied_job_filters/', FilterView.as_view()),
+    path('trending_jobs_stats/', JobsTrendingStats.as_view()),
     path('team_applied_jobs_memberwise_analytics/', TeamAppliedJobsMemberwiseAnalytics.as_view()),
 
 

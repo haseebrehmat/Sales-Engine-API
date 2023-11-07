@@ -99,7 +99,8 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
             else:
                 if jobs_data:
                     job_source = jobs_data[0].job_source
-                    SalesEngineJobsStats.objects.create(job_source=job_source, jobs_count=len(jobs), upload_status=False)
+                    SalesEngineJobsStats.objects.create(job_source=job_source, jobs_count=len(jobs),
+                                                        upload_status=False, response=response.text, payload=payload)
 
 
     except Exception as e:

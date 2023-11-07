@@ -63,7 +63,7 @@ class JobsStaggingToProduction(ListAPIView):
                     obj = SalesEngineJobsStats.objects.create(job_source=model_instances[0].job_source,
                                                               jobs_count=len(model_instances),
                                                               source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION,
-                                                              upload_status=False)
+                                                              upload_status=False, response=str(e))
                 except:
                     print("")
                 return Response({"detail": message}, status_code)

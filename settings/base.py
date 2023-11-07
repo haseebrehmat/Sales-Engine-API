@@ -237,13 +237,13 @@ LOGGING = {
 }
 
 
-if env("ENVIRONMENT") == 'production':
-    ROLLBAR = {
-        'access_token': '9253e9ce8ed24d669401c0fb5d37d62c',
-        'environment': env("ENVIRONMENT"),
-        'code_version': '1.0',
-        'root': BASE_DIR,
-    }
+# if env("ENVIRONMENT") == 'production':
+#     ROLLBAR = {
+#         'access_token': '9253e9ce8ed24d669401c0fb5d37d62c',
+#         'environment': env("ENVIRONMENT"),
+#         'code_version': '1.0',
+#         'root': BASE_DIR,
+#     }
 
 
 # settings.py
