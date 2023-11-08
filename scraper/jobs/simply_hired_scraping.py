@@ -9,10 +9,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
+    set_job_type
 from utils.helpers import saveLogs
-
-total_job = 0
 
 
 # calls url
@@ -26,7 +25,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, job_type, page_no, total_job):
+def find_jobs(driver, job_type, next_page_no):
     scrapped_data = []
     count = 0
     time.sleep(3)
@@ -82,8 +81,6 @@ def find_jobs(driver, job_type, page_no, total_job):
             append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
-            total_job += 1
-
         except Exception as e:
             print(e)
         count += 1
@@ -99,16 +96,19 @@ def find_jobs(driver, job_type, page_no, total_job):
         total_jobs=len(df), job_source="Simply Hired", filename=filename)
 
     if not data_exists(driver):
-        return False, total_job
+        return False
 
-    next_page = driver.find_elements(By.CLASS_NAME, "css-1wxsdwr")
-    for i in next_page:
-        if int(i.text) == page_no:
-            i.click()
-            break
-
-    return True, total_job
-
+    try:
+        next_page = driver.find_elements(By.CLASS_NAME, "css-1wxsdwr")
+        next_page_clicked = False
+        for i in next_page:
+            if i.text == f'{next_page_no}':
+                i.click()
+                next_page_clicked = True
+                break
+        return next_page_clicked
+    except Exception as e:
+        return False
 
 # check if there is more jobs available or not
 def data_exists(driver):
@@ -118,22 +118,18 @@ def data_exists(driver):
 
 # code starts from here
 def simply_hired(link, job_type):
-    total_job = 0
     print("Simply hired")
     try:
-        count = 0
         driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
             page_no = 2
             request_url(driver, link)
-            while flag:
-                flag, total_job = find_jobs(
-                    driver, job_type, page_no, total_job)
+            while flag and page_no <= 40:
+                flag = find_jobs(driver, job_type, page_no)
                 page_no += 1
                 print("Fetching...")
-            count += 1
             print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
