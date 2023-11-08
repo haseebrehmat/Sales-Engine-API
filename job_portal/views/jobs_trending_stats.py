@@ -66,6 +66,10 @@ class JobsTrendingStats(APIView):
         # Get count of each tech stack and set all the tech stacks descending order
         element_counts_60_days = Counter(tech_keywords_60_days)
         element_counts_30_days = Counter(tech_keywords_30_days)
+
+        element_counts_60_days = remove_tech_stacks(element_counts_60_days)
+        element_counts_30_days = remove_tech_stacks(element_counts_30_days)
+
         tech_stack_counts_60_days = [{"job_source": element, "source_count": count} for element, count in element_counts_60_days.items()]
         tech_stack_counts_30_days = [{"job_source": element, "source_count": count} for element, count in
                                      element_counts_30_days.items()]
@@ -195,6 +199,12 @@ def positive_negative_percentage_lists(percentage_list):
     positive_percentage = [x for x in percentage_list if x["alteration"] == "up"]
     negative_percentage = [x for x in percentage_list if x["alteration"] == "down"]
     return positive_percentage, negative_percentage
+def remove_tech_stacks(data):
+    keys_to_remove = ['others', 'others dev']
+    # Remove the specified keys from the Counter dictionary
+    for key in keys_to_remove:
+        data.pop(key, None)
+    return data
 
 
 
