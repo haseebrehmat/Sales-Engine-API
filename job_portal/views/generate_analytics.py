@@ -40,7 +40,7 @@ class GenerateAnalytics(APIView):
             self.percentage = (100 + float(self.percentage)) / 100
         else:
             self.percentage = 1
-        self.excluded_techs = request.GET.get('excluded_techs')
+        self.excluded_techs = request.GET.get('excluded_techs', [])
         filters, start_date, end_date = self.filter_queryset(request)
         if not self.queryset.values_list("job_type", flat=True):
             return Response({"detail": "No Analytics Exists"}, status=406)
@@ -70,37 +70,41 @@ class GenerateAnalytics(APIView):
         return Response(data)
 
     def get_tech_count_stats(self, start_date, end_date, limit=10):
-        queryset = TechStats.objects.filter(job_posted_date__range=[start_date, end_date])
+        queryset = TechStats.objects.filter(name__in=self.tech_keywords, job_posted_date__range=[start_date, end_date])
+        data = []
+        top_tech_stats = []
+        if queryset:
+            data = queryset.values(
+                'name').annotate(
+                total=Sum('total'),
+                contract_on_site=Sum('contract_on_site'),
+                contract_remote=Sum('contract_remote'),
+                full_time_on_site=Sum('full_time_on_site'),
+                full_time_remote=Sum('full_time_remote'),
+                hybrid_full_time=Sum('hybrid_full_time'),
+                hybrid_contract=Sum('hybrid_contract')
+            )
 
-        data = queryset.filter(name__in=self.tech_keywords, job_posted_date__range=[start_date, end_date]).values(
-            'name').annotate(
-            total=Sum('total'),
-            contract_on_site=Sum('contract_on_site'),
-            contract_remote=Sum('contract_remote'),
-            full_time_on_site=Sum('full_time_on_site'),
-            full_time_remote=Sum('full_time_remote'),
-            hybrid_full_time=Sum('hybrid_full_time'),
-            hybrid_contract=Sum('hybrid_contract')
-        )
+            top_tech_stats = data.order_by('-total')[:limit]
 
-        top_tech_stats = data.order_by('-total')[:limit]
+            total_expression = lambda x: [value for key, value in x.items() if
+                                          isinstance(value, int) and key != 'total']
+            expression = lambda x: {
+                key: math.ceil(self.percentage * value) if isinstance(value, int) else value
+                for key, value in x.items()
+            }
+            data = [{**expression(x)} for x in data]
+            data = [{**x, 'total': sum(total_expression(x))} for x in data]
 
-        total_expression = lambda x: [value for key, value in x.items() if isinstance(value, int) and key != 'total']
-        expression = lambda x: {
-            key: math.ceil(self.percentage * value) if isinstance(value, int) else value
-            for key, value in x.items()
-        }
-        data = [{**expression(x)} for x in data]
-        data = [{**x, 'total': sum(total_expression(x))}for x in data]
-
-        top_tech_stats = [{**expression(x)} for x in top_tech_stats]
-        top_tech_stats = [{**x, 'total': sum(total_expression(x))} for x in top_tech_stats]
+            top_tech_stats = [{**expression(x)} for x in top_tech_stats]
+            top_tech_stats = [{**x, 'total': sum(total_expression(x))} for x in top_tech_stats]
         return data, top_tech_stats
 
     def get_tech_counts(self, tech):
+        queryset = self.queryset.filter(tech_keywords=tech)
         data = [
             {
-                "value": math.ceil(self.percentage * self.queryset.filter(tech_keywords=tech, job_type=x).count()),
+                "value": math.ceil(self.percentage * queryset.filter(job_type=x).count()) if queryset else 0,
                 "key": x.lower().replace(" ", "_")
             }
             for x in self.job_types
@@ -244,8 +248,8 @@ class GenerateAnalytics(APIView):
                 # get stacks from trends analytics objects
                 tech_stacks = trends.tech_stacks.split(',') if trends.tech_stacks else []
                 # find job type stats of each trends analytics category
-                queryset = TechStats.objects.filter(job_posted_date__range=[start_date, end_date])
-                result = queryset.filter(name__in=tech_stacks, job_posted_date__range=[start_date, end_date]).values(
+                queryset = TechStats.objects.filter(name__in=tech_stacks, job_posted_date__range=[start_date, end_date])
+                result = queryset.values(
                     'id').aggregate(
                     total=Sum('total'),
                     contract_on_site=Sum('contract_on_site'),
@@ -271,32 +275,34 @@ class GenerateAnalytics(APIView):
             return []
 
     def check_tech_growth(self, tech, start_date, end_date):
+        data = []
         try:
             queryset = TechStats.objects.filter(name__in=tech, job_posted_date__range=[start_date, end_date])
-            data = queryset.filter(name__in=tech, job_posted_date__range=[start_date, end_date]).values(
-                'name').order_by(
-                'job_posted_date__month').annotate(
-                total=Sum('total'),
-                contract_on_site=Sum('contract_on_site'),
-                contract_remote=Sum('contract_remote'),
-                full_time_on_site=Sum('full_time_on_site'),
-                full_time_remote=Sum('full_time_remote'),
-                hybrid_full_time=Sum('hybrid_full_time'),
-                hybrid_contract=Sum('hybrid_contract'),
-                month=F('job_posted_date__month'),
-                year=F('job_posted_date__year')
-            )
-            if data:
-                total_expression = lambda x: [value for key, value in x.items() if
-                                              isinstance(value, int) and key != 'total']
-                expression = lambda x: {
-                    key: math.ceil(self.percentage * value) if isinstance(value, int) else value
-                    for key, value in x.items()
-                }
-                result = expression(data)
-                result.update({'total': sum(total_expression(result))})
+            if queryset:
+                data = queryset.values(
+                    'name').order_by(
+                    'job_posted_date__month').annotate(
+                    total=Sum('total'),
+                    contract_on_site=Sum('contract_on_site'),
+                    contract_remote=Sum('contract_remote'),
+                    full_time_on_site=Sum('full_time_on_site'),
+                    full_time_remote=Sum('full_time_remote'),
+                    hybrid_full_time=Sum('hybrid_full_time'),
+                    hybrid_contract=Sum('hybrid_contract'),
+                    month=F('job_posted_date__month'),
+                    year=F('job_posted_date__year')
+                )
+                if data:
+                    total_expression = lambda x: [value for key, value in x.items() if
+                                                  isinstance(value, int) and key != 'total']
+                    expression = lambda x: {
+                        key: math.ceil(self.percentage * value) if isinstance(value, int) else value
+                        for key, value in x.items()
+                    }
+                    result = expression(data)
+                    result.update({'total': sum(total_expression(result))})
 
-                data = [result]
+                    data = [result]
         except Exception as e:
             data = []
         return data
@@ -310,7 +316,9 @@ class GenerateAnalytics(APIView):
         qs = None
         if self.excluded_techs:
             qs = TechStats.objects.filter(name__in=self.excluded_techs,
-                                          job_posted_date__range=[start_date, end_date]).aggregate(
+                                          job_posted_date__range=[start_date, end_date])
+            if qs:
+                qs = qs.aggregate(
                 contract_remote=Sum('contract_remote'), full_time_remote=Sum('full_time_remote'),
                 hybrid_contract=Sum('hybrid_contract'), full_time_on_site=Sum('full_time_on_site'),
                 hybrid_full_time=Sum('hybrid_full_time'), contract_on_site=Sum('contract_on_site'))
@@ -514,45 +522,44 @@ class GenerateAnalytics(APIView):
             data = []
         return data
 
-    def calculate_value(self, x, excluded_count):
-        try:
-            return math.ceil(self.percentage * (abs(x - excluded_count)))
-        except Exception as e:
-            print(e)
-            return 0
-
     def get_quarterly_job_types(self, date):
         data_obj = []
         try:
             year = date.year
-            values_list = []
             for quarter in range(1, 5):
-                excluded_count = 0
+                qs = None
                 if self.excluded_techs:
                     qs = TechStats.objects.annotate(quarter=ExtractQuarter('job_posted_date')).filter(
                         name__in=self.excluded_techs,
-                        quarter=quarter).aggregate(total=Sum('total'))
-                    excluded_count = qs['total']
-                caculated_value = lambda x: math.ceil(self.percentage * (abs(x - excluded_count)))
-                data = [
-                    {
+                        quarter=quarter)
+                    if qs:
+                        qs = qs.aggregate(
+                            contract_remote=Sum('contract_remote'), full_time_remote=Sum('full_time_remote'),
+                            hybrid_contract=Sum('hybrid_contract'), full_time_on_site=Sum('full_time_on_site'),
+                            hybrid_full_time=Sum('hybrid_full_time'), contract_on_site=Sum('contract_on_site'))
+
+                caculated_value = lambda x, exclude_count: math.ceil(self.percentage * (abs(x - exclude_count)))
+                data = []
+                for x in self.job_types:
+                    key = x.lower().replace(" ", "_")
+                    obj = {
                         "name": x,
-                        "value": caculated_value(self.queryset.annotate(
-                            quarter=ExtractQuarter('job_posted_date'),
-                            year=ExtractYear('job_posted_date')
-                        ).filter(job_type__iexact=x, quarter=quarter, year=year).aggregate(count=Sum('jobs'))[
-                                                     'count'])
-                        if self.queryset.annotate(
-                            quarter=ExtractQuarter('job_posted_date'),
-                            year=ExtractYear('job_posted_date')
-                        ).filter(
-                            job_type__iexact=x,
-                            quarter=quarter,
-                            year=year
-                        ) else 0,
-                        "key": x.lower().replace(" ", "_"),
-                    } for x in self.job_types
-                ]
+                        "value": 0,
+                        "key": key
+                    }
+                    query_result = self.queryset.annotate(
+                        quarter=ExtractQuarter('job_posted_date'),
+                        year=ExtractYear('job_posted_date')
+                    ).filter(
+                        job_type__iexact=x,
+                        quarter=quarter,
+                        year=year
+                    )
+                    if query_result:
+                        jobs_count = query_result.aggregate(count=Sum('jobs'))['count']
+                        excluded_jobs_count = qs[key] if qs else 0
+                        obj.update({'value': caculated_value(jobs_count, excluded_jobs_count)})
+                    data.append(obj)
                 data_obj.append(data)
         except Exception as e:
             data_obj = []
@@ -563,41 +570,35 @@ class GenerateAnalytics(APIView):
         data_obj = []
         try:
             year = date.year
-            values_list = []
             for idx, month in enumerate(self.months):
-                excluded_count = 0
                 month_number = idx + 1
-
+                qs = None
                 if self.excluded_techs:
                     qs = TechStats.objects.annotate(month=ExtractMonth('job_posted_date')).filter(
                         name__in=self.excluded_techs,
-                        month=month_number).aggregate(total=Sum('total'))
-                    excluded_count = qs['total']
-                caculated_value = lambda x: math.ceil(self.percentage * (abs(x - excluded_count)))
-                data = [
-                    {
+                        month=month_number)
+                    if qs:
+                        qs = qs.aggregate(
+                            contract_remote=Sum('contract_remote'), full_time_remote=Sum('full_time_remote'),
+                            hybrid_contract=Sum('hybrid_contract'), full_time_on_site=Sum('full_time_on_site'),
+                            hybrid_full_time=Sum('hybrid_full_time'), contract_on_site=Sum('contract_on_site'))
+                caculated_value = lambda x, exclude_count: math.ceil(self.percentage * (abs(x - exclude_count)))
+                data = []
+                for x in self.job_types:
+                    key = x.lower().replace(" ", "_")
+                    obj = {
                         "name": x,
-                        "value": caculated_value(
-                            self.queryset.annotate(
-                                month=ExtractMonth('job_posted_date'),
-                                year=ExtractYear('job_posted_date')
-                            ).filter(
-                                job_type__iexact=x,
-                                month=month_number,
-                                year=year
-                            ).aggregate(count=Sum('jobs'))['count'])
-                        if self.queryset.annotate(
-                            month=ExtractMonth('job_posted_date'),
-                            year=ExtractYear('job_posted_date')
-                        ).filter(
-                            job_type__iexact=x,
-                            month=month_number,
-                            year=year
-                        ) else 0,
-                        "key": x.lower().replace(" ", "_")
+                        "value": 0,
+                        "key": key
                     }
-                    for x in self.job_types
-                ]
+                    query_result = self.queryset.annotate(month=ExtractMonth('job_posted_date'),
+                                                          year=ExtractYear('job_posted_date')).filter(
+                        job_type__iexact=x, month=month_number, year=year)
+                    if query_result:
+                        jobs_count = query_result.aggregate(count=Sum('jobs'))['count']
+                        excluded_jobs_count = qs[key] if qs else 0
+                        obj.update({'value': caculated_value(jobs_count, excluded_jobs_count)})
+                    data.append(obj)
                 data_obj.append({
                     'month': month,
                     'data': data
