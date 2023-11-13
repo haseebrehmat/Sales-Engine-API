@@ -1,4 +1,3 @@
-import math
 import re
 import time
 import traceback
@@ -6,7 +5,8 @@ from datetime import datetime
 from typing import List
 
 import pandas as pd
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchElementException, \
+    ElementNotVisibleException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -43,6 +43,7 @@ class WeWorkRemotelyScraper:
         self.driver.get(self.url)
 
     def handle_exception(self, exception: Exception or str) -> None:
+        saveLogs(exception)
         traceback.format_exc()
         traceback_data = traceback.extract_tb(exception.__traceback__)
         if traceback_data and traceback_data[0]:
@@ -70,7 +71,9 @@ class WeWorkRemotelyScraper:
             ec: EC = EC.presence_of_all_elements_located((by, locator)) if alls else EC.presence_of_element_located(
                 (by, locator))
             return wait.until(ec)
-        except WebDriverException as e:
+        except (
+                WebDriverException, TimeoutException, NoSuchElementException, ElementNotVisibleException,
+                Exception) as e:
             self.handle_exception(e)
             return None
 
@@ -86,7 +89,7 @@ class WeWorkRemotelyScraper:
                 if main_element:
                     loaded = True
                     break
-            except WebDriverException as e:
+            except (WebDriverException, TimeoutException, NoSuchElementException, ElementNotVisibleException) as e:
                 if retry < 5:
                     print(f"Retry {retry}/{5} due to: {e}")
                 else:
@@ -139,20 +142,25 @@ class WeWorkRemotelyScraper:
         pattern = r'^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)$'
         match = re.match(pattern, datetime_str)
         if match:
+            day_span = 24 * 60 * 60
             datetime_str = match.group(1)
             datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ")
             current_time = datetime.utcnow()
-            time_difference = (current_time.timestamp() - datetime_obj.timestamp())
-            days_difference = math.ceil(time_difference / 86400)
-            seconds_difference = int(time_difference % 86400)
-            hours = seconds_difference // 36000
-            minutes = (seconds_difference % 3600) // 60
-            if days_difference == 0 and hours == 0:
-                result = f"{minutes} minutes ago"
-            elif days_difference == 0:
-                result = f"{hours} hours ago"
+            time_difference = (current_time - datetime_obj).total_seconds()
+            days = time_difference // day_span
+            # Remove days to get only hours or minutes
+            time_difference = time_difference - days * day_span
+            minutes = time_difference // 60
+            hours = time_difference // (60 * 60)
+            # Increment days if hours > 20
+            days += 1 if hours >= 20 else days
+            if days == 0:
+                if hours == 0:
+                    result = f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+                else:
+                    result = f"{hours} hour{'s' if hours > 1 else ''} ago"
             else:
-                result = f"{days_difference} days ago"
+                result = f"{days} day{'s' if days > 1 else ''} ago"
         else:
             result = datetime_str
         return result
@@ -243,11 +251,11 @@ class WeWorkRemotelyScraper:
                         self.handle_exception(e)
                         continue
             self.export_to_excel() if len(self.scraped_jobs) > 0 else None
-            self.log_error_if_any() if len(self.errs) > 0 else None
+            # self.log_error_if_any() if len(self.errs) > 0 else None
             self.driver.quit()
         except Exception as e:
             self.handle_exception(e)
-            self.log_error_if_any() if len(self.errs) > 0 else None
+            # self.log_error_if_any() if len(self.errs) > 0 else None
             self.driver.quit()
 
     def export_to_excel(self) -> None:
