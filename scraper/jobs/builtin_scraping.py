@@ -38,10 +38,10 @@ def find_jobs(driver, job_type, total_job):
         job_details = driver.find_elements(By.CLASS_NAME, "job-bounded-responsive")
         original_window = driver.current_window_handle
 
-        for url in job_links:
+        for i, url in enumerate(job_links):
             try:
                 data = []
-                job_detail = job_details[c].text.split('\n')
+                job_detail = job_details[i].text.split('\n')
                 append_data(data, job_detail[1])
                 append_data(data, job_detail[0])
                 append_data(data, job_detail[2])
