@@ -1,14 +1,14 @@
 import json
 import re
-from datetime import datetime, timedelta
-from job_portal.utils.helpers import SalesEngineLogsNaming
+from django.utils import timezone
 import requests
-from job_portal.models import SalesEngineJobsStats, JobDetail
-from job_portal.utils.keywords_dic import keyword, regular_expressions
+
+from job_portal.models import SalesEngineJobsStats
+from job_portal.utils.keywords_dic import regular_expressions
 from scraper.models import RestrictedJobsTags
 from scraper.utils.thread import start_new_thread
-from utils.helpers import saveLogs
 from settings.base import SALES_ENGINE_UPLOAD_JOBS_URL, SALES_ENGINE_API_TOKEN, env, STAGGING_TO_PRODUCTION_API_TOKEN
+from utils.helpers import saveLogs
 from utils.requests_logger import requests_logger_hooks
 
 # restricted_job_tags = ['banking', 'government', 'federal', 'crypto', 'ether', 'clearance',
@@ -53,6 +53,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
         url = 'https://bd.devsinc.com/job_portal/api/v1/job_roles'  # API for getting role
         resp = requests.get(url, headers=headers)
         job_roles = json.loads(resp.text).get('job_roles', []) if resp.ok else []
+        valid_start_date = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) - timezone.timedelta(days=2)
 
         url = SALES_ENGINE_UPLOAD_JOBS_URL
         jobs = [
@@ -70,7 +71,9 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 "job_description": job.job_description,
                 "company_name": job.company_name,
                 "address": job.address
-            } for job in jobs_data if job.tech_keywords not in excluded_jobs_tech]
+            } for job in jobs_data if
+            job.tech_keywords not in excluded_jobs_tech and job.job_posted_date >= valid_start_date]
+
         before_filter = jobs
         jobs = filter_restricted_jobs(jobs)
         payload = json.dumps(
