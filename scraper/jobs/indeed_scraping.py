@@ -47,7 +47,7 @@ def find_jobs(driver, job_type, total_job):
             job_title = driver.find_element(
                 By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
             if "job post" in job_title.text:
-                append_data(data, job_title.text.strip("-job post"))
+                append_data(data, job_title.text.split('\n')[0].strip("-job post"))
             else:
                 append_data(data, job_title.text)
             company_name = driver.find_element(By.CLASS_NAME, "css-1saizt3")
@@ -141,7 +141,7 @@ def indeed(link, job_type):
     try:
         total_job = 0
         count = 0
-        driver = configure_webdriver()
+        driver = configure_webdriver(True)
         driver.maximize_window()
         try:
             flag = True
