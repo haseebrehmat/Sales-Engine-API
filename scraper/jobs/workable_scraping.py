@@ -77,9 +77,8 @@ def find_jobs(driver, job_type):
 
                 WebDriverWait(driver, 30).until(
                     EC.presence_of_element_located(
-                        (By.CLASS_NAME, "JobBreakdown__job-breakdown--3whe3"))
+                        (By.CLASS_NAME, "jobBreakdown__job-breakdown--31MGR"))
                 )
-
                 job_title = driver.find_element(
                     By.CLASS_NAME, "jobOverview__job-title--kuTAQ")
                 append_data(data, job_title.text)
@@ -90,7 +89,7 @@ def find_jobs(driver, job_type):
                     By.CLASS_NAME, "jobDetails__job-detail--3As6F")[1]
                 append_data(data, address.text)
                 job_description = driver.find_element(
-                    By.CLASS_NAME, "JobBreakdown__job-breakdown--3whe3")
+                    By.CLASS_NAME, "jobBreakdown__job-breakdown--31MGR")
                 append_data(data, job_description.text)
                 append_data(data, driver.current_url)
                 job_posted_date = driver.find_element(
@@ -137,7 +136,7 @@ def find_jobs(driver, job_type):
 def workable(link, job_type):
     print("Workable")
     try:
-        driver = configure_webdriver(False, False)
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True

@@ -66,11 +66,24 @@ class JobsTrendingStats(APIView):
         # Get count of each tech stack and set all the tech stacks descending order
         element_counts_60_days = Counter(tech_keywords_60_days)
         element_counts_30_days = Counter(tech_keywords_30_days)
+
+
+        ai_ml_count_30_days = combined_count(element_counts_30_days)
+        ai_ml_count_60_days = combined_count(element_counts_60_days)
+        element_counts_60_days = remove_tech_stacks(element_counts_60_days)
+        element_counts_30_days = remove_tech_stacks(element_counts_30_days)
+
+
         tech_stack_counts_60_days = [{"job_source": element, "source_count": count} for element, count in element_counts_60_days.items()]
+
         tech_stack_counts_30_days = [{"job_source": element, "source_count": count} for element, count in
                                      element_counts_30_days.items()]
+        add_tech_stack(tech_stack_counts_60_days, ai_ml_count_60_days)
+        add_tech_stack(tech_stack_counts_30_days, ai_ml_count_30_days)
+
         tech_stack_counts_60_days = sorted(tech_stack_counts_60_days, key=lambda x: x['source_count'], reverse=True)
         tech_stack_counts_30_days = sorted(tech_stack_counts_30_days, key=lambda x: x['source_count'], reverse=True)
+
         tech_stack_counts_30_days_reverse_order = sorted(tech_stack_counts_30_days, key=lambda x: x['source_count'], reverse=False)
 
         combined_tech_stacks_difference = source_counts(tech_stack_counts_30_days, tech_stack_counts_60_days,False)
@@ -195,6 +208,24 @@ def positive_negative_percentage_lists(percentage_list):
     positive_percentage = [x for x in percentage_list if x["alteration"] == "up"]
     negative_percentage = [x for x in percentage_list if x["alteration"] == "down"]
     return positive_percentage, negative_percentage
+def remove_tech_stacks(data):
+    keys_to_remove = ['others', 'others dev', 'ai/ml engineer', 'ml engineer', 'ai engineer']
+    # Remove the specified keys from the Counter dictionary
+    for key in keys_to_remove:
+        data.pop(key, None)
+    return data
+def combined_count(element_counts):
+    combined_stacks = ['ai/ml engineer', 'ml engineer', 'ai engineer']
+    combined_count = 0
+    for element, count in element_counts.items():
+        if element in combined_stacks:
+            combined_count = combined_count + count
+    return combined_count
+def add_tech_stack(array ,count):
+    new_dict = {'job_source': 'ai/ml engineer', 'source_count': count}
+    array.append(new_dict)
+
+
 
 
 
