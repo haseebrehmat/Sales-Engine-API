@@ -136,7 +136,7 @@ def find_jobs(driver, job_type):
 def workable(link, job_type):
     print("Workable")
     try:
-        driver = configure_webdriver()
+        driver = configure_webdriver(block_media=True, block_elements=['img'])
         driver.maximize_window()
         try:
             flag = True

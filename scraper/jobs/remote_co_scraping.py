@@ -110,7 +110,7 @@ def remote_co(link, job_type):
     print('Remote CO Scraper ... ')
     try:
         print("Start in try portion. \n")
-        driver = configure_webdriver(open_browser=False, stop_loading_images_and_css=True)
+        driver = configure_webdriver(block_media=True)
         driver.maximize_window()
         try:
             driver.get(link)

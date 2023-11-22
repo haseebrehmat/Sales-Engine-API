@@ -120,7 +120,7 @@ def data_exists(driver):
 def simply_hired(link, job_type):
     print("Simply hired")
     try:
-        driver = configure_webdriver()
+        driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
         driver.maximize_window()
         try:
             flag = True
