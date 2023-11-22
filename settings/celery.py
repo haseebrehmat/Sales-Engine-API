@@ -24,7 +24,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'check_group_scraper': {
         'task': 'settings.celery.check_group_scraper',
-        'schedule': timedelta(seconds=60),
+        'schedule': timedelta(seconds=1500),
     }
 }
 
@@ -53,11 +53,14 @@ def check_group_scraper():
         print("")
 @start_new_thread
 def restart_script():
-    pid = None
-    cmd = 'python manage.py check_scraper'
-    for line in os.popen('ps aux | grep "%s" | grep -v grep' % cmd):
-        fields = line.strip().split()
-        pid = fields[1]
-    if pid:
-        subprocess.run(['kill', pid])
-    subprocess.run(['python', 'manage.py', 'check_scraper'])
+    try:
+        pid = None
+        cmd = 'python manage.py check_scraper'
+        for line in os.popen('ps aux | grep "%s" | grep -v grep' % cmd):
+            fields = line.strip().split()
+            pid = fields[1]
+        if pid:
+            subprocess.run(['kill', pid])
+        subprocess.run(['python', 'manage.py', 'check_scraper'])
+    except:
+        print("")
