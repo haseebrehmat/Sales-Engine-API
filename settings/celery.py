@@ -1,5 +1,7 @@
 import subprocess
 import datetime
+import time
+
 from django.utils import timezone
 
 
@@ -22,7 +24,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'check_group_scraper': {
         'task': 'settings.celery.check_group_scraper',
-        'schedule': timedelta(seconds=1500),
+        'schedule': timedelta(seconds=60),
     }
 }
 
@@ -40,8 +42,12 @@ def check_group_scraper():
     check_status = SchedulerSync.objects.filter(
         type="group scraper", job_source=group_scrapper.name.lower()).first()
     if not check_status.running and group_scrapper.scheduler_settings.time_based:
+        os.system('pgrep chrome | xargs kill -9')
+        time.sleep(10)
         restart_script()
     elif not int((timezone.now() - ScraperLogs.objects.all().last().updated_at).total_seconds()/60) < 30:
+        os.system('pgrep chrome | xargs kill -9')
+        time.sleep(10)
         restart_script()
     else:
         print("")
