@@ -1,22 +1,18 @@
 import datetime
+import random
 import re
 import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+
 from scraper.constants.const import JOB_TYPE
-
 from scraper.models import GroupScraper, GroupScraperQuery
-from selenium.webdriver.support import expected_conditions as EC
-import random
-
-
-from utils.helpers import saveLogs
 from scraper.models.accounts import Accounts
-
 
 
 def convert_time_into_minutes(interval, interval_type):
@@ -109,8 +105,7 @@ def generate_scraper_filename(job_source):
     return f'scraper/job_data/{job_source} - {date_time}.xlsx'
 
 
-
-def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
+def configure_webdriver(open_browser=False, block_media=False, block_elements=['css', 'img', 'js']):
     options = webdriver.ChromeOptions()
 
     # Install the extension
@@ -118,27 +113,25 @@ def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
 
     if not open_browser:
         options.add_argument("--headless=new")
-
-    prefs = {'profile.default_content_setting_values': {'cookies': 2, 'images': 2, 'javascript': 2,
-                                                        'plugins': 2, 'popups': 2, 'geolocation': 2,
-                                                        'notifications': 2, 'auto_select_certificate': 2,
-                                                        'fullscreen': 2,
-                                                        'mouselock': 2, 'mixed_script': 2, 'media_stream': 2,
-                                                        'media_stream_mic': 2, 'media_stream_camera': 2,
-                                                        'protocol_handlers': 2,
-                                                        'ppapi_broker': 2, 'automatic_downloads': 2, 'midi_sysex': 2,
-                                                        'push_messaging': 2, 'ssl_cert_decisions': 2,
-                                                        'metro_switch_to_desktop': 2,
-                                                        'protected_media_identifier': 2, 'app_banner': 2,
-                                                        'site_engagement': 2,
-                                                        'durable_storage': 2}}
-
-    if stop_loading_images_and_css:
+    if block_media:
+        hide_elements = {
+            'plugins': 2, 'popups': 2, 'geolocation': 2, 'notifications': 2,
+            'auto_select_certificate': 2, 'fullscreen': 2, 'mouselock': 2, 'mixed_script': 2,
+            'media_stream': 2, 'media_stream_mic': 2, 'media_stream_camera': 2,
+            'protocol_handlers': 2, 'ppapi_broker': 2, 'automatic_downloads': 2, 'midi_sysex': 2,
+            'push_messaging': 2, 'ssl_cert_decisions': 2, 'metro_switch_to_desktop': 2,
+            'protected_media_identifier': 2, 'app_banner': 2, 'site_engagement': 2, 'durable_storage': 2
+        }
+        if 'cookies' in block_elements:
+            hide_elements.update({'cookies': 2})
+        if 'js' in block_elements:
+            hide_elements.update({'javascript': 2})
+        if 'img' in block_elements:
+            hide_elements.update({'images': 2})
+        prefs = {'profile.default_content_setting_values': hide_elements}
         options.add_argument('--disable-features=EnableNetworkService')
         options.add_argument('--blink-settings=imagesEnabled=false')
         options.add_experimental_option('prefs', prefs)
-
-
     options.add_argument("window-size=1200,1100")
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
@@ -153,13 +146,19 @@ def configure_webdriver(open_browser=False, stop_loading_images_and_css=False):
 
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-    if stop_loading_images_and_css:
+    if block_media:
         # Enable Chrome DevTools Protocol
         driver.execute_cdp_cmd("Page.enable", {})
         driver.execute_cdp_cmd("Network.enable", {})
 
         # Set blocked URL patterns to disable images and stylesheets
-        blocked_patterns = ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.css", "*.js"]
+        blocked_patterns = []
+        if 'img' in block_elements:
+            blocked_patterns.extend(["*.jpg", "*.jpeg", "*.png", "*.gif", ])
+        if 'css' in block_elements:
+            blocked_patterns.extend(["*.css"])
+        if 'js' in block_elements:
+            blocked_patterns.extend(["*.js"])
         driver.execute_cdp_cmd("Network.setBlockedURLs", {"urls": blocked_patterns})
     return driver
 
