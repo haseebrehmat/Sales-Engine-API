@@ -160,7 +160,7 @@ def builtin(link, job_type):
     try:
         total_job = 0
         count = 0
-        driver = configure_webdriver()
+        driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
         driver.maximize_window()
         try:
             flag = True
