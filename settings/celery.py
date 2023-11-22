@@ -1,5 +1,7 @@
 import subprocess
 import datetime
+import time
+
 from django.utils import timezone
 
 
@@ -40,18 +42,25 @@ def check_group_scraper():
     check_status = SchedulerSync.objects.filter(
         type="group scraper", job_source=group_scrapper.name.lower()).first()
     if not check_status.running and group_scrapper.scheduler_settings.time_based:
+        os.system('pgrep chrome | xargs kill -9')
+        time.sleep(10)
         restart_script()
     elif not int((timezone.now() - ScraperLogs.objects.all().last().updated_at).total_seconds()/60) < 30:
+        os.system('pgrep chrome | xargs kill -9')
+        time.sleep(10)
         restart_script()
     else:
         print("")
 @start_new_thread
 def restart_script():
-    pid = None
-    cmd = 'python manage.py check_scraper'
-    for line in os.popen('ps aux | grep "%s" | grep -v grep' % cmd):
-        fields = line.strip().split()
-        pid = fields[1]
-    if pid:
-        subprocess.run(['kill', pid])
-    subprocess.run(['python', 'manage.py', 'check_scraper'])
+    try:
+        pid = None
+        cmd = 'python manage.py check_scraper'
+        for line in os.popen('ps aux | grep "%s" | grep -v grep' % cmd):
+            fields = line.strip().split()
+            pid = fields[1]
+        if pid:
+            subprocess.run(['kill', pid])
+        subprocess.run(['python', 'manage.py', 'check_scraper'])
+    except:
+        print("")

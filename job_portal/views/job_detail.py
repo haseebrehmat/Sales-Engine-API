@@ -198,20 +198,23 @@ class RemoveDuplicateView(APIView):
     @transaction.atomic
     def remove_duplicate(self):
         print("Getting Duplicates!")
-        duplicate_values = JobDetail.objects.values('company_name', 'job_title', 'job_applied').annotate(
-            count=Count('id')).filter(count__gt=1)
+        try:
+            duplicate_values = JobDetail.objects.values('company_name', 'job_title', 'job_applied').annotate(
+                count=Count('id')).filter(count__gt=1)
 
-        for duplicate in duplicate_values:
-            # Get all the duplicate records
-            duplicate_records = JobDetail.objects.filter(company_name=duplicate['company_name'],
-                                                         job_title=duplicate['job_title'],
-                                                         job_applied=duplicate['job_applied']
-                                                         )
+            for duplicate in duplicate_values:
+                # Get all the duplicate records
+                duplicate_records = JobDetail.objects.filter(company_name=duplicate['company_name'],
+                                                            job_title=duplicate['job_title'],
+                                                            job_applied=duplicate['job_applied']
+                                                            )
 
-            # Keep the first record and delete the rest
-            first_record = duplicate_records.first()
-            duplicate_records.exclude(pk=first_record.pk).delete()
-        print("Duplicates Removed!")
+                # Keep the first record and delete the rest
+                first_record = duplicate_records.first()
+                duplicate_records.exclude(pk=first_record.pk).delete()
+            print("Duplicates Removed!")
+        except:
+            print("")
 
 
 class JobModification(APIView):

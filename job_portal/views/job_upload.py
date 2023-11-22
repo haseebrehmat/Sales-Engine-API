@@ -83,28 +83,31 @@ class JobCleanerView(APIView):
 
     @start_new_thread
     def update_data(self, job_data):
-        data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'tech_stacks', 'job_description')))
-        classify_data = JobClassifier(data)
-        classify_data.update_tech_stack()
+        try:
+            data = pd.DataFrame(list(job_data.values('pk', 'job_title', 'tech_keywords', 'tech_stacks', 'job_description')))
+            classify_data = JobClassifier(data)
+            classify_data.update_tech_stack()
 
-        updated_job_details = []
-        for key in classify_data.data_frame.itertuples():
-            update_item = job_data.get(id=key.pk)
-            if update_item.tech_keywords != key.tech_keywords.lower():
-                update_item.tech_keywords = key.tech_keywords.lower()
-                update_item.tech_stacks = key.tech_keywords.lower().split(',')
-                # append the updated user object to the list
-                updated_job_details.append(update_item)
+            updated_job_details = []
+            for key in classify_data.data_frame.itertuples():
+                update_item = job_data.get(id=key.pk)
+                if update_item.tech_keywords != key.tech_keywords.lower():
+                    update_item.tech_keywords = key.tech_keywords.lower()
+                    update_item.tech_stacks = key.tech_keywords.lower().split(',')
+                    # append the updated user object to the list
+                    updated_job_details.append(update_item)
 
-        # update jobs in bulks in small batches
-        num_records = len(updated_job_details)
-        batch_size = 500
-        for i in tqdm(range(0, num_records, batch_size)):
-            start_index = i
-            end_index = min(i + batch_size, num_records)
-            user_bulk_update_list = updated_job_details[start_index:end_index]
-            JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords', 'tech_stacks'], batch_size=500)
-        return num_records
+            # update jobs in bulks in small batches
+            num_records = len(updated_job_details)
+            batch_size = 500
+            for i in tqdm(range(0, num_records, batch_size)):
+                start_index = i
+                end_index = min(i + batch_size, num_records)
+                user_bulk_update_list = updated_job_details[start_index:end_index]
+                JobDetail.objects.bulk_update(user_bulk_update_list, ['tech_keywords', 'tech_stacks'], batch_size=500)
+            return num_records
+        except:
+            print("")
 
 
 class JobTypeCleanerView(APIView):

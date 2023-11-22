@@ -30,7 +30,7 @@ class WeWorkRemotelyScraper:
     def call(cls, url):
         print("Running We Work Remotely...")
         try:
-            driver: WebDriver = configure_webdriver(True)
+            driver: WebDriver = configure_webdriver()
             driver.maximize_window()
             wwr_scraper: cls.__class__ = cls(driver=driver, url=url)
             wwr_scraper.find_jobs()
@@ -188,7 +188,6 @@ class WeWorkRemotelyScraper:
 
     def extract_values_from_content(self, content: WebElement or None):
         try:
-            element: WebElement or List[WebElement] or None
             if content:
                 # Job Description with Tags
                 self.job['job_description_tags']: str = content.get_attribute('innerHTML') if content else "N/A"
@@ -211,8 +210,8 @@ class WeWorkRemotelyScraper:
         except Exception as e:
             self.handle_exception(e)
 
-    def tab_visited(self, tab: str) -> bool:
-        self.driver.switch_to.window(tab)
+    def tab_visited(self, tab: str = '') -> bool:
+        # self.driver.switch_to.window(tab)
         try:
             header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
             content: WebElement = self.get_element(locator='section.job div.listing-container', selector='css')
@@ -224,13 +223,14 @@ class WeWorkRemotelyScraper:
                 self.extract_values_from_company_section(company_section=company)
                 job = self.job.copy()
                 self.scraped_jobs.append(job)
-                self.driver.close()
+                # self.driver.close()
                 return True
             else:
-                self.driver.close()
+                return False
+                # self.driver.close()
         except WebDriverException as e:
             self.handle_exception(e)
-            self.driver.close()
+            # self.driver.close()
             return False
 
     def find_jobs(self) -> None:
@@ -239,12 +239,13 @@ class WeWorkRemotelyScraper:
             if len(urls) > 0:
                 for url in urls:
                     try:
-                        self.driver.execute_script(
-                            "window.open('" + url + "', '_blank');")
-                        visited: bool = self.tab_visited(self.driver.window_handles[-1])
+                        self.driver.get(url=url)
+                        # self.driver.execute_script(
+                        #     "window.open('" + url + "');")
+                        visited: bool = self.tab_visited()
                         if visited:
                             self.job.clear()
-                            self.driver.switch_to.window(self.driver.window_handles[0])
+                            # self.driver.switch_to.window(self.driver.window_handles[0])
                         else:
                             continue
                     except Exception as e:

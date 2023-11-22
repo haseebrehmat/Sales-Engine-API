@@ -465,24 +465,27 @@ def run_scrapers(scrapers):
 
 @start_new_thread
 def load_all_job_scrappers():
-    queryset = SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper')
-    if queryset:
-        queryset.update(running=True, start_time=timezone.now(), end_time=None)
-        while AllSyncConfig.objects.filter(status=True).first() is not None:
-            print("Linkedin Group in load all jobs")
-            try:
-                group_query = GroupScraperQuery.objects.all()
-                linkedin_group(group_query)
-                upload_jobs('Infinite Scrapper', 'linkedin_group')
-                remove_files('Infinite Scrapper', 'linkedin_group')
-            except Exception as e:
-                print(e)
-                saveLogs(e)
+    try:
         queryset = SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper')
         if queryset:
-            queryset.update(running=False, end_time=timezone.now())
-    print("Script Terminated")
-    return True
+            queryset.update(running=True, start_time=timezone.now(), end_time=None)
+            while AllSyncConfig.objects.filter(status=True).first() is not None:
+                print("Linkedin Group in load all jobs")
+                try:
+                    group_query = GroupScraperQuery.objects.all()
+                    linkedin_group(group_query)
+                    upload_jobs('Infinite Scrapper', 'linkedin_group')
+                    remove_files('Infinite Scrapper', 'linkedin_group')
+                except Exception as e:
+                    print(e)
+                    saveLogs(e)
+            queryset = SchedulerSync.objects.filter(job_source='linkedin_group', type='Infinite Scrapper')
+            if queryset:
+                queryset.update(running=False, end_time=timezone.now())
+        print("Script Terminated")
+        return True
+    except:
+            print("")
 
 
 @shared_task
@@ -503,10 +506,13 @@ def load_job_scrappers(job_source):
     except Exception as e:
         print(str(e))
         saveLogs(e)
-    SchedulerSync.objects.all().update(running=False)
-    SchedulerSync.objects.filter(
-        job_source=job_source, type='instant').update(end_time=timezone.now())
-    return True
+    try:
+        SchedulerSync.objects.all().update(running=False)
+        SchedulerSync.objects.filter(
+            job_source=job_source, type='instant').update(end_time=timezone.now())
+        return True
+    except:
+            print("")
 
 
 def run_scheduler(job_source):
