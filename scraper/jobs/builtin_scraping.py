@@ -31,10 +31,10 @@ def find_jobs(driver, job_type, total_job):
         c = 0
         time.sleep(3)
         job_links = []
-        links = driver.find_elements(By.CLASS_NAME, "bounded-attribute-section")
+        links = driver.find_elements(By.CSS_SELECTOR, "a[data-id='view-job-button']")
         for link in links:
-            job_links.append(link.find_element(By.TAG_NAME, "a").get_attribute('href'))
-
+            job_links.append(link.get_attribute('href'))
+ 
         job_details = driver.find_elements(By.CLASS_NAME, "job-bounded-responsive")
         original_window = driver.current_window_handle
 
@@ -99,6 +99,7 @@ def find_jobs(driver, job_type, total_job):
                     job_type_check = driver.find_element(By.CLASS_NAME, "company-info")
                     if 'remote' in job_type_check.text.lower():
                         if 'hybrid' in job_type_check.text.lower():
+                            switch_tab(driver, c, original_window)
                             continue
                         else:
                             append_data(data, set_job_type('Full time'))
@@ -107,6 +108,7 @@ def find_jobs(driver, job_type, total_job):
                         job_type_check = driver.find_element(By.CLASS_NAME, "company-options")
                         if 'remote' in job_type_check.text.lower():
                             if 'hybrid' in job_type_check.text.lower():
+                                switch_tab(driver, c, original_window)
                                 continue
                             else:
                                 append_data(data, set_job_type('Full time'))
@@ -119,13 +121,9 @@ def find_jobs(driver, job_type, total_job):
                 total_job += 1
             except Exception as e:
                 saveLogs(e)
-            try:
-                c += 1
-                driver.close()
-                driver.switch_to.window(original_window)
-            except Exception as e:
-                saveLogs(e)
 
+            switch_tab(driver, c, original_window)
+           
         columns_name = ["job_title", "company_name", "job_posted_date", "address", "job_description", 'job_source_url', "salary_format",
                         "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
@@ -138,13 +136,23 @@ def find_jobs(driver, job_type, total_job):
         try:
             next_page = driver.find_element(By.CLASS_NAME, 'pagination')
             pagination = next_page.find_elements(By.TAG_NAME, 'li')
-            pagination[-1].click()
+            next_page_anchor = pagination[-1].find_element(By.TAG_NAME, 'a')
+            next_page_url = next_page_anchor.get_attribute('href')
+            driver.get(next_page_url)
             return True, total_job
         except Exception as e:
             return False, total_job
     except Exception as e:
         saveLogs(e)
         return False, total_job
+    
+def switch_tab(driver, c, tab):
+    try:
+        c += 1
+        driver.close()
+        driver.switch_to.window(tab)
+    except Exception as e:
+        saveLogs(e)
 
 # code starts from here
 def builtin(link, job_type):
@@ -152,7 +160,7 @@ def builtin(link, job_type):
     try:
         total_job = 0
         count = 0
-        driver = configure_webdriver()
+        driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
         driver.maximize_window()
         try:
             flag = True
