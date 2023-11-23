@@ -50,7 +50,7 @@ def find_jobs(driver, job_type, total_job):
                 driver.switch_to.new_window('tab')
                 driver.get(url)
                 time.sleep(4)
-                outerLoop = False
+                outer_loop_exit = False
                 for retry in range(retries):
                     try:
                         driver.find_element(By.ID, "read-more-description-toggle").click()
@@ -59,11 +59,15 @@ def find_jobs(driver, job_type, total_job):
                     except Exception as e:
                         if retry == retries:
                             saveLogs(e)
-                            outerLoop = True
+                            outer_loop_exit = True
                             break
-                        change_pia_location(driver)
-                        driver.get(url)
-                if outerLoop:
+                        error_status = change_pia_location(driver)
+                        if not error_status:
+                            driver.get(url)
+                        else:
+                            outer_loop_exit = True
+                            break
+                if outer_loop_exit:
                     continue        
                 try:
                     address = driver.find_element(By.CLASS_NAME, "company-address").text
@@ -172,7 +176,7 @@ def builtin(link, job_type):
     try:
         total_job = 0
         count = 0
-        driver = configure_webdriver(open_browser=True)
+        driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
         driver.maximize_window()
         run_pia_proxy(driver)
         try:
