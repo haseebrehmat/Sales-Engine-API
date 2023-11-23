@@ -1,17 +1,11 @@
 import time
-from datetime import datetime
 
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type, run_pia_proxy, change_pia_location
 from utils.helpers import saveLogs
 
 total_job = 0
@@ -38,6 +32,7 @@ def find_jobs(driver, job_type, total_job):
         job_details = driver.find_elements(By.CLASS_NAME, "job-bounded-responsive")
         original_window = driver.current_window_handle
 
+        retries  = 5
         for i, url in enumerate(job_links):
             try:
                 data = []
@@ -48,11 +43,25 @@ def find_jobs(driver, job_type, total_job):
                 driver.switch_to.new_window('tab')
                 driver.get(url)
                 time.sleep(4)
-                try:
-                    driver.find_element(By.ID, "read-more-description-toggle").click()
-                    time.sleep(1)
-                except Exception as e:
-                    saveLogs(e)
+                outer_loop_exit = False
+                for retry in range(retries):
+                    try:
+                        driver.find_element(By.ID, "read-more-description-toggle").click()
+                        time.sleep(1)
+                        break
+                    except Exception as e:
+                        if retry == retries:
+                            saveLogs(e)
+                            outer_loop_exit = True
+                            break
+                        error_status = change_pia_location(driver)
+                        if not error_status:
+                            driver.get(url)
+                        else:
+                            outer_loop_exit = True
+                            break
+                if outer_loop_exit:
+                    continue        
                 try:
                     address = driver.find_element(By.CLASS_NAME, "company-address").text
                 except:
@@ -162,6 +171,7 @@ def builtin(link, job_type):
         count = 0
         driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
         driver.maximize_window()
+        run_pia_proxy(driver)
         try:
             flag = True
             request_url(driver, link)
