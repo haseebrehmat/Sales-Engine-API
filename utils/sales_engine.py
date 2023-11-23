@@ -41,8 +41,25 @@ def filter_restricted_jobs(jobs):
 
     return jobs
 
+def is_sales_engine_restricted_job(job):
+    RESTRICTED_COMPANIES = ["jobbot", "remoteworkerus", "braintrust", "dice"]
+    job_source = ['linkedin']
+    if job.job_source.lower() not in job_source:
+        return True
+    elif job.company_name.lower() not in RESTRICTED_COMPANIES:
+        return True
+    else:
+        return False
 
-@start_new_thread
+def is_valid_sales_engine_job(job):
+    valid_start_date = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) - timezone.timedelta(days=2)
+    keywords_condition = job.tech_keywords and job.tech_keywords not in excluded_jobs_tech
+    restriced_company_condition = is_sales_engine_restricted_job(job)
+    posted_date_condition = job.job_posted_date >= valid_start_date
+    return keywords_condition and restriced_company_condition and posted_date_condition
+
+
+# @start_new_thread
 def upload_jobs_in_sales_engine(jobs_data, filename=None):
     try:
         headers = {
@@ -53,7 +70,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
         url = 'https://bd.devsinc.com/job_portal/api/v1/job_roles'  # API for getting role
         resp = requests.get(url, headers=headers)
         job_roles = json.loads(resp.text).get('job_roles', []) if resp.ok else []
-        valid_start_date = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) - timezone.timedelta(days=2)
+
 
         url = SALES_ENGINE_UPLOAD_JOBS_URL
         jobs = [
@@ -71,8 +88,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 "job_description": job.job_description,
                 "company_name": job.company_name,
                 "address": job.address
-            } for job in jobs_data if
-            job.tech_keywords not in excluded_jobs_tech and job.job_posted_date >= valid_start_date]
+            } for job in jobs_data if is_valid_sales_engine_job(job)]
 
         before_filter = jobs
         jobs = filter_restricted_jobs(jobs)
