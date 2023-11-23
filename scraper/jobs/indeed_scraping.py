@@ -33,6 +33,7 @@ def find_jobs(driver, job_type, total_job):
     jobs = driver.find_elements(By.CLASS_NAME, "slider_container")
     for job in jobs:
         try:
+
             data = []
             time.sleep(1)
             job_posted_date = job.find_element(By.CLASS_NAME, "date")
@@ -50,7 +51,7 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, job_title.text.split('\n')[0].strip("-job post"))
             else:
                 append_data(data, job_title.text)
-            company_name = driver.find_element(By.CLASS_NAME, "css-1saizt3")
+            company_name = driver.find_element(By.CLASS_NAME, "css-6z8o9s")
             append_data(data, company_name.text)
             address = driver.find_element(By.CLASS_NAME, "css-9yl11a")
             append_data(data, address.text)
@@ -141,7 +142,7 @@ def indeed(link, job_type):
     try:
         total_job = 0
         count = 0
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
