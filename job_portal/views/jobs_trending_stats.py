@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from collections import Counter
 from job_portal.models import JobArchive, JobDetail
+from job_portal.utils.keywords_dic import developer as others_dev
 
 class JobsTrendingStats(APIView):
     def get(self, request):
@@ -18,7 +19,6 @@ class JobsTrendingStats(APIView):
                                                                job_posted_date__gte=last_60_days)
         job_archive_generic_queryset = JobArchive.objects.only('job_source', 'job_title', 'tech_keywords').filter(job_source__in=job_sources,
                                                                job_posted_date__gte=last_60_days)
-
 
         job_detail_queryset_30_days = job_portal_generic_queryset.exclude(job_posted_date__lt=last_30_days)
         job_archive_queryset_30_days = job_archive_generic_queryset.exclude(job_posted_date__lt=last_30_days)
@@ -101,13 +101,22 @@ class JobsTrendingStats(APIView):
             tech_stack_percentage_array_negative = percentage_of_counts(tech_stack_counts_60_days, tech_stack_counts_30_days, tech_stack_counts_30_days_reverse_order, "stack")
 
 
-        over_all_jobs_titles = [job.job_title for job in queryset_30_days]
-        job_titles_last_60_days = [job.job_title for job in queryset_60_days]
+        remove_others_dev = ["others dev", "others"]
+        remove_others_queryset_60_days = [job for job in queryset_60_days if not any(keyword in job.tech_keywords for keyword in remove_others_dev)]
+        remove_others_queryset_30_days = [job for job in queryset_30_days if
+                                          not any(keyword in job.tech_keywords for keyword in remove_others_dev)]
+
+        over_all_jobs_titles = [job.job_title for job in remove_others_queryset_30_days]
+        job_titles_last_60_days = [job.job_title for job in remove_others_queryset_60_days]
         for job_title in job_titles_last_60_days:
             over_all_jobs_titles.append(job_title)
         emerging_titles = Counter(over_all_jobs_titles)
         emerging_titles = [{"title": element, "count": count} for element, count in emerging_titles.items()]
+
         emerging_titles = sorted(emerging_titles, key=lambda x: x['count'], reverse=True)
+        # remove others dev from emerging titles
+        emerging_titles = remove_specific_titles(emerging_titles)
+
         data["jobs"] = {"month": {
             "current_count": current_month_jobs_count,
             "previous_count": previous_month_jobs_count,
@@ -224,6 +233,12 @@ def combined_count(element_counts):
 def add_tech_stack(array ,count):
     new_dict = {'job_source': 'ai/ml engineer', 'source_count': count}
     array.append(new_dict)
+def remove_specific_titles(titles_list):
+    filtered_data_list = [data_dict for data_dict in titles_list if
+                          not any(keyword.lower() in data_dict['title'].lower() for keyword in others_dev)]
+
+    return filtered_data_list
+
 
 
 
