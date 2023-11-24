@@ -22,32 +22,34 @@ def append_data(data, field):
 def find_jobs(driver, job_type, total_job):
     try:
         scrapped_data = []
-        c = 0
-        time.sleep(3)
+        time.sleep(2)
         job_links = []
         links = driver.find_elements(By.CSS_SELECTOR, "a[data-id='view-job-button']")
         for link in links:
             job_links.append(link.get_attribute('href'))
- 
+
         job_details = driver.find_elements(By.CLASS_NAME, "job-bounded-responsive")
-        original_window = driver.current_window_handle
+        job_det = []
+        for job in job_details:
+            job_det.append(job.text)
+        original_window = driver.current_url
 
         retries  = 5
         for i, url in enumerate(job_links):
             try:
                 data = []
-                job_detail = job_details[i].text.split('\n')
+                job_detail = job_det[i].split('\n')
                 append_data(data, job_detail[1])
                 append_data(data, job_detail[0])
                 append_data(data, job_detail[2])
-                driver.switch_to.new_window('tab')
+                # driver.switch_to.new_window('tab')
                 driver.get(url)
-                time.sleep(4)
+                time.sleep(2)
                 outer_loop_exit = False
                 for retry in range(retries):
                     try:
                         driver.find_element(By.ID, "read-more-description-toggle").click()
-                        time.sleep(1)
+                        # time.sleep(1)
                         break
                     except Exception as e:
                         if retry == retries:
@@ -61,7 +63,7 @@ def find_jobs(driver, job_type, total_job):
                             outer_loop_exit = True
                             break
                 if outer_loop_exit:
-                    continue        
+                    continue
                 try:
                     address = driver.find_element(By.CLASS_NAME, "company-address").text
                 except:
@@ -108,7 +110,7 @@ def find_jobs(driver, job_type, total_job):
                     job_type_check = driver.find_element(By.CLASS_NAME, "company-info")
                     if 'remote' in job_type_check.text.lower():
                         if 'hybrid' in job_type_check.text.lower():
-                            switch_tab(driver, c, original_window)
+                            # switch_tab(driver, c, original_window)
                             continue
                         else:
                             append_data(data, set_job_type('Full time'))
@@ -117,7 +119,7 @@ def find_jobs(driver, job_type, total_job):
                         job_type_check = driver.find_element(By.CLASS_NAME, "company-options")
                         if 'remote' in job_type_check.text.lower():
                             if 'hybrid' in job_type_check.text.lower():
-                                switch_tab(driver, c, original_window)
+                                # switch_tab(driver, c, original_window)
                                 continue
                             else:
                                 append_data(data, set_job_type('Full time'))
@@ -130,9 +132,10 @@ def find_jobs(driver, job_type, total_job):
                 total_job += 1
             except Exception as e:
                 saveLogs(e)
+                print(e)
 
-            switch_tab(driver, c, original_window)
-           
+            # switch_tab(driver, c, original_window)
+
         columns_name = ["job_title", "company_name", "job_posted_date", "address", "job_description", 'job_source_url', "salary_format",
                         "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=scrapped_data, columns=columns_name)
@@ -143,6 +146,8 @@ def find_jobs(driver, job_type, total_job):
             total_jobs=len(df), job_source="Builtin", filename=filename)
 
         try:
+            driver.get(original_window)
+            time.sleep(2)
             next_page = driver.find_element(By.CLASS_NAME, 'pagination')
             pagination = next_page.find_elements(By.TAG_NAME, 'li')
             next_page_anchor = pagination[-1].find_element(By.TAG_NAME, 'a')
@@ -154,14 +159,6 @@ def find_jobs(driver, job_type, total_job):
     except Exception as e:
         saveLogs(e)
         return False, total_job
-    
-def switch_tab(driver, c, tab):
-    try:
-        c += 1
-        driver.close()
-        driver.switch_to.window(tab)
-    except Exception as e:
-        saveLogs(e)
 
 # code starts from here
 def builtin(link, job_type):

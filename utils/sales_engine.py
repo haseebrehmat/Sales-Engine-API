@@ -59,7 +59,7 @@ def is_valid_sales_engine_job(job):
     return keywords_condition and restriced_company_condition and posted_date_condition
 
 
-# @start_new_thread
+@start_new_thread
 def upload_jobs_in_sales_engine(jobs_data, filename=None):
     try:
         headers = {
