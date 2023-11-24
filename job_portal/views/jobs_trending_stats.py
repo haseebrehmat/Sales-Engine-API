@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from collections import Counter
 from job_portal.models import JobArchive, JobDetail
 from job_portal.utils.keywords_dic import developer as others_dev
+from fuzzywuzzy import fuzz 
 
 class JobsTrendingStats(APIView):
     def get(self, request):
@@ -239,8 +240,11 @@ def remove_specific_titles(titles_list):
 
     return filtered_data_list
 
-
-
+def check_similar(title1: str, title2: str) -> bool:
+    similarity_threshold: float = 0.6
+    matcher: float | int = fuzz.ratio(title1, title2)
+    similarity: float = matcher / 100.0
+    return similarity > similarity_threshold
 
 
 
