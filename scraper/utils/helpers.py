@@ -207,6 +207,14 @@ def change_pia_location(driver, location=None, extension_opened=False) -> bool:
         print(str(e))
     return error_status
 
+def is_cloudflare_captcha_exist(driver):
+    try:
+        text = driver.find_element(By.ID, 'challenge-running').text.lower()
+        return text == 'checking if the site connection is secure'
+    except Exception as e:
+        return False
+
+
 def remove_emojis(text):
     pattern =  r'[\w\s.,!?\'"“”‘’#$%^&*()_+=\-{}\[\]:;<>\|\\/~`]+'
     extracted_text = re.findall(pattern, text)

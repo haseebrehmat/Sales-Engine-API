@@ -55,7 +55,7 @@ def is_valid_sales_engine_job(job):
     valid_start_date = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) - timezone.timedelta(days=2)
     keywords_condition = job.tech_keywords and job.tech_keywords not in excluded_jobs_tech
     restriced_company_condition = is_sales_engine_restricted_job(job)
-    posted_date_condition = job.job_posted_date >= valid_start_date
+    posted_date_condition = str(job.job_posted_date) >= str(valid_start_date)
     return keywords_condition and restriced_company_condition and posted_date_condition
 
 
