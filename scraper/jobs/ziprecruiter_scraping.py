@@ -12,7 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type, run_pia_proxy
+    set_job_type, run_pia_proxy, is_cloudflare_captcha_exist, change_pia_location
 from utils.helpers import saveLogs
 from settings.utils.helpers import generate_random_email
 
@@ -186,7 +186,19 @@ def find_jobs(driver, link, job_type):
         for job_url in tqdm(job_urls):
             try:
                 driver.get(job_url)
-                job, error = get_job_detail(driver, 'ziprecruiter', job_url, job_type)
+                cloud_flare_error = False
+                for i in range(5):
+                    time.sleep(1)
+                    cloud_flare_error = is_cloudflare_captcha_exist(driver)
+                    if cloud_flare_error:
+                        change_pia_location(driver)
+                        driver.get(job_url)
+                    else:
+                        break
+                if not cloud_flare_error:
+                    job, error = get_job_detail(driver, 'ziprecruiter', job_url, job_type)
+                else:
+                    error = True
                 if not error:
                     data = [job[c] for c in columns_name]
                     scrapped_data.append(data)
@@ -212,7 +224,7 @@ def ziprecruiter_scraping(link, job_type):
     print('Zip Recruiter')
     try:
         print("Start in try portion.\n")
-        driver = configure_webdriver()
+        driver = configure_webdriver(block_media=True, block_elements=['css', 'img', 'cookies'])
         driver.maximize_window()
         run_pia_proxy(driver)
         try:
