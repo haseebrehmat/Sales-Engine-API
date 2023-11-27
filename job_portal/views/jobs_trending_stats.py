@@ -133,6 +133,7 @@ class JobsTrendingStats(APIView):
         data["declining_tech_stack_status"] = bool(negative_tech_stack_count_percentage)
         data["declining_tech_stacks"] = {"month": negative_tech_stack_count_percentage[:5] if negative_tech_stack_count_percentage else tech_stack_percentage_array_negative[:5], "week": []}
         data["thriving_titles"] = {"month": emerging_titles[:5], "week": []}
+        data["emerging_titles"] = {"month": top_five_emerging_titles(job_sources, last_60_days), "week": []}
         return Response(data)
 def source_counts(queryset1, queryset2, flag):
     if flag:
@@ -248,7 +249,7 @@ def check_similar(title1: str, title2: str) -> bool:
     return similarity > similarity_threshold
 
 
-def top_five_emerging_titles(self, job_sources, last_month):
+def top_five_emerging_titles(job_sources, last_month):
     job_detail_titles = list(JobDetail.objects.only('job_title', 'tech_stacks', 'job_sources')
                              .filter(tech_stacks__contained_by=['others'], job_source__in=job_sources)
                              .values_list('job_title', flat=True))
@@ -263,7 +264,7 @@ def top_five_emerging_titles(self, job_sources, last_month):
         j: int = i + 1
         while j < len(titles):
             title2: str = titles[j]
-            if self.check_similar(title1, title2):
+            if check_similar(title1, title2):
                 title_counts[title1] += 1
                 titles.pop(j)
             j += 1
