@@ -4,9 +4,10 @@ from django.utils import timezone
 from django.db.models import Count, Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from collections import Counter
+from collections import Counter, defaultdict
 from job_portal.models import JobArchive, JobDetail
 from job_portal.utils.keywords_dic import developer as others_dev
+from fuzzywuzzy import fuzz 
 
 class JobsTrendingStats(APIView):
     def get(self, request):
@@ -132,6 +133,7 @@ class JobsTrendingStats(APIView):
         data["declining_tech_stack_status"] = bool(negative_tech_stack_count_percentage)
         data["declining_tech_stacks"] = {"month": negative_tech_stack_count_percentage[:5] if negative_tech_stack_count_percentage else tech_stack_percentage_array_negative[:5], "week": []}
         data["thriving_titles"] = {"month": emerging_titles[:5], "week": []}
+        data["emerging_titles"] = {"month": top_five_emerging_titles(job_sources, last_60_days), "week": []}
         return Response(data)
 def source_counts(queryset1, queryset2, flag):
     if flag:
@@ -240,8 +242,34 @@ def remove_specific_titles(titles_list):
     return filtered_data_list
 
 
+def check_similar(title1: str, title2: str) -> bool:
+    similarity_threshold: float = 0.6
+    matcher: float | int = fuzz.ratio(title1, title2)
+    similarity: float = matcher / 100.0
+    return similarity > similarity_threshold
 
 
-
-
+def top_five_emerging_titles(job_sources, last_month):
+    job_detail_titles = list(JobDetail.objects.only('job_title', 'tech_stacks', 'job_sources')
+                             .filter(tech_stacks__contained_by=['others'], job_source__in=job_sources)
+                             .values_list('job_title', flat=True))
+    job_archive_titles = list(JobArchive.objects.only('job_title', 'tech_keywords', 'job_sources', 'created_at')
+                              .filter(created_at__gte=last_month, tech_keywords__icontains='others', job_source__in=job_sources)
+                              .values_list('job_title', flat=True))
+    titles: list[str] = job_detail_titles + job_archive_titles
+    title_counts: dict = defaultdict(int)
+    i: int = 0
+    while i < len(titles):
+        title1: str = titles[i]
+        j: int = i + 1
+        while j < len(titles):
+            title2: str = titles[j]
+            if check_similar(title1, title2):
+                title_counts[title1] += 1
+                titles.pop(j)
+            j += 1
+        i += 1
+    sorted_job_titles: dict = dict(sorted(title_counts.items(), key=lambda item: item[1], reverse=True))
+    top_5_titles: list = [{"title": k, "count": v} for k, v in list(sorted_job_titles.items())[:5]]
+    return top_5_titles
 
