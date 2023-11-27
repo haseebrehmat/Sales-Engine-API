@@ -31,3 +31,4 @@ django-requests-logger
 rollbar
 backports.weakref
 backports.zoneinfo==0.2.1
+slackclient

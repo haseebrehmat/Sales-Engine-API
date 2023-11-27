@@ -1,18 +1,14 @@
+import os
 import subprocess
-import datetime
 import time
 
+import django
+from celery import Celery
+from celery import shared_task
 from django.utils import timezone
 
-
 from scraper.utils.thread import start_new_thread
-from celery import Celery
-import django
-from settings.base import ENVIRONMENT
-from celery import shared_task
-import os
-
-
+from settings.base import ENVIRONMENT, env
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'settings.{ENVIRONMENT}')
 django.setup()
@@ -25,6 +21,10 @@ app.conf.beat_schedule = {
     'check_group_scraper': {
         'task': 'settings.celery.check_group_scraper',
         'schedule': timedelta(seconds=1500),
+    },
+    'octagon_scraper_bot': {
+        'task': 'settings.celery.octagon_scraper_bot',
+        'schedule': timedelta(seconds=7200),
     }
 }
 
@@ -36,6 +36,7 @@ from scraper.models import ScraperLogs
 from scraper.management.commands.check_scraper import check_current_group
 
 SchedulerSync.objects.all().update(running=False)
+
 @shared_task
 def check_group_scraper():
     group_scrapper = check_current_group()
@@ -51,6 +52,7 @@ def check_group_scraper():
         restart_script()
     else:
         print("")
+
 @start_new_thread
 def restart_script():
     try:
@@ -64,3 +66,13 @@ def restart_script():
         subprocess.run(['python', 'manage.py', 'check_scraper'])
     except:
         print("")
+
+@shared_task
+def octagon_scraper_bot():
+    try:
+        from utils.octagon_slack_bot import notify_octagon_scraper_stats_via_slack
+        if env('ENVIRONMENT') == 'production':
+            notify_octagon_scraper_stats_via_slack()
+    except Exception as e:
+        print(e)
+
