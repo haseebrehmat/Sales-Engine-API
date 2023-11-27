@@ -63,8 +63,6 @@ def find_jobs(driver, job_type):
                 count += 1
                 # upload jobs in chunks of 50 size
                 if scrapped_data and count > 0 and (count % batch_size == 0 or count == total_jobs - 1):
-                    import pdb
-                    pdb.set_trace()
                     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
                     filename = generate_scraper_filename(
                         ScraperNaming.GLASSDOOR)
@@ -170,7 +168,7 @@ def load_jobs(driver):
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         run_pia_proxy(driver)
         for x in Accounts.objects.filter(source='glassdoor'):
@@ -203,4 +201,4 @@ def glassdoor(link, job_type):
         print(e)
 
 
-glassdoor('https://www.glassdoor.com/Job/remote-aws-engineer-jobs-SRCH_IL.0,6_IS11047_KO7,19.htm?fromAge=3', '')
+# glassdoor('https://www.glassdoor.com/Job/remote-aws-engineer-jobs-SRCH_IL.0,6_IS11047_KO7,19.htm?fromAge=3', '')
