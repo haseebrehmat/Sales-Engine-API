@@ -28,7 +28,8 @@ def login(driver, email, password):
         driver.find_element(By.CSS_SELECTOR, "button[name='submit']").click()
         time.sleep(5)
         try:
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[name='submit']")))
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "button[name='submit']")))
             return True
         except Exception as e:
             return True
@@ -44,10 +45,15 @@ def find_jobs(driver, job_type):
                     "job_description_tags"]
     time.sleep(3)
     try:
-        jobs = driver.find_elements(By.CLASS_NAME, "JobsList_jobListItem__JBBUV")
+        jobs = driver.find_elements(
+            By.CLASS_NAME, "JobCard_jobCardContainer__l0svv")
         total_jobs = len(jobs)
         count = 0
+        print(total_jobs)
         batch_size = 50
+        close_button = WebDriverWait(driver, 30).until(EC.presence_of_element_located(
+                (By.CLASS_NAME, "modal_closeIcon")))
+        close_button.click()
         for job in jobs:
             try:
                 job, error = get_job_detail(driver, job, job_type)
@@ -58,9 +64,11 @@ def find_jobs(driver, job_type):
                 # upload jobs in chunks of 50 size
                 if scrapped_data and count > 0 and (count % batch_size == 0 or count == total_jobs - 1):
                     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-                    filename = generate_scraper_filename(ScraperNaming.GLASSDOOR)
+                    filename = generate_scraper_filename(
+                        ScraperNaming.GLASSDOOR)
                     df.to_excel(filename, index=False)
-                    ScraperLogs.objects.create(total_jobs=len(df), job_source='Glassdoor', filename=filename)
+                    ScraperLogs.objects.create(total_jobs=len(
+                        df), job_source='Glassdoor', filename=filename)
                     scrapped_data = []
             except Exception as e:
                 print(e)
@@ -70,23 +78,29 @@ def find_jobs(driver, job_type):
         print(e)
 
 
-def get_job_detail(driver, job, job_type):
+def get_job_detail(driver, jobs, job_type):
     try:
-        job.click()
+        jobs.click()
         time.sleep(3)
-        job_detail = job.text.split('\n')
-        job_title = job_detail[1]
-        company_name = job_detail[0]
-        address = job_detail[2]
+        job_detail = jobs.text.split('\n')
+        job_title = jobs.find_element(
+            By.CLASS_NAME, "JobCard_seoLink__WdqHZ").text
+        company_name = jobs.find_element(
+            By.CLASS_NAME, "EmployerProfile_profileContainer__d5rMb").text.split('\n')[0]
+        address = jobs.find_element(
+            By.CLASS_NAME, "JobCard_location__N_iYE").text
 
-        job_url = job.find_element(By.CLASS_NAME, "JobCard_seoLink__r4HUE").get_attribute('href')
+        job_url = jobs.find_element(
+            By.CLASS_NAME, "JobCard_trackingLink__zUSOo").get_attribute('href')
         # click show more details for description
         try:
-            driver.find_element(By.CLASS_NAME, "JobDetails_showMore__j5Z_h").click()
+            driver.find_element(
+                By.CLASS_NAME, "JobDetails_showMore__j5Z_h").click()
             time.sleep(0.5)
         except:
             pass
-        job_description = driver.find_element(By.CLASS_NAME, "JobDetails_jobDescription__6VeBn")
+        job_description = driver.find_element(
+            By.CLASS_NAME, "JobDetails_jobDescription__6VeBn")
 
         try:
             job_posted_date = job_detail[-1]
@@ -132,20 +146,25 @@ def get_job_detail(driver, job, job_type):
         except Exception as e:
             print(e)
             saveLogs(e)
+        print(job['job_title'])
         return job, False
     except Exception as e:
         saveLogs(e)
         return None, True
 
+
 def load_jobs(driver):
     try:
         time.sleep(3)
-        driver.find_element(By.CSS_SELECTOR, "div.JobsList_wrapper__wgimi > div > button").click()
+        driver.find_element(
+            By.CSS_SELECTOR, "div.JobsList_wrapper__wgimi > div > button").click()
         return True
     except Exception as e:
         return False
 
 # code starts from here
+
+
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
@@ -160,8 +179,18 @@ def glassdoor(link, job_type):
         if logged_in:
             flag = True
             driver.get(link)
+            pre = driver.find_elements(
+                By.CLASS_NAME, 'JobCard_jobCardContainer__l0svv')
             while flag:
+
                 flag = load_jobs(driver)
+                next = driver.find_elements(
+                    By.CLASS_NAME, 'JobCard_jobCardContainer__l0svv')
+                if len(pre) == len(next):
+                    break
+                else:
+                    pre = next
+
             find_jobs(driver, job_type)
             print(SCRAPING_ENDED)
         else:
@@ -170,3 +199,6 @@ def glassdoor(link, job_type):
     except Exception as e:
         saveLogs(e)
         print(e)
+
+
+# glassdoor('https://www.glassdoor.com/Job/remote-aws-engineer-jobs-SRCH_IL.0,6_IS11047_KO7,19.htm?fromAge=3', '')
