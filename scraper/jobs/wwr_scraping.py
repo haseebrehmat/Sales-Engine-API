@@ -30,7 +30,7 @@ class WeWorkRemotelyScraper:
     def call(cls, url):
         print("Running We Work Remotely...")
         try:
-            driver: WebDriver = configure_webdriver()
+            driver: WebDriver = configure_webdriver(block_media=True, block_elements=['img', 'cookies'])
             driver.maximize_window()
             wwr_scraper: cls.__class__ = cls(driver=driver, url=url)
             wwr_scraper.find_jobs()
@@ -239,6 +239,8 @@ class WeWorkRemotelyScraper:
             if len(urls) > 0:
                 for url in urls:
                     try:
+                        self.job['job_source_url'] = url
+                        self.job['job_source'] = 'weworkremotely'
                         self.driver.get(url=url)
                         # self.driver.execute_script(
                         #     "window.open('" + url + "');")
@@ -251,20 +253,17 @@ class WeWorkRemotelyScraper:
                     except Exception as e:
                         self.handle_exception(e)
                         continue
+            self.driver.quit()
             self.export_to_excel() if len(self.scraped_jobs) > 0 else None
             # self.log_error_if_any() if len(self.errs) > 0 else None
-            self.driver.quit()
         except Exception as e:
             self.handle_exception(e)
             # self.log_error_if_any() if len(self.errs) > 0 else None
             self.driver.quit()
 
     def export_to_excel(self) -> None:
-        columns_name: list[str] = ["job_title", "company_name", "job_posted_date", "address", "job_description",
-                                   'job_source_url',
-                                   "salary_format",
-                                   "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
-                                   "job_description_tags"]
+        columns_name: list[str] = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                                   "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=self.scraped_jobs, columns=columns_name)
         filename: str = generate_scraper_filename(ScraperNaming.WE_WORK_REMOTELY)
         df.to_excel(filename, index=False)
