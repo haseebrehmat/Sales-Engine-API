@@ -210,8 +210,7 @@ class WeWorkRemotelyScraper:
         except Exception as e:
             self.handle_exception(e)
 
-    def tab_visited(self, tab: str = '') -> bool:
-        # self.driver.switch_to.window(tab)
+    def tab_visited(self) -> bool:
         try:
             header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
             content: WebElement = self.get_element(locator='section.job div.listing-container', selector='css')
@@ -223,14 +222,11 @@ class WeWorkRemotelyScraper:
                 self.extract_values_from_company_section(company_section=company)
                 job = self.job.copy()
                 self.scraped_jobs.append(job)
-                # self.driver.close()
                 return True
             else:
                 return False
-                # self.driver.close()
         except WebDriverException as e:
             self.handle_exception(e)
-            # self.driver.close()
             return False
 
     def find_jobs(self) -> None:
@@ -242,12 +238,9 @@ class WeWorkRemotelyScraper:
                         self.job['job_source_url'] = url
                         self.job['job_source'] = 'weworkremotely'
                         self.driver.get(url=url)
-                        # self.driver.execute_script(
-                        #     "window.open('" + url + "');")
                         visited: bool = self.tab_visited()
                         if visited:
                             self.job.clear()
-                            # self.driver.switch_to.window(self.driver.window_handles[0])
                         else:
                             continue
                     except Exception as e:
