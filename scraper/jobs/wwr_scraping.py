@@ -3,7 +3,6 @@ import time
 import traceback
 from datetime import datetime
 from typing import List
-
 import pandas as pd
 from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchElementException, \
     ElementNotVisibleException
@@ -12,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
+from django.utils import timezone
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
 from utils.helpers import saveLogs
@@ -144,8 +143,8 @@ class WeWorkRemotelyScraper:
         if match:
             day_span = 24 * 60 * 60
             datetime_str = match.group(1)
-            datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ")
-            current_time = datetime.utcnow()
+            datetime_obj = timezone.datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ")
+            current_time = timezone.now().replace(tzinfo=None)
             time_difference = (current_time - datetime_obj).total_seconds()
             days = time_difference // day_span
             # Remove days to get only hours or minutes
@@ -153,14 +152,15 @@ class WeWorkRemotelyScraper:
             minutes = time_difference // 60
             hours = time_difference // (60 * 60)
             # Increment days if hours > 20
-            days += 1 if hours >= 20 else days
+            if hours >= 20:
+                days += 1    
             if days == 0:
                 if hours == 0:
-                    result = f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+                    result = f"{int(minutes)} minute{'s' if minutes > 1 else ''} ago"
                 else:
-                    result = f"{hours} hour{'s' if hours > 1 else ''} ago"
+                    result = f"{int(hours)} hour{'s' if hours > 1 else ''} ago"
             else:
-                result = f"{days} day{'s' if days > 1 else ''} ago"
+                result = f"{int(days)} day{'s' if days > 1 else ''} ago"
         else:
             result = datetime_str
         return result
