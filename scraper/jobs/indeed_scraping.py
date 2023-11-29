@@ -1,18 +1,13 @@
 import time
-from datetime import datetime
 
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
+    set_job_type
 from utils.helpers import saveLogs
-
-total_job = 0
 
 
 # calls url
@@ -26,7 +21,7 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, job_type, total_job):
+def find_jobs(driver, job_type):
     scrapped_data = []
     c = 0
     time.sleep(3)
@@ -45,14 +40,11 @@ def find_jobs(driver, job_type, total_job):
             job.click()
             time.sleep(4)
 
-            job_title = driver.find_element(
-                By.CLASS_NAME, "jobsearch-JobInfoHeader-title")
-            if "job post" in job_title.text:
-                append_data(data, job_title.text.split('\n')[0].strip("-job post"))
-            else:
-                append_data(data, job_title.text)
-            company_name = driver.find_element(By.CLASS_NAME, "css-6z8o9s")
-            append_data(data, company_name.text)
+            job_title = driver.find_element(By.CLASS_NAME, "jobsearch-JobInfoHeader-title").text
+            job_title = job_title.replace("\n- job post", "")
+            append_data(data, job_title)
+            company_name = driver.find_element(By.CLASS_NAME, "css-1l2hyrd").text
+            append_data(data, company_name)
             address = driver.find_element(By.CLASS_NAME, "css-9yl11a")
             append_data(data, address.text)
             job_description = driver.find_element(
@@ -105,43 +97,37 @@ def find_jobs(driver, job_type, total_job):
 
             scrapped_data.append(data)
             c += 1
-            total_job += 1
             driver.back()
         except Exception as e:
             print(e)
 
-    columns_name = ["job_posted_date", "job_title", "company_name", "address", "job_description", 'job_source_url', "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+    columns_name = ["job_posted_date", "job_title", "company_name", "address", "job_description",
+                    'job_source_url', "salary_format", "estimated_salary", "salary_min", "salary_max",
+                    "job_source", "job_type", "job_description_tags"]
+
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.INDEED)
     df.to_excel(filename, index=False)
 
-    ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="Indeed", filename=filename)
+    ScraperLogs.objects.create(total_jobs=len(df), job_source="Indeed", filename=filename)
 
     if not data_exists(driver):
-        return False, total_job
+        return False
 
-    next_page = driver.find_element(
-        By.CSS_SELECTOR, "a[aria-label='Next Page']")
+    next_page = driver.find_element(By.CSS_SELECTOR, "a[aria-label='Next Page']")
     next_page.click()
-
-    return True, total_job
+    return True
 
 
 # check if there is more jobs available or not
 def data_exists(driver):
-    page_exists = driver.find_elements(
-        By.CSS_SELECTOR, "a[aria-label='Next Page']")
+    page_exists = driver.find_elements(By.CSS_SELECTOR, "a[aria-label='Next Page']")
     return False if len(page_exists) == 0 else True
-
 
 # code starts from here
 def indeed(link, job_type):
     print("Indeed")
     try:
-        total_job = 0
-        count = 0
         driver = configure_webdriver()
         driver.maximize_window()
         try:
@@ -149,15 +135,12 @@ def indeed(link, job_type):
             request_url(driver, link)
             driver.maximize_window()
             while flag:
-                flag, total_job = find_jobs(
-                    driver, job_type, total_job)
+                flag = find_jobs(driver, job_type)
                 print("Fetching...")
-            count += 1
             print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-
         driver.quit()
     except Exception as e:
         saveLogs(e)

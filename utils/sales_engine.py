@@ -18,6 +18,7 @@ from utils.requests_logger import requests_logger_hooks
 # removing 'insurance' from restricted job tags, Having conflicts with health insurance
 
 excluded_jobs_tech = ['others', 'others dev', 'other']
+excluded_vals = ['', ' ', 'n/a', 'N/A']
 
 job_roles_dict = {
     "sqa": ['qa'],
@@ -56,7 +57,9 @@ def is_valid_sales_engine_job(job):
     keywords_condition = job.tech_keywords and job.tech_keywords not in excluded_jobs_tech
     restriced_company_condition = is_sales_engine_restricted_job(job)
     posted_date_condition = str(job.job_posted_date) >= str(valid_start_date)
-    return keywords_condition and restriced_company_condition and posted_date_condition
+    company_name_condition = job.company_name and job.company_name.strip() and job.company_name.strip().lower() != 'n/a'
+    job_type_condition = job.job_type and job.job_type.strip() and job.job_type.strip().lower() != 'n/a'
+    return keywords_condition and restriced_company_condition and posted_date_condition and company_name_condition and job_type_condition
 
 
 @start_new_thread
