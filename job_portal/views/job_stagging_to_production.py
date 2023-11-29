@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from datetime import datetime
 from job_portal.utils.helpers import SalesEngineLogsNaming
 from utils.sales_engine import upload_jobs_in_sales_engine
+from scraper.models.scraper_logs import ScraperLogs
 
 
 class JobsStaggingToProduction(ListAPIView):
@@ -21,6 +22,8 @@ class JobsStaggingToProduction(ListAPIView):
         if auth_token == STAGGING_TO_PRODUCTION_API_TOKEN:
             try:
                 jobs = request.data.get("jobs")
+                logs = request.data.get("logs")
+                before_uploaded_jobs = JobDetail.objects.count()
                 model_instances = [
                     JobDetail(
                         job_title=job_item.get("job_title", ""),
@@ -42,16 +45,21 @@ class JobsStaggingToProduction(ListAPIView):
                     for job_item in jobs
                 ]
 
-                JobDetail.objects.bulk_create(
-                    model_instances, ignore_conflicts=True, batch_size=1000)
+                JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True, batch_size=1000)
+                after_uploading_jobs = JobDetail.objects.count()
+                total_uploaded_jobs = after_uploading_jobs - before_uploaded_jobs
+
+                ScraperLogs.objects.create(job_source=logs['job_source'], total_jobs=logs['total_jobs'], filename=logs['filename'], uploaded_jobs=total_uploaded_jobs)
+                # print(ScraperLogs.objects.filter().values_list().last())
                 upload_jobs_in_sales_engine(model_instances, None)
                 message = "Jobs posted successfully"
                 status_code = status.HTTP_201_CREATED
+                # status_code = status.HTTP_404_NOT_FOUND
                 try:
                     job_source = model_instances[0].job_source
                     obj = SalesEngineJobsStats.objects.create(job_source=model_instances[0].job_source,
-                                                              jobs_count=len(model_instances),
-                                                              source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION)
+                                                                jobs_count=len(model_instances),
+                                                                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION)
                 except:
                     print("")
                 return Response({"detail": message}, status_code)
@@ -61,9 +69,9 @@ class JobsStaggingToProduction(ListAPIView):
                 try:
                     job_source = model_instances[0].job_source
                     obj = SalesEngineJobsStats.objects.create(job_source=model_instances[0].job_source,
-                                                              jobs_count=len(model_instances),
-                                                              source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION,
-                                                              upload_status=False, response=str(e))
+                                                                jobs_count=len(model_instances),
+                                                                source=SalesEngineLogsNaming.STAGING_TO_PRODUCTION,
+                                                                upload_status=False, response=str(e))
                 except:
                     print("")
                 return Response({"detail": message}, status_code)

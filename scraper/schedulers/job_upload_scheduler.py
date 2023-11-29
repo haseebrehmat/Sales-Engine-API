@@ -313,6 +313,7 @@ def upload_file(job_parser, filename):
                                                      str)]
     JobDetail.objects.bulk_create(
         model_instances, ignore_conflicts=True, batch_size=1000)
+    # if env("ENVIRONMENT") == 'local':
     if env("ENVIRONMENT") == 'staging' or env("ENVIRONMENT") == 'development':
         upload_jobs_in_production(model_instances, filename)
     upload_jobs_in_sales_engine(model_instances, filename)

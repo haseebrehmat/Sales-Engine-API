@@ -49,6 +49,15 @@ def send_message(msg=bot_message_template, channel='#scrapers-updates-bot'):
         except SlackApiError as e:
             print(f"Got an error: {e.response['error']}")
 
+def send_server_message(msg, channel='#scrapers-updates-bot'):
+    # channel='#test'
+    if env('ENVIRONMENT') == 'staging' and env.bool('SLACK_BOT_NOTIFICATION_ENABLED'):
+        client = WebClient(token=env('SLACK_API_TOKEN'))
+        try:
+            response = client.chat_postMessage(channel=channel, text=f"{msg}")
+        except SlackApiError as e:
+            print(f"Got an error: {e.response['error']}")
+
 def notify_octagon_scraper_stats_via_slack():
     scrapers_count = {}
     production_scrapers = ['Builtin', 'Workable', 'WeWorkRemotely', 'Glassdoor', 'Zip Recruiter', 'Indeed',
