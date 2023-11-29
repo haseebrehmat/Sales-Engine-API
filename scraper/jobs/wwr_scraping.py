@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from django.utils import timezone
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, make_plural
 from utils.helpers import saveLogs
 
 
@@ -156,11 +156,11 @@ class WeWorkRemotelyScraper:
                 days += 1    
             if days == 0:
                 if hours == 0:
-                    result = f"{int(minutes)} minute{'s' if minutes > 1 else ''} ago"
+                    result = f"{int(minutes)} {make_plural('minute', minutes)} ago"
                 else:
-                    result = f"{int(hours)} hour{'s' if hours > 1 else ''} ago"
+                    result = f"{int(hours)} {make_plural('hour', hours)} ago"
             else:
-                result = f"{int(days)} day{'s' if days > 1 else ''} ago"
+                result = f"{int(days)} {make_plural('day', days)} ago"
         else:
             result = datetime_str
         return result
