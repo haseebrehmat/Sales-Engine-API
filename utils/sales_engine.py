@@ -57,8 +57,8 @@ def is_valid_sales_engine_job(job):
     keywords_condition = job.tech_keywords and job.tech_keywords not in excluded_jobs_tech
     restriced_company_condition = is_sales_engine_restricted_job(job)
     posted_date_condition = str(job.job_posted_date) >= str(valid_start_date)
-    company_name_condition = job.company_name and job.company_name not in excluded_vals
-    job_type_condition = job.job_type and job.job_type not in excluded_vals
+    company_name_condition = job.company_name and job.company_name.strip() and job.company_name.strip().lower() != 'n/a'
+    job_type_condition = job.job_type and job.job_type.strip() and job.job_type.strip().lower() != 'n/a'
     return keywords_condition and restriced_company_condition and posted_date_condition and company_name_condition and job_type_condition
 
 
