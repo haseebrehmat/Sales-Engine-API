@@ -239,3 +239,6 @@ def set_job_type(job_type):
         return JOB_TYPE[1]
     else:
       return job_type.capitalize()
+
+def make_plural(word: str = '', num: int = 1):
+    return word + 's' if word and word.strip() and (num > 1 or num == 0) else word

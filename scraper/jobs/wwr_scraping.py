@@ -3,7 +3,6 @@ import time
 import traceback
 from datetime import datetime
 from typing import List
-
 import pandas as pd
 from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchElementException, \
     ElementNotVisibleException
@@ -12,9 +11,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
+from django.utils import timezone
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, make_plural
 from utils.helpers import saveLogs
 
 
@@ -30,7 +29,7 @@ class WeWorkRemotelyScraper:
     def call(cls, url):
         print("Running We Work Remotely...")
         try:
-            driver: WebDriver = configure_webdriver()
+            driver: WebDriver = configure_webdriver(block_media=True, block_elements=['img', 'cookies'])
             driver.maximize_window()
             wwr_scraper: cls.__class__ = cls(driver=driver, url=url)
             wwr_scraper.find_jobs()
@@ -144,8 +143,8 @@ class WeWorkRemotelyScraper:
         if match:
             day_span = 24 * 60 * 60
             datetime_str = match.group(1)
-            datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ")
-            current_time = datetime.utcnow()
+            datetime_obj = timezone.datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ")
+            current_time = timezone.now().replace(tzinfo=None)
             time_difference = (current_time - datetime_obj).total_seconds()
             days = time_difference // day_span
             # Remove days to get only hours or minutes
@@ -153,14 +152,15 @@ class WeWorkRemotelyScraper:
             minutes = time_difference // 60
             hours = time_difference // (60 * 60)
             # Increment days if hours > 20
-            days += 1 if hours >= 20 else days
+            if hours >= 20:
+                days += 1    
             if days == 0:
                 if hours == 0:
-                    result = f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+                    result = f"{int(minutes)} {make_plural('minute', minutes)} ago"
                 else:
-                    result = f"{hours} hour{'s' if hours > 1 else ''} ago"
+                    result = f"{int(hours)} {make_plural('hour', hours)} ago"
             else:
-                result = f"{days} day{'s' if days > 1 else ''} ago"
+                result = f"{int(days)} {make_plural('day', days)} ago"
         else:
             result = datetime_str
         return result
@@ -210,8 +210,7 @@ class WeWorkRemotelyScraper:
         except Exception as e:
             self.handle_exception(e)
 
-    def tab_visited(self, tab: str = '') -> bool:
-        # self.driver.switch_to.window(tab)
+    def tab_visited(self) -> bool:
         try:
             header: WebElement = self.get_element(locator='/html/body/div[4]/div[2]/div[1]', selector='xpath')
             content: WebElement = self.get_element(locator='section.job div.listing-container', selector='css')
@@ -223,14 +222,11 @@ class WeWorkRemotelyScraper:
                 self.extract_values_from_company_section(company_section=company)
                 job = self.job.copy()
                 self.scraped_jobs.append(job)
-                # self.driver.close()
                 return True
             else:
                 return False
-                # self.driver.close()
         except WebDriverException as e:
             self.handle_exception(e)
-            # self.driver.close()
             return False
 
     def find_jobs(self) -> None:
@@ -239,32 +235,28 @@ class WeWorkRemotelyScraper:
             if len(urls) > 0:
                 for url in urls:
                     try:
+                        self.job['job_source_url'] = url
+                        self.job['job_source'] = 'weworkremotely'
                         self.driver.get(url=url)
-                        # self.driver.execute_script(
-                        #     "window.open('" + url + "');")
                         visited: bool = self.tab_visited()
                         if visited:
                             self.job.clear()
-                            # self.driver.switch_to.window(self.driver.window_handles[0])
                         else:
                             continue
                     except Exception as e:
                         self.handle_exception(e)
                         continue
+            self.driver.quit()
             self.export_to_excel() if len(self.scraped_jobs) > 0 else None
             # self.log_error_if_any() if len(self.errs) > 0 else None
-            self.driver.quit()
         except Exception as e:
             self.handle_exception(e)
             # self.log_error_if_any() if len(self.errs) > 0 else None
             self.driver.quit()
 
     def export_to_excel(self) -> None:
-        columns_name: list[str] = ["job_title", "company_name", "job_posted_date", "address", "job_description",
-                                   'job_source_url',
-                                   "salary_format",
-                                   "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
-                                   "job_description_tags"]
+        columns_name: list[str] = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                                   "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
         df = pd.DataFrame(data=self.scraped_jobs, columns=columns_name)
         filename: str = generate_scraper_filename(ScraperNaming.WE_WORK_REMOTELY)
         df.to_excel(filename, index=False)
