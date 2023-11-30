@@ -51,6 +51,7 @@ def send_message(msg=bot_message_template, channel='#scrapers-updates-bot'):
 
 def send_server_message(msg, channel='#scrapers-updates-bot'):
     # channel='#test'
+    # if env('ENVIRONMENT') == 'local' and env.bool('SLACK_BOT_NOTIFICATION_ENABLED'):
     if env('ENVIRONMENT') == 'staging' and env.bool('SLACK_BOT_NOTIFICATION_ENABLED'):
         client = WebClient(token=env('SLACK_API_TOKEN'))
         try:

@@ -45,7 +45,7 @@ class JobsStaggingToProduction(ListAPIView):
                     for job_item in jobs
                 ]
 
-                JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True, batch_size=1000)
+                JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True)
                 after_uploading_jobs = JobDetail.objects.count()
                 total_uploaded_jobs = after_uploading_jobs - before_uploaded_jobs
 

@@ -1,5 +1,3 @@
-import pdb
-
 from django.utils import timezone
 from django.db.models import Count, Q
 from rest_framework.response import Response
@@ -7,7 +5,7 @@ from rest_framework.views import APIView
 from collections import Counter, defaultdict
 from job_portal.models import JobArchive, JobDetail
 from job_portal.utils.keywords_dic import developer as others_dev
-from fuzzywuzzy import fuzz 
+from fuzzywuzzy import fuzz
 
 class JobsTrendingStats(APIView):
     def get(self, request):

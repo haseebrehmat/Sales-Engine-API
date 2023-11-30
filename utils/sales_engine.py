@@ -171,6 +171,7 @@ def upload_jobs_in_production(jobs_data, filename=None):
 
         host = 'http://18.208.86.195/'
         if env('ENVIRONMENT') == 'local':
+            # host = 'http://15.15.1.251:8000/'
             host = 'http://127.0.0.1:8000/'
         url = host + 'api/job_portal/jobs_stagging_to_production/'
         jobs = [
@@ -217,9 +218,9 @@ def upload_jobs_in_production(jobs_data, filename=None):
                 if response.ok:
                     print("Jobs posted successfully")
                 else:
-                    send_server_message(msg=":rotating_light: :rotating_light:  Octagon production server is down. Please fix it ASAP. :rotating_light: :rotating_light:")
                     print("Jobs posted unsuccessfully")
             except:
+                send_server_message(msg=":rotating_light: :rotating_light:  Octagon production server is down. Please fix it ASAP. :rotating_light: :rotating_light:")
                 print("")
         print("")
     except Exception as e:
