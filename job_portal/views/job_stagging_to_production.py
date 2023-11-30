@@ -50,11 +50,9 @@ class JobsStaggingToProduction(ListAPIView):
                 total_uploaded_jobs = after_uploading_jobs - before_uploaded_jobs
 
                 ScraperLogs.objects.create(job_source=logs['job_source'], total_jobs=logs['total_jobs'], filename=logs['filename'], uploaded_jobs=total_uploaded_jobs)
-                # print(ScraperLogs.objects.filter().values_list().last())
                 upload_jobs_in_sales_engine(model_instances, None)
                 message = "Jobs posted successfully"
                 status_code = status.HTTP_201_CREATED
-                # status_code = status.HTTP_404_NOT_FOUND
                 try:
                     job_source = model_instances[0].job_source
                     obj = SalesEngineJobsStats.objects.create(job_source=model_instances[0].job_source,

@@ -171,7 +171,6 @@ def upload_jobs_in_production(jobs_data, filename=None):
 
         host = 'http://18.208.86.195/'
         if env('ENVIRONMENT') == 'local':
-            # host = 'http://15.15.1.251:8000/'
             host = 'http://127.0.0.1:8000/'
         url = host + 'api/job_portal/jobs_stagging_to_production/'
         jobs = [
@@ -195,7 +194,6 @@ def upload_jobs_in_production(jobs_data, filename=None):
             } for job in jobs_data]
 
         logs = ScraperLogs.objects.filter(filename=filename).first()
-        # print(ScraperLogs.objects.filter().values_list().last())
 
         scraper_log = {
             'job_source': str(logs.job_source),
@@ -214,14 +212,11 @@ def upload_jobs_in_production(jobs_data, filename=None):
         if env("ENVIRONMENT") != 'production':
             try:
                 response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
-                # print(response.text)
                 if response.ok:
                     print("Jobs posted successfully")
                 else:
                     print("Jobs posted unsuccessfully")
             except:
                 send_server_message(msg=":rotating_light: :rotating_light:  Octagon production server is down. Please fix it ASAP. :rotating_light: :rotating_light:")
-                print("")
-        print("")
     except Exception as e:
         saveLogs(e)
