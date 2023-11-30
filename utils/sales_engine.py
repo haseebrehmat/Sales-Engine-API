@@ -208,7 +208,7 @@ def upload_jobs_in_production(jobs_data, filename=None):
                 "logs": scraper_log
             }
         )
-        # if env("ENVIRONMENT") == 'local':
+
         if env("ENVIRONMENT") != 'production':
             try:
                 response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
