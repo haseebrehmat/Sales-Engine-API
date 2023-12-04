@@ -9,8 +9,8 @@ try:
     SchedulerSync.objects.filter(type='instant').update(running=False, uploading=False)
     SchedulerSync.objects.filter(type='group scraper').update(uploading=False)
     AllSyncConfig.objects.filter(status=True).update(status=False)
-    if env('ENVIRONMENT') == 'production':
-        notify_octagon_scraper_stats_via_slack()
+    # if env('ENVIRONMENT') == 'production':
+    #     notify_octagon_scraper_stats_via_slack()
 
     # if env("ENVIRONMENT") == "development":
     #     AllSyncConfig.objects.filter(status=False).update(status=True)
