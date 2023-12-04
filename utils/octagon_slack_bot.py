@@ -59,7 +59,7 @@ def send_server_message(msg, channel='#scrapers-updates-bot'):
 
 def notify_octagon_scraper_stats_via_slack():
     scrapers_count = {}
-    production_scrapers = ['Builtin', 'Workable', 'WeWorkRemotely', 'Glassdoor', 'Zip Recruiter', 'Indeed', 'Linkedin'
+    production_scrapers = ['Builtin', 'Workable', 'WeWorkRemotely', 'Glassdoor', 'Zip Recruiter', 'Indeed', 'Linkedin',
                            'Simply Hired']
     today = str(datetime.datetime.now())[:10]
     for job_source in production_scrapers:
