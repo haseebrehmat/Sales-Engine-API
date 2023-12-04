@@ -9,7 +9,9 @@ from scraper.models import RestrictedJobsTags
 from scraper.utils.thread import start_new_thread
 from settings.base import SALES_ENGINE_UPLOAD_JOBS_URL, SALES_ENGINE_API_TOKEN, env, STAGGING_TO_PRODUCTION_API_TOKEN
 from utils.helpers import saveLogs
+from utils.octagon_slack_bot import send_server_message
 from utils.requests_logger import requests_logger_hooks
+from scraper.models.scraper_logs import ScraperLogs
 
 # restricted_job_tags = ['banking', 'government', 'federal', 'crypto', 'ether', 'clearance',
 #                        'army, navy, seals, air force', 'government advisory services', 'gambling', 'clearance',
@@ -190,18 +192,31 @@ def upload_jobs_in_production(jobs_data, filename=None):
                 "company_name": job.company_name,
                 "address": job.address
             } for job in jobs_data]
+
+        logs = ScraperLogs.objects.filter(filename=filename).first()
+
+        scraper_log = {
+            'job_source': str(logs.job_source),
+            'total_jobs': str(logs.total_jobs),
+            'filename': str(logs.filename),
+            'uploaded_jobs': str(logs.uploaded_jobs),
+        }
+
         payload = json.dumps(
             {
-                "jobs": jobs
+                "jobs": jobs,
+                "logs": scraper_log
             }
         )
+
         if env("ENVIRONMENT") != 'production':
-            response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
-            print(response.text)
-            if response.ok:
-                print("Jobs posted successfully")
-            else:
-                print("Jobs posted unsuccessfully")
-        print("")
+            try:
+                response = requests.request("POST", url, headers=headers, data=payload, hooks=requests_logger_hooks)
+                if response.ok:
+                    print("Jobs posted successfully")
+                else:
+                    print("Jobs posted unsuccessfully")
+            except:
+                send_server_message(msg=":rotating_light: :rotating_light:  Octagon production server is down. Please fix it ASAP. :rotating_light: :rotating_light:")
     except Exception as e:
         saveLogs(e)
