@@ -819,13 +819,17 @@ languages = {
         "virtual environment",
     ],
     "Dynamics": [
-        "dynamics",
+        "dynamics developer",
         "dynamics 365",
         "dynamics-365",
         "dynamics365",
         "ms-dynamics",
         "D365",
         "ms dynamics",
+        "microsoft dynamics",
+        "F&O Developer",
+        "Dynamics F&O",
+        "Dynamics 365 F&O",
     ],
     "PHP": [
         "cakephp",
@@ -1479,7 +1483,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Dynamics',
-        'exp': '(?i)(^|\W)((ms[-_\s]?)?dynamics(365)?|D[-\s]365)(\W|$)'
+        'exp': '(?i)(^|\W)((ms|microsoft)[-_\s]dynamics|(d|dynamics)[-_\s]?365|(dynamics|d365) (consultant|365|developer|analyst|Consultant|Project Manager|Programmer|Applications|engineer|CRM|AX|ERP|F&O|M365|engineer)|F&O (developer|consultant|programmer|engineer|AX)|365 F&O)(\W|$)'
     },
     {
         'tech_stack': 'C#',
