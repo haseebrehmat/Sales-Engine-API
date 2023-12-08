@@ -128,13 +128,17 @@ class JobClassifier(object):
 
     def classify_hour(self, job_date):
         # apply regex patterns to get the hours value
-        value = None
-        regex_hours = r'(?i)^((active|last|(posted (about|almost|over)))?.*\s)?([0-9]*\s?)(hours|hour|h|hr)\s*(ago)?'
-        value = re.search(regex_hours, string=job_date, flags=re.IGNORECASE)
-        if value and len(value.groups()) > 1:
-            hours = int(re.findall(r'\d+', job_date)[0])
-            return timezone.now() + timezone.timedelta(hours=-hours)
-        else:
+        try:
+            value = None
+            regex_hours = r'(?i)^((active|last|(posted (about|almost|over)))?.*\s)?([0-9]*\s?)(hours|hour|h|hr)\s*(ago)?'
+            value = re.search(regex_hours, string=job_date, flags=re.IGNORECASE)
+            if value and len(value.groups()) > 1:
+                hours = int(re.findall(r'\d+', job_date)[0])
+                return timezone.now() + timezone.timedelta(hours=-hours)
+            else:
+                return job_date
+        except Exception as e:
+            print(e, job_date)
             return job_date
 
     def classify_month(self, job_date):
@@ -202,11 +206,9 @@ class JobClassifier(object):
                 value = re.search(today_regex, string=job_date, flags=re.IGNORECASE)
                 if value:
                     return timezone.now()
-                elif 'yesterday' in job_date:
+                elif 'yesterday' in job_date or 'today' in job_date:
                     previous_date_time = timezone.now() + timezone.timedelta(days=-1)
                     return previous_date_time
-                elif 'today' in job_date:
-                    return timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
                 else:
                     return job_date
         except Exception as e:

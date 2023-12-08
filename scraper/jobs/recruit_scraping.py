@@ -133,7 +133,7 @@ def recruit(link, job_type):
     print("Recruit")
     try:
         total_job = 0
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True

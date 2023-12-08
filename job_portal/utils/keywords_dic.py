@@ -1483,7 +1483,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Dynamics',
-        'exp': '(?i)(^|\W)((ms|microsoft)[-_\s]dynamics|(d|dynamics)[-_\s]?365|(dynamics|d365) (consultant|365|developer|analyst|Consultant|Project Manager|Programmer|Applications|engineer|CRM|AX|ERP|F&O|M365|engineer)|F&O (developer|consultant|programmer|engineer|AX)|365 F&O)(\W|$)'
+        'exp': '(?i)(^|\W)((ms|microsoft)[-_\s]dynamics|(m|microsoft)[-\s]?365|(d|dynamics)[-_\s]?365|(dynamics|d365) (consultant|365|developer|analyst|Consultant|Project Manager|Programmer|Applications|engineer|CRM|AX|ERP|F&O|M365|engineer)|F&O (developer|consultant|programmer|engineer|AX)|365 F&O)(\W|$)'
     },
     {
         'tech_stack': 'C#',
