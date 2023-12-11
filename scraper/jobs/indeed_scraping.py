@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type
+    set_job_type, run_pia_proxy
 from utils.helpers import saveLogs
 
 
@@ -125,6 +125,7 @@ def indeed(link, job_type):
     try:
         driver = configure_webdriver()
         driver.maximize_window()
+        run_pia_proxy(driver, location="mumbai")
         try:
             flag = True
             request_url(driver, link)
