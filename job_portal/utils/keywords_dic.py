@@ -819,13 +819,17 @@ languages = {
         "virtual environment",
     ],
     "Dynamics": [
-        "dynamics",
+        "dynamics developer",
         "dynamics 365",
         "dynamics-365",
         "dynamics365",
         "ms-dynamics",
         "D365",
         "ms dynamics",
+        "microsoft dynamics",
+        "F&O Developer",
+        "Dynamics F&O",
+        "Dynamics 365 F&O",
     ],
     "PHP": [
         "cakephp",
@@ -1479,7 +1483,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Dynamics',
-        'exp': '(?i)(^|\W)((ms[-_\s]?)?dynamics(365)?|D[-\s]365)(\W|$)'
+        'exp': '(?i)(^|\W)((ms|microsoft)[-_\s]dynamics|(m|microsoft)[-\s]?365|(d|dynamics)[-_\s]?365|(dynamics|d365) (consultant|365|developer|analyst|Consultant|Project Manager|Programmer|Applications|engineer|CRM|AX|ERP|F&O|M365|engineer)|F&O (developer|consultant|programmer|engineer|AX)|365 F&O)(\W|$)'
     },
     {
         'tech_stack': 'C#',
@@ -1503,7 +1507,7 @@ regular_expressions = [
     },
     {
         'tech_stack': 'Go/Golang',
-        'exp': '(?i)(^|\W)(go|golang|distributed[-\s]systems?)(\W|$)'
+        'exp': '(?i)(^|\W)(go[-\s]?lang|go[-\s]?routines?|(senior|us(es?|ing)|junior|jr.|sr.|backend in)[-\s]go|go[-\s]?cd|\(go\)|go[-\s](code(base)?|program(ming)?|develop(er|ment)?|engineer|modules|skill|channels?|Convey|test(ing)?|api|backend|CD|templat(es?|ing)|language|task|software|system|roles?|frameworks?|applications?|compiles?|cli))(\W|$)'
     },
     {
         'tech_stack': 'Java',

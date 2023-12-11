@@ -101,13 +101,18 @@ class JobClassifier(object):
     def classify_job(self, job_title, job_description):
         tech_keywords_result = set()
         job_title = job_title.strip().lower()
-        job_description = job_description.strip().lower()
+        job_description_lower = job_description.strip().lower()
         regular_expression_list = regular_expressions
         self.find_job_techkeyword(job_title, regular_expression_list, languages, tech_keywords_result)
 
-        if job_description:
-            self.match_text_with_regex(job_description, regular_expression_list, tech_keywords_result)
-            self.classify_job_with_languages(job_description, languages, tech_keywords_result)
+        if job_description_lower:
+            self.match_text_with_regex(job_description_lower, regular_expression_list, tech_keywords_result)
+            self.classify_job_with_languages(job_description_lower, languages, tech_keywords_result)
+
+        if 'go/golang' not in tech_keywords_result:
+            pattern = re.compile(pattern='(^|\W)Go(\W|$)')
+            if pattern.search(job_description):
+                tech_keywords_result.add('go/golang')
 
         if not tech_keywords_result:
             r1 = self.job_classifier_other_dev_stage(job_title)
@@ -123,13 +128,17 @@ class JobClassifier(object):
 
     def classify_hour(self, job_date):
         # apply regex patterns to get the hours value
-        value = None
-        regex_hours = r'(?i)^((active|last|(posted (about|almost|over)))?.*\s)?([0-9]*\s?)(hours|hour|h|hr)\s*(ago)?'
-        value = re.search(regex_hours, string=job_date, flags=re.IGNORECASE)
-        if value and len(value.groups()) > 1:
-            hours = int(re.findall(r'\d+', job_date)[0])
-            return timezone.now() + timezone.timedelta(hours=-hours)
-        else:
+        try:
+            value = None
+            regex_hours = r'(?i)^((active|last|(posted (about|almost|over)))?.*\s)?([0-9]*\s?)(hours|hour|h|hr)\s*(ago)?'
+            value = re.search(regex_hours, string=job_date, flags=re.IGNORECASE)
+            if value and len(value.groups()) > 1:
+                hours = int(re.findall(r'\d+', job_date)[0])
+                return timezone.now() + timezone.timedelta(hours=-hours)
+            else:
+                return job_date
+        except Exception as e:
+            print(e, job_date)
             return job_date
 
     def classify_month(self, job_date):
@@ -197,11 +206,9 @@ class JobClassifier(object):
                 value = re.search(today_regex, string=job_date, flags=re.IGNORECASE)
                 if value:
                     return timezone.now()
-                elif 'yesterday' in job_date:
+                elif 'yesterday' in job_date or 'today' in job_date:
                     previous_date_time = timezone.now() + timezone.timedelta(days=-1)
                     return previous_date_time
-                elif 'today' in job_date:
-                    return timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
                 else:
                     return job_date
         except Exception as e:
@@ -259,10 +266,13 @@ class JobClassifier(object):
     def classify(self):
         custom_columns = self.data_frame.columns.values.tolist()
         custom_columns.remove("job_source_url")
+        custom_columns.remove("job_description")
         my_job_sources = self.data_frame["job_source_url"]
+        job_descriptions_data = self.data_frame['job_description']
         custom_df = self.data_frame[custom_columns]
         self.data_frame = custom_df.applymap(lambda s: s.lower().strip() if type(s) == str else str(s).strip())
         self.data_frame["job_source_url"] = my_job_sources
+        self.data_frame["job_description"] = job_descriptions_data
 
         self.data_frame['tech_keywords'] = self.data_frame.apply(
             lambda row: self.classify_job(str(row['job_title']), str(row['job_description'])) if (
