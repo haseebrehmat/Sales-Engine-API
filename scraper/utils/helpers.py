@@ -201,7 +201,7 @@ def change_pia_location(driver, location=None, extension_opened=False) -> bool:
             else:
                 driver.find_element(By.CLASS_NAME, 'region-search-input').send_keys("US Miami")
                 driver.find_element(By.TAG_NAME, "div").find_element(By.TAG_NAME, "ul").click()
-        time.sleep(5)  
+        time.sleep(5)
     except Exception as e:
         error_status = True
         print(str(e))
