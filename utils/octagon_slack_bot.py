@@ -4,7 +4,6 @@ from django.db.models import Sum
 from slack import WebClient
 from slack.errors import SlackApiError
 
-from job_portal.models import JobDetail
 from scraper.models import ScraperLogs
 from settings.base import env
 
@@ -49,11 +48,19 @@ def send_message(msg=bot_message_template, channel='#scrapers-updates-bot'):
         except SlackApiError as e:
             print(f"Got an error: {e.response['error']}")
 
+def send_server_message(msg, channel='#scrapers-updates-bot'):
+    # channel='#test'
+    if env('ENVIRONMENT') == 'staging' and env.bool('SLACK_BOT_NOTIFICATION_ENABLED'):
+        client = WebClient(token=env('SLACK_API_TOKEN'))
+        try:
+            response = client.chat_postMessage(channel=channel, text=f"{msg}")
+        except SlackApiError as e:
+            print(f"Got an error: {e.response['error']}")
+
 def notify_octagon_scraper_stats_via_slack():
     scrapers_count = {}
-    production_scrapers = ['Builtin', 'Workable', 'WeWorkRemotely', 'Glassdoor', 'Zip Recruiter', 'Indeed',
+    production_scrapers = ['Builtin', 'Workable', 'WeWorkRemotely', 'Glassdoor', 'Zip Recruiter', 'Indeed', 'Linkedin',
                            'Simply Hired']
-    staging_scrapers = [{'key': 'linkedin', 'name': 'Linkedin'}]
     today = str(datetime.datetime.now())[:10]
     for job_source in production_scrapers:
         queryset = ScraperLogs.objects.filter(created_at__date=today, job_source=job_source)
@@ -63,9 +70,6 @@ def notify_octagon_scraper_stats_via_slack():
                 {job_source: {'scraped': result['scraped_jobs'], 'uploaded': result['uploaded_jobs']}})
         else:
             scrapers_count.update({job_source: {'scraped': 0, 'uploaded': 0}})
-    for job_source in staging_scrapers:
-        today_jobs = JobDetail.objects.filter(created_at__date=today, job_source=job_source['key'])
-        scrapers_count.update({job_source['name']: {'scraped': today_jobs.count(), 'uploaded': today_jobs.count()}})
     scraper_status_report = ''
     active_scrapers_list = []
     warning_scrapers_list = []
@@ -88,15 +92,17 @@ def notify_octagon_scraper_stats_via_slack():
                                                                           uploaded=scrapers_count[scraper]['uploaded'])
     current_time_stamp = datetime.datetime.now()
     octagon_scraper_report = f'{bot_message_template}'.format(current_time_stamp=current_time_stamp,
-                                                              active_scrapers_list=', '.join(
-                                                                  active_scrapers_list) if active_scrapers_list else 'None',
-                                                              warning_scrapers_list=', '.join(
-                                                                  warning_scrapers_list) if warning_scrapers_list else 'None',
-                                                              inactive_scrapers_list=', '.join(
-                                                                  inactive_scrapers_list) if inactive_scrapers_list else 'None',
+                                                              active_scrapers_list=format_list(active_scrapers_list),
+                                                              warning_scrapers_list=format_list(warning_scrapers_list),
+                                                              inactive_scrapers_list=format_list(
+                                                                  inactive_scrapers_list),
                                                               scraper_status_report=scraper_status_report,
                                                               total_scraped_jobs=total_scraped_jobs,
                                                               total_uploaded_jobs=total_uploaded_jobs)
     print(octagon_scraper_report)
     if env('ENVIRONMENT') == 'production' and env.bool('SLACK_BOT_NOTIFICATION_ENABLED'):
         send_message(msg=octagon_scraper_report)
+
+
+def format_list(scrapers_list):
+    return ', '.join(scrapers_list) if scrapers_list else "None"

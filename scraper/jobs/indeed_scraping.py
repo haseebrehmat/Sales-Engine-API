@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type
+    set_job_type, run_pia_proxy
 from utils.helpers import saveLogs
 
 
@@ -39,14 +39,9 @@ def find_jobs(driver, job_type):
 
             job.click()
             time.sleep(4)
-
-            job_title = driver.find_element(By.CLASS_NAME, "jobsearch-JobInfoHeader-title").text
-            job_title = job_title.replace("\n- job post", "")
-            append_data(data, job_title)
-            company_name = driver.find_element(By.CLASS_NAME, "css-1l2hyrd").text
-            append_data(data, company_name)
-            address = driver.find_element(By.CLASS_NAME, "css-9yl11a")
-            append_data(data, address.text)
+            append_data(data, job.text.split('\n')[0])
+            append_data(data, job.text.split('\n')[1])
+            append_data(data, job.text.split('\n')[2])
             job_description = driver.find_element(
                 By.CLASS_NAME, "jobsearch-jobDescriptionText")
             append_data(data, job_description.text)
@@ -130,6 +125,7 @@ def indeed(link, job_type):
     try:
         driver = configure_webdriver()
         driver.maximize_window()
+        run_pia_proxy(driver, location="mumbai")
         try:
             flag = True
             request_url(driver, link)
