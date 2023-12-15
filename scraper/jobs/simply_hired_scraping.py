@@ -10,22 +10,19 @@ from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type
+    set_job_type, configure_undetected_chrome_driver
 from utils.helpers import saveLogs
-
 
 # calls url
 def request_url(driver, url):
     driver.get(url)
 
-
 # append data for csv file
 def append_data(data, field):
     data.append(str(field).strip("+"))
 
-
 # find's job name
-def find_jobs(driver, job_type):
+def find_jobs(driver, job_type, next_page_no):
     scrapped_data = []
     count = 0
     time.sleep(3)
@@ -38,7 +35,6 @@ def find_jobs(driver, job_type):
         try:
             job.click()
             time.sleep(3)
-
             append_data(data, job.text)
             context = driver.find_elements(By.CLASS_NAME, "css-xyzzkl")
             company_name = context[0].text.split("-")[0]
@@ -47,7 +43,8 @@ def find_jobs(driver, job_type):
             append_data(data, address)
             job_description = driver.find_elements(By.CLASS_NAME, "css-1ebprri")[2]
             append_data(data, job_description.text)
-            append_data(data, driver.current_url)
+            job_url = job.find_element(By.CSS_SELECTOR, "h2 > .css-1djbb1k").get_attribute("href")
+            append_data(data, job_url)
             try:
                 job_posted_date = context[4].text
             except Exception as e:
@@ -100,9 +97,14 @@ def find_jobs(driver, job_type):
         total_jobs=len(df), job_source="Simply Hired", filename=filename)
 
     try:
-        next_page = driver.find_element(By.CLASS_NAME, "css-1puj5o8")
-        next_page.click()
-        return True
+        next_page = driver.find_elements(By.CLASS_NAME, "css-1vdegr")
+        next_page_clicked = False
+        for i in next_page:
+            if i.text == f'{next_page_no}':
+                i.click()
+                next_page_clicked = True
+                break
+        return next_page_clicked
     except Exception as e:
         return False
 
@@ -110,19 +112,20 @@ def find_jobs(driver, job_type):
 def simply_hired(link, job_type):
     print("Simply hired")
     try:
-        driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
+        driver = configure_undetected_chrome_driver()
         driver.maximize_window()
         try:
             flag = True
+            page_no = 2
             request_url(driver, link)
-            while flag:
-                flag = find_jobs(driver, job_type)
+            while flag and page_no <= 40:
+                flag = find_jobs(driver, job_type, page_no)
+                page_no += 1
                 print("Fetching...")
             print(SCRAPING_ENDED)
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-
         driver.quit()
     except Exception as e:
         saveLogs(e)

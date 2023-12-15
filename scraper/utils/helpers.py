@@ -13,7 +13,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import JOB_TYPE
 from scraper.models import GroupScraper, GroupScraperQuery
 from scraper.models.accounts import Accounts
-
+import undetected_chromedriver as uc
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -162,6 +162,19 @@ def configure_webdriver(open_browser=False, block_media=False, block_elements=['
         driver.execute_cdp_cmd("Network.setBlockedURLs", {"urls": blocked_patterns})
     return driver
 
+def configure_undetected_chrome_driver(open_browser=False):
+    options = uc.ChromeOptions()
+    if not open_browser:
+        options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox --no-first-run --no-service-autorun --password-store=basic")
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36")
+    options.add_experimental_option('prefs', {"extensions.ui.developer_mode": True, })
+    options.add_argument('--remote-debugging-port=9222')
+    driver = uc.Chrome(driver_executable_path=ChromeDriverManager().install(), options=options, use_subprocess=False)
+    return driver
 
 def run_pia_proxy(driver, location=None):
     pia_instances = Accounts.objects.filter(source='pia')
