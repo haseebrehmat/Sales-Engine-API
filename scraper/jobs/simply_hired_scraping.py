@@ -10,26 +10,23 @@ from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type
+    set_job_type, configure_undetected_chrome_driver
 from utils.helpers import saveLogs
-
 
 # calls url
 def request_url(driver, url):
     driver.get(url)
 
-
 # append data for csv file
 def append_data(data, field):
     data.append(str(field).strip("+"))
-
 
 # find's job name
 def find_jobs(driver, job_type, next_page_no):
     scrapped_data = []
     count = 0
     time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "css-1y7j4hn")
+    jobs = driver.find_elements(By.CLASS_NAME, "css-1igwmid")
 
     es = driver.find_elements(By.CLASS_NAME, "css-1ejkpji")
 
@@ -37,25 +34,31 @@ def find_jobs(driver, job_type, next_page_no):
         data = []
         try:
             job.click()
-            time.sleep(5)
-
+            time.sleep(3)
             append_data(data, job.text)
-            context = driver.find_elements(By.CLASS_NAME, "css-xtodu4")
-            company_name = context[0].text.split("-")
-            append_data(data, company_name[0])
+            context = driver.find_elements(By.CLASS_NAME, "css-xyzzkl")
+            company_name = context[0].text.split("-")[0]
+            append_data(data, company_name)
             address = context[1].text
             append_data(data, address)
-            job_description = driver.find_element(By.CLASS_NAME, "css-cxpe4v")
+            job_description = driver.find_elements(By.CLASS_NAME, "css-1ebprri")[2]
             append_data(data, job_description.text)
-            append_data(data, job.get_attribute('href'))
+            job_url = job.find_element(By.CSS_SELECTOR, "h2 > .css-1djbb1k").get_attribute("href")
+            append_data(data, job_url)
             try:
                 job_posted_date = context[4].text
             except Exception as e:
                 job_posted_date = 'Today'
             append_data(data, job_posted_date)
             try:
-                estimated_salary = es[count].text.split(" a")[0]
-                if '$' in estimated_salary:
+                estimated_salary = es[count].text.split(" a")[0].replace('From', "")
+                if 'hour' in es[count].text:
+                    append_data(data, "hourly")
+                elif 'month' in es[count].text:
+                    append_data(data, "monthly")
+                elif 'year' in es[count].text:
+                    append_data(data, "yearly")
+                else:
                     append_data(data, "N/A")
                 if "d: " in estimated_salary:
                     estimated_salary = estimated_salary.split(": ")[1]
@@ -85,8 +88,6 @@ def find_jobs(driver, job_type, next_page_no):
             print(e)
         count += 1
 
-
-    date_time = str(datetime.now())
     columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
                     "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
@@ -95,11 +96,8 @@ def find_jobs(driver, job_type, next_page_no):
     ScraperLogs.objects.create(
         total_jobs=len(df), job_source="Simply Hired", filename=filename)
 
-    if not data_exists(driver):
-        return False
-
     try:
-        next_page = driver.find_elements(By.CLASS_NAME, "css-1wxsdwr")
+        next_page = driver.find_elements(By.CLASS_NAME, "css-1vdegr")
         next_page_clicked = False
         for i in next_page:
             if i.text == f'{next_page_no}':
@@ -110,17 +108,11 @@ def find_jobs(driver, job_type, next_page_no):
     except Exception as e:
         return False
 
-# check if there is more jobs available or not
-def data_exists(driver):
-    pagination = driver.find_elements(By.CLASS_NAME, "css-gxlopd")
-    return False if len(pagination) == 0 else True
-
-
 # code starts from here
 def simply_hired(link, job_type):
     print("Simply hired")
     try:
-        driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
+        driver = configure_undetected_chrome_driver()
         driver.maximize_window()
         try:
             flag = True
@@ -134,7 +126,6 @@ def simply_hired(link, job_type):
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-
         driver.quit()
     except Exception as e:
         saveLogs(e)
