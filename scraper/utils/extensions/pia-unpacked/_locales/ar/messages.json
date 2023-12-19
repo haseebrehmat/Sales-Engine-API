@@ -1,0 +1,764 @@
+{
+  "PrivateInternetAccess": {
+    "message": "Private Internet Access"
+  },
+  "BrowserMessage": {
+    "message": "ملحق المتصفح"
+  },
+  "FirstSlideInstallThanks": {
+    "message": "نشكرك على تثبيت"
+  },
+  "StartSlide": {
+    "message": "هيا لتعرف كيف تبدأ"
+  },
+  "Step1": {
+    "message": "خطوة 1 من 2"
+  },
+  "Step2": {
+    "message": "خطوة 2 من 2"
+  },
+  "ChooseTheme": {
+    "message": "اختر النُسق"
+  },
+  "EnableSetings": {
+    "message": "تمكين الميزات الإضافية"
+  },
+  "PrivateInternetComesWith": {
+    "message": "يأتي مع Private Internet Access "
+  },
+  "LightAndDarkDisclaimer": {
+    "message": "نُسق فاتحة وداكنة لتناسب مظهر "
+  },
+  "LookOfBrowserDisclaimer": {
+    "message": "وشكل متصفحك"
+  },
+  "OnBoardingStart": {
+    "message": "هيا نبدأ"
+  },
+  "WhiteTheme": {
+    "message": "النُسق الفاتح"
+  },
+  "Next": {
+    "message": "التالي"
+  },
+  "Skip": {
+    "message": "تخطي"
+  },
+  "ChangeExtraFeaturesSettings": {
+    "message": "الميزات الإضافية"
+  },
+  "encounterMessage_1": {
+    "message": "شكرًا لك على ملاحظاتك! إذا واجهت أي مشاكل تقنية يرجى "
+  },
+  "encounterMessage_2": {
+    "message": "الاتصال بقسم الدعم "
+  },
+  "JustInTimeDisclaimer": {
+    "message": "قيّم تجربتك مع PIA"
+  },
+  "feedbackMessage_1": {
+    "message": "شكرًا لك على ملاحظاتك! سنكون ممتنين إذا منحتنا تقييمًا على "
+  },
+  "feedbackMessage_2": {
+    "message": "متجر Chrome Web"
+  },
+  "UILanguage": {
+    "message": "لغة واجهة المستخدم"
+  },
+  "UILanguageTooltip": {
+    "message": "اللغة المستخدمة من قبل الملحق عند عرض النص."
+  },
+  "TheExtensionIsStillLoading": {
+    "message": "ما زال الامتداد بصدد التحميل وتعذر تحمسل سجل الأخطاء."
+  },
+  "ReloadPage": {
+    "message": "إعادة تحميل الصفحة"
+  },
+  "Extension": {
+    "message": "الملحق"
+  },
+  "ForgotPassword": {
+    "message": "نسيت كلمة المرور"
+  },
+  "BuyAccount": {
+    "message": "اشترِ حساب"
+  },
+  "DeleteDebugLog": {
+    "message": "محو السجل"
+  },
+  "SettingNotControllable": {
+    "message": "لا يمكن لهذا الملحق التحكم في هذا الإعداد."
+  },
+  "SettingControlledByOther": {
+    "message": "يتم التحكم في هذا الإعداد بواسطة ملحق آخر."
+  },
+  "AllowExtensionNotifications": {
+    "message": "السماح بإشعارات سطح المكتب"
+  },
+  "AllowExtensionNotificationsTooltip": {
+    "message": "السماح للملحق بإنشاء إشعار سطح المكتب عند حدوث شيء مهم. لا ينصح بتعطيله."
+  },
+  "Tracking": {
+    "message": "التعقب"
+  },
+  "FingerprintProtection": {
+    "message": "الحماية من بصمات المتصفح"
+  },
+  "FingerprintProtectionTooltip": {
+    "message": "حماية ضد بصمات المتصفح من خلال توفير معلومات عامة حول جهاز الكمبيوتر ومنع الوصول إلى واجهات برمجة تطبيقات معينة للمتصفح."
+  },
+  "FingerprintProtectionHeader": {
+    "message": "إعداد الحماية من بصمات المتصفح"
+  },
+  "FingerprintProtectionDisclaimer": {
+    "message": "يمكن أن يوفر هذا الإعداد مزيدًا من الخصوصية والأمان ولكن قد يؤدي إلى تعطيل بعض مواقع الإنترنت والتسبب في سلوك مختلف للمتصفح عمّا هو متوقع. يمكنك العثور على قائمة كاملة بالتعديلات هنا:"
+  },
+  "FingerprintProtectionInstructions": {
+    "message": "هذه الميزة موصى بها ولكن قد يجدها بعض المستخدمين غير ملائمة. يرجى اختيار تمكين أو تعطيل الحماية من بصمات المتصفح:"
+  },
+  "FingerprintProtectionEnable": {
+    "message": "تمكين"
+  },
+  "FingerprintProtectionDisable": {
+    "message": "تعطيل"
+  },
+  "FingerprintProtectionAfterword": {
+    "message": "يمكن أيضًا تغيير هذا الإعداد من لوحة \"إعدادات الملحقات\" بعد تسجيل الدخول إلى الملحق."
+  },
+  "TrackingProtection": {
+    "message": "الحماية من التعقب"
+  },
+  "TrackingProtectionTooltip": {
+    "message": "حظر الطلبات التي يتم إجراؤها على النطاقات المعروف عنها أنها تشارك في تعقب المستخدمين عبر المواقع."
+  },
+  "BlockHyperlinkAuditing": {
+    "message": "تعطيل تدقيق الارتباط التشعبي"
+  },
+  "BlockHyperlinkAuditingTooltip": {
+    "message": "تعطيل تدقيق الارتباط التشعبي، وهي ميزة HTML حديثة مصممة لإشعار أجهزة التعقب والخدمات التحليلية عند النقر على رابط."
+  },
+  "ViewDebugLog": {
+    "message": "عرض سجل التصحيح"
+  },
+  "DebugMode": {
+    "message": "وضع التصحيح"
+  },
+  "DebugModeTooltip": {
+    "message": "اكتب الرسائل في سجل تصحيح الأخطاء. اضغط مفتاح \"ctrl\" متبوعًا بمفتاح \"d\" لعرض سجل تصحيح الأخطاء."
+  },
+  "DarkTheme": {
+    "message": "النُسق الداكن"
+  },
+  "DarkThemeTooltip": {
+    "message": "مكّن السمة الداكنة للملحق لاستخدامه في البيئات ضعيفة الإضاءة"
+  },
+  "IpReal": {
+    "message": "IP"
+  },
+  "IpProxy": {
+    "message": "VPN IP"
+  },
+  "DebugLogIsEmpty": {
+    "message": "سجل تصحيح الأخطاء فارغ."
+  },
+  "PersistentSettingsDisclaimer": {
+    "message": "تعد الإعدادات الممكّنة نشطة دائمًا سواء كنت متصلاً بمنطقة أو لا، باستثناء ™PIA MACE الذي يكون نشطًا فقط عندما تكون متصلاً بمنطقة."
+  },
+  "PersistentIncognitoDisclaimer": {
+    "message": "قم بتمكين الامتداد في وضع التصفح المتخفي عن طريق تحديد هذا الخيار من إعدادات الامتداد في chrome://extensions."
+  },
+  "UsernamePlaceholder": {
+    "message": "اسم المستخدم"
+  },
+  "PasswordPlaceholder": {
+    "message": "كلمة المرور"
+  },
+  "TryAgain": {
+    "message": "إعادة المحاولة"
+  },
+  "LoginText": {
+    "message": "تسجيل الدخول"
+  },
+  "SelectRegionText": {
+    "message": "حدّد منطقة"
+  },
+  "WrongUsernameAndPassword": {
+    "message": "اسم المستخدم و/أو كلمة المرور خطأ."
+  },
+  "OfflineError": {
+    "message": "فشل طلب تسجيل الدخول لأنك تبدو غير متصل. يرجى التحقق من اتصالك بالإنترنت."
+  },
+  "TimeoutError": {
+    "message": "انتهت مهلة طلب تسجيل الدخول بعد %{seconds} ثوان. يرجى إعادة المحاولة."
+  },
+  "AbortError": {
+    "message": "تم إحباط طلب تسجيل الدخول من قبل المتصفح. يرجى إعادة المحاولة."
+  },
+  "UnexpectedServerResponse": {
+    "message": "فشل تسجيل الدخول بسبب استجابة غير متوقعة من الخادم (%{statusLine})"
+  },
+  "TooManyRequestsError": {
+    "message": "محاولات كثيرة لتسجيل الدخول. أعد المحاولة لاحقًا."
+  },
+  "UnknownError": {
+    "message": "حصل خطأ غير معروف."
+  },
+  "CopyToClipboard": {
+    "message": "نسخ سجل التصحيح"
+  },
+  "CopiedToClipboard": {
+    "message": "تم نسخ سجل التصحيح"
+  },
+  "JoinURL": {
+    "message": "https://ara.privateinternetaccess.com/pages/buy-vpn"
+  },
+  "PopularWebsites": {
+    "message": "مواقع الإنترنت الشهيرة"
+  },
+  "OtherWebsites": {
+    "message": "مواقع الإنترنت الأخرى"
+  },
+  "ImportExportHeader": {
+    "message": "قوانين الاستيراد/التصدير"
+  },
+  "ImportLabel": {
+    "message": "استيراد"
+  },
+  "ExportLabel": {
+    "message": "تصدير"
+  },
+  "BypassWarningLead": {
+    "message": "الطلبات المقدمة إلى مواقع الويب المدرجة في قائمة التجاوز تستخدم"
+  },
+  "BypassWarningBold": {
+    "message": "اتصالات مباشرة وغير محمية بواسطة ™Private Internet Access."
+  },
+  "AccountSettingsText": {
+    "message": "إعدادات الحساب"
+  },
+  "SupportText": {
+    "message": "المساعدة والدعم"
+  },
+  "OfflineText": {
+    "message": "غير متصل"
+  },
+  "Security": {
+    "message": "الحماية"
+  },
+  "MaceProtection": {
+    "message": "™PIA MACE"
+  },
+  "WhatIsMace": {
+    "message": "ما هو ™MACE؟"
+  },
+  "MaceTooltip": {
+    "message": "يساعد ™PIA MACE في حماية الخصوصية وأمنك من خلال حظر المحتوى الخبيث والمتتبعين والإعلانات. يكون نشطًا فقط عندما تكون متصلاً بمنطقة."
+  },
+  "WebRTCLeakProtection": {
+    "message": "حظر حماية عناوين IP الخاصة بخدمة WebRTC"
+  },
+  "WebRTCTooltip": {
+    "message": "حظر %{browser} لمنع كشف عناوين IP العامة والخاصة عند استخدام WebRTC. لا ينصح بتعطيله."
+  },
+  "BlockAdobeFlash": {
+    "message": "حظر Adobe Flash"
+  },
+  "AdobeFlashTooltip": {
+    "message": "حظر %{browser} من تشغيل Adobe Flash. يمكن أن يُستخدم Adobe Flash في الكشف عن عناوين IP العامة. لا ينصح بتعطيله."
+  },
+  "HttpsUpgrade": {
+    "message": "تصفح المواقع باستخدام HTTPS"
+  },
+  "HttpsUpgradeTooltip": {
+    "message": "يحول مواقع الويب أو الروابط المدعومة تلقائيًا التي تستخدم اتصال غير مشفر (HTTP) إلى اتصال HTTPS أكثر أمانًا قبل مغادرة المتصفح. وذلك أصبح ممكنا بسبب HTTPS Everywhere وEFF."
+  },
+  "AlwaysActive": {
+    "message": "الإعدادات النشطة دائمًا"
+  },
+  "AlwaysActiveTooltip": {
+    "message": "جعل الإعدادات نشطة دائمًا، بغض النظر عما إذا كان الوكيل متصلاً أم لا"
+  },
+  "BlockUTM": {
+    "message": "إزالة معلمات UTM"
+  },
+  "BlockUTMTooltip": {
+    "message": "إزالة معلمات UTM من الروابط التي تضغط عليها. وتستخدم معلمات UTM لتتبع المعلومات حول زيارتك للمواقع على شبكة الإنترنت."
+  },
+  "BlockFBCLID": {
+    "message": "إزالة معلمات FBCLID"
+  },
+  "BlockFBCLIDTooltip": {
+    "message": "إزالة معاملات Facebook FBCLID من الروابط الصادرة في Facebook. تستخدم معلمات FBCLID لتتبع المعلومات حول زيارتك للمواقع على شبكة الإنترنت."
+  },
+  "BypassInstructionsBold": {
+    "message": "* بادئة مطلوبة"
+  },
+  "BypassInstructions": {
+    "message": "لتجاوز جميع النطاقات الفرعية لموقع الإنترنت."
+  },
+  "ProxyBypassList": {
+    "message": "تجاوز القائمة"
+  },
+  "SmartLocation": {
+    "message": "الموقع الذكي"
+  },
+  "WebAlreadyAdded": {
+    "message": "تم إضافة مواقع الويب بالفعل"
+  },
+  "AddSmartLocation": {
+    "message": "إضافة موقع ذكي"
+  },
+  "WelcomeToNewVersion": {
+    "message": "مرحبًا بك في %{appVersion}"
+  },
+  "ExtensionUpdated": {
+    "message": "تم تحديث الملحق"
+  },
+  "OneRuleAdded": {
+    "message": "تمت إضافة 1 قاعدة"
+  },
+  "NoRulesAdded": {
+    "message": "لم تتم إضافة قواعد"
+  },
+  "NoLocation": {
+    "message": "لم تتم إضافة مواقع"
+  },
+  "OneLocation": {
+    "message": "تم إضافة الموقع"
+  },
+  "MultipleLocations": {
+    "message": "المواقع"
+  },
+  "MultipleRulesAdded": {
+    "message": "تمت إضافة %{count} قواعد"
+  },
+  "DebugLog": {
+    "message": "سجل التصحيح"
+  },
+  "BlockNetworkPrediction": {
+    "message": "تعطيل التنبؤ بالشبكة"
+  },
+  "BlockNetworkPredictionTooltip": {
+    "message": "تعطيل %{browser} لمنع استخدام خدمة التنبؤ بشبكة التي تحل مسبقا استعلامات نظام أسماء النطاقات DNS وتجلب صفحات الويب مسبقا من المحتوى الموجود على صفحة الويب التي تزورها."
+  },
+  "BlockSafeBrowsing": {
+    "message": "تعطيل SafeBrowsing"
+  },
+  "ReadMore": {
+    "message": "المزيد"
+  },
+  "BlockSafeBrowsingTooltip": {
+    "message": "تعطيل %{browser} لمنع إجراء الاتصالات المباشرة إلى خدمة شبكة لها مخاوف تتعلق بالخصوصية حول حفظ السجلات. ™PIA Mace يقلل من مخاطر تعطيل هذه الخدمة."
+  },
+  "BlockAutofill": {
+    "message": "تعطيل الملء التلقائي"
+  },
+  "BlockAutofillTooltip": {
+    "message": "قم بتعطيل %{browser} من ملء النماذج تلقائيًا. هذا يمكن أن يؤدي إلى تسرب البيانات الشخصية عبر خانات النماذج المخفية."
+  },
+  "BlockAutofillCreditCard": {
+    "message": "تعطيل الملء التلقائي لبطاقات الائتمان"
+  },
+  "BlockAutofillCreditCardTooltip": {
+    "message": "امنع %{browser} من ملء خانات بطاقات الائتمان تلقائيًا. قد يؤدي ذلك إلى تسرب البيانات الشخصية عبر خانات النماذج المخفية."
+  },
+  "BlockAutofillAddress": {
+    "message": "تعطيل الملء التلقائي للعنوان"
+  },
+  "BlockAutofillAddressTooltip": {
+    "message": "امنع %{browser} من ملء خانات العناوين تلقائيًا. قد يؤدي ذلك إلى تسرب البيانات الشخصية عبر خانات النماذج المخفية."
+  },
+  "BlockLocationAccess": {
+    "message": "حظر الوصول للموقع"
+  },
+  "BlockLocationAccessTooltip": {
+    "message": "يمنع مواقع الإنترنت من الوصول إلى معلومات عن موقعك الفعلي."
+  },
+  "BlockHTTPReferer": {
+    "message": "تعطيل محيل مواقع الويب"
+  },
+  "BlockHTTPRefererTooltip": {
+    "message": "تعطيل %{browser} لمنع إرسال عنوان صفحة الويب الحالية إلى صفحة ويب أخرى عند اتباع رابط."
+  },
+  "BlockThirdpartycookies": {
+    "message": "تعطيل ملفات تعريف ارتباط الطرف الثالث"
+  },
+  "BlockThirdpartycookiesTooltip": {
+    "message": "تعطيل %{browser} لمنع قبول كوكيهات من مواقع ويب تابعة لأطراف أخرى. يمكن استخدام الكوكيهات لتتبع زيارتك لموقع إنترنت من قبل ويب أطراف ثالثة أو خدمة إنترنت."
+  },
+  "BlockCameraAccess": {
+    "message": "حظر الوصول للكاميرا"
+  },
+  "BlockCameraAccessTooltip": {
+    "message": "حظر مواقع الويب من الوصول إلى كاميرا حاسوبك."
+  },
+  "BlockMicrophoneAccess": {
+    "message": "حظر الوصول للميكروفون"
+  },
+  "BlockMicrophoneAccessTooltip": {
+    "message": "حظر مواقع الويب من الوصول إلى ميكروفون حاسوبك."
+  },
+  "Privacy": {
+    "message": "الخصوصية"
+  },
+  "ImportFileMessage": {
+    "message": "يرجى تحديد ملف تجاوز قواعد تم تصديره (مثلاً: bypass-rules.json)"
+  },
+  "InvalidImportFileStructure": {
+    "message": "لا يمكن قراءة الملف، يرجى تحديد ملف صحيح"
+  },
+  "CurrentRegionText": {
+    "message": "المنطقة الحالية"
+  },
+  "NoRegionSelected": {
+    "message": "لم يتم تحديد منطقة"
+  },
+  "ChooseAutomatically": {
+    "message": "اختيار تلقائي"
+  },
+  "ChangeExtensionSettings": {
+    "message": "إعدادات الملحق"
+  },
+  "CannotUsePIAMessage": {
+    "message": "لا يمكن استخدام Private Internet Access بسبب وجود ملحق آخر يتحكم في إعدادات وكيل متصفحك."
+  },
+  "ManageExtensions": {
+    "message": "إدارة الملحقات"
+  },
+  "RegionName": {
+    "message": "الاسم"
+  },
+  "RegionLatency": {
+    "message": "التأخير"
+  },
+  "RegionSearch": {
+    "message": "بحث..."
+  },
+  "CloseText": {
+    "message": "إغلاق"
+  },
+  "UpgradeBrowserMessage": {
+    "message": "لا يمكن استخدام الوصول إلى الإنترنت الخاص نظرا لأن إصدارك من %{browser} قديم. يرجى ترقية %{browser} إلى أحدث إصدار."
+  },
+  "LogoutText": {
+    "message": "تسجيل الخروج"
+  },
+  "AuthFailPageTitle": {
+    "message": "خطأ في المصادقة | Private Internet Access"
+  },
+  "AuthFailTitle": {
+    "message": "خطأ في المصادقة"
+  },
+  "AuthFailMessage": {
+    "message": "إذا قمت بتغيير كلمة مرورك مؤخرًا على موقع Private Internet Access الإلكتروني فقد تحل عملية إعادة إجراء عملية المصادقة هذا الخطأ.<br /><br />للحصول على المساعدة والدعم، اتصل بـ <a href=\"https://privateinternetaccess.com/helpdesk\">فريق الدعم</a>."
+  },
+  "AuthFailMessageSupportLead": {
+    "message": "للمساعدة والدعم، اتصل بنا"
+  },
+  "AuthFailMessageSupportEnd": {
+    "message": "فريق الدعم"
+  },
+  "ConnectionFailPageTitle": {
+    "message": "خطأ في الاتصال | Private Internet Access"
+  },
+  "ConnectionFailTitle": {
+    "message": "خطأ في الاتصال"
+  },
+  "ConnectionFailMessage": {
+    "message": "قد تكون فقدت الاتصال بالإنترنت، أو انقطع الاتصال مؤقتًا، أو قد يكون خادم Private Internet Access الذي تحاول الاتصال به يواجه مشاكل في الاتصال."
+  },
+  "NoNetworkConnection": {
+    "message": "لا يوجد اتصال بالشبكة"
+  },
+  "YouAreConnectedTo": {
+    "message": "أنت متصل بدولة %{region}"
+  },
+  "YouAreNotConnected": {
+    "message": "أنت لست متصلًا"
+  },
+  "enabled": {
+    "message": "تم التمكين"
+  },
+  "RememberMe": {
+    "message": "تذكرني"
+  },
+  "RememberMeTooltip": {
+    "message": "يحفظ اسم المستخدم بين عمليات إعادة تشغيل المتصفح"
+  },
+  "Auto": {
+    "message": "تلقائي"
+  },
+  "CalculatingLatency": {
+    "message": "جارٍ حساب التأخير"
+  },
+  "NoRegionsFound": {
+    "message": "لا توجد مناطق"
+  },
+  "RefreshRegions": {
+    "message": "تحديث المناطق"
+  },
+  "ViewChangelog": {
+    "message": "عرض سجل التغييرات"
+  },
+  "ChangelogTitle": {
+    "message": "سجل التغييرات"
+  },
+  "UnknownProxyError": {
+    "message": "حدث خطأ غير معروف في الوكيل."
+  },
+  "Connecting": {
+    "message": "جارٍ الاتصال"
+  },
+  "Disconnecting": {
+    "message": "جارٍ قطع الاتصال"
+  },
+  "Connected": {
+    "message": "متصل"
+  },
+  "DefaultDisplay": {
+    "message": "أسلوب العرض الافتراضي"
+  },
+  "QuickConnect": {
+    "message": "اتصال سريع"
+  },
+  "QuickSettings": {
+    "message": "إعدادات سريعة"
+  },
+  "MACE": {
+    "message": "MACE"
+  },
+  "HTTPREFERRER": {
+    "message": "تعطيل محيل HTTP"
+  },
+  "DEBUGLOGGING": {
+    "message": "تتبع الأخطاء في السجل"
+  },
+  "LIGHTTHEME": {
+    "message": "سمة فاتحة"
+  },
+  "FPPROTECTION": {
+    "message": "الحماية من بصمات المتصفح"
+  },
+  "BLOCKCAMERA": {
+    "message": "حظر الوصول للكاميرا"
+  },
+  "BLOCKMICROPHONE": {
+    "message": "حظر الوصول للميكروفون"
+  },
+  "VIEWALL": {
+    "message": "عرض كل الإعدادات..."
+  },
+  "trial": {
+    "message": "تجريبي"
+  },
+  "days_left": {
+    "message": "أيام متبقية"
+  },
+  "Subscription": {
+    "message": "الاشتراك"
+  },
+  "NoSubscriptionData": {
+    "message": "لم يتم العثور على أي معلومات مستخدم"
+  },
+  "AddToBypassRules": {
+    "message": "إضافة لتجاوز القواعد"
+  },
+  "RuleAlreadyIncluded": {
+    "message": "القاعدة مضمنة بالفعل"
+  },
+  "RemoveRule": {
+    "message": "إزالة"
+  },
+  "GatheringRegions": {
+    "message": "جمع المناطق"
+  },
+  "PrivateBrowsingChangeLead": {
+    "message": "لقد غيّرت Firefox مؤخرًا الطريقة التي تتعامل بها الملحقات الإضافية مع اتصالات الوكيل. مطلوب الآن السماح بتشغيل الملحق الإضافي في Windows لتحديث إعدادات الوكيل."
+  },
+  "PrivateBrowsingChangeDirections": {
+    "message": "يرجى زيارة الرابط أدناه لعرض صفحة ملحقاتك الإضافية. ثم اضغط فوق الملحق \"Private Internet Access\" لتعديل إعداداته. من هنا، قم بتغيير إعداد (تشغيل في نافذة خاصة) \"Run in Private Windows\" إلى (سماح) \"Allow\"."
+  },
+  "us": {
+    "message": "الولايات المتحدة"
+  },
+  "gb": {
+    "message": "المملكة المتحدة"
+  },
+  "de": {
+    "message": "ألمانيا"
+  },
+  "au": {
+    "message": "أستراليا"
+  },
+  "canada": {
+    "message": "كندا"
+  },
+  "us_california": {
+    "message": "الولايات المتحدة - كاليفورنيا"
+  },
+  "us2": {
+    "message": "الولايات المتحدة - شرق"
+  },
+  "us1": {
+    "message": "الولايات المتحدة - وسط غرب"
+  },
+  "us_chicago": {
+    "message": "الولايات المتحدة - شيكاغو"
+  },
+  "us_south_west": {
+    "message": "الولايات المتحدة - تكساس"
+  },
+  "us_florida": {
+    "message": "الولايات المتحدة - فلوريدا"
+  },
+  "us_seattle": {
+    "message": "الولايات المتحدة - سياتل"
+  },
+  "us3": {
+    "message": "الولايات المتحدة - غرب"
+  },
+  "us_silicon_valley": {
+    "message": "الولايات المتحدة - وادي السيليكون"
+  },
+  "us_new_york_city": {
+    "message": "الولايات المتحدة - مدينة نيويورك"
+  },
+  "us_atlanta": {
+    "message": "الولايات المتحدة، أتلانتا"
+  },
+  "us_las_vegas": {
+    "message": "الولايات المتحدة، لاس فيغاس"
+  },
+  "us_houston": {
+    "message": "الولايات المتحدة، هيوستن"
+  },
+  "us_wdc": {
+    "message": "الولايات المتحدة، واشنطن العاصمة"
+  },
+  "us_washington_dc": {
+    "message": "الولايات المتحدة، واشنطن العاصمة"
+  },
+  "us_denver": {
+    "message": "الولايات المتحدة، دنفر"
+  },
+  "uk": {
+    "message": "المملكة المتحدة - لندن"
+  },
+  "uk_southampton": {
+    "message": "المملكة المتحدة - ساوثهامبتون"
+  },
+  "uk_manchester": {
+    "message": "مانشستر المملكة المتحدة"
+  },
+  "ca": {
+    "message": "كندا - مونتريال"
+  },
+  "ca_toronto": {
+    "message": "كندا - تورونتو"
+  },
+  "ca_vancouver": {
+    "message": "كندا، فانكوفر"
+  },
+  "aus": {
+    "message": "أستراليا - سيدني"
+  },
+  "aus_melbourne": {
+    "message": "أستراليا - ملبورن"
+  },
+  "aus_perth": {
+    "message": "برث، أستراليا"
+  },
+  "nl": {
+    "message": "هولندا"
+  },
+  "swiss": {
+    "message": "سويسرا"
+  },
+  "sweden": {
+    "message": "السويد"
+  },
+  "france": {
+    "message": "فرنسا"
+  },
+  "germany": {
+    "message": "ألمانيا، فرانكفورت"
+  },
+  "de_berlin": {
+    "message": "ألمانيا، برلين"
+  },
+  "belgium": {
+    "message": "بلجيكا"
+  },
+  "austria": {
+    "message": "النمسا"
+  },
+  "czech": {
+    "message": "جمهورية التشيك"
+  },
+  "ro": {
+    "message": "رومانيا"
+  },
+  "turkey": {
+    "message": "تركيا"
+  },
+  "hk": {
+    "message": "هونغ كونغ"
+  },
+  "sg": {
+    "message": "سنغافورة"
+  },
+  "japan": {
+    "message": "اليابان"
+  },
+  "israel": {
+    "message": "إسرائيل"
+  },
+  "mexico": {
+    "message": "المكسيك"
+  },
+  "brazil": {
+    "message": "البرازيل"
+  },
+  "ireland": {
+    "message": "إيرلندا"
+  },
+  "italy": {
+    "message": "إيطاليا"
+  },
+  "spain": {
+    "message": "إسبانيا"
+  },
+  "nz": {
+    "message": "نيوزيلندا"
+  },
+  "denmark": {
+    "message": "الدانمارك"
+  },
+  "in": {
+    "message": "الهند"
+  },
+  "fi": {
+    "message": "فنلندا"
+  },
+  "no": {
+    "message": "النرويج"
+  },
+  "kr": {
+    "message": "كوريا الجنوبية"
+  },
+  "poland": {
+    "message": "بولندا"
+  },
+  "hungary": {
+    "message": "المجر"
+  },
+  "lu": {
+    "message": "لوكسمبورج"
+  },
+  "ae": {
+    "message": "الإمارات العربية المتحدة"
+  },
+  "za": {
+    "message": "جنوب أفريقيا"
+  }
+}

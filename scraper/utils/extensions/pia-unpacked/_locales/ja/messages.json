@@ -1,0 +1,764 @@
+{
+  "PrivateInternetAccess": {
+    "message": "Private Internet Access"
+  },
+  "BrowserMessage": {
+    "message": "ブラウザ拡張機能"
+  },
+  "FirstSlideInstallThanks": {
+    "message": "インストールありがとうございます:"
+  },
+  "StartSlide": {
+    "message": "さあ、始めましょう"
+  },
+  "Step1": {
+    "message": "ステップ 2中1"
+  },
+  "Step2": {
+    "message": "ステップ 2中2"
+  },
+  "ChooseTheme": {
+    "message": "テーマを選択します"
+  },
+  "EnableSetings": {
+    "message": "追加機能を有効にします"
+  },
+  "PrivateInternetComesWith": {
+    "message": "Private Internet Accessには"
+  },
+  "LightAndDarkDisclaimer": {
+    "message": "ブラウザの外観とフィールに合うライトおよびダークテーマが"
+  },
+  "LookOfBrowserDisclaimer": {
+    "message": "搭載されています:"
+  },
+  "OnBoardingStart": {
+    "message": "始める"
+  },
+  "WhiteTheme": {
+    "message": "ライトテーマ"
+  },
+  "Next": {
+    "message": "次へ"
+  },
+  "Skip": {
+    "message": "スキップ"
+  },
+  "ChangeExtraFeaturesSettings": {
+    "message": "追加機能"
+  },
+  "encounterMessage_2": {
+    "message": "サポート部門までお問い合わせください"
+  },
+  "JustInTimeDisclaimer": {
+    "message": "PIAの使用感を評価してください"
+  },
+  "feedbackMessage_1": {
+    "message": "フィードバックをありがとうございます！評価していただければ幸いです:"
+  },
+  "feedbackMessage_2": {
+    "message": "Chromeウェブストア"
+  },
+  "encountermessage_1": {
+    "message": "フィードバックをありがとうございます！技術的問題に遭遇した場合は"
+  },
+  "UILanguage": {
+    "message": "UI言語"
+  },
+  "UILanguageTooltip": {
+    "message": "テキスト表示時に拡張機能により使用される言語"
+  },
+  "TheExtensionIsStillLoading": {
+    "message": "拡張機能を読み込み中のため、デバッグのログをまだ読み込むことができません。"
+  },
+  "ReloadPage": {
+    "message": "ページを再読込"
+  },
+  "Extension": {
+    "message": "拡張機能"
+  },
+  "ForgotPassword": {
+    "message": "パスワードをお忘れの場合"
+  },
+  "BuyAccount": {
+    "message": "アカウント購入"
+  },
+  "DeleteDebugLog": {
+    "message": "ログを消去"
+  },
+  "SettingNotControllable": {
+    "message": "拡張子はこの設定を制御できません。"
+  },
+  "SettingControlledByOther": {
+    "message": "この設定は別の拡張子により制御されています。"
+  },
+  "AllowExtensionNotifications": {
+    "message": "デスクトップ通知を許可"
+  },
+  "AllowExtensionNotificationsTooltip": {
+    "message": "重要なことが起きたとき、拡張機能にデスクトップ通知作成を許可します。\n有効にしておくことが推奨されています。"
+  },
+  "Tracking": {
+    "message": "トラッキング"
+  },
+  "FingerprintProtection": {
+    "message": "フィンガープリント保護"
+  },
+  "FingerprintProtectionTooltip": {
+    "message": "ご利用のコンピューターについて一般的な情報を提供し、特定のブラウザAPIへのアクセスを防止することにより、ブラウザフィンガープリントから保護します。"
+  },
+  "FingerprintProtectionHeader": {
+    "message": "指紋保護設定"
+  },
+  "FingerprintProtectionDisclaimer": {
+    "message": "この設定は追加のプライバシーおよびセキュリティを提供しますが、ウェブサイトが壊れたりブラウザが予期せぬ動作をする原因になる場合があります。変更の完全なリストはこちらからご覧いただけます:"
+  },
+  "FingerprintProtectionInstructions": {
+    "message": "この機能は推奨されていますが、ユーザーの中には不便性を感じる方もいます。指紋保護を「有効にする」または「無効にする」を選択してください:"
+  },
+  "FingerprintProtectionEnable": {
+    "message": "有効にする"
+  },
+  "FingerprintProtectionDisable": {
+    "message": "無効にする"
+  },
+  "FingerprintProtectionAfterword": {
+    "message": "この設定はエクステンションにログインした後で、「エクステンション設定」パネルからも変更することができます。"
+  },
+  "TrackingProtection": {
+    "message": "トラッキング保護"
+  },
+  "TrackingProtectionTooltip": {
+    "message": "サイトをまたがってユーザーを追跡することが知られているドメインに対して行われるリクエストをブロックします。"
+  },
+  "BlockHyperlinkAuditing": {
+    "message": "ハイパーリンク監査を無効にする"
+  },
+  "BlockHyperlinkAuditingTooltip": {
+    "message": "最近追加されたHTML機能であるハイパーリンク監査を無効にします。ハイパーリンク監査は、ユーザーがリンクをクリックすると、トラッカーとアナリティクスサービスに通知するようにデザインされた機能です。"
+  },
+  "ViewDebugLog": {
+    "message": "デバッグログを表示"
+  },
+  "DebugMode": {
+    "message": "デバッグモード"
+  },
+  "DebugModeTooltip": {
+    "message": "デバッグログにメッセージを入力します。「Ctrl」キーを押しながら「d」キーを押してデバッグログを表示します。"
+  },
+  "DarkTheme": {
+    "message": "ダークテーマ"
+  },
+  "DarkThemeTooltip": {
+    "message": "低照度の環境でエクステンションが使用できるのはダークテーマです。低照度の環境ではダークテーマを有効にしてください"
+  },
+  "IpReal": {
+    "message": "IP"
+  },
+  "IpProxy": {
+    "message": "VPN IP"
+  },
+  "DebugLogIsEmpty": {
+    "message": "デバッグログが空です。"
+  },
+  "PersistentSettingsDisclaimer": {
+    "message": "ひとつの地域に接続されているか否かに関わらず、有効にされた設定は常に有効に保たれるようになりました。例外として、PIA MACE™はひとつの地域に接続されているときのみ有効です。"
+  },
+  "PersistentIncognitoDisclaimer": {
+    "message": "Chromeの拡張機能設定から「//extensions」オプションを選択して、シークレットモードで拡張機能を有効にします。"
+  },
+  "UsernamePlaceholder": {
+    "message": "ユーザー名"
+  },
+  "PasswordPlaceholder": {
+    "message": "パスワード"
+  },
+  "TryAgain": {
+    "message": "もう一度お試しください"
+  },
+  "LoginText": {
+    "message": "ログイン"
+  },
+  "SelectRegionText": {
+    "message": "地域を選択"
+  },
+  "WrongUsernameAndPassword": {
+    "message": "ユーザー名および/またはパスワードが正しくありません。"
+  },
+  "OfflineError": {
+    "message": "ログインリクエストに失敗しました。オフラインになっていることが原因と考えられます。インターネットに接続していることを確認してください。"
+  },
+  "TimeoutError": {
+    "message": "%{seconds}秒後にログインリクエストが時間切れとなりました。もう一度お試しください。"
+  },
+  "AbortError": {
+    "message": "ログインリクエストがブラウザによって中断されました。もう一度お試しください。"
+  },
+  "UnexpectedServerResponse": {
+    "message": "ログインリクエストに対してサーバーから予期せぬ応答がありました（%{statusLine}）"
+  },
+  "TooManyRequestsError": {
+    "message": "ログイン最大試行回数を超えました。後でもう一度お試しください。"
+  },
+  "UnknownError": {
+    "message": "原因不明なエラーが発生しました。"
+  },
+  "CopyToClipboard": {
+    "message": "デバッグログをコピー"
+  },
+  "CopiedToClipboard": {
+    "message": "デバッグログがコピーされました"
+  },
+  "JoinURL": {
+    "message": "https://jpn.privateinternetaccess.com/pages/buy-vpn/"
+  },
+  "PopularWebsites": {
+    "message": "人気のウェブサイト"
+  },
+  "OtherWebsites": {
+    "message": "その他のウェブサイト"
+  },
+  "ImportExportHeader": {
+    "message": "ルールのインポート/エクスポート"
+  },
+  "ImportLabel": {
+    "message": "インポート"
+  },
+  "ExportLabel": {
+    "message": "エクスポート"
+  },
+  "BypassWarningLead": {
+    "message": "バイパスリストに記載されているウェブサイトに対して行われたリクエストは"
+  },
+  "BypassWarningBold": {
+    "message": "直接の接続を使用します。これらのリクエストはPrivate Internet Access™によって保護されていません。"
+  },
+  "AccountSettingsText": {
+    "message": "アカウント設定"
+  },
+  "SupportText": {
+    "message": "ヘルプ＆サポート"
+  },
+  "OfflineText": {
+    "message": "オフライン"
+  },
+  "Security": {
+    "message": "安全性"
+  },
+  "MaceProtection": {
+    "message": "PIA MACE™"
+  },
+  "WhatIsMace": {
+    "message": "MACE™とは？"
+  },
+  "MaceTooltip": {
+    "message": "PIA MACE™ は悪意のあるコンテンツ、トラッカー、および広告をブロックすることにより、あなたのプライバシーとセキュリティーを保護します。ひとつの地域に接続されているときだけ有効です"
+  },
+  "WebRTCLeakProtection": {
+    "message": "WebRTCとIP検出をブロックしましょう"
+  },
+  "WebRTCTooltip": {
+    "message": "WebRTCが使用されているとき、%{browser}がお客様の公開および非公開IPアドレスを暴露するのをブロックします。無効にすることは奨励されていません。"
+  },
+  "BlockAdobeFlash": {
+    "message": "Adobe Flashをブロック"
+  },
+  "AdobeFlashTooltip": {
+    "message": "%{browser}がAdobe Flashを実行するのをブロックします。Adobe Flashは公開IPアドレスを暴露するのに使用される場合があります。無効にすることは奨励されていません。"
+  },
+  "HttpsUpgrade": {
+    "message": "HTTPSを使用してウェブサイトを閲覧"
+  },
+  "HttpsUpgradeTooltip": {
+    "message": "ブラウザーから離れる前に、暗号化されていない接続（HTTP）を使用して、サポートされているウェブサイトまたはリンクをより安全なHTTPS接続に自動的に変換します。HTTPS Everywhere および EFF のおかげで可能となっています。"
+  },
+  "AlwaysActive": {
+    "message": "常にアクティブな設定"
+  },
+  "AlwaysActiveTooltip": {
+    "message": "プロキシが接続されているかどうかに関係なく、設定を常にアクティブのままにします"
+  },
+  "BlockUTM": {
+    "message": "UTMパラメタを除去"
+  },
+  "BlockUTMTooltip": {
+    "message": "ユーザーがクリックするURLからUrchinトラッキングモード（UTM）パラメタを取り除きます。UTMパラメタはユーザーのウェブサイトへの訪問に関する情報追跡のために使用されます。"
+  },
+  "BlockFBCLID": {
+    "message": "FBCLIDパラメタを除去"
+  },
+  "BlockFBCLIDTooltip": {
+    "message": "Facebookから外部にアクセスするリンクからFBCLIDパラメタを取り除きます。FBCLIDパラメタはユーザーのウェブサイトへの訪問に関する情報追跡のために使用されます。"
+  },
+  "BypassInstructionsBold": {
+    "message": "* プレフィックスは必須です"
+  },
+  "BypassInstructions": {
+    "message": "（ウェブサイトのすべてのサブドメインをバイパスするため）"
+  },
+  "ProxyBypassList": {
+    "message": "バイパスリスト"
+  },
+  "SmartLocation": {
+    "message": "スマート位置情報"
+  },
+  "WebAlreadyAdded": {
+    "message": "ウェブサイトは既に追加されています"
+  },
+  "AddSmartLocation": {
+    "message": "スマート位置情報を追加"
+  },
+  "WelcomeToNewVersion": {
+    "message": "%{appVersion}へようこそ"
+  },
+  "ExtensionUpdated": {
+    "message": "拡張機能がアップデートされました"
+  },
+  "OneRuleAdded": {
+    "message": "1個のルールが追加されました"
+  },
+  "NoRulesAdded": {
+    "message": "追加されたルールはありません"
+  },
+  "NoLocation": {
+    "message": "追加された位置情報はありません"
+  },
+  "OneLocation": {
+    "message": "位置情報が追加されました"
+  },
+  "MultipleLocations": {
+    "message": "位置情報"
+  },
+  "MultipleRulesAdded": {
+    "message": "%{count}個のルールが追加されました"
+  },
+  "DebugLog": {
+    "message": "デバッグログ"
+  },
+  "BlockNetworkPrediction": {
+    "message": "ネットワーク予測を無効にする"
+  },
+  "BlockNetworkPredictionTooltip": {
+    "message": "%{browser}のネットワーク動作予測サービスの利用を無効にします。これは、ユーザーが訪問するページにあるコンテンツからDNSクエリを事前に解決し、ウェブページを事前に読み出すサービスです。"
+  },
+  "BlockSafeBrowsing": {
+    "message": "セーフブラウジングを無効にする"
+  },
+  "ReadMore": {
+    "message": "詳しく読む"
+  },
+  "BlockSafeBrowsingTooltip": {
+    "message": "ログの保存でプライバシー上の懸念を生むネットワークサービスに%{browser}が直接接続するのを無効にします。PIA Mace™はこのサービスの無効化にあたってのリスクを緩和します。"
+  },
+  "BlockAutofill": {
+    "message": "自動入力を無効化"
+  },
+  "BlockAutofillTooltip": {
+    "message": "%{browser}の自動フォーム入力を無効にします。自動フォーム入力により、隠れたフォームフィールド経由で個人情報が漏洩する場合があります。"
+  },
+  "BlockAutofillCreditCard": {
+    "message": "クレジットカードの自動入力を無効化"
+  },
+  "BlockAutofillCreditCardTooltip": {
+    "message": "%{browser}のクレジットカード情報の自動入力を無効にします。自動入力により、隠れたフォームフィールド経由で個人情報が漏洩する場合があります。"
+  },
+  "BlockAutofillAddress": {
+    "message": "住所の自動入力を無効化"
+  },
+  "BlockAutofillAddressTooltip": {
+    "message": "%{browser}の住所やその他のフォームデータの自動入力を無効にします。自動入力により、隠れたフォームフィールド経由で個人情報が漏洩する場合があります。"
+  },
+  "BlockLocationAccess": {
+    "message": "位置情報アクセスをブロック"
+  },
+  "BlockLocationAccessTooltip": {
+    "message": "ウェブサイトがあなたの物理的な位置情報にアクセスするのをブロックします。"
+  },
+  "BlockHTTPReferer": {
+    "message": "ウェブサイトリファラを無効にする"
+  },
+  "BlockHTTPRefererTooltip": {
+    "message": "リンクをたどる際に、%{browser}が現在のウェブページのアドレスを別のウェブページへ送信する機能を無効にします。"
+  },
+  "BlockThirdpartycookies": {
+    "message": "サードパーティークッキーを無効にする"
+  },
+  "BlockThirdpartycookiesTooltip": {
+    "message": "%{browser}がサードパーティーのウェブサイトからのクッキーを許可するのを無効にします。サードパーティークッキーは、ユーザーのサードパーティーウェブサイトやウェブサービスへの訪問を追跡するために使用されます。"
+  },
+  "BlockCameraAccess": {
+    "message": "カメラへのアクセスをブロック"
+  },
+  "BlockCameraAccessTooltip": {
+    "message": "ウェブサイトがコンピューターのカメラにアクセスするのをブロックします。"
+  },
+  "BlockMicrophoneAccess": {
+    "message": "マイクへのアクセスをブロック"
+  },
+  "BlockMicrophoneAccessTooltip": {
+    "message": "ウェブサイトがコンピューターのマイクにアクセスするのをブロックします。"
+  },
+  "Privacy": {
+    "message": "プライバシー"
+  },
+  "ImportFileMessage": {
+    "message": "エクスポート済みの「バイパスルール」ファイル（例:bypass-rules.json）を選択してください"
+  },
+  "InvalidImportFileStructure": {
+    "message": "ファイルを読み取れません。有効なファイルを選択してください"
+  },
+  "CurrentRegionText": {
+    "message": "現在の地域"
+  },
+  "NoRegionSelected": {
+    "message": "地域が選択されていません"
+  },
+  "ChooseAutomatically": {
+    "message": "自動的に選択"
+  },
+  "ChangeExtensionSettings": {
+    "message": "拡張機能設定"
+  },
+  "CannotUsePIAMessage": {
+    "message": "別の拡張機能がブラウザーのプロキシ設定をコントロールしているため、Private Internet Accessがご利用いただけなくなっています。"
+  },
+  "ManageExtensions": {
+    "message": "拡張機能を管理"
+  },
+  "RegionName": {
+    "message": "名前"
+  },
+  "RegionLatency": {
+    "message": "待ち時間"
+  },
+  "RegionSearch": {
+    "message": "検索…"
+  },
+  "CloseText": {
+    "message": "閉じる"
+  },
+  "UpgradeBrowserMessage": {
+    "message": "%{browser}のバージョンが古いため、プライベートインターネットアクセスが使用できません。%{browser}を最新バージョンにアップデートしてください。"
+  },
+  "LogoutText": {
+    "message": "ログアウト"
+  },
+  "AuthFailPageTitle": {
+    "message": "認証エラー | Private Internet Access"
+  },
+  "AuthFailTitle": {
+    "message": "認証エラー"
+  },
+  "AuthFailMessage": {
+    "message": "最近Private Internet Accessのウェブサイトでパスワードを変更した場合は、拡張機能を使用して再認証すると、このエラーが修正される場合があります。<br/> <br/>ヘルプとサポートについては、<a href=\"https://privateinternetaccess.com/helpdesk\">サポートチーム</a>までお問い合わせください。"
+  },
+  "AuthFailMessageSupportLead": {
+    "message": "ヘルプとサポートが必要な方は"
+  },
+  "AuthFailMessageSupportEnd": {
+    "message": "サポートチームまでお問い合わせください"
+  },
+  "ConnectionFailPageTitle": {
+    "message": "接続エラー | Private Internet Access"
+  },
+  "ConnectionFailTitle": {
+    "message": "接続エラー"
+  },
+  "ConnectionFailMessage": {
+    "message": "インターネット接続が失われたか、接続が一時的に中断されたか、お客様が接続しようとしているPrivate Internet Accessサーバーに接続問題が発生している可能性があります。"
+  },
+  "NoNetworkConnection": {
+    "message": "ネットワーク接続がありません"
+  },
+  "YouAreConnectedTo": {
+    "message": "お客様は%{region}に接続されています"
+  },
+  "YouAreNotConnected": {
+    "message": "接続されていません"
+  },
+  "enabled": {
+    "message": "有効にされました"
+  },
+  "RememberMe": {
+    "message": "記憶させる"
+  },
+  "RememberMeTooltip": {
+    "message": "ブラウザのリスタート間でユーザー名を保存します"
+  },
+  "Auto": {
+    "message": "自動"
+  },
+  "CalculatingLatency": {
+    "message": "待ち時間を計算中"
+  },
+  "NoRegionsFound": {
+    "message": "地域が見つかりませんでした"
+  },
+  "RefreshRegions": {
+    "message": "地域を更新する"
+  },
+  "ViewChangelog": {
+    "message": "チェンジログを表示"
+  },
+  "ChangelogTitle": {
+    "message": "チェンジログ"
+  },
+  "UnknownProxyError": {
+    "message": "不明のプロキシエラーが発生しました"
+  },
+  "Connecting": {
+    "message": "接続中"
+  },
+  "Disconnecting": {
+    "message": "切断中"
+  },
+  "Connected": {
+    "message": "接続済み"
+  },
+  "DefaultDisplay": {
+    "message": "デフォルト表示"
+  },
+  "QuickConnect": {
+    "message": "クイック接続"
+  },
+  "QuickSettings": {
+    "message": "クイック設定"
+  },
+  "MACE": {
+    "message": "MACE"
+  },
+  "HTTPREFERRER": {
+    "message": "HTTPリファラを無効にする"
+  },
+  "DEBUGLOGGING": {
+    "message": "デバッグログ"
+  },
+  "LIGHTTHEME": {
+    "message": "ライトテーマ"
+  },
+  "FPPROTECTION": {
+    "message": "フィンガープリント保護"
+  },
+  "BLOCKCAMERA": {
+    "message": "カメラへのアクセスをブロック"
+  },
+  "BLOCKMICROPHONE": {
+    "message": "マイクへのアクセスをブロック"
+  },
+  "VIEWALL": {
+    "message": "すべての設定を表示…"
+  },
+  "trial": {
+    "message": "トライアル"
+  },
+  "days_left": {
+    "message": "日後に終了"
+  },
+  "Subscription": {
+    "message": "サブスクリプション"
+  },
+  "NoSubscriptionData": {
+    "message": "ユーザー情報は見つかりませんでした"
+  },
+  "AddToBypassRules": {
+    "message": "バイパスルールに追加"
+  },
+  "RuleAlreadyIncluded": {
+    "message": "ルールは既に含まれています"
+  },
+  "RemoveRule": {
+    "message": "削除"
+  },
+  "GatheringRegions": {
+    "message": "地域を収集しています"
+  },
+  "PrivateBrowsingChangeLead": {
+    "message": "Firefoxは最近、アドオンがプロキシ接続を処理する方法を変更しました。プロキシ設定を更新するには、アドオンをプライベートウィンドウで実行できるようにする必要があります。"
+  },
+  "PrivateBrowsingChangeDirections": {
+    "message": "下のURLを訪問し、アドオンページを表示してください。次に「Private Internet Access」アドオンをクリックして設定を変更します。そこから、「プライベートウィンドウで実行」設定を「許可」に変更します。"
+  },
+  "us": {
+    "message": "アメリカ"
+  },
+  "gb": {
+    "message": "イギリス"
+  },
+  "de": {
+    "message": "ドイツ"
+  },
+  "au": {
+    "message": "オーストラリア"
+  },
+  "canada": {
+    "message": "カナダ"
+  },
+  "us_california": {
+    "message": "米国 カリフォルニア"
+  },
+  "us2": {
+    "message": "米国東部"
+  },
+  "us1": {
+    "message": "米国中西部"
+  },
+  "us_chicago": {
+    "message": "米国 シカゴ"
+  },
+  "us_south_west": {
+    "message": "米国 テキサス"
+  },
+  "us_florida": {
+    "message": "米国 フロリダ"
+  },
+  "us_seattle": {
+    "message": "米国 シアトル"
+  },
+  "us3": {
+    "message": "米国西部"
+  },
+  "us_silicon_valley": {
+    "message": "米国 シリコンバレー"
+  },
+  "us_new_york_city": {
+    "message": "米国 ニューヨーク市"
+  },
+  "us_atlanta": {
+    "message": "米国 アトランタ"
+  },
+  "us_las_vegas": {
+    "message": "米国 ラスベガス"
+  },
+  "us_houston": {
+    "message": "米国 ヒューストン"
+  },
+  "us_wdc": {
+    "message": "米国 ワシントンDC"
+  },
+  "us_washington_dc": {
+    "message": "米国ワシントンDC"
+  },
+  "us_denver": {
+    "message": "米国デンバー"
+  },
+  "uk": {
+    "message": "英国 ロンドン"
+  },
+  "uk_southampton": {
+    "message": "英国 サウザンプトン"
+  },
+  "uk_manchester": {
+    "message": "イギリス マンチェスター"
+  },
+  "ca": {
+    "message": "カナダ モントリオール"
+  },
+  "ca_toronto": {
+    "message": "カナダ トロント"
+  },
+  "ca_vancouver": {
+    "message": "カナダ バンクーバー"
+  },
+  "aus": {
+    "message": "オーストラリア シドニー"
+  },
+  "aus_melbourne": {
+    "message": "オーストラリア メルボルン"
+  },
+  "aus_perth": {
+    "message": " オーストラリア、パース"
+  },
+  "nl": {
+    "message": "オランダ"
+  },
+  "swiss": {
+    "message": "スイス"
+  },
+  "sweden": {
+    "message": "スウェーデン"
+  },
+  "france": {
+    "message": "フランス"
+  },
+  "germany": {
+    "message": "ドイツ フランクフルト"
+  },
+  "de_berlin": {
+    "message": "ドイツ ベルリン"
+  },
+  "belgium": {
+    "message": "ベルギー"
+  },
+  "austria": {
+    "message": "オーストラリア"
+  },
+  "czech": {
+    "message": "チェコ共和国"
+  },
+  "ro": {
+    "message": "ルーマニア"
+  },
+  "turkey": {
+    "message": "トルコ"
+  },
+  "hk": {
+    "message": "香港"
+  },
+  "sg": {
+    "message": "シンガポール"
+  },
+  "japan": {
+    "message": "日本"
+  },
+  "israel": {
+    "message": "イスラエル"
+  },
+  "mexico": {
+    "message": "メキシコ"
+  },
+  "brazil": {
+    "message": "ブラジル"
+  },
+  "ireland": {
+    "message": "アイルランド"
+  },
+  "italy": {
+    "message": "イタリア"
+  },
+  "spain": {
+    "message": "スペイン"
+  },
+  "nz": {
+    "message": "ニュージーランド"
+  },
+  "denmark": {
+    "message": "デンマーク"
+  },
+  "in": {
+    "message": "インド"
+  },
+  "fi": {
+    "message": "フィンランド"
+  },
+  "no": {
+    "message": "ノルウェー"
+  },
+  "kr": {
+    "message": "韓国"
+  },
+  "poland": {
+    "message": "ポーランド"
+  },
+  "hungary": {
+    "message": "ハンガリー"
+  },
+  "lu": {
+    "message": "ルクセンブルク"
+  },
+  "ae": {
+    "message": "アラブ首長国連邦"
+  },
+  "za": {
+    "message": "南アフリカ"
+  }
+}

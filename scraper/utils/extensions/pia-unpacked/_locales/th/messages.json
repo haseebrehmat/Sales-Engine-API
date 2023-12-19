@@ -1,0 +1,764 @@
+{
+  "PrivateInternetAccess": {
+    "message": "Private Internet Access"
+  },
+  "BrowserMessage": {
+    "message": "ส่วนขยายเบราว์เซอร์"
+  },
+  "FirstSlideInstallThanks": {
+    "message": "ขอบคุณที่ติดตั้ง"
+  },
+  "StartSlide": {
+    "message": "มาเริ่มกันเลย"
+  },
+  "Step1": {
+    "message": "ขั้นตอนที่ 1 จาก 2"
+  },
+  "Step2": {
+    "message": "ขั้นตอนที่ 2 จาก 2"
+  },
+  "ChooseTheme": {
+    "message": "เลือกธีมของคุณ"
+  },
+  "EnableSetings": {
+    "message": "เปิดใช้งานฟีเจอร์เพิ่มเติม"
+  },
+  "PrivateInternetComesWith": {
+    "message": "Private Internet Access มาพร้อมกับ "
+  },
+  "LightAndDarkDisclaimer": {
+    "message": "ธีมสีอ่อนและสีเข้มเพื่อให้เข้ากับรูปลักษณ์"
+  },
+  "LookOfBrowserDisclaimer": {
+    "message": "และการใช้งานของเบราว์เซอร์ของคุณ"
+  },
+  "OnBoardingStart": {
+    "message": "เริ่มต้น"
+  },
+  "WhiteTheme": {
+    "message": "ธีมสีอ่อน"
+  },
+  "Next": {
+    "message": "ถัดไป"
+  },
+  "Skip": {
+    "message": "ข้าม"
+  },
+  "ChangeExtraFeaturesSettings": {
+    "message": "ฟีเจอร์เพิ่มเติม"
+  },
+  "encounterMessage_2": {
+    "message": "ติดต่อฝ่ายสนับสนุนของเรา "
+  },
+  "JustInTimeDisclaimer": {
+    "message": "ให้คะแนนประสบการณ์ของคุณกับ PIA"
+  },
+  "feedbackMessage_1": {
+    "message": "ขอบคุณสำหรับความคิดเห็นของคุณ! เราจะขอบคุณมากถ้าคุณสละเวลาให้คะแนนเราบน "
+  },
+  "feedbackMessage_2": {
+    "message": "Chrome Web Store"
+  },
+  "encountermessage_1": {
+    "message": "ขอบคุณสำหรับความคิดเห็นของคุณ! หากคุณพบปัญหาทางเทคนิคใดๆ โปรด "
+  },
+  "UILanguage": {
+    "message": "ภาษา UI"
+  },
+  "UILanguageTooltip": {
+    "message": "ภาษาที่ใช้โดยส่วนเสริมขณะแสดงข้อความ"
+  },
+  "TheExtensionIsStillLoading": {
+    "message": "ยังกำลังดาวน์โหลดส่วนเสริมอยู่และไม่สามารถโหลดบันทึกการแก้จุดบกพร่อง"
+  },
+  "ReloadPage": {
+    "message": "รีโหลดเพจ"
+  },
+  "Extension": {
+    "message": "ส่วนเสริม"
+  },
+  "ForgotPassword": {
+    "message": "ลืมรหัสผ่าน"
+  },
+  "BuyAccount": {
+    "message": "ซื้อบัญชี"
+  },
+  "DeleteDebugLog": {
+    "message": "ล้างบันทึก"
+  },
+  "SettingNotControllable": {
+    "message": "ส่วนเสริมไม่สามารถควบคุมการตั้งค่านี้"
+  },
+  "SettingControlledByOther": {
+    "message": "การตั้งค่านี้ถูกควบคุมโดยส่วนเสริมอื่น"
+  },
+  "AllowExtensionNotifications": {
+    "message": "อนุญาตการแจ้งเตือนทางเดสก์ท็อป"
+  },
+  "AllowExtensionNotificationsTooltip": {
+    "message": "อนุญาตส่วนเสริมให้สร้างการแจ้งเตือนทางเดสก์ท็อปเมื่อมีสิ่งสำคัญเกิดขึ้น ไม่แนะนำให้ปิดการใช้งาน"
+  },
+  "Tracking": {
+    "message": "การติดตาม"
+  },
+  "FingerprintProtection": {
+    "message": "ป้องกันการเก็บร่องรอย"
+  },
+  "FingerprintProtectionTooltip": {
+    "message": "ป้องกันการเก็บร่องรอยการใช้งานเบราว์เซอร์ด้วยการให้ข้อมูลทั่วไปเกี่ยวกับคอมพิวเตอร์ของคุณ และป้องกันการเข้าถึง API บางเบราว์เซอร์"
+  },
+  "FingerprintProtectionHeader": {
+    "message": "การตั้งค่าการป้องกันลายนิ้วมือ"
+  },
+  "FingerprintProtectionDisclaimer": {
+    "message": "การตั้งค่านี้สามารถช่วยเพิ่มความเป็นส่วนตัวและความปลอดภัยเพิ่มเติมได้แต่อาจทำให้เว็บไซต์บางเว็บไม่ทำงานและทำให้เบราว์เซอร์ทำงานผิดปกติ รายการแก้ไขทั้งหมดสามารถพบได้ที่นี่:"
+  },
+  "FingerprintProtectionInstructions": {
+    "message": "คุณสมบัตินี้เป็นที่แนะนำแต่ผู้ใช้บางคนพบว่ามันไม่สะดวก กรุณาเลือกเปิดใช้งานหรือปิดใช้งานการป้องกันลายนิ้วมือ"
+  },
+  "FingerprintProtectionEnable": {
+    "message": "เปิดใช้งาน"
+  },
+  "FingerprintProtectionDisable": {
+    "message": "ปิดใช้งาน"
+  },
+  "FingerprintProtectionAfterword": {
+    "message": "การตั้งค่านี้สามารถเปลี่ยนได้จากช่อง \"การตั้งค่าส่วนขยาย\" หลังจากเข้าสู่ระบบไปที่ส่วนขยาย"
+  },
+  "TrackingProtection": {
+    "message": "ป้องกันการติดตาม"
+  },
+  "TrackingProtectionTooltip": {
+    "message": "บล็อกคำขอไปยังโดเมน ซึ่งเป็นคำขอที่เกี่ยวข้องกับการติดตามผู้ใช้ข้ามเว็บไซต์"
+  },
+  "BlockHyperlinkAuditing": {
+    "message": "ปิดใช้งานการตรวจสอบไฮเปอร์ลิงก์"
+  },
+  "BlockHyperlinkAuditingTooltip": {
+    "message": "ปิดใช้งานการตรวจสอบไฮเปอร์ลิงก์ ซึ่งเป็นคุณสมบัติ HTML ล่าสุดที่ออกแบบมาสำหรับแจ้งเตือนผู้สะกดรอยตามและบริการวิเคราะห์เมื่อคุณคลิกลิงก์"
+  },
+  "ViewDebugLog": {
+    "message": "ดูบันทึกการแก้จุดบกพร่อง"
+  },
+  "DebugMode": {
+    "message": "โหมดแก้จุดบกพร่อง"
+  },
+  "DebugModeTooltip": {
+    "message": "เขียนข้อความไปยังบันทึกจุดบกพร่อง กดปุ่ม ctrl แล้วตามด้วยปุ่ม d เพื่อแสดงบันทึกจุดบกพร่อง"
+  },
+  "DarkTheme": {
+    "message": "ธีมสีเข้ม"
+  },
+  "DarkThemeTooltip": {
+    "message": "เปิดใช้งานธีมสีเข้มขึ้นสำหรับส่วนขยายเพื่อใช้ในสถานการณ์ที่แสงน้อย"
+  },
+  "IpReal": {
+    "message": "IP"
+  },
+  "IpProxy": {
+    "message": "VPN IP"
+  },
+  "DebugLogIsEmpty": {
+    "message": "บันทึกการแก้จุดบกพร่องว่างเปล่า"
+  },
+  "PersistentSettingsDisclaimer": {
+    "message": "ขณะนี้การตั้งค่าที่เปิดใช้งานจะเปิดใช้งานเสมอไม่ว่าคุณจะเชื่อมต่อกับภูมิภาคหรือไม่ด้วย ยกเว้น PIA MACE™ ซึ่งจะใช้งานได้เฉพาะเมื่อคุณเชื่อมต่อกับภูมิภาคเท่านั้น"
+  },
+  "PersistentIncognitoDisclaimer": {
+    "message": "เปิดใช้งานส่วนขยายในโหมดไม่ระบุตัวตนโดยเลือกตัวเลือกนี้จากการตั้งค่าส่วนขยายใน chrome: // extensions"
+  },
+  "UsernamePlaceholder": {
+    "message": "ชื่อผู้ใช้"
+  },
+  "PasswordPlaceholder": {
+    "message": "รหัสผ่าน"
+  },
+  "TryAgain": {
+    "message": "ลองใหม่อีกครั้ง"
+  },
+  "LoginText": {
+    "message": "เข้าสู่ระบบ"
+  },
+  "SelectRegionText": {
+    "message": "เลือกภูมิภาค"
+  },
+  "WrongUsernameAndPassword": {
+    "message": "ชื่อผู้ใช้และ/หรือรหัสผ่านไม่ถูกต้อง"
+  },
+  "OfflineError": {
+    "message": "คำขอเข้าสู่ระบบล้มเหลวเนื่องจากคุณออฟไลน์อยู่ โปรดตรวจสอบว่าคุณเชื่อมต่อกับอินเทอร์เน็ตหรือไม่"
+  },
+  "TimeoutError": {
+    "message": "คำขอเข้าสู่ระบบสิ้นสุดลงภายใน %{seconds} วินาที โปรดลองใหม่อีกครั้ง"
+  },
+  "AbortError": {
+    "message": "คำขอเข้าสู่ระบบถูกยกเลิกโดยเบราวเซอร์ โปรดลองใหม่อีกครั้ง"
+  },
+  "UnexpectedServerResponse": {
+    "message": "คำขอเข้าสู่ระบบตีกลับการตอบสนองที่ไม่คาดฝันจากเซิร์ฟเวอร์ (%{statusLine})"
+  },
+  "TooManyRequestsError": {
+    "message": "ล้มเหลวในการเข้าสู่ระบบหลายครั้ง โปรดลองใหม่ภายหลัง"
+  },
+  "UnknownError": {
+    "message": "เกิดข้อผิดพลาดที่ไม่รู้จัก"
+  },
+  "CopyToClipboard": {
+    "message": "คัดลอกบันทึกจุดบกพร่อง"
+  },
+  "CopiedToClipboard": {
+    "message": "คัดลอกบันทึกจุดบกพร่องแล้ว"
+  },
+  "JoinURL": {
+    "message": "https://tha.privateinternetaccess.com/pages/buy-vpn/"
+  },
+  "PopularWebsites": {
+    "message": "เว็บไซต์ยอดนิยม"
+  },
+  "OtherWebsites": {
+    "message": "เว็บไซต์อื่นๆ"
+  },
+  "ImportExportHeader": {
+    "message": "นำเข้า/ส่งออกกฎ"
+  },
+  "ImportLabel": {
+    "message": "นำเข้า"
+  },
+  "ExportLabel": {
+    "message": "ส่งออก"
+  },
+  "BypassWarningLead": {
+    "message": "คำขอถูกส่งไปยังเว็บไซต์ที่อยู่ในรายการบายพาสใช้"
+  },
+  "BypassWarningBold": {
+    "message": "การเชื่อมต่อโดยตรงและไม่ได้รับการปกป้องโดย Private Internet Access™"
+  },
+  "AccountSettingsText": {
+    "message": "ตั้งค่าบัญชี"
+  },
+  "SupportText": {
+    "message": "ช่วยเหลือและสนับสนุน"
+  },
+  "OfflineText": {
+    "message": "ออฟไลน์"
+  },
+  "Security": {
+    "message": "ความปลอดภัย"
+  },
+  "MaceProtection": {
+    "message": "PIA MACE™"
+  },
+  "WhatIsMace": {
+    "message": "MACE™ คืออะไร?"
+  },
+  "MaceTooltip": {
+    "message": "PIA MACE™ ช่วยปกป้องความเป็นส่วนตัวและความปลอดภัยของคุณโดยบล็อกเนื้อหาอันตราย ตัวติดตาม และโฆษณาต่างๆ สามารถใช้งานได้เฉพาะเมื่อเชื่อมต่อกับภูมิภาคเท่านั้น"
+  },
+  "WebRTCLeakProtection": {
+    "message": "บล็อกการป้องกัน IP WebRTC"
+  },
+  "WebRTCTooltip": {
+    "message": "บล็อก %{browser} ไม่ให้เปิดเผยที่อยู่ IP ส่วนตัวและสาธารณะของคุณขณะใช้งาน WebRTC อยู่ ไม่แนะนำให้ปิดการใช้งาน"
+  },
+  "BlockAdobeFlash": {
+    "message": "บล็อก Adobe Flash"
+  },
+  "AdobeFlashTooltip": {
+    "message": "บล็อก %{browser} ไม่ให้รับโปรแกรม Adobe Flash เนื่องจาก Adobe Flash สามารถเปิดเผยที่อยู่ IP สาธารณะของคุณ ไม่แนะนำให้ปิดการใช้งาน"
+  },
+  "HttpsUpgrade": {
+    "message": "เรียกดูเว็บไซต์โดยใช้ HTTPS"
+  },
+  "HttpsUpgradeTooltip": {
+    "message": "แปลงเว็บไซต์หรือลิงก์ที่สนับสนุนโดยอัตโนมัติโดยใช้การเชื่อมต่อที่ไม่ได้เข้ารหัส (HTTP) เป็นการเชื่อมต่อ HTTPS ที่ปลอดภัยยิ่งขึ้นก่อนออกจากเบราว์เซอร์ของคุณ สามารถทำได้เนื่องด้วย HTTPS ที่มีทุกที่และ EFF"
+  },
+  "AlwaysActive": {
+    "message": "การตั้งค่าที่ใช้งานอยู่เสมอ"
+  },
+  "AlwaysActiveTooltip": {
+    "message": "ทำให้การตั้งค่ายังคงทำงานอยู่เสมอไม่ว่าจะเชื่อมต่อกับพร็อกซีหรือไม่ก็ตาม"
+  },
+  "BlockUTM": {
+    "message": "ลบพารามิเตอร์ UTM"
+  },
+  "BlockUTMTooltip": {
+    "message": "ลบพารามิเตอร์มอดูลติดตามของ Urchin (UTM) จาก URL ที่คุณคลิก พารามิเตอร์ UTM ใช้ติดตามข้อมูลการเข้าเว็บไซต์ของคุณ"
+  },
+  "BlockFBCLID": {
+    "message": "ลบพารามิเตอร์ FBCLID"
+  },
+  "BlockFBCLIDTooltip": {
+    "message": "ลบพารามิเตอร์ Facebook FBCLID ออกจากลิงก์ขาออกใน Facebook พารามิเตอร์ FBCLID ใช้สำหรับติดตามข้อมูลเกี่ยวกับการเยี่ยมชมเว็บไซต์ของคุณ"
+  },
+  "BypassInstructionsBold": {
+    "message": "* ต้องมีคำนำหน้า"
+  },
+  "BypassInstructions": {
+    "message": "เพื่อบายพาสโดเมนย่อยทั้งหมดสำหรับเว็บไซต์"
+  },
+  "ProxyBypassList": {
+    "message": "รายชื่อปล่อยผ่าน"
+  },
+  "SmartLocation": {
+    "message": "ตำแหน่งอัจฉริยะ"
+  },
+  "WebAlreadyAdded": {
+    "message": "เพิ่มเว็บไซต์แล้ว"
+  },
+  "AddSmartLocation": {
+    "message": "เพิ่มตำแหน่งอัจฉริยะ"
+  },
+  "WelcomeToNewVersion": {
+    "message": "ยินดีต้อนรับสู่ %{appVersion}"
+  },
+  "ExtensionUpdated": {
+    "message": "อัปเดตส่วนเสริมแล้ว"
+  },
+  "OneRuleAdded": {
+    "message": "เพิ่มกฎ 1 ข้อแล้ว"
+  },
+  "NoRulesAdded": {
+    "message": "ไม่มีกฎที่เพิ่ม"
+  },
+  "NoLocation": {
+    "message": "ไม่มีตำแหน่งที่เพิ่ม"
+  },
+  "OneLocation": {
+    "message": "ตำแหน่งที่เพิ่ม"
+  },
+  "MultipleLocations": {
+    "message": "ตำแหน่ง"
+  },
+  "MultipleRulesAdded": {
+    "message": "เพิ่มกฎ %{count} ข้อแล้ว"
+  },
+  "DebugLog": {
+    "message": "บันทึกการแก้จุดบกพร่อง"
+  },
+  "BlockNetworkPrediction": {
+    "message": "ปิดใช้งานการคาดการณ์เครือข่าย"
+  },
+  "BlockNetworkPredictionTooltip": {
+    "message": "ปิดใช้งาน %{browser} จากบริการคาดการณ์เครือข่าย ซึ่งสามารถแก้ปัญหาข้อสอบถาม DNS และเรียกข้อมูลเว็บเพจล่วงหน้าจากคอนเทนต์ที่พบในเพจที่คุณเยี่ยมชม"
+  },
+  "BlockSafeBrowsing": {
+    "message": "ปิดใช้งาน SafeBrowsing"
+  },
+  "ReadMore": {
+    "message": "อ่านเพิ่มเติม"
+  },
+  "BlockSafeBrowsingTooltip": {
+    "message": "ปิดใช้งาน %{browser} จากการเชื่อมต่อโดยตรงไปยังบริการเครือข่ายซึ่งมีข้อกังวลด้านความเป็นส่วนตัวในการเก็บบันทึก PIA Mace™ ได้ทำการลดความเสี่ยงโดยการปิดใช้งานบริการนี้"
+  },
+  "BlockAutofill": {
+    "message": "ปิดใช้งานการกรอกข้อมูลอัตโนมัติ"
+  },
+  "BlockAutofillTooltip": {
+    "message": "ปิดใช้งาน %{browser} จากการกรอกแบบฟอร์มโดยอัตโนมัติ ฟังก์ชั่นนี้อาจทำให้ข้อมูลส่วนบุคคลรั่วไหลผ่านช่องในแบบฟอร์มที่ซ่อนอยู่"
+  },
+  "BlockAutofillCreditCard": {
+    "message": "ปิดใช้งานการกรอกข้อมูลบัตรเครดิตอัตโนมัติ"
+  },
+  "BlockAutofillCreditCardTooltip": {
+    "message": "ปิดใช้งาน %{browser} จากการกรอกข้อมูลบัตรเครดิตโดยอัตโนมัติ ฟังก์ชั่นนี้อาจทำให้ข้อมูลส่วนบุคคลรั่วไหลผ่านช่องในแบบฟอร์มที่ซ่อนอยู่"
+  },
+  "BlockAutofillAddress": {
+    "message": "ปิดใช้งานการกรอกที่อยู่อัตโนมัติ"
+  },
+  "BlockAutofillAddressTooltip": {
+    "message": "ปิดใช้งาน %{browser} จากการกรอกที่อยู่และข้อมูลฟอร์มอื่นๆ โดยอัตโนมัติ ฟังก์ชั่นนี้อาจทำให้ข้อมูลส่วนบุคคลรั่วไหลผ่านช่องในแบบฟอร์มที่ซ่อนอยู่"
+  },
+  "BlockLocationAccess": {
+    "message": "บล็อกการใช้ตำแหน่งที่ตั้ง"
+  },
+  "BlockLocationAccessTooltip": {
+    "message": "บล็อกเว็บไซต์จากการเข้าถึงข้อมูลเกี่ยวกับตำแหน่งที่ตั้งของคุณ"
+  },
+  "BlockHTTPReferer": {
+    "message": "ปิดใช้งานการส่งต่อเว็บไซต์"
+  },
+  "BlockHTTPRefererTooltip": {
+    "message": "ปิดใช้งาน %{browser} จากการส่งที่อยู่เว็บเพจปัจจุบันไปยังเว็บเพจอื่นเมื่อติดตามลิงก์"
+  },
+  "BlockThirdpartycookies": {
+    "message": "ปิดใช้งานคุกกี้บุคคลที่ 3"
+  },
+  "BlockThirdpartycookiesTooltip": {
+    "message": "ปิดใช้งาน %{browser} จากการยอมรับคุกกี้จากเว็บไซต์บุคคลที่ 3 คุกกี้บุคคลที่ 3 อาจถูกใช้เพื่อติดตามการเยี่ยมชมเว็บไซต์ของคุณโดยบุคคลที่ 3 (เว็บไซต์หรือบริการเว็บ)"
+  },
+  "BlockCameraAccess": {
+    "message": "บล็อกการใช้กล้อง"
+  },
+  "BlockCameraAccessTooltip": {
+    "message": "บล็อกเว็บไซต์จากการเข้าถึงกล้องคอมพิวเตอร์ของคุณ"
+  },
+  "BlockMicrophoneAccess": {
+    "message": "บล็อกใช้ไมโครโฟน"
+  },
+  "BlockMicrophoneAccessTooltip": {
+    "message": "บล็อกเว็บไซต์จากการเข้าถึงไมโครโฟนคอมพิวเตอร์ของคุณ"
+  },
+  "Privacy": {
+    "message": "ความเป็นส่วนตัว"
+  },
+  "ImportFileMessage": {
+    "message": "กรุณาเลือกไฟล์ Bypass Rules ที่ส่งออก (เช่น bypass-rules.json)"
+  },
+  "InvalidImportFileStructure": {
+    "message": "ไม่สามารถอ่านไฟล์ได้ กรุณาเลือกไฟล์ที่ถูกต้อง"
+  },
+  "CurrentRegionText": {
+    "message": "ภูมิภาคปัจจุบัน"
+  },
+  "NoRegionSelected": {
+    "message": "ไม่ได้เลือกภูมิภาค"
+  },
+  "ChooseAutomatically": {
+    "message": "เลือกโดยอัตโนมัติ"
+  },
+  "ChangeExtensionSettings": {
+    "message": "ตั้งค่าส่วนขยาย"
+  },
+  "CannotUsePIAMessage": {
+    "message": "Private Internet Access ไม่สามารถทำงานได้เนื่องจากมีส่วนขยายอื่นที่กำลังควบคุมการตั้งค่าพร็อกซีของเบราว์เซอร์อยู่"
+  },
+  "ManageExtensions": {
+    "message": "จัดการส่วนขยาย"
+  },
+  "RegionName": {
+    "message": "ชื่อ"
+  },
+  "RegionLatency": {
+    "message": "ความหน่วงเวลา"
+  },
+  "RegionSearch": {
+    "message": "ค้นหา..."
+  },
+  "CloseText": {
+    "message": "ปิด"
+  },
+  "UpgradeBrowserMessage": {
+    "message": "Private Internet Access ไม่สามารถทำงานได้เนื่องจากเวอร์ชัน %{browser} ของคุณเก่า โปรดอัปเกรด %{browser} ของคุณเป็นเวอร์ชันล่าสุด"
+  },
+  "LogoutText": {
+    "message": "ออกจากระบบ"
+  },
+  "AuthFailPageTitle": {
+    "message": "ข้อผิดพลาดการยืนยันตัวตน | Private Internet Access"
+  },
+  "AuthFailTitle": {
+    "message": "ข้อผิดพลาดในการยืนยันตัวตน"
+  },
+  "AuthFailMessage": {
+    "message": "หากคุณเปลี่ยนรหัสผ่านในเว็บไซต์ Private Internet Access เมื่อเร็วๆ นี้ การยืนยันตัวตนอีกครั้งด้วยส่วนเสริมอาจแก้ไขปัญหานี้ได้<br /><br />สำหรับความช่วยเหลือและการสนับสนุน โปรดติดต่อ<a href=\"https://privateinternetaccess.com/helpdesk\">ทีมสนับสนุน</a>ของเรา"
+  },
+  "AuthFailMessageSupportLead": {
+    "message": "หากต้องการความช่วยเหลือและการสนับสนุน โปรดติดต่อ"
+  },
+  "AuthFailMessageSupportEnd": {
+    "message": "ฝ่ายสนับสนุน"
+  },
+  "ConnectionFailPageTitle": {
+    "message": "ข้อผิดพลาดการเชื่อมต่อ | Private Internet Access"
+  },
+  "ConnectionFailTitle": {
+    "message": "เกิดข้อผิดพลาดในการเชื่อมต่อ"
+  },
+  "ConnectionFailMessage": {
+    "message": "คุณอาจสูญเสียการเชื่อมต่ออินเทอร์เน็ต การเชื่อมต่อของคุณอาจถูกรบกวนชั่วคราว หรือเซิร์ฟเวอร์ Private Internet Access ที่คุณเชื่อมต่ออาจมีปัญหาในการเชื่อมต่อ"
+  },
+  "NoNetworkConnection": {
+    "message": "ไม่มีการเชื่อมต่อเครือข่าย"
+  },
+  "YouAreConnectedTo": {
+    "message": "คุณกำลังเชื่อมต่อไปยัง %{region}"
+  },
+  "YouAreNotConnected": {
+    "message": "คุณไม่มีการเชื่อมต่ออยู่ในขณะนี้"
+  },
+  "enabled": {
+    "message": "เปิดใช้งาน"
+  },
+  "RememberMe": {
+    "message": "จดจำฉัน"
+  },
+  "RememberMeTooltip": {
+    "message": "บันทึกชื่อผู้ใช้ระหว่างรีสตาร์ทเบราว์เซอร์"
+  },
+  "Auto": {
+    "message": "อัตโนมัติ"
+  },
+  "CalculatingLatency": {
+    "message": "กำลังคำนวณเวลาแฝง"
+  },
+  "NoRegionsFound": {
+    "message": "ไม่พบภูมิภาค"
+  },
+  "RefreshRegions": {
+    "message": "รีเฟรชภูมิภาค"
+  },
+  "ViewChangelog": {
+    "message": "ดูประวัติการเปลี่ยนแปลง"
+  },
+  "ChangelogTitle": {
+    "message": "ประวัติการเปลี่ยนแปลง"
+  },
+  "UnknownProxyError": {
+    "message": "เกิดข้อผิดพลาดพร็อกซีที่ไม่รู้จัก"
+  },
+  "Connecting": {
+    "message": "กำลังเชื่อมต่อ"
+  },
+  "Disconnecting": {
+    "message": "กำลังยกเลิกการเชื่อมต่อ"
+  },
+  "Connected": {
+    "message": "เชื่อมต่อแล้ว"
+  },
+  "DefaultDisplay": {
+    "message": "การแสดงผลเริ่มต้น"
+  },
+  "QuickConnect": {
+    "message": "เชื่อมต่ออย่างรวดเร็ว"
+  },
+  "QuickSettings": {
+    "message": "การตั้งค่าอย่างรวดเร็ว"
+  },
+  "MACE": {
+    "message": "MACE"
+  },
+  "HTTPREFERRER": {
+    "message": "ปิดใช้งานการส่งต่อ HTTP"
+  },
+  "DEBUGLOGGING": {
+    "message": "กำลังบันทึกการแก้จุดบกพร่อง"
+  },
+  "LIGHTTHEME": {
+    "message": "ธีมสีอ่อน"
+  },
+  "FPPROTECTION": {
+    "message": "การป้องกันลายนิ้วมือ"
+  },
+  "BLOCKCAMERA": {
+    "message": "บล็อกการใช้กล้อง"
+  },
+  "BLOCKMICROPHONE": {
+    "message": "บล็อกการใช้ไมโครโฟน"
+  },
+  "VIEWALL": {
+    "message": "ดูการตั้งค่าทั้งหมด..."
+  },
+  "trial": {
+    "message": "ทดลองใช้"
+  },
+  "days_left": {
+    "message": "วันที่เหลือ"
+  },
+  "Subscription": {
+    "message": "การสมัครสมาชิก"
+  },
+  "NoSubscriptionData": {
+    "message": "ไม่พบข้อมูลผู้ใช้"
+  },
+  "AddToBypassRules": {
+    "message": "เพิ่มไปยังกฎการปล่อยผ่าน"
+  },
+  "RuleAlreadyIncluded": {
+    "message": "รวมกฎแล้ว"
+  },
+  "RemoveRule": {
+    "message": "ลบออก"
+  },
+  "GatheringRegions": {
+    "message": "การรวบรวมภูมิภาค"
+  },
+  "PrivateBrowsingChangeLead": {
+    "message": "Firefox เพิ่งเปลี่ยนวิธีการเพิ่ม (addon)  เพื่อจัดการการเชื่อมต่อพร็อกซี่ โดยการอนุญาตการเพิ่มทำงานในหน้าต่างส่วนตัวจำเป็นต้องอัพเดตการตั้งค่าพร็อกซี่"
+  },
+  "PrivateBrowsingChangeDirections": {
+    "message": "กรุณาเยี่ยมชม URL ด้านล่างเพื่อดูหน้าเสริม จากนั้นกดการเพิ่ม\"การเข้าถึงอินเตอร์เน็ตส่วนตัว\" เพื่อปรับการตั้งค่า และเปลี่ยนการตั้งค่าจาก \"ทำงานในหน้าต่างส่วนตัว\" เป็น \"อนุญาต\""
+  },
+  "us": {
+    "message": "สหรัฐอเมริกา"
+  },
+  "gb": {
+    "message": "สหราชอาณาจักร"
+  },
+  "de": {
+    "message": "เยอรมนี"
+  },
+  "au": {
+    "message": "ออสเตรเลีย"
+  },
+  "canada": {
+    "message": "แคนาดา"
+  },
+  "us_california": {
+    "message": "แคลิฟอร์เนีย สหรัฐอเมริกา"
+  },
+  "us2": {
+    "message": "สหรัฐอเมริกาตะวันออก"
+  },
+  "us1": {
+    "message": "สหรัฐอเมริกาตะวันตกกลาง"
+  },
+  "us_chicago": {
+    "message": "ชิคาโก้ สหรัฐอเมริกา"
+  },
+  "us_south_west": {
+    "message": "เท็กซัส สหรัฐอเมริกา"
+  },
+  "us_florida": {
+    "message": "ฟลอริดา สหรัฐอเมริกา"
+  },
+  "us_seattle": {
+    "message": "ซีแอตเทิล สหรัฐอเมริกา"
+  },
+  "us3": {
+    "message": "สหรัฐอเมริกา ตะวันตก"
+  },
+  "us_silicon_valley": {
+    "message": "ซิลิคอนแวลลีย์ สหรัฐอเมริกา"
+  },
+  "us_new_york_city": {
+    "message": "นิวยอร์ก สหรัฐอเมริกา"
+  },
+  "us_atlanta": {
+    "message": "สหรัฐอเมริกา แอตแลนตา"
+  },
+  "us_las_vegas": {
+    "message": "สหรัฐอเมริกา ลาสเวกัส"
+  },
+  "us_houston": {
+    "message": "สหรัฐอเมริกา ฮุสตัน"
+  },
+  "us_wdc": {
+    "message": "สหรัฐอเมริกา วอชิงตัน ดี.ซี."
+  },
+  "us_washington_dc": {
+    "message": "สหรัฐอเมริกา วอชิงตัน ดี.ซี."
+  },
+  "us_denver": {
+    "message": "สหรัฐอเมริกา เดนเวอร์"
+  },
+  "uk": {
+    "message": "ลอนดอน สหราชอาณาจักร"
+  },
+  "uk_southampton": {
+    "message": "เซาแทมป์ตัน สหราชอาณาจักร"
+  },
+  "uk_manchester": {
+    "message": "แมนเชสเตอร์ สหราชอาณาจักร"
+  },
+  "ca": {
+    "message": "มอนทรีออล แคนาดา"
+  },
+  "ca_toronto": {
+    "message": "โตรอนโต แคนาดา"
+  },
+  "ca_vancouver": {
+    "message": "แคนาดา แวนคูเวอร์"
+  },
+  "aus": {
+    "message": "ซิดนีย์ ออสเตรเลีย"
+  },
+  "aus_melbourne": {
+    "message": "เมลเบิร์น ออสเตรเลีย"
+  },
+  "aus_perth": {
+    "message": " ออสเตรเลีย เพิร์ธ"
+  },
+  "nl": {
+    "message": "เนเธอร์แลนด์"
+  },
+  "swiss": {
+    "message": "สวิตเซอร์แลนด์"
+  },
+  "sweden": {
+    "message": "สวีเดน"
+  },
+  "france": {
+    "message": "ฝรั่งเศส"
+  },
+  "germany": {
+    "message": "เยอรมนี แฟรงเฟิร์ต"
+  },
+  "de_berlin": {
+    "message": "เยอรมนี เบอร์ลิน"
+  },
+  "belgium": {
+    "message": "เบลเยี่ยม"
+  },
+  "austria": {
+    "message": "ออสเตรีย"
+  },
+  "czech": {
+    "message": "สาธารณรัฐเช็ก"
+  },
+  "ro": {
+    "message": "โรมาเนีย"
+  },
+  "turkey": {
+    "message": "ตุรกี"
+  },
+  "hk": {
+    "message": "ฮ่องกง"
+  },
+  "sg": {
+    "message": "สิงคโปร์"
+  },
+  "japan": {
+    "message": "ญี่ปุ่น"
+  },
+  "israel": {
+    "message": "อิสราเอล"
+  },
+  "mexico": {
+    "message": "เม็กซิโก"
+  },
+  "brazil": {
+    "message": "บราซิล"
+  },
+  "ireland": {
+    "message": "ไอร์แลนด์"
+  },
+  "italy": {
+    "message": "อิตาลี"
+  },
+  "spain": {
+    "message": "สเปน"
+  },
+  "nz": {
+    "message": "นิวซีแลนด์"
+  },
+  "denmark": {
+    "message": "เดนมาร์ก"
+  },
+  "in": {
+    "message": "อินเดีย"
+  },
+  "fi": {
+    "message": "ฟินแลนด์"
+  },
+  "no": {
+    "message": "นอร์เวย์"
+  },
+  "kr": {
+    "message": "เกาหลีใต้"
+  },
+  "poland": {
+    "message": "โปแลนด์"
+  },
+  "hungary": {
+    "message": "ฮังการี"
+  },
+  "lu": {
+    "message": "ลักเซมเบิร์ก"
+  },
+  "ae": {
+    "message": "United Arab Emirates"
+  },
+  "za": {
+    "message": "แอฟริกาใต้"
+  }
+}

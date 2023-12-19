@@ -3,6 +3,7 @@ import random
 import re
 import time
 
+import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
@@ -13,7 +14,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import JOB_TYPE
 from scraper.models import GroupScraper, GroupScraperQuery
 from scraper.models.accounts import Accounts
-import undetected_chromedriver as uc
+
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -164,6 +165,7 @@ def configure_webdriver(open_browser=False, block_media=False, block_elements=['
 
 def configure_undetected_chrome_driver(open_browser=False):
     options = uc.ChromeOptions()
+    extension_path = 'scraper/utils/extensions/pia-unpacked'
     if not open_browser:
         options.add_argument("--headless=new")
     options.add_argument("--no-sandbox --no-first-run --no-service-autorun --password-store=basic")
@@ -173,14 +175,16 @@ def configure_undetected_chrome_driver(open_browser=False):
         "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36")
     options.add_experimental_option('prefs', {"extensions.ui.developer_mode": True, })
     options.add_argument('--remote-debugging-port=9222')
+    options.add_argument(f'--load-extension={extension_path}')
     driver = uc.Chrome(driver_executable_path=ChromeDriverManager().install(), options=options, use_subprocess=False)
     return driver
 
-def run_pia_proxy(driver, location=None):
+
+def run_pia_proxy(driver, location=None, undetected=False):
     pia_instances = Accounts.objects.filter(source='pia')
     for pia_instance in pia_instances:
         try:
-            driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
+            driver.get(get_pia_web_url(undetected))
             driver.find_elements(By.CSS_SELECTOR, 'input[type="text"]')[
                 0].send_keys(pia_instance.email)
             driver.find_elements(By.CSS_SELECTOR, 'input[type="password"]')[
@@ -195,11 +199,16 @@ def run_pia_proxy(driver, location=None):
         except Exception as e:
             print(str(e))
 
-def change_pia_location(driver, location=None, extension_opened=False) -> bool:
+def get_pia_web_url(undetected=False):
+    pia_extension_id = PIA_UNPACKED_EXTENSION_ID if undetected else PIA_CRX_EXTENSION_ID
+    pia_web_url = f"chrome-extension://{pia_extension_id}/html/foreground.html"
+    return pia_web_url
+
+def change_pia_location(driver, location=None, extension_opened=False, undetected=False) -> bool:
     error_status = False
     try:
         if not extension_opened:
-            driver.get("chrome-extension://jplnlifepflhkbkgonidnobkakhmpnmh/html/foreground.html")
+            driver.get(get_pia_web_url(undetected))
         driver.find_element(By.CLASS_NAME, 'region-content').click()
         # if no location found then select US Miami
         if location:
@@ -255,3 +264,8 @@ def set_job_type(job_type):
 
 def make_plural(word: str = '', num: int = 1):
     return word + 's' if word and word.strip() and (num > 1 or num == 0) else word
+
+
+# pia extension ids
+PIA_CRX_EXTENSION_ID = 'jplnlifepflhkbkgonidnobkakhmpnmh'
+PIA_UNPACKED_EXTENSION_ID = 'olfblhmobjbfckldmpdgehfecmjapkob'

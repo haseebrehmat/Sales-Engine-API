@@ -2,7 +2,6 @@ import time
 
 import pandas as pd
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
@@ -120,17 +119,12 @@ def data_exists(driver):
     page_exists = driver.find_elements(By.CSS_SELECTOR, "a[aria-label='Next Page']")
     return False if len(page_exists) == 0 else True
 
-import undetected_chromedriver as uc
-
-
 # code starts from here
 def indeed(link, job_type):
     print("Indeed")
     try:
-        driver = uc.Chrome(driver_executable_path=ChromeDriverManager().install(), headless=False, use_subprocess=False)
-
-        # driver = configure_webdriver(True)
-        # driver.maximize_window()
+        driver = configure_webdriver()
+        driver.maximize_window()
         run_pia_proxy(driver, location="mumbai")
         try:
             flag = True
