@@ -10,4 +10,5 @@ class GroupScraper(TimeStamped):
     name = models.CharField(max_length=50, null=True, unique=True)
     is_active = models.BooleanField(default=True)
     disabled = models.BooleanField(default=False)
+    is_analytics = models.BooleanField(default=False)
 

@@ -1,6 +1,7 @@
 import time
 import pytz
 from django.utils import timezone
+from settings.base import ENVIRONMENT, env
 from scraper.models.scheduler import SchedulerSync
 from scraper.models.group_scraper import GroupScraper
 from datetime import datetime
@@ -20,7 +21,10 @@ def custom_function():
 
 def check_current_group():
     group_scrapper = None
-    queryset = GroupScraper.objects.filter(disabled=False).order_by('scheduler_settings__time')
+    if env('ENVIRONMENT') == 'production':
+        queryset = GroupScraper.objects.filter(disabled=False, is_analytics=False).order_by('scheduler_settings__time')
+    if env('ENVIRONMENT') == 'analytics':
+        queryset = GroupScraper.objects.filter(disabled=False, is_analytics=True).order_by('scheduler_settings__time')
     for index, groupscraper in enumerate(queryset):
         pakistan_timezone = pytz.timezone('Asia/Karachi')
         current_time = datetime.now(pakistan_timezone)
