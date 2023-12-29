@@ -1,0 +1,764 @@
+{
+  "PrivateInternetAccess": {
+    "message": "Private Internet Access"
+  },
+  "BrowserMessage": {
+    "message": "Browserextensie"
+  },
+  "FirstSlideInstallThanks": {
+    "message": "Bedankt voor het installeren van de"
+  },
+  "StartSlide": {
+    "message": "Laten we beginnen"
+  },
+  "Step1": {
+    "message": "STAP 1 VAN 2"
+  },
+  "Step2": {
+    "message": "STAP 2 VAN 2"
+  },
+  "ChooseTheme": {
+    "message": "Kies uw thema"
+  },
+  "EnableSetings": {
+    "message": "Extra functies inschakelen"
+  },
+  "PrivateInternetComesWith": {
+    "message": "Private Internet Access wordt geleverd met "
+  },
+  "LightAndDarkDisclaimer": {
+    "message": "lichte en donkere thema's die passen bij "
+  },
+  "LookOfBrowserDisclaimer": {
+    "message": "uw browser"
+  },
+  "OnBoardingStart": {
+    "message": "AAN DE SLAG"
+  },
+  "WhiteTheme": {
+    "message": "Licht thema"
+  },
+  "Next": {
+    "message": "VOLGENDE"
+  },
+  "Skip": {
+    "message": "OVERSLAAN"
+  },
+  "ChangeExtraFeaturesSettings": {
+    "message": "Extra functies"
+  },
+  "encounterMessage_2": {
+    "message": "contact op met onze supportafdeling "
+  },
+  "JustInTimeDisclaimer": {
+    "message": "Beoordeel uw ervaring met PIA"
+  },
+  "feedbackMessage_1": {
+    "message": "Bedankt voor uw feedback. We zouden het op prijs stellen als u ons een beoordeling kon geven op de "
+  },
+  "feedbackMessage_2": {
+    "message": "Chrome Web Store"
+  },
+  "encountermessage_1": {
+    "message": "Bedankt voor uw feedback. Neem bij technische problemen "
+  },
+  "UILanguage": {
+    "message": "Taal UI"
+  },
+  "UILanguageTooltip": {
+    "message": "De taal die door de extensie wordt gebruikt voor het weergeven van tekst."
+  },
+  "TheExtensionIsStillLoading": {
+    "message": "De extensie is nog aan het laden, daarom het debuglogboek nog niet worden geladen."
+  },
+  "ReloadPage": {
+    "message": "Pagina opnieuw laden"
+  },
+  "Extension": {
+    "message": "Extensie"
+  },
+  "ForgotPassword": {
+    "message": "Wachtwoord vergeten"
+  },
+  "BuyAccount": {
+    "message": "Account kopen"
+  },
+  "DeleteDebugLog": {
+    "message": "Logboek wissen"
+  },
+  "SettingNotControllable": {
+    "message": "De extensie kan deze instelling niet beheren."
+  },
+  "SettingControlledByOther": {
+    "message": "Deze instelling wordt beheerd door een andere extensie."
+  },
+  "AllowExtensionNotifications": {
+    "message": "Desktopmeldingen toestaan"
+  },
+  "AllowExtensionNotificationsTooltip": {
+    "message": "Geef de de extensie toestemming een desktopmelding te maken als er iets belangrijks gebeurt. Uitschakelen wordt niet aanbevolen"
+  },
+  "Tracking": {
+    "message": "Tracken"
+  },
+  "FingerprintProtection": {
+    "message": "Bescherming tegen fingerprinting"
+  },
+  "FingerprintProtectionTooltip": {
+    "message": "Voorkom dat uw specifieke apparaat en browser worden herkend door algemene informatie over uw computer te verstrekken en de toegang tot bepaalde browser-API's te voorkomen."
+  },
+  "FingerprintProtectionHeader": {
+    "message": "Instelling voor fingerprintbescherming"
+  },
+  "FingerprintProtectionDisclaimer": {
+    "message": "Deze instelling biedt extra privacy en veiligheid, maar kan ook problemen veroorzaken op bepaalde websites en ervoor zorgen dat de browser zich anders gedraagt dan verwacht. Een volledige lijst met wijzigingen vindt u hier:"
+  },
+  "FingerprintProtectionInstructions": {
+    "message": "Deze functie wordt aanbevolen, maar sommige gebruikers vinden hem niet handig. Kies of u bescherming tegen fingerprinting wilt in- of uitschakelen."
+  },
+  "FingerprintProtectionEnable": {
+    "message": "Inschakelen"
+  },
+  "FingerprintProtectionDisable": {
+    "message": "Uitschakelen"
+  },
+  "FingerprintProtectionAfterword": {
+    "message": "Deze instelling kan ook worden gewijzigd via het scherm Extensie-instellingen nadat u op de extensie bent ingelogd."
+  },
+  "TrackingProtection": {
+    "message": "Trackbescherming"
+  },
+  "TrackingProtectionTooltip": {
+    "message": "Blokkeert verzoeken aan domeinen waarvan bekend is dat ze gebruikers via meerdere sites volgen."
+  },
+  "BlockHyperlinkAuditing": {
+    "message": "Hyperlinkcontrole uitschakelen"
+  },
+  "BlockHyperlinkAuditingTooltip": {
+    "message": "Schakel hyperlinkcontrole uit. Dit is een recente HTML-functie waarmee trackers en analysediensten een melding krijgen als u op een link klikt."
+  },
+  "ViewDebugLog": {
+    "message": "Debuglogboek bekijken"
+  },
+  "DebugMode": {
+    "message": "Debug-modus"
+  },
+  "DebugModeTooltip": {
+    "message": "Schrijf berichten in het debuglogboek. Druk op de 'ctrl'-toets gevolgd door de 'd'-toets om het debuglogboek weer te geven."
+  },
+  "DarkTheme": {
+    "message": "Donker thema"
+  },
+  "DarkThemeTooltip": {
+    "message": "Schakel een donkerder thema in voor de extensie om bij weinig licht te gebruiken"
+  },
+  "IpReal": {
+    "message": "IP"
+  },
+  "IpProxy": {
+    "message": "VPN-IP"
+  },
+  "DebugLogIsEmpty": {
+    "message": "Het debuglogboek is leeg."
+  },
+  "PersistentSettingsDisclaimer": {
+    "message": "Ingeschakelde instellingen zijn nu altijd actief, of u nu verbonden bent met een regio of niet, met uitzondering van PIA MACE™. Deze toepassing is alleen actief wanneer u verbonden bent met een regio."
+  },
+  "PersistentIncognitoDisclaimer": {
+    "message": "Schakel extensie in incognitomodus in door deze optie te selecteren in de extensie-instellingen in chrome://extensions."
+  },
+  "UsernamePlaceholder": {
+    "message": "Gebruikersnaam"
+  },
+  "PasswordPlaceholder": {
+    "message": "Wachtwoord"
+  },
+  "TryAgain": {
+    "message": "Opnieuw proberen"
+  },
+  "LoginText": {
+    "message": "Inloggen"
+  },
+  "SelectRegionText": {
+    "message": "Selecteer een regio"
+  },
+  "WrongUsernameAndPassword": {
+    "message": "Gebruikersnaam en/of wachtwoord is/zijn onjuist."
+  },
+  "OfflineError": {
+    "message": "Inlogverzoek is mislukt omdat u offline lijkt te zijn. Controleer of u verbinding met internet hebt."
+  },
+  "TimeoutError": {
+    "message": "Er is na %{seconds} seconden een time-out opgetreden voor het inlogverzoek. Probeer het opnieuw."
+  },
+  "AbortError": {
+    "message": "Inlogverzoek is afgebroken door de browser. Probeer het opnieuw."
+  },
+  "UnexpectedServerResponse": {
+    "message": "Op het inlogverzoek kwam een onverwacht antwoord van de server (%{statusLine})"
+  },
+  "TooManyRequestsError": {
+    "message": "Te veel mislukte inlogpogingen. Probeer het later opnieuw."
+  },
+  "UnknownError": {
+    "message": "Er is een onbekende fout opgetreden."
+  },
+  "CopyToClipboard": {
+    "message": "Debuglogboek kopiëren"
+  },
+  "CopiedToClipboard": {
+    "message": "Debuglogboek gekopieerd"
+  },
+  "JoinURL": {
+    "message": "https://nld.privateinternetaccess.com/pages/buy-vpn/"
+  },
+  "PopularWebsites": {
+    "message": "Populaire websites"
+  },
+  "OtherWebsites": {
+    "message": "Andere websites"
+  },
+  "ImportExportHeader": {
+    "message": "Regels importeren/exporteren"
+  },
+  "ImportLabel": {
+    "message": "Importeren"
+  },
+  "ExportLabel": {
+    "message": "Exporteren"
+  },
+  "BypassWarningLead": {
+    "message": "Verzoeken aan websites op de bypasslijst gebruiken"
+  },
+  "BypassWarningBold": {
+    "message": "directe verbindingen en worden niet beschermd door Private Internet Access™."
+  },
+  "AccountSettingsText": {
+    "message": "Accountinstellingen"
+  },
+  "SupportText": {
+    "message": "Hulp en ondersteuning"
+  },
+  "OfflineText": {
+    "message": "OFFLINE"
+  },
+  "Security": {
+    "message": "Veiligheid"
+  },
+  "MaceProtection": {
+    "message": "PIA MACE™"
+  },
+  "WhatIsMace": {
+    "message": "Wat is MACE™?"
+  },
+  "MaceTooltip": {
+    "message": "PIA MACE™ beschermt uw privacy en veiligheid door schadelijke content, trackers en advertenties te blokkeren. Alleen actief wanneer u verbonden bent met een regio"
+  },
+  "WebRTCLeakProtection": {
+    "message": "WebRTC IP-detectie blokkeren"
+  },
+  "WebRTCTooltip": {
+    "message": "Voorkom dat %{browser} uw openbare en privé-IP-adressen onthult wanneer WebRTC wordt gebruikt. Aangeraden wordt om dit niet uit te schakelen."
+  },
+  "BlockAdobeFlash": {
+    "message": "Adobe Flash blokkeren"
+  },
+  "AdobeFlashTooltip": {
+    "message": "Voorkom dat %{browser} Adobe Flash uitvoert. Adobe Flash kan worden gebruikt om uw openbare IP-adres te onthullen. Aangeraden wordt om dit niet uit te schakelen."
+  },
+  "HttpsUpgrade": {
+    "message": "Websites bezoeken met HTTPS"
+  },
+  "HttpsUpgradeTooltip": {
+    "message": "Converteert automatisch ondersteunde websites of links met behulp van een ongecodeerde verbinding (HTTP) naar een veiligere HTTPS-verbinding voordat u uw browser verlaat. Mogelijk gemaakt door HTTPS Everywhere en de EFF."
+  },
+  "AlwaysActive": {
+    "message": "Altijd actieve instellingen"
+  },
+  "AlwaysActiveTooltip": {
+    "message": "Zorgt ervoor dat instellingen altijd actief zijn, of de proxy nu is verbonden of niet"
+  },
+  "BlockUTM": {
+    "message": "UTM-parameters verwijderen"
+  },
+  "BlockUTMTooltip": {
+    "message": "Verwijder Urchin Tracking Model (UTM)-parameters uit de URL's waar u op klikt. UTM-parameters worden gebruikt om informatie bij te houden over uw bezoek aan een website."
+  },
+  "BlockFBCLID": {
+    "message": "FBCLID-parameters verwijderen"
+  },
+  "BlockFBCLIDTooltip": {
+    "message": "Verwijder Facebook FBCLID-parameters uit de uitgaande links in Facebook. FBCLID-parameters worden gebruikt om informatie bij te houden over uw bezoek aan een website."
+  },
+  "BypassInstructionsBold": {
+    "message": "* titel vereist"
+  },
+  "BypassInstructions": {
+    "message": "om alle subdomeinen van een website over te slaan."
+  },
+  "ProxyBypassList": {
+    "message": "Bypasslijst"
+  },
+  "SmartLocation": {
+    "message": "Slimme locatie"
+  },
+  "WebAlreadyAdded": {
+    "message": "Websites al toegevoegd"
+  },
+  "AddSmartLocation": {
+    "message": "Slimme locatie toevoegen"
+  },
+  "WelcomeToNewVersion": {
+    "message": "Welkom bij %{appVersion}"
+  },
+  "ExtensionUpdated": {
+    "message": "Extensie bijgewerkt"
+  },
+  "OneRuleAdded": {
+    "message": "1 regel toegevoegd"
+  },
+  "NoRulesAdded": {
+    "message": "Geen regels toegevoegd"
+  },
+  "NoLocation": {
+    "message": "Geen locatie toegevoegd"
+  },
+  "OneLocation": {
+    "message": "locatie toegevoegd"
+  },
+  "MultipleLocations": {
+    "message": "locaties"
+  },
+  "MultipleRulesAdded": {
+    "message": "%{count} regels toegevoegd"
+  },
+  "DebugLog": {
+    "message": "Debuglogboek"
+  },
+  "BlockNetworkPrediction": {
+    "message": "Netwerkvoorspelling uitschakelen"
+  },
+  "BlockNetworkPredictionTooltip": {
+    "message": "Voorkom dat %{browser} een netwerkvoorspellingsdienst gebruikt, waarmee van tevoren DNS-query's worden omgezet en webpagina's worden opgehaald vanuit de inhoud op de webpagina die u bezoekt."
+  },
+  "BlockSafeBrowsing": {
+    "message": "Veilig browsen uitschakelen"
+  },
+  "ReadMore": {
+    "message": "Meer lezen"
+  },
+  "BlockSafeBrowsingTooltip": {
+    "message": "Voorkom dat %{browser} rechtstreekse verbindingen maakt naar een netwerkdienst met privacyrisico's omtrent het bijhouden van logbestanden. PIA Mace™ verlaagt het risico door deze dienst uit te schakelen."
+  },
+  "BlockAutofill": {
+    "message": "Automatisch invullen uitschakelen"
+  },
+  "BlockAutofillTooltip": {
+    "message": "Voorkom dat %{browser} automatisch formulieren invult. Hierdoor kunnen ongemerkt persoonsgegevens worden gedeeld via verborgen formuliervelden."
+  },
+  "BlockAutofillCreditCard": {
+    "message": "Creditcard automatisch invullen uitschakelen"
+  },
+  "BlockAutofillCreditCardTooltip": {
+    "message": "Voorkom dat %{browser} automatisch creditcardgegevens invult. Hierdoor kunnen ongemerkt persoonsgegevens worden gedeeld via verborgen formuliervelden."
+  },
+  "BlockAutofillAddress": {
+    "message": "Adres automatisch invullen uitschakelen"
+  },
+  "BlockAutofillAddressTooltip": {
+    "message": "Voorkom dat %{browser} automatisch adressen en andere formuliergegevens invult. Hierdoor kunnen ongemerkt persoonsgegevens worden gedeeld via verborgen formuliervelden."
+  },
+  "BlockLocationAccess": {
+    "message": "Locatietoegang blokkeren"
+  },
+  "BlockLocationAccessTooltip": {
+    "message": "Geef websites geen toegang tot informatie over uw fysieke locatie."
+  },
+  "BlockHTTPReferer": {
+    "message": "Website-referrer uitschakelen"
+  },
+  "BlockHTTPRefererTooltip": {
+    "message": "Voorkom dat %{browser} het adres van de huidige pagina naar een andere pagina stuurt als u een link volgt."
+  },
+  "BlockThirdpartycookies": {
+    "message": "Cookies van derden blokkeren"
+  },
+  "BlockThirdpartycookiesTooltip": {
+    "message": "Voorkom dat %{browser} cookies accepteert van externe websites. Cookies van derden kunnen door externe partijen zoals websites of webdiensten worden gebruikt om uw bezoek aan een website te volgen."
+  },
+  "BlockCameraAccess": {
+    "message": "Cameratoegang blokkeren"
+  },
+  "BlockCameraAccessTooltip": {
+    "message": "Geef websites geen toegang tot de camera van uw computer."
+  },
+  "BlockMicrophoneAccess": {
+    "message": "Microfoontoegang blokkeren"
+  },
+  "BlockMicrophoneAccessTooltip": {
+    "message": "Geef websites geen toegang tot de microfoon van uw computer."
+  },
+  "Privacy": {
+    "message": "Privacy"
+  },
+  "ImportFileMessage": {
+    "message": "Selecteer een geëxporteerd Bypass Rules-bestand (bijv. bypass-rules.json)"
+  },
+  "InvalidImportFileStructure": {
+    "message": "Bestand kan niet worden gelezen. Kies een geldig bestand."
+  },
+  "CurrentRegionText": {
+    "message": "Huidige regio"
+  },
+  "NoRegionSelected": {
+    "message": "Geen regio geselecteerd"
+  },
+  "ChooseAutomatically": {
+    "message": "Automatisch kiezen"
+  },
+  "ChangeExtensionSettings": {
+    "message": "Extensie-instellingen"
+  },
+  "CannotUsePIAMessage": {
+    "message": "Private Internet Access kan niet worden gebruikt omdat een andere extensie de proxyinstellingen van uw browser beheert."
+  },
+  "ManageExtensions": {
+    "message": "Extensies beheren"
+  },
+  "RegionName": {
+    "message": "Naam"
+  },
+  "RegionLatency": {
+    "message": "Latentie"
+  },
+  "RegionSearch": {
+    "message": "Zoeken..."
+  },
+  "CloseText": {
+    "message": "Sluiten"
+  },
+  "UpgradeBrowserMessage": {
+    "message": "Private Internet Access kan niet worden gebruikt omdat uw versie van %{browser} verouderd is. Werk %{browser} bij naar de nieuwste versie."
+  },
+  "LogoutText": {
+    "message": "Uitloggen"
+  },
+  "AuthFailPageTitle": {
+    "message": "Authenticatiefout | Private Internet Access"
+  },
+  "AuthFailTitle": {
+    "message": "Authenticatiefout"
+  },
+  "AuthFailMessage": {
+    "message": "Als u recentelijk uw wachtwoord hebt gewijzigd op de website van Private Internet Access, kunt u deze fout mogelijk verhelpen door de extensie opnieuw te verifiëren.<br /><br />Neem voor hulp en ondersteuning contact op met ons <a href=\"https://privateinternetaccess.com/helpdesk\">supportteam</a>."
+  },
+  "AuthFailMessageSupportLead": {
+    "message": "Neem voor hulp en ondersteuning contact op met onze"
+  },
+  "AuthFailMessageSupportEnd": {
+    "message": "klantenservice"
+  },
+  "ConnectionFailPageTitle": {
+    "message": "Verbindingsfout | Private Internet Access"
+  },
+  "ConnectionFailTitle": {
+    "message": "Verbindingsfout"
+  },
+  "ConnectionFailMessage": {
+    "message": "Mogelijk heeft u geen internetverbinding meer of is deze tijdelijk onderbroken. Ook kan de server van Private Internet Access verbindingsproblemen hebben."
+  },
+  "NoNetworkConnection": {
+    "message": "Geen netwerkverbinding"
+  },
+  "YouAreConnectedTo": {
+    "message": "U bent verbonden met %{region}"
+  },
+  "YouAreNotConnected": {
+    "message": "U hebt geen verbinding"
+  },
+  "enabled": {
+    "message": "ingeschakeld"
+  },
+  "RememberMe": {
+    "message": "Mij onthouden"
+  },
+  "RememberMeTooltip": {
+    "message": "Slaat gebruikersnaam op bij het opnieuw opstarten van de browser"
+  },
+  "Auto": {
+    "message": "Auto"
+  },
+  "CalculatingLatency": {
+    "message": "Latentie berekenen"
+  },
+  "NoRegionsFound": {
+    "message": "Geen regio's gevonden"
+  },
+  "RefreshRegions": {
+    "message": "Regio's vernieuwen"
+  },
+  "ViewChangelog": {
+    "message": "changelog bekijken"
+  },
+  "ChangelogTitle": {
+    "message": "Changelog"
+  },
+  "UnknownProxyError": {
+    "message": "Er is een onbekende proxy-fout opgetreden"
+  },
+  "Connecting": {
+    "message": "verbinden"
+  },
+  "Disconnecting": {
+    "message": "verbinding verbreken"
+  },
+  "Connected": {
+    "message": "verbonden"
+  },
+  "DefaultDisplay": {
+    "message": "STANDAARDWEERGAVE"
+  },
+  "QuickConnect": {
+    "message": "SNEL VERBINDEN"
+  },
+  "QuickSettings": {
+    "message": "SNELLE INSTELLINGEN"
+  },
+  "MACE": {
+    "message": "MACE"
+  },
+  "HTTPREFERRER": {
+    "message": "HTTP-REFERRER UITSCHAKELEN"
+  },
+  "DEBUGLOGGING": {
+    "message": "DEBUG-LOGGING"
+  },
+  "LIGHTTHEME": {
+    "message": "LICHT THEMA"
+  },
+  "FPPROTECTION": {
+    "message": "BESCHERMING TEGEN FINGERPRINTING"
+  },
+  "BLOCKCAMERA": {
+    "message": "CAMERATOEGANG BLOKKEREN"
+  },
+  "BLOCKMICROPHONE": {
+    "message": "MICROFOONTOEGANG BLOKKEREN"
+  },
+  "VIEWALL": {
+    "message": "ALLE INSTELLINGEN BEKIJKEN..."
+  },
+  "trial": {
+    "message": "Proefperiode"
+  },
+  "days_left": {
+    "message": "resterende dagen"
+  },
+  "Subscription": {
+    "message": "ABONNEMENT"
+  },
+  "NoSubscriptionData": {
+    "message": "Geen gebruikersinformatie gevonden"
+  },
+  "AddToBypassRules": {
+    "message": "TOEVOEGEN AAN BYPASS RULES"
+  },
+  "RuleAlreadyIncluded": {
+    "message": "Regel al toegevoegd"
+  },
+  "RemoveRule": {
+    "message": "verwijderen"
+  },
+  "GatheringRegions": {
+    "message": "Regio's verzamelen"
+  },
+  "PrivateBrowsingChangeLead": {
+    "message": "Firefox heeft onlangs de manier waarop add-ons omgaan met proxy-verbindingen gewijzigd. U moet de add-on nu in een privévenster uitvoeren om de proxy-instellingen bij te werken."
+  },
+  "PrivateBrowsingChangeDirections": {
+    "message": "Ga naar de URL hieronder om uw pagina met add-ons te bekijken. Klik op de add-on 'Private Internet Access' om de instellingen te wijzigen. Zet vervolgens de instelling 'Run in Private Windows' (In privévenster uitvoeren) op 'Allow' (Toestaan)."
+  },
+  "us": {
+    "message": "Verenigde Staten"
+  },
+  "gb": {
+    "message": "Verenigd Koninkrijk"
+  },
+  "de": {
+    "message": "Duitsland"
+  },
+  "au": {
+    "message": "Australië"
+  },
+  "canada": {
+    "message": "Canada"
+  },
+  "us_california": {
+    "message": "VS Californië"
+  },
+  "us2": {
+    "message": "VS Oosten"
+  },
+  "us1": {
+    "message": "VS Midwesten"
+  },
+  "us_chicago": {
+    "message": "VS Chicago"
+  },
+  "us_south_west": {
+    "message": "VS Texas"
+  },
+  "us_florida": {
+    "message": "VS Florida"
+  },
+  "us_seattle": {
+    "message": "VS Seattle"
+  },
+  "us3": {
+    "message": "VS Westen"
+  },
+  "us_silicon_valley": {
+    "message": "VS Silicon Valley"
+  },
+  "us_new_york_city": {
+    "message": "VS New York (stad)"
+  },
+  "us_atlanta": {
+    "message": "VS Atlanta"
+  },
+  "us_las_vegas": {
+    "message": "VS Las Vegas"
+  },
+  "us_houston": {
+    "message": "VS Houston"
+  },
+  "us_wdc": {
+    "message": "VS Washington DC"
+  },
+  "us_washington_dc": {
+    "message": "VS Washington DC"
+  },
+  "us_denver": {
+    "message": "VS Denver"
+  },
+  "uk": {
+    "message": "VK Londen"
+  },
+  "uk_southampton": {
+    "message": "VK Southampton"
+  },
+  "uk_manchester": {
+    "message": "VK Manchester"
+  },
+  "ca": {
+    "message": "Montreal (Canada)"
+  },
+  "ca_toronto": {
+    "message": "Toronto (Canada)"
+  },
+  "ca_vancouver": {
+    "message": "CA Vancouver"
+  },
+  "aus": {
+    "message": "Sydney (Australië)"
+  },
+  "aus_melbourne": {
+    "message": "Melbourne (Australië)"
+  },
+  "aus_perth": {
+    "message": " Perth (Aus)"
+  },
+  "nl": {
+    "message": "Nederland"
+  },
+  "swiss": {
+    "message": "Zwitserland"
+  },
+  "sweden": {
+    "message": "Zweden"
+  },
+  "france": {
+    "message": "Frankrijk"
+  },
+  "germany": {
+    "message": "DE Frankfurt"
+  },
+  "de_berlin": {
+    "message": "DE Berlijn"
+  },
+  "belgium": {
+    "message": "België"
+  },
+  "austria": {
+    "message": "Oostenrijk"
+  },
+  "czech": {
+    "message": "Tsjechië"
+  },
+  "ro": {
+    "message": "Roemenië"
+  },
+  "turkey": {
+    "message": "Turkije"
+  },
+  "hk": {
+    "message": "Hongkong"
+  },
+  "sg": {
+    "message": "Singapore"
+  },
+  "japan": {
+    "message": "Japan"
+  },
+  "israel": {
+    "message": "Israël"
+  },
+  "mexico": {
+    "message": "Mexico"
+  },
+  "brazil": {
+    "message": "Brazilië"
+  },
+  "ireland": {
+    "message": "Ierland"
+  },
+  "italy": {
+    "message": "Italië"
+  },
+  "spain": {
+    "message": "Spanje"
+  },
+  "nz": {
+    "message": "Nieuw-Zeeland"
+  },
+  "denmark": {
+    "message": "Denemarken"
+  },
+  "in": {
+    "message": "India"
+  },
+  "fi": {
+    "message": "Finland"
+  },
+  "no": {
+    "message": "Noorwegen"
+  },
+  "kr": {
+    "message": "Zuid-Korea"
+  },
+  "poland": {
+    "message": "Polen"
+  },
+  "hungary": {
+    "message": "Hongarije"
+  },
+  "lu": {
+    "message": "Luxemburg"
+  },
+  "ae": {
+    "message": "Verenigde Arabische Emiraten"
+  },
+  "za": {
+    "message": "Zuid-Afrika"
+  }
+}

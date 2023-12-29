@@ -1,0 +1,764 @@
+{
+  "PrivateInternetAccess": {
+    "message": "Private Internet Access"
+  },
+  "BrowserMessage": {
+    "message": "Расширение для браузера"
+  },
+  "FirstSlideInstallThanks": {
+    "message": "Благодарим за установку"
+  },
+  "StartSlide": {
+    "message": "Давайте приступим"
+  },
+  "Step1": {
+    "message": "ШАГ 1 ИЗ 2"
+  },
+  "Step2": {
+    "message": "ШАГ 2 ИЗ 2"
+  },
+  "ChooseTheme": {
+    "message": "Выберите тему"
+  },
+  "EnableSetings": {
+    "message": "Включить дополнительные функции"
+  },
+  "PrivateInternetComesWith": {
+    "message": "Private Internet Access включает "
+  },
+  "LightAndDarkDisclaimer": {
+    "message": "светлую и темную темы под "
+  },
+  "LookOfBrowserDisclaimer": {
+    "message": "оформление вашего браузера"
+  },
+  "OnBoardingStart": {
+    "message": "НАЧАТЬ"
+  },
+  "WhiteTheme": {
+    "message": "Светлая тема"
+  },
+  "Next": {
+    "message": "ДАЛЕЕ"
+  },
+  "Skip": {
+    "message": "ПРОПУСТИТЬ"
+  },
+  "ChangeExtraFeaturesSettings": {
+    "message": "Дополнительные функции"
+  },
+  "encounterMessage_2": {
+    "message": "обращайтесь в нашу службу поддержки "
+  },
+  "JustInTimeDisclaimer": {
+    "message": "Оцените свои впечатления от PIA"
+  },
+  "feedbackMessage_1": {
+    "message": "Благодарим за отзыв! Мы также будем благодарны, если вы оцените нас в "
+  },
+  "feedbackMessage_2": {
+    "message": "Интернет-магазине Chrome"
+  },
+  "encountermessage_1": {
+    "message": "Благодарим за отзыв! Если у вас возникнут технические проблемы, "
+  },
+  "UILanguage": {
+    "message": "Язык интерфейса"
+  },
+  "UILanguageTooltip": {
+    "message": "Язык, используемый расширением для отображения текста."
+  },
+  "TheExtensionIsStillLoading": {
+    "message": "Это расширение все еще загружается, загрузка журнала отладки пока невозможна."
+  },
+  "ReloadPage": {
+    "message": "Перезагрузить страницу"
+  },
+  "Extension": {
+    "message": "Расширение"
+  },
+  "ForgotPassword": {
+    "message": "Забыли пароль?"
+  },
+  "BuyAccount": {
+    "message": "Купить учетную запись"
+  },
+  "DeleteDebugLog": {
+    "message": "Очистить журнал"
+  },
+  "SettingNotControllable": {
+    "message": "Расширение не может управлять этим параметром."
+  },
+  "SettingControlledByOther": {
+    "message": "Этот параметр управляется другим расширением."
+  },
+  "AllowExtensionNotifications": {
+    "message": "Разрешить уведомления рабочего стола"
+  },
+  "AllowExtensionNotificationsTooltip": {
+    "message": "Разрешите расширению создавать уведомления рабочего стола, когда происходит что-то важное. Не рекомендуется отключать эту функцию."
+  },
+  "Tracking": {
+    "message": "Отслеживание"
+  },
+  "FingerprintProtection": {
+    "message": "Защита идентификационных данных"
+  },
+  "FingerprintProtectionTooltip": {
+    "message": "Защититесь от сбора идентификационных данных из браузера, предоставив общую информацию о своем ПК и предотвратив доступ к определенным API браузера."
+  },
+  "FingerprintProtectionHeader": {
+    "message": "Настройка защиты отпечатком пальца"
+  },
+  "FingerprintProtectionDisclaimer": {
+    "message": "Этот параметр способен обеспечить дополнительную конфиденциальность и безопасность, однако может конфликтовать с некоторыми веб-сайтами и вызывать непредвиденное поведение браузера. Полный список изменений можно найти здесь:"
+  },
+  "FingerprintProtectionInstructions": {
+    "message": "Рекомендуется использовать эту функцию, но некоторые пользователи могут счесть ее неудобной. Выберите, хотите ли вы включить защиту идентификационных данных отпечатком пальца:"
+  },
+  "FingerprintProtectionEnable": {
+    "message": "Включить"
+  },
+  "FingerprintProtectionDisable": {
+    "message": "Отключить"
+  },
+  "FingerprintProtectionAfterword": {
+    "message": "Этот параметр также можно изменить на панели «Настройки расширения» после входа в расширение."
+  },
+  "TrackingProtection": {
+    "message": "Защита от отслеживания"
+  },
+  "TrackingProtectionTooltip": {
+    "message": "Блокирует запросы к доменам, замеченные на участии в межсайтовом отслеживании пользователей."
+  },
+  "BlockHyperlinkAuditing": {
+    "message": "Отключить аудит гиперссылок"
+  },
+  "BlockHyperlinkAuditingTooltip": {
+    "message": "Отключение аудита гиперссылок – недавно введенная HTML-функция, назначение которой – уведомлять трекеры и аналитические службы о том, что вы активировали ссылку."
+  },
+  "ViewDebugLog": {
+    "message": "Просмотреть журнал отладки"
+  },
+  "DebugMode": {
+    "message": "Режим отладки"
+  },
+  "DebugModeTooltip": {
+    "message": "Запись сообщений в журнал отладки. Нажмите «ctrl», а затем клавишу «d», чтобы отобразить журнал отладки."
+  },
+  "DarkTheme": {
+    "message": "Темная тема"
+  },
+  "DarkThemeTooltip": {
+    "message": "Включите более темную тему для использования расширения в условиях слабой освещенности"
+  },
+  "IpReal": {
+    "message": "IP-адрес"
+  },
+  "IpProxy": {
+    "message": "IP-адрес VPN"
+  },
+  "DebugLogIsEmpty": {
+    "message": "Журнал отладки пустой."
+  },
+  "PersistentSettingsDisclaimer": {
+    "message": "Активированные настойки теперь применяются всегда независимо от того, подключились вы к региону или нет – за исключением настройки PIA MACE™, которая активна только в случае, если вы подключились к региону."
+  },
+  "PersistentIncognitoDisclaimer": {
+    "message": "Включите расширение в режиме инкогнито, выбрав этот пункт в настройках расширения на экране chrome://extensions."
+  },
+  "UsernamePlaceholder": {
+    "message": "Имя пользователя"
+  },
+  "PasswordPlaceholder": {
+    "message": "Пароль"
+  },
+  "TryAgain": {
+    "message": "Повторить"
+  },
+  "LoginText": {
+    "message": "Вход"
+  },
+  "SelectRegionText": {
+    "message": "Выберите регион"
+  },
+  "WrongUsernameAndPassword": {
+    "message": "Неверное сочетание имени пользователя и пароля."
+  },
+  "OfflineError": {
+    "message": "Не удалось выполнить вход, т.к., судя по всему, вы не в сети. Проверьте подключение к Интернету."
+  },
+  "TimeoutError": {
+    "message": "Превышен интервал ожидания входа: %{seconds} сек. Повторите попытку."
+  },
+  "AbortError": {
+    "message": "Попытка входа прервана браузером. Повторите попытку."
+  },
+  "UnexpectedServerResponse": {
+    "message": "Непредвиденный ответ сервера при попытке выполнить вход (%{statusLine})."
+  },
+  "TooManyRequestsError": {
+    "message": "Слишком много неудачных попыток входа. Повторите попытку позже."
+  },
+  "UnknownError": {
+    "message": "Произошла неизвестная ошибка."
+  },
+  "CopyToClipboard": {
+    "message": "Копировать журнал отладки"
+  },
+  "CopiedToClipboard": {
+    "message": "Журнал отладки скопирован"
+  },
+  "JoinURL": {
+    "message": "https://rus.privateinternetaccess.com/pages/buy-vpn/"
+  },
+  "PopularWebsites": {
+    "message": "Популярные веб-сайты"
+  },
+  "OtherWebsites": {
+    "message": "Другие веб-сайты"
+  },
+  "ImportExportHeader": {
+    "message": "Правила импорта/экспорта"
+  },
+  "ImportLabel": {
+    "message": "Импорт"
+  },
+  "ExportLabel": {
+    "message": "Экспорт"
+  },
+  "BypassWarningLead": {
+    "message": "Запросы, сделанные к веб-сайтам в списке обходов, используют"
+  },
+  "BypassWarningBold": {
+    "message": "прямые подключения и не защищены Private Internet Access™."
+  },
+  "AccountSettingsText": {
+    "message": "Настройки учетной записи"
+  },
+  "SupportText": {
+    "message": "Справка и поддержка"
+  },
+  "OfflineText": {
+    "message": "НЕ В СЕТИ"
+  },
+  "Security": {
+    "message": "Безопасность"
+  },
+  "MaceProtection": {
+    "message": "PIA MACE™"
+  },
+  "WhatIsMace": {
+    "message": "Что такое MACE™?"
+  },
+  "MaceTooltip": {
+    "message": "PIA MACE™ помогает обеспечить вам конфиденциальность и безопасность, блокируя вредоносный контент, трекеры и рекламу. Параметр активен только при подключении к региону."
+  },
+  "WebRTCLeakProtection": {
+    "message": "Блокировать определение IP в WebRTC"
+  },
+  "WebRTCTooltip": {
+    "message": "Запрет браузеру %{browser} определять ваши общедоступные и закрытые IP-адреса при использовании WebRTC. Рекомендуется не отключать эту настройку."
+  },
+  "BlockAdobeFlash": {
+    "message": "Блокировать Adobe Flash"
+  },
+  "AdobeFlashTooltip": {
+    "message": "Запретите браузеру %{browser} запускать Adobe Flash. Adobe Flash может использоваться для определения ваших общедоступных и закрытых IP-адресов. Рекомендуется не отключать эту настройку."
+  },
+  "HttpsUpgrade": {
+    "message": "Просматривайте веб-страницы с использованием HTTPS"
+  },
+  "HttpsUpgradeTooltip": {
+    "message": "Автоматическое преобразование поддерживаемых веб-сайтов или ссылок, использующих нешифрованное подключение (HTTP), в более защищенное подключение HTTPS перед выходом из браузера. Эту возможность обеспечивают функции HTTPS Everywhere и EFF."
+  },
+  "AlwaysActive": {
+    "message": "Всегда активные настройки"
+  },
+  "AlwaysActiveTooltip": {
+    "message": "Если выбрать этот параметр, настройки всегда остаются активными независимо от того, подключен ли прокси"
+  },
+  "BlockUTM": {
+    "message": "Удалять параметры UTM"
+  },
+  "BlockUTMTooltip": {
+    "message": "Удаление параметров UTM (Urchin Tracking Mode) из URL-адресов, которые вы активируете. Параметры UTM  используются для отслеживания информации о вашем посещении веб-сайта."
+  },
+  "BlockFBCLID": {
+    "message": "Удалять параметры FBCLID"
+  },
+  "BlockFBCLIDTooltip": {
+    "message": "Удаление параметров FBCLID Facebook из исходящих ссылок в Facebook. Параметры FBCLID используются для отслеживания информации о вашем посещении веб-сайта"
+  },
+  "BypassInstructionsBold": {
+    "message": "* требуется префикс"
+  },
+  "BypassInstructions": {
+    "message": "для обхода всех поддоменов для веб-сайта."
+  },
+  "ProxyBypassList": {
+    "message": "Список обходов"
+  },
+  "SmartLocation": {
+    "message": "Смарт-местоположение"
+  },
+  "WebAlreadyAdded": {
+    "message": "Уже добавленные веб-сайты"
+  },
+  "AddSmartLocation": {
+    "message": "Добавить смарт-местоположение"
+  },
+  "WelcomeToNewVersion": {
+    "message": "Добро пожаловать в %{appVersion}!"
+  },
+  "ExtensionUpdated": {
+    "message": "Расширение обновлено"
+  },
+  "OneRuleAdded": {
+    "message": "Добавлено 1 правило"
+  },
+  "NoRulesAdded": {
+    "message": "Правила не добавлены"
+  },
+  "NoLocation": {
+    "message": "Местоположение не добавлено"
+  },
+  "OneLocation": {
+    "message": "местоположение добавлено"
+  },
+  "MultipleLocations": {
+    "message": "местоположения"
+  },
+  "MultipleRulesAdded": {
+    "message": "Добавлено правил: %{count}"
+  },
+  "DebugLog": {
+    "message": "Журнал отладки"
+  },
+  "BlockNetworkPrediction": {
+    "message": "Отключить прогнозирование сети"
+  },
+  "BlockNetworkPredictionTooltip": {
+    "message": "Отключение службы прогнозирования сети в составе %{browser}. Эта служба заранее разрешает запросы DNS и предварительно доставляет веб-страницы с контентом, обнаруженным на посещаемой вами странице."
+  },
+  "BlockSafeBrowsing": {
+    "message": "Отключить SafeBrowsing"
+  },
+  "ReadMore": {
+    "message": "Подробности"
+  },
+  "BlockSafeBrowsingTooltip": {
+    "message": "Отключение возможности совершения прямых подключений браузером %{browser} к сетевой службе, в которой возможны проблемы с хранением журналов. PIA Mace™ нейтрализует риск, связанный с этой службой."
+  },
+  "BlockAutofill": {
+    "message": "Отключить авто-заполнение"
+  },
+  "BlockAutofillTooltip": {
+    "message": "Отключение функции автоматического заполнения форм в %{browser} . Если эта функция не отключена, возможна утечка персональных данных через скрытые поля формы."
+  },
+  "BlockAutofillCreditCard": {
+    "message": "Отключить авто-заполнение платежной карты"
+  },
+  "BlockAutofillCreditCardTooltip": {
+    "message": "Отключение функции автоматического заполнения данных платежной карты в %{browser}. Если эта функция не отключена, возможна утечка персональных данных через скрытые поля формы."
+  },
+  "BlockAutofillAddress": {
+    "message": "Отключить авто-заполнение адреса"
+  },
+  "BlockAutofillAddressTooltip": {
+    "message": "Отключение функции автоматического заполнения адресов в %{browser} . Если эта функция не отключена, возможна утечка персональных данных через скрытые поля формы."
+  },
+  "BlockLocationAccess": {
+    "message": "Блокировать доступ к местоположению"
+  },
+  "BlockLocationAccessTooltip": {
+    "message": "Блокировка доступа веб-сайтов к информации о вашем физическом местоположении."
+  },
+  "BlockHTTPReferer": {
+    "message": "Отключить реферер веб-сайта"
+  },
+  "BlockHTTPRefererTooltip": {
+    "message": "Отключение отправки браузером %{browser} адреса текущей веб-страницы на другую веб-страницу при переходе по ссылке."
+  },
+  "BlockThirdpartycookies": {
+    "message": "Отключить сторонние cookie-файлы"
+  },
+  "BlockThirdpartycookiesTooltip": {
+    "message": "Отключение  принятия браузером %{browser} cookie-файлов от сторонних веб-сайтов. Cookie-файлы от сторонних веб-сайтов могут использоваться для отслеживания вашего посещения веб-сайтов сторонними сайтами или веб-службами."
+  },
+  "BlockCameraAccess": {
+    "message": "Блокировать доступ к камере"
+  },
+  "BlockCameraAccessTooltip": {
+    "message": "Блокировка доступа к камере компьютера для веб-сайтов."
+  },
+  "BlockMicrophoneAccess": {
+    "message": "Блокировать доступ к микрофону"
+  },
+  "BlockMicrophoneAccessTooltip": {
+    "message": "Блокировка доступа к микрофону компьютера для веб-сайтов."
+  },
+  "Privacy": {
+    "message": "Конфиденциальность"
+  },
+  "ImportFileMessage": {
+    "message": "Выберите экспортированный файл обхода правил (напр., bypass-rules.json)"
+  },
+  "InvalidImportFileStructure": {
+    "message": "Невозможно прочесть файл, выберите допустимый файл"
+  },
+  "CurrentRegionText": {
+    "message": "Текущий регион"
+  },
+  "NoRegionSelected": {
+    "message": "Регион не выбран"
+  },
+  "ChooseAutomatically": {
+    "message": "Выбрать автоматически"
+  },
+  "ChangeExtensionSettings": {
+    "message": "Настройки расширения"
+  },
+  "CannotUsePIAMessage": {
+    "message": "Использование Private Internet Access невозможно: настройками прокси ваших браузеров управляет другое расширение."
+  },
+  "ManageExtensions": {
+    "message": "Управление расширениями"
+  },
+  "RegionName": {
+    "message": "Имя"
+  },
+  "RegionLatency": {
+    "message": "Латентность"
+  },
+  "RegionSearch": {
+    "message": "Поиск..."
+  },
+  "CloseText": {
+    "message": "Закрыть"
+  },
+  "UpgradeBrowserMessage": {
+    "message": "Использование Private Internet Access невозможно, т.к. вы используете устаревшую версию браузера %{browser}. Please Обновите %{browser} до последней версии."
+  },
+  "LogoutText": {
+    "message": "Выход"
+  },
+  "AuthFailPageTitle": {
+    "message": "Ошибка аутентиификации| Private Internet Access"
+  },
+  "AuthFailTitle": {
+    "message": "Ошибка аутентификации."
+  },
+  "AuthFailMessage": {
+    "message": "Если вы недавно сменили пароль на веб-сайте Private Internet Access, эту ошибку можно исправить, повторно выполнив аутентификацию расширения.<br /><br />Если вам требуются помощь и поддержка обращайтесь в нашу <a href=\"https://privateinternetaccess.com/helpdesk\">службу поддержки</a>."
+  },
+  "AuthFailMessageSupportLead": {
+    "message": "Для получения справки и поддержки обращайтесь в нашу"
+  },
+  "AuthFailMessageSupportEnd": {
+    "message": "службу поддержки"
+  },
+  "ConnectionFailPageTitle": {
+    "message": "Ошибка подключения | Private Internet Access"
+  },
+  "ConnectionFailTitle": {
+    "message": "Ошибка соединения"
+  },
+  "ConnectionFailMessage": {
+    "message": "Возможно, у вас исчезла возможность соединения с Интернетом, ваше интернет-соединение разорвано, или на сервере Private Internet Access, к которому вы подключаетесь, возникли технические проблемы."
+  },
+  "NoNetworkConnection": {
+    "message": "Нет сетевого подключения"
+  },
+  "YouAreConnectedTo": {
+    "message": "Вы соединены с регионом «%{region}»"
+  },
+  "YouAreNotConnected": {
+    "message": "Вы не соединены"
+  },
+  "enabled": {
+    "message": "активировано"
+  },
+  "RememberMe": {
+    "message": "Запомнить меня"
+  },
+  "RememberMeTooltip": {
+    "message": "Сохранение имени пользователя между перезапусками браузера"
+  },
+  "Auto": {
+    "message": "Авто"
+  },
+  "CalculatingLatency": {
+    "message": "Расчет задержки..."
+  },
+  "NoRegionsFound": {
+    "message": "Регионы не найдены"
+  },
+  "RefreshRegions": {
+    "message": "Обновить регионы"
+  },
+  "ViewChangelog": {
+    "message": "просмотреть историю изменений"
+  },
+  "ChangelogTitle": {
+    "message": "История изменений"
+  },
+  "UnknownProxyError": {
+    "message": "Произошла неизвестная ошибка прокси-сервера"
+  },
+  "Connecting": {
+    "message": "подключение..."
+  },
+  "Disconnecting": {
+    "message": "отключение..."
+  },
+  "Connected": {
+    "message": "подключено"
+  },
+  "DefaultDisplay": {
+    "message": "ОТОБРАЖЕНИЕ ПО УМОЛЧАНИЮ"
+  },
+  "QuickConnect": {
+    "message": "БЫСТРОЕ ПОДКЛЮЧЕНИЕ"
+  },
+  "QuickSettings": {
+    "message": "БЫСТРЫЕ НАСТРОЙКИ"
+  },
+  "MACE": {
+    "message": "MACE"
+  },
+  "HTTPREFERRER": {
+    "message": "ОТКЛЮЧИТЬ РЕФЕРЕР HTTP"
+  },
+  "DEBUGLOGGING": {
+    "message": "ВЕДЕНИЕ ЖУРНАЛА ОТЛАДКИ"
+  },
+  "LIGHTTHEME": {
+    "message": "СВЕТЛАЯ ТЕМА"
+  },
+  "FPPROTECTION": {
+    "message": "ЗАЩИТА ОТПЕЧАТКОМ ПАЛЬЦА"
+  },
+  "BLOCKCAMERA": {
+    "message": "БЛОКИРОВАТЬ ДОСТУП К КАМЕРЕ"
+  },
+  "BLOCKMICROPHONE": {
+    "message": "БЛОКИРОВАТЬ ДОСТУП К МИКРОФОНУ"
+  },
+  "VIEWALL": {
+    "message": "ПРОСМОТРЕТЬ ВСЕ НАСТРОЙКИ..."
+  },
+  "trial": {
+    "message": "Пробная версия"
+  },
+  "days_left": {
+    "message": "дн. осталось"
+  },
+  "Subscription": {
+    "message": "ПОДПИСКА"
+  },
+  "NoSubscriptionData": {
+    "message": "Информация о пользователе не найдена"
+  },
+  "AddToBypassRules": {
+    "message": "ДОБАВИТЬ В ПРАВИЛА ОБХОДОВ"
+  },
+  "RuleAlreadyIncluded": {
+    "message": "Правило уже включено"
+  },
+  "RemoveRule": {
+    "message": "удалить"
+  },
+  "GatheringRegions": {
+    "message": "Сбор данных по регионам"
+  },
+  "PrivateBrowsingChangeLead": {
+    "message": "Браузер Firefox недавно изменил подход к обработке расширениями подключений через прокси-сервер. Теперь для обновления настроек прокси необходимо разрешить запускать расширение в индивидуальном окне."
+  },
+  "PrivateBrowsingChangeDirections": {
+    "message": "Для просмотра страницы расширений перейдите по URL-адресу ниже. После этого щелкните по расширению «Private Internet Access» для доступа к его настройкам, а затем измените значение параметра «Запускать в индивидуальном окне» на «Разрешить»."
+  },
+  "us": {
+    "message": "США"
+  },
+  "gb": {
+    "message": "Великобритания"
+  },
+  "de": {
+    "message": "Германия"
+  },
+  "au": {
+    "message": "Австралия"
+  },
+  "canada": {
+    "message": "Канада"
+  },
+  "us_california": {
+    "message": "США, Калифорния"
+  },
+  "us2": {
+    "message": "США, Восток"
+  },
+  "us1": {
+    "message": "США, Средний Запад"
+  },
+  "us_chicago": {
+    "message": "США, Чикаго"
+  },
+  "us_south_west": {
+    "message": "США, Техас"
+  },
+  "us_florida": {
+    "message": "США, Флорида"
+  },
+  "us_seattle": {
+    "message": "США, Сиэттл"
+  },
+  "us3": {
+    "message": "США, Запад"
+  },
+  "us_silicon_valley": {
+    "message": "США, Кремниевая Долина"
+  },
+  "us_new_york_city": {
+    "message": "США, г. Нью-Йорк"
+  },
+  "us_atlanta": {
+    "message": "США, Атланта"
+  },
+  "us_las_vegas": {
+    "message": "США, Лас-Вегас"
+  },
+  "us_houston": {
+    "message": "США, Хьюстон"
+  },
+  "us_wdc": {
+    "message": "США, Вашингтон (округ Колумбия)"
+  },
+  "us_washington_dc": {
+    "message": "США (Вашингтон, округ Колумбия)"
+  },
+  "us_denver": {
+    "message": "США, Денвер"
+  },
+  "uk": {
+    "message": "Великобритания, Лондон"
+  },
+  "uk_southampton": {
+    "message": "Великобритания, Саутхэмптон"
+  },
+  "uk_manchester": {
+    "message": "Великобритания, Манчестер"
+  },
+  "ca": {
+    "message": "Канада, Монреаль"
+  },
+  "ca_toronto": {
+    "message": "Канада, Торонто"
+  },
+  "ca_vancouver": {
+    "message": "Канада, Ванкувер"
+  },
+  "aus": {
+    "message": "Австралия, Сидней"
+  },
+  "aus_melbourne": {
+    "message": "Австралия, Мельбурн"
+  },
+  "aus_perth": {
+    "message": " Австралия, Перт"
+  },
+  "nl": {
+    "message": "Нидерланды"
+  },
+  "swiss": {
+    "message": "Швейцария"
+  },
+  "sweden": {
+    "message": "Швеция"
+  },
+  "france": {
+    "message": "Франция"
+  },
+  "germany": {
+    "message": "Германия (Франкфурт)"
+  },
+  "de_berlin": {
+    "message": "Германия (Берлин)"
+  },
+  "belgium": {
+    "message": "Бельгия"
+  },
+  "austria": {
+    "message": "Австрия"
+  },
+  "czech": {
+    "message": "Чешская Республика"
+  },
+  "ro": {
+    "message": "Румыния"
+  },
+  "turkey": {
+    "message": "Турция"
+  },
+  "hk": {
+    "message": "Гонконг"
+  },
+  "sg": {
+    "message": "Сингапур"
+  },
+  "japan": {
+    "message": "Япония"
+  },
+  "israel": {
+    "message": "Израиль"
+  },
+  "mexico": {
+    "message": "Мексика"
+  },
+  "brazil": {
+    "message": "Бразилия"
+  },
+  "ireland": {
+    "message": "Ирландия"
+  },
+  "italy": {
+    "message": "Италия"
+  },
+  "spain": {
+    "message": "Испания"
+  },
+  "nz": {
+    "message": "Новая Зеландия"
+  },
+  "denmark": {
+    "message": "Дания"
+  },
+  "in": {
+    "message": "Индия"
+  },
+  "fi": {
+    "message": "Финляндия"
+  },
+  "no": {
+    "message": "Норвегия"
+  },
+  "kr": {
+    "message": "Южная Корея"
+  },
+  "poland": {
+    "message": "Польша"
+  },
+  "hungary": {
+    "message": "Венгрия"
+  },
+  "lu": {
+    "message": "Люксембург"
+  },
+  "ae": {
+    "message": "ОАЭ"
+  },
+  "za": {
+    "message": "ЮАР"
+  }
+}
