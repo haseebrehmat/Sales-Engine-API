@@ -21,7 +21,7 @@ def custom_function():
 
 def check_current_group():
     group_scrapper = None
-    if env('ENVIRONMENT') == 'production':
+    if env('ENVIRONMENT') == 'production' or env('ENVIRONMENT') == 'development' or env('ENVIRONMENT') == 'local':
         queryset = GroupScraper.objects.filter(disabled=False, is_analytics=False).order_by('scheduler_settings__time')
     if env('ENVIRONMENT') == 'analytics':
         queryset = GroupScraper.objects.filter(disabled=False, is_analytics=True).order_by('scheduler_settings__time')
