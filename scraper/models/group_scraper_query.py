@@ -12,4 +12,9 @@ class GroupScraperQuery(TimeStamped):
     start_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.group_scraper.name} - {self.job_source} - {self.job_type}"
+        if self.group_scraper is not None:
+            return f"{self.group_scraper.name} - {self.job_source} - {self.job_type}"
+        else:
+            return f"Unassigned - {self.job_source} - {self.job_type}"
+
+        
