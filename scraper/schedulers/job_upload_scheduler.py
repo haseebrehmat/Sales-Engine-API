@@ -814,9 +814,6 @@ def group_scraper_job(group_id):
     current_scraper = group_scraper.name
     print(f"This is the time of group : {current_scraper}")
     current_scraper = current_scraper.lower()
-
-    SchedulerSync.objects.filter(
-        type="group scraper").update(running=False, end_time=datetime.now(pakistan_timezone))
     SchedulerSync.objects.filter(
         job_source=current_scraper).update(running=True, start_time=datetime.now(pakistan_timezone),
                                         end_time=datetime.now(pakistan_timezone))

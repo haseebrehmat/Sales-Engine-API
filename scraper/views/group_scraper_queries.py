@@ -20,10 +20,11 @@ class GroupScraperQueriesView(APIView):
 
     def get(self, request):
         data = {}
-        queryset = GroupScraperQuery.objects.all()
+        queryset = GroupScraperQuery.objects.exclude(group_scraper=None)
         grouped_record = list(
             queryset.values('group_scraper__name').annotate(total_scraper_jobs=Count('group_scraper__name')))
         grouped_instances = {}
+        
         for record in grouped_record:
             group_name = record['group_scraper__name']
             group_objects = {
