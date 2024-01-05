@@ -27,7 +27,7 @@ def update_job_description(driver, data):
             driver.get(data[i][4])
             job_description = driver.find_elements(By.CLASS_NAME, "prose")[0]
             data[i][3] = job_description.text
-            data[i][-1] = job_description.get_attribute('innerHTML')
+            data[i].append(job_description.get_attribute('innerHTML'))
     except Exception as e:
         saveLogs(e)
     driver.get(current_url)
@@ -67,10 +67,9 @@ def find_jobs(driver, job_type, total_job, link):
 
                 estimated_salary = k_conversion(estimated_salary)
 
-                estimated_salary = estimated_salary.split("-")
-
-                min_salary, max_salary = estimated_salary.split("-")
-
+                salary_extrema = estimated_salary.split("-")
+                min_salary = salary_extrema[0]
+                max_salary = salary_extrema[1] if len(salary_extrema) > 1 else min_salary
 
             elif len(job.text.split("\n")) == 4:
                 # Character to search for
