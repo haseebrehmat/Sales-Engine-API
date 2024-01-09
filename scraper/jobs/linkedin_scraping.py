@@ -127,7 +127,11 @@ def find_jobs(driver, job_type, total_jobs, url=None):
             job_source_url = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__content--two-pane")
             url = job_source_url.find_element(By.TAG_NAME, 'a')
             append_data(data, url.get_attribute('href'))
-            job_posted_date = job.find_element(By.TAG_NAME, "time")
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "tvm__text--positive"))
+            )
+            job_posted_date = driver.find_element(By.CLASS_NAME, "tvm__text--positive")
             job_date = job_posted_date.text.split('\n')[0]
             append_data(data, job_date)
 
@@ -178,6 +182,10 @@ def find_jobs(driver, job_type, total_jobs, url=None):
 
             append_data(data, "Linkedin")
             try:
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight"))
+                )
                 job_type_check = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight")
                 if 'Contract' in job_type_check.text:
                     append_data(data, set_job_type('Contract'))
