@@ -19,6 +19,10 @@ def request_url(driver, url):
 def append_data(data, field):
     data.append(str(field).strip("+"))
 
+def extract_date(input_date, prefix = "Published on "):
+    if input_date.startswith(prefix):
+        input_date = input_date[len(prefix):]    
+    return input_date
 
 def update_job_description(driver, data):
     current_url = driver.current_url
@@ -26,6 +30,8 @@ def update_job_description(driver, data):
         for i in range(len(data)):
             driver.get(data[i][4])
             job_description = driver.find_elements(By.CLASS_NAME, "prose")[0]
+            posted_date = driver.find_element(By.XPATH, "/html/body/main/section/div/div[1]/article/div[3]/h2")
+            data[i][5] = extract_date(posted_date.text)
             data[i][3] = job_description.text
             data[i].append(job_description.get_attribute('innerHTML'))
     except Exception as e:
