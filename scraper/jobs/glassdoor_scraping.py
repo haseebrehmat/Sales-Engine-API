@@ -51,9 +51,12 @@ def find_jobs(driver, job_type):
         count = 0
         print(total_jobs)
         batch_size = 50
-        close_button = WebDriverWait(driver, 30).until(EC.presence_of_element_located(
-                (By.CLASS_NAME, "modal_closeIcon")))
-        close_button.click()
+        try:
+            close_button = WebDriverWait(driver, 30).until(EC.presence_of_element_located(
+                    (By.CLASS_NAME, "modal_closeIcon")))
+            close_button.click()
+        except:
+            pass
         for job in jobs:
             try:
                 job, error = get_job_detail(driver, job, job_type)
@@ -146,7 +149,6 @@ def get_job_detail(driver, jobs, job_type):
         except Exception as e:
             print(e)
             saveLogs(e)
-        print(job['job_title'])
         return job, False
     except Exception as e:
         saveLogs(e)

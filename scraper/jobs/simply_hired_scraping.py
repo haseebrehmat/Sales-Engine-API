@@ -9,8 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type, configure_undetected_chrome_driver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
 from utils.helpers import saveLogs
 
 # calls url
@@ -112,7 +111,7 @@ def find_jobs(driver, job_type, next_page_no):
 def simply_hired(link, job_type):
     print("Simply hired")
     try:
-        driver = configure_undetected_chrome_driver()
+        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
