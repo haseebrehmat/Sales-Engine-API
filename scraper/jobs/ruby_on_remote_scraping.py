@@ -7,7 +7,10 @@ from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_co
 from utils.helpers import saveLogs
 from scraper.utils.helpers import configure_webdriver
 
+from datetime import datetime, timedelta
+
 total_job = 0
+posted_date_max_checks = 3
 
 
 # calls url
@@ -23,6 +26,15 @@ def extract_date(input_date, prefix = "Published on "):
     if input_date.startswith(prefix):
         input_date = input_date[len(prefix):]    
     return input_date
+
+def is_one_week_ago(posted_date):
+    try:
+        current_date = datetime.now()
+        one_week_ago_date = current_date - timedelta(days=7)
+        converted_date = datetime.strptime(f"{posted_date} {current_date.year}", "%B %d %Y")
+        return converted_date >= one_week_ago_date and converted_date <= current_date
+    except ValueError:
+        return False
 
 def update_job_description(driver, data):
     current_url = driver.current_url
@@ -94,23 +106,30 @@ def find_jobs(driver, job_type, total_job, link):
             elif len(job.text.split("\n")) == 3:
                 job_title, company_name, job_posted_date = job.text.split("\n")
 
-            job_description = ""
-            job_url = job.find_element(By.TAG_NAME, "a").get_attribute("href")
-            data.append(job_title)
-            data.append(company_name)
-            data.append(address)
-            data.append(job_description)
-            data.append(job_url)
-            data.append(job_posted_date)
-            data.append(salary_format)
-            data.append(estimated_salary)
-            data.append(min_salary)
-            data.append(max_salary)
-            data.append("Ruby On Remote")
-            data.append(set_job_type("Full time remote"))
-            scrapped_data.append(data)
-            total_job += 1
-
+            if is_one_week_ago(job_posted_date):
+                job_description = ""
+                job_url = job.find_element(By.TAG_NAME, "a").get_attribute("href")
+                data.append(job_title)
+                data.append(company_name)
+                data.append(address)
+                data.append(job_description)
+                data.append(job_url)
+                data.append(job_posted_date)
+                data.append(salary_format)
+                data.append(estimated_salary)
+                data.append(min_salary)
+                data.append(max_salary)
+                data.append("Ruby On Remote")
+                data.append(set_job_type("Full time remote"))
+                scrapped_data.append(data)
+                total_job += 1
+            else:
+                global posted_date_max_checks
+                posted_date_max_checks -= 1
+                if posted_date_max_checks <= 0:
+                    break
+                else:
+                    continue
         update_job_description(driver, scrapped_data)
 
         columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
@@ -120,6 +139,10 @@ def find_jobs(driver, job_type, total_job, link):
         filename = generate_scraper_filename(ScraperNaming.RUBY_ON_REMOTE)
         df.to_excel(filename, index=False)
         ScraperLogs.objects.create(total_jobs=len(df), job_source="RubyOnRemote", filename=filename)
+        # Stop for Link (No pagination then)
+        if posted_date_max_checks <= 0:
+            return False
+        
         index = -1
         try:
             # pagination = driver.find_elements(By.CLASS_NAME, "paging")[0].find_elements(By.TAG_NAME, 'li')
