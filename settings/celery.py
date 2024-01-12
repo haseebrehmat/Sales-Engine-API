@@ -24,7 +24,7 @@ app.conf.beat_schedule = {
     },
     'octagon_scraper_bot': {
         'task': 'settings.celery.octagon_scraper_bot',
-        'schedule': timedelta(seconds=7200),
+        'schedule': timedelta(seconds=10800),
     }
 }
 
