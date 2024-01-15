@@ -16,16 +16,17 @@ from utils.helpers import saveLogs
 def login(driver, email, password):
     try:
         time.sleep(2)
-        driver.find_element(By.NAME, "username").click()
-        driver.find_element(By.NAME, "username").clear()
-        driver.find_element(By.NAME, "username").send_keys(
-            email)
-        driver.find_element(By.CSS_SELECTOR, "button.Button").click()
+        driver.find_element(By.ID, "inlineUserEmail").click()
+        driver.find_element(By.ID, "inlineUserEmail").clear()
+        driver.find_element(By.ID, "inlineUserEmail").send_keys(email)
+        btn = driver.find_element(By.CLASS_NAME, "emailButton")
+        btn.find_element(By.TAG_NAME, "button").click()
         time.sleep(2)
-        driver.find_element(By.NAME, "password").click()
-        driver.find_element(By.NAME, "password").clear()
-        driver.find_element(By.NAME, "password").send_keys(password)
-        driver.find_element(By.CSS_SELECTOR, "button[name='submit']").click()
+        driver.find_element(By.ID, "inlineUserPassword").click()
+        driver.find_element(By.ID, "inlineUserPassword").clear()
+        driver.find_element(By.ID, "inlineUserPassword").send_keys(password)
+        btn = driver.find_element(By.CLASS_NAME, "emailButton")
+        btn.find_element(By.TAG_NAME, "button").click()
         time.sleep(5)
         try:
             WebDriverWait(driver, 10).until(EC.presence_of_element_located(
@@ -51,9 +52,12 @@ def find_jobs(driver, job_type):
         count = 0
         print(total_jobs)
         batch_size = 50
-        close_button = WebDriverWait(driver, 30).until(EC.presence_of_element_located(
-                (By.CLASS_NAME, "modal_closeIcon")))
-        close_button.click()
+        try:
+            close_button = WebDriverWait(driver, 30).until(EC.presence_of_element_located(
+                    (By.CLASS_NAME, "modal_closeIcon")))
+            close_button.click()
+        except:
+            pass
         for job in jobs:
             try:
                 job, error = get_job_detail(driver, job, job_type)
@@ -146,7 +150,6 @@ def get_job_detail(driver, jobs, job_type):
         except Exception as e:
             print(e)
             saveLogs(e)
-        print(job['job_title'])
         return job, False
     except Exception as e:
         saveLogs(e)
@@ -168,7 +171,7 @@ def load_jobs(driver):
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
-        driver = configure_webdriver()
+        driver = configure_webdriver(True)
         driver.maximize_window()
         run_pia_proxy(driver)
         for x in Accounts.objects.filter(source='glassdoor'):
