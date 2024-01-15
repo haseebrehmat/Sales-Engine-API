@@ -16,16 +16,17 @@ from utils.helpers import saveLogs
 def login(driver, email, password):
     try:
         time.sleep(2)
-        driver.find_element(By.NAME, "username").click()
-        driver.find_element(By.NAME, "username").clear()
-        driver.find_element(By.NAME, "username").send_keys(
-            email)
-        driver.find_element(By.CSS_SELECTOR, "button.Button").click()
+        driver.find_element(By.ID, "inlineUserEmail").click()
+        driver.find_element(By.ID, "inlineUserEmail").clear()
+        driver.find_element(By.ID, "inlineUserEmail").send_keys(email)
+        btn = driver.find_element(By.CLASS_NAME, "emailButton")
+        btn.find_element(By.TAG_NAME, "button").click()
         time.sleep(2)
-        driver.find_element(By.NAME, "password").click()
-        driver.find_element(By.NAME, "password").clear()
-        driver.find_element(By.NAME, "password").send_keys(password)
-        driver.find_element(By.CSS_SELECTOR, "button[name='submit']").click()
+        driver.find_element(By.ID, "inlineUserPassword").click()
+        driver.find_element(By.ID, "inlineUserPassword").clear()
+        driver.find_element(By.ID, "inlineUserPassword").send_keys(password)
+        btn = driver.find_element(By.CLASS_NAME, "emailButton")
+        btn.find_element(By.TAG_NAME, "button").click()
         time.sleep(5)
         try:
             WebDriverWait(driver, 10).until(EC.presence_of_element_located(
@@ -170,7 +171,7 @@ def load_jobs(driver):
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
-        driver = configure_webdriver()
+        driver = configure_webdriver(True)
         driver.maximize_window()
         run_pia_proxy(driver)
         for x in Accounts.objects.filter(source='glassdoor'):
