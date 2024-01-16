@@ -102,6 +102,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 "jobs": jobs
             }
         )
+        
         if env("ENVIRONMENT") == 'local':
             for x in json.loads(payload)['jobs']:
                 print('Title => ', x['job_title'], 'Job Role => ', x['job_role'])
