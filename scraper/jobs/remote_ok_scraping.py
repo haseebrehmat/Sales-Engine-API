@@ -1,3 +1,5 @@
+from datetime import timedelta, datetime
+from django.utils import timezone
 from logging import exception
 import sys
 import traceback
@@ -24,8 +26,9 @@ def load_jobs(driver):
         if count == 5:
             break
         count += 1
-        time.sleep(5)
+        time.sleep(3)
         driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+        time.sleep(5)
         elements = driver.find_elements(By.CLASS_NAME, "company_and_position")
         if previous_len == len(elements):
             break
@@ -37,17 +40,34 @@ def get_job_urls(driver):
     try:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
-                (By.CLASS_NAME, "company_and_position"))
+                (By.CSS_SELECTOR, "tr[data-slug][data-id]"))
         )
     except Exception as error:
         print(error)
-    job_urls = driver.find_elements(By.CLASS_NAME, "company_and_position")
+    job_urls = driver.find_elements(By.CSS_SELECTOR, "tr[data-slug][data-id]")
     links = []
     for job_url in job_urls:
-        link = job_url.find_element(By.TAG_NAME, "a")
-        link.get_attribute("href")
-        links.append(link.get_attribute("href"))
+        try:
+            if (check_if_job_week_ago(job_url)):
+                link = job_url.get_attribute("data-href")
+                links.append(link)
+        except Exception as e:
+            print(e)
     return links
+
+def check_if_job_week_ago(job):
+    week_ago = False
+    try:
+        date_elm = job.find_element(By.TAG_NAME, "time")
+        date_str = date_elm.get_attribute("datetime")
+        date_obj = datetime.fromisoformat(date_str).replace(tzinfo=timezone.get_current_timezone())
+        current_date = datetime.now(tz=timezone.get_current_timezone())
+        one_week_ago_date = current_date - timedelta(days=7)
+        if date_obj >= one_week_ago_date:
+            week_ago = True
+    except Exception as e:
+        print(e)
+    return week_ago
 
 # calls url
 
@@ -75,8 +95,6 @@ def find_jobs(driver, job_type):
     scrapped_data = []
 
     links = get_job_urls(driver)
-
-    links.pop(0)
     total_job = len(links)
     original_window = driver.current_window_handle
     for link in links:
@@ -84,7 +102,7 @@ def find_jobs(driver, job_type):
         if link:
             try:
                 driver.switch_to.new_window('tab')
-                driver.get(link)
+                driver.get("https://remoteok.com" + link)
                 time.sleep(5)
                 id = link.split("-")[-1]
                 if is_convertible_to_number(id):

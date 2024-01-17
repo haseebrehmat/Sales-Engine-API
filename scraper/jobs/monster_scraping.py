@@ -45,29 +45,29 @@ def find_jobs(driver, job_type, total_job):
         By.CLASS_NAME, "job-search-resultsstyle__JobCardWrap-sc-1wpt60k-4")
     for job in jobs:
         try:
+            
             data = []
             job.click()
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "descriptionstyles__DescriptionContainer-sc-13ve12b-0"))
-            )
-            job_title = driver.find_element(
-                By.CLASS_NAME, "headerstyle__JobViewHeaderTitle-sc-1ijq9nh-5")
+            try: 
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, "jobview-containerstyles__JobViewWrapper-sc-n3vjwx-0 fJluds"))
+                )
+            except:
+                print("")
+            job_title = driver.find_element(By.CLASS_NAME, "headerstyle__JobViewHeaderJobName-sc-onfits-9")
             append_data(data, job_title.text)
-            company_name = driver.find_element(
-                By.CLASS_NAME, "headerstyle__JobViewHeaderCompany-sc-1ijq9nh-6")
+            company_name = driver.find_element(By.CLASS_NAME, "headerstyle__JobViewHeaderCompanyName-sc-onfits-12")
             append_data(data, company_name.text)
-            address = driver.find_element(
-                By.CLASS_NAME, "headerstyle__JobViewHeaderLocation-sc-1ijq9nh-4")
+            address = driver.find_element(By.CLASS_NAME, "headerstyle__JobViewHeaderDetails-sc-onfits-10").find_elements(By.TAG_NAME, "li")[1]
             append_data(data, address.text)
-            job_description = driver.find_element(
-                By.CLASS_NAME, "descriptionstyles__DescriptionBody-sc-13ve12b-4")
+            job_description = driver.find_element(By.CLASS_NAME, "descriptionstyles__DescriptionContainerOuter-sc-7dvtrp-0")
             append_data(data, job_description.text)
             url = driver.find_elements(
                 By.CLASS_NAME, "sc-gAjuZT")
             append_data(data, url[count].get_attribute('href'))
-            job_posted_date = driver.find_element(
-                By.CLASS_NAME, "detailsstyles__DetailsTableDetailPostedBody-sc-1deoovj-6")
+            count += 1
+            job_posted_date = driver.find_element(By.CLASS_NAME, "headerstyle__JobViewHeaderDetails-sc-onfits-10").find_elements(By.TAG_NAME, "li")[2]
             append_data(data, job_posted_date.text)
             try:
                 salary_string = driver.find_element(
@@ -95,7 +95,6 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, set_job_type(job_type))
             append_data(data, job_description.get_attribute('innerHTML'))
             scrapped_data.append(data)
-            count += 1
             total_job += 1
         except Exception as e:
             print("Exception in Monster => ", e)
