@@ -105,13 +105,18 @@ def find_jobs(driver, job_type, total_job, link):
 
             elif len(job.text.split("\n")) == 3:
                 job_title, company_name, job_posted_date = job.text.split("\n")
+                address = ""
+                salary_format = "N/A"
+                estimated_salary = "N/A"
+                min_salary = "N/A"
+                max_salary = "N/A"
 
             if is_one_week_ago(job_posted_date):
                 job_description = ""
                 job_url = job.find_element(By.TAG_NAME, "a").get_attribute("href")
                 data.append(job_title)
                 data.append(company_name)
-                data.append(address)
+                data.append(address if  address else "Remote")
                 data.append(job_description)
                 data.append(job_url)
                 data.append(job_posted_date)
@@ -158,7 +163,7 @@ def find_jobs(driver, job_type, total_job, link):
     except Exception as e:
         saveLogs(e)
         print(f'scrapped stopped due to: {e}')
-        return False, total_job
+        return False
 
 
 # code starts from here
