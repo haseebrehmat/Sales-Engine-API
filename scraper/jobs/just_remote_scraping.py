@@ -58,6 +58,7 @@ def find_jobs(driver, job_type):
     total_job = len(links)
     print(total_job)
     original_window = driver.current_window_handle
+    breakpoint()
     for link in links:
         data = []
         if link:
@@ -80,7 +81,7 @@ def find_jobs(driver, job_type):
                 address = 'Remote'
                 append_data(data, address)
 
-                job_source_url = link
+                job_source_url = link[0]
                 append_data(data, job_source_url)
 
                 job_description = temp
@@ -152,7 +153,7 @@ def just_remote(link, job_type):
     print("Just Remote")
 
     try:
-        driver = configure_webdriver()
+        driver = configure_webdriver(open_browser=True)
         driver.maximize_window()
         flag = True
         try:
