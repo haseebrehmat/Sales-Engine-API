@@ -171,7 +171,7 @@ def load_jobs(driver):
 def glassdoor(link, job_type):
     print("Glassdoor")
     try:
-        driver = configure_webdriver(True)
+        driver = configure_webdriver()
         driver.maximize_window()
         run_pia_proxy(driver)
         for x in Accounts.objects.filter(source='glassdoor'):
