@@ -806,19 +806,17 @@ def scheduler_settings():
 
 def group_scraper_job(group_id):
     pakistan_timezone = pytz.timezone('Asia/Karachi')
-    current_scraper = ''
-    current_group_scraper_id = group_id
     group_scraper = GroupScraper.objects.filter(
-        pk=current_group_scraper_id).first()
-
+        pk=group_id).first()
+    # if group_scraper.running_start_time is None or datetime.now(pakistan_time) - saved_time 
     current_scraper = group_scraper.name
-    print(f"This is the time of group : {current_scraper}")
+    # print(f"This is the time of group : {current_scraper}")
     current_scraper = current_scraper.lower()
     SchedulerSync.objects.filter(
         job_source=current_scraper).update(running=True, start_time=datetime.now(pakistan_timezone),
                                         end_time=datetime.now(pakistan_timezone))
     if env("ENVIRONMENT") == "staging" or env("ENVIRONMENT") == "development":
-        print("Group started")
+        # print("Group started")
         queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
         queries.update(status='remaining')
         for x in Accounts.objects.filter(source='linkedin'):
@@ -836,28 +834,36 @@ def group_scraper_job(group_id):
                         remove_files('group scraper', job_source)
                         query.status='completed'
                         query.save()
-        print("Group ended")
+        # print("Group ended")
     else:
+        
+        # set remaining status of all queries if group scraper is running from last 22 hours
+        saved_time = group_scraper.running_start_time
+        if saved_time is not None:    
+            time_difference = ((datetime.now(pakistan_timezone) - saved_time).total_seconds()/3600)
+            if time_difference > 22:
+                queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
+                queries.update(status='remaining')
+        else:
+            group_scraper.running_start_time = datetime.now(pakistan_timezone)
+            group_scraper.save()
+            
         try:
             queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
-            change_status = GroupScraperQuery.objects.filter(status='running').exclude(group_scraper_id=group_id)
-            for query in change_status:
-                query.status = "remaining"
-                query.save()
+            # change_status = GroupScraperQuery.objects.filter(status='running').exclude(group_scraper_id=group_id)
+            # change_status.update(status='remaining')
             change_status = GroupScraperQuery.objects.filter(status='running', group_scraper_id=group_id)
-            for query in change_status:
-                query.status = "failed"
-                query.save()
+            change_status.update(status='failed')
 
             if group_scraper.running_link is None:
-                for query in queries:
-                    query.status = "remaining"
-                    query.start_time = str(datetime.now(pakistan_timezone))
-                    query.end_time = str(datetime.now(pakistan_timezone))
-                    query.save()
+                queries.update(status="remaining", start_time=str(datetime.now(pakistan_timezone)), end_time=str(datetime.now(pakistan_timezone)))
+            
+            # rearrange all the queries according to preference
+            queries = queries.order_by('preference')
+            
             for query in queries:
                 job_source = query.job_source.lower()
-                print(job_source)
+                # print(job_source)
                 if job_source in list(single_scrapers_functions.keys()) and query.status == "remaining":
                     scraper_func = single_scrapers_functions[job_source]
                     try:
@@ -879,7 +885,7 @@ def group_scraper_job(group_id):
                         query.status = "failed"
                         query.end_time = str(datetime.now(pakistan_timezone))
                         query.save()
-                        print(e)
+                        # print(e)
                         saveLogs(e)
                 else:
                     group_scraper.running_link = query
@@ -889,21 +895,18 @@ def group_scraper_job(group_id):
                         query.start_time = str(datetime.now(pakistan_timezone))
                         query.end_time = str(datetime.now(pakistan_timezone))
                         query.save()
-                    print("")
+                    # print("")
             upload_jobs('group scraper', 'all')
             remove_files('group scraper', 'all')
         except Exception as e:
             upload_jobs('group scraper', 'all')
             remove_files('group scraper', 'all')
             current_scraper = ''
-            print(str(e))
+            # print(str(e))
             saveLogs(e)
         SchedulerSync.objects.filter(
             job_source=current_scraper).update(running=False, end_time=datetime.now(pakistan_timezone))
         if len(GroupScraperQuery.objects.filter(group_scraper_id=group_id, status='remaining')) == 0:
             group_scraper.running_link = None
             group_scraper.save()
-        print("Group Scraper is finished")
-
-
-# upload_jobs('Infinite Scrapper', 'linkedin_group')
+        # print("Group Scraper is finished")
