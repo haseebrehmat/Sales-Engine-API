@@ -81,10 +81,10 @@ class WeWorkRemotelyScraper:
         for retry in range(1, 6):
             try:
                 self.request_page()
-                homepage_element: WebElement = self.get_element(locator='listing_column')
+                homepage_element: WebElement = self.get_element(locator='jobs-container')
                 if not homepage_element:
                     time.sleep(3)
-                main_element: list[WebElement] = self.driver.find_elements(By.CLASS_NAME, 'listing_column')
+                main_element: list[WebElement] = self.driver.find_elements(By.CLASS_NAME, 'jobs')
                 if main_element:
                     loaded = True
                     break
