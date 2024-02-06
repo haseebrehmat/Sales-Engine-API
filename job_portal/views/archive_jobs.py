@@ -28,6 +28,7 @@ class ArchiveJobs(APIView):
     full_time_remote_enums = [
         "full time remote",
         "remote",
+        "full time"
     ]
     hybrid_full_time_enums = [
         "hybrid onsite",
@@ -48,20 +49,16 @@ class ArchiveJobs(APIView):
 
         return Response({"detail": message}, status=200)
 
-    @start_new_thread
     def migrate_jobs_to_archive(self, classify_data=None):
         try:
             last_30_days = datetime.datetime.now() - datetime.timedelta(days=30)
-
             if classify_data:
                 query = Q()
                 for item in classify_data.data_frame.itertuples():
                     query |= Q(company_name=item.company_name, job_title=item.job_title)
-
-            jobs = JobDetail.objects.filter(created_at__lte=last_30_days, job_applied="not applied")
-            last_date = JobArchive.objects.order_by('-job_posted_date').first().job_posted_date
-            print("last Record date => ", str(last_date))
-            filter_jobs = JobDetail.objects.filter(created_at__gte=last_date).defer('job_description_tags')
+ 
+            jobs = JobDetail.objects.filter(created_at__gte=last_30_days, job_applied="not applied")
+            filter_jobs = jobs.defer('job_description_tags')
             print(filter_jobs.count())
             print("filtered_jobs => ", jobs.count())
             if classify_data:
@@ -86,7 +83,7 @@ class ArchiveJobs(APIView):
             #
             check = JobArchive.objects.bulk_create(bulk_data, ignore_conflicts=True, batch_size=500)
             print(check)
-            # jobs.delete()
+            jobs.delete()
             print("Terminated")
 
             self.save_analytics()
