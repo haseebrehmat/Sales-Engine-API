@@ -844,6 +844,8 @@ def group_scraper_job(group_id):
             if time_difference > 22:
                 queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
                 queries.update(status='remaining')
+                group_scraper.running_start_time = datetime.now(pakistan_timezone)
+                group_scraper.save()
         else:
             group_scraper.running_start_time = datetime.now(pakistan_timezone)
             group_scraper.save()
@@ -862,6 +864,13 @@ def group_scraper_job(group_id):
             queries = queries.order_by('preference')
             
             for query in queries:
+                time_difference = ((datetime.now(pakistan_timezone) - saved_time).total_seconds()/3600)
+                if time_difference > 22:
+                    queries = GroupScraperQuery.objects.filter(group_scraper_id=group_id)
+                    queries.update(status='remaining')
+                    group_scraper.running_start_time = datetime.now(pakistan_timezone)
+                    group_scraper.save()
+                    break
                 job_source = query.job_source.lower()
                 # print(job_source)
                 if job_source in list(single_scrapers_functions.keys()) and query.status == "remaining":
