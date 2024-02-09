@@ -104,9 +104,9 @@ def find_jobs(driver, job_type):
                     job_type_check = driver.find_element(
                         By.CLASS_NAME, "jobOverview__job-details--3JOit")
                     if 'contract' in job_type_check.text.lower():
-                        append_data(data, set_job_type('Contract'))
+                        append_data(data, set_job_type('Contract', determine_job_sub_type(job_type_check.text)))
                     elif 'full time' in job_type_check.text.lower():
-                        append_data(data, set_job_type('Full time'))
+                        append_data(data, set_job_type('Full time', determine_job_sub_type(job_type_check.text)))
                     else:
                         append_data(data, set_job_type(job_type))
                 except Exception as e:
@@ -131,6 +131,14 @@ def find_jobs(driver, job_type):
         saveLogs(e)
         return False
 
+def determine_job_sub_type(type):
+    sub_type = 'onsite'
+    if 'remote' in type.lower():
+        sub_type = 'remote'
+    if 'hybrid' in type.lower():
+        sub_type = 'hybrid'
+    return sub_type
+    
 
 # code starts from here
 def workable(link, job_type):
