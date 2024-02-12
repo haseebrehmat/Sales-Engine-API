@@ -109,20 +109,20 @@ def find_jobs(driver, job_type, total_job):
                 try:
                     job_type_check = driver.find_element(By.CLASS_NAME, "company-info")
                     if 'remote' in job_type_check.text.lower():
-                        if 'hybrid' in job_type_check.text.lower():
-                            # switch_tab(driver, c, original_window)
-                            continue
-                        else:
-                            append_data(data, set_job_type('Full time'))
+                        append_data(data, set_job_type('Full time', 'remote'))
+                    elif 'hybrid' in job_type_check.text.lower():
+                        append_data(data, set_job_type('Full time', 'hybrid'))
+                    else:
+                        append_data(data, set_job_type('Full time', 'onsite'))
                 except Exception as e:
                     try:
                         job_type_check = driver.find_element(By.CLASS_NAME, "company-options")
                         if 'remote' in job_type_check.text.lower():
-                            if 'hybrid' in job_type_check.text.lower():
-                                # switch_tab(driver, c, original_window)
-                                continue
-                            else:
-                                append_data(data, set_job_type('Full time'))
+                            append_data(data, set_job_type('Full time', 'remote'))
+                        elif 'hybrid' in job_type_check.text.lower():
+                            append_data(data, set_job_type('Full time', 'hybrid'))
+                        else:
+                            append_data(data, set_job_type('Full time', 'onsite'))
                     except Exception as e:
                         print(e)
                         append_data(data, set_job_type(job_type))

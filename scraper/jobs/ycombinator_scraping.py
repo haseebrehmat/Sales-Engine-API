@@ -16,7 +16,7 @@ from utils.helpers import saveLogs
 
 total_job = 0
 
-def save_data(scrapped_data, job_title, company_name, address, job_description, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, job_description_tags):
+def save_data(scrapped_data, job_title, company_name, address, job_description, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, job_description_tags, loc_type):
     try:
         data = []
         append_data(data, job_title)
@@ -30,7 +30,7 @@ def save_data(scrapped_data, job_title, company_name, address, job_description, 
         append_data(data, k_conversion(salary_min))
         append_data(data, k_conversion(salary_max))
         append_data(data, "YCombinator")
-        append_data(data, set_job_type(job_type))
+        append_data(data, set_job_type(job_type, loc_type))
         append_data(data, job_description_tags)
         scrapped_data.append(data)
     except Exception as e:
@@ -38,6 +38,7 @@ def save_data(scrapped_data, job_title, company_name, address, job_description, 
 
 def finding_job(driver, company_name, scrapped_data):
     try:
+        loc_type = ''
         flag = True
         WebDriverWait(driver, 60).until(
             EC.presence_of_element_located(
@@ -47,6 +48,12 @@ def finding_job(driver, company_name, scrapped_data):
         details = driver.find_elements(By.CLASS_NAME, "company-details")
         details_loc = details[1].find_elements(By.TAG_NAME, "div")
         address = details_loc[0].text
+        if 'remote' in details[1].text.lower():
+            loc_type = 'remote'
+        elif 'hybrid' in details[1].text.lower():
+            loc_type = 'hybrid'
+        else:
+            loc_type = 'onsite'
         job_type_check = details_loc[2].text
         if 'full-time' in job_type_check.lower():
             job_type = 'full time'
@@ -82,7 +89,7 @@ def finding_job(driver, company_name, scrapped_data):
             salary_min = 'N/A'
             salary_max = 'N/A'
         if flag:
-            save_data(scrapped_data, job_title, company_name, address, desc, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, desc_tags)
+            save_data(scrapped_data, job_title, company_name, address, desc, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, desc_tags, loc_type)
     except Exception as e:
         print(e)
 
