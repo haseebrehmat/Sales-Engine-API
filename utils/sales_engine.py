@@ -93,7 +93,7 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
                 "job_description": job.job_description,
                 "company_name": job.company_name,
                 "address": job.address
-            } for job in jobs_data if is_valid_sales_engine_job(job) and 'remote' in job.job_type.lower()]
+            } for job in jobs_data if is_valid_sales_engine_job(job) and 'remote' in job.job_type.lower() and 'hybrid' not in job.job_type.lower()]
 
         before_filter = jobs
         jobs = filter_restricted_jobs(jobs)
