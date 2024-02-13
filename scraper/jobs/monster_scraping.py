@@ -92,7 +92,7 @@ def find_jobs(driver, job_type, total_job):
                 append_data(data, "N/A")
                 append_data(data, "N/A")
             append_data(data, "Monster")
-            append_data(data, set_job_type(job_type))
+            append_data(data, set_job_type(job_type, determine_job_sub_type(job_type)))
             append_data(data, job_description.get_attribute('innerHTML'))
             scrapped_data.append(data)
             total_job += 1
@@ -108,6 +108,15 @@ def find_jobs(driver, job_type, total_job):
         total_jobs=len(df), job_source="Monster", filename=filename)
     return total_job
 # code starts from here
+
+def determine_job_sub_type(type):
+    sub_type = 'remote'
+    if 'onsite' in type.lower() or 'on site' in type.lower():
+        sub_type = 'onsite'
+    if 'hybrid' in type.lower():
+        sub_type = 'hybrid'
+    return sub_type
+    
 
 def monster(link, job_type):
     total_job = 0
