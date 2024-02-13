@@ -65,7 +65,12 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "Talent")
-            append_data(data, set_job_type(job_type))
+            if 'remote' in job_type.lower():
+                append_data(data, set_job_type(job_type))
+            elif 'hybrid' in job_type.lower():
+                append_data(data, set_job_type(job_type, 'hybrid'))
+            else:
+                append_data(data, set_job_type(job_type, 'onsite'))
             append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
