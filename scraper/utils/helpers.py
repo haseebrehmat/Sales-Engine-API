@@ -268,7 +268,7 @@ def set_job_type(job_type, sub_type="remote"):
     elif 'contract' in job_type.lower() and sub_type == 'hybrid':
         return JOB_TYPE[3]
     else:
-      return job_type.capitalize() + ' ' + sub_type.capitalize()
+      return job_type.capitalize()
 
 def make_plural(word: str = '', num: int = 1):
     return word + 's' if word and word.strip() and (num > 1 or num == 0) else word
