@@ -79,7 +79,7 @@ def find_jobs(driver, job_type, next_page_no):
                 append_data(data, "N/A")
 
             append_data(data, "Simplyhired")
-            append_data(data, set_job_type(job_type))
+            append_data(data, set_job_type(job_type, determine_job_sub_type(job_type)))
             append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
@@ -106,6 +106,14 @@ def find_jobs(driver, job_type, next_page_no):
         return next_page_clicked
     except Exception as e:
         return False
+    
+def determine_job_sub_type(type):
+    sub_type = 'remote'
+    if 'onsite' in type.lower() or 'on site' in type.lower():
+        sub_type = 'onsite'
+    if 'hybrid' in type.lower():
+        sub_type = 'hybrid'
+    return sub_type
 
 # code starts from here
 def simply_hired(link, job_type):
