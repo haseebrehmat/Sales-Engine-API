@@ -88,9 +88,9 @@ def get_job_detail(driver, jobs, job_type):
         time.sleep(3)
         job_detail = jobs.text.split('\n')
         job_title = jobs.find_element(
-            By.CLASS_NAME, "JobCard_seoLink__WdqHZ").text
+            By.CLASS_NAME, "JobCard_jobTitle__rbjTE").text
         company_name = jobs.find_element(
-            By.CLASS_NAME, "EmployerProfile_profileContainer__d5rMb").text.split('\n')[0]
+            By.CLASS_NAME, "EmployerProfile_profileContainer__4qyNU").text.split('\n')[0]
         address = jobs.find_element(
             By.CLASS_NAME, "JobCard_location__N_iYE").text
 
@@ -123,7 +123,7 @@ def get_job_detail(driver, jobs, job_type):
             "salary_min": "N/A",
             "salary_max": "N/A",
             "job_source": "Glassdoor",
-            "job_type": set_job_type(job_type),
+            "job_type": set_job_type(job_type, determine_job_sub_type(job_type)),
             "job_description_tags": job_description.get_attribute('innerHTML')
         }
         # find salary details
@@ -155,6 +155,14 @@ def get_job_detail(driver, jobs, job_type):
         saveLogs(e)
         return None, True
 
+def determine_job_sub_type(type):
+    sub_type = 'remote'
+    if 'onsite' in type.lower() or 'on site' in type.lower():
+        sub_type = 'onsite'
+    if 'hybrid' in type.lower():
+        sub_type = 'hybrid'
+    return sub_type
+    
 
 def load_jobs(driver):
     try:
