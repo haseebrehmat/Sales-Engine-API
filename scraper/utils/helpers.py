@@ -245,7 +245,7 @@ def remove_emojis(text):
 def k_conversion(text):
     return text.replace("k", ",000").replace( "K", ",000")
 
-def set_job_type(job_type):
+def set_job_type(job_type, sub_type="remote"):
     # if 'full time' in job_type.lower():
     #     return JOB_TYPE[0] if 'remote' in job_type.lower() else JOB_TYPE[1] if 'site' in job_type.lower() else JOB_TYPE[2] if 'hybrid' in job_type.lower() else JOB_TYPE[1]
     # elif 'hybrid' in job_type.lower():
@@ -255,12 +255,20 @@ def set_job_type(job_type):
     # else:
     #   return job_type.capitalize()
 
-    if 'full time' in job_type.lower():
+    if 'full time' in job_type.lower() and sub_type == 'remote':
         return JOB_TYPE[0]
-    elif 'contract' in job_type.lower():
+    elif 'full time' in job_type.lower() and sub_type == 'onsite':
         return JOB_TYPE[1]
+    elif 'full time' in job_type.lower() and sub_type == 'hybrid':
+        return JOB_TYPE[2]
+    elif 'contract' in job_type.lower() and sub_type == 'remote':
+        return JOB_TYPE[5]
+    elif 'contract' in job_type.lower() and sub_type == 'onsite':
+        return JOB_TYPE[4]
+    elif 'contract' in job_type.lower() and sub_type == 'hybrid':
+        return JOB_TYPE[3]
     else:
-      return job_type.capitalize()
+      return job_type.capitalize() + ' ' + sub_type.capitalize()
 
 def make_plural(word: str = '', num: int = 1):
     return word + 's' if word and word.strip() and (num > 1 or num == 0) else word
