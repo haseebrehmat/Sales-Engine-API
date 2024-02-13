@@ -83,7 +83,7 @@ def find_jobs(driver, job_type):
             append_data(data, job_source)
 
             job_type = temp1[0].split(":")
-            append_data(data, set_job_type(job_type[1]))
+            append_data(data, set_job_type(full_time_setter(job_type[1])))
 
             job_description_tags = job_description.get_attribute("innerHTML")
             append_data(data, str(job_description_tags))
@@ -121,6 +121,11 @@ def find_jobs(driver, job_type):
     )
     return False, total_job
 
+def full_time_setter(type):
+    if type.strip().lower() == "full-time":
+        return "Full Time"
+    else:
+        return "Contract"
 
 # code starts from here
 def rubynow(link, job_type):
