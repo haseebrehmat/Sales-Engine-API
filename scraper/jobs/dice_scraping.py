@@ -70,7 +70,7 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "Dice")
-            append_data(data, set_job_type(job_type))
+            append_data(data, set_job_type(job_type, determine_job_sub_type(job_type)))
             append_data(data, job_description.get_attribute('innerHTML'))
 
             total_job += 1
@@ -103,6 +103,15 @@ def find_jobs(driver, job_type, total_job):
     except Exception as e:
         print(e)
         return False, total_job
+    
+def determine_job_sub_type(type):
+    sub_type = 'remote'
+    if 'onsite' in type.strip().lower() or 'on site' in type.strip().lower():
+        sub_type = 'onsite'
+    if 'hybrid' in type.strip().lower():
+        sub_type = 'hybrid'
+    return sub_type
+    
 
 
 # code starts from here
