@@ -161,18 +161,18 @@ def find_jobs(driver, job_type):
                     job_source = ScraperNaming.REMOTE_OK
                     append_data(data, job_source)
 
-                    job_type = "remote"
-                    append_data(data, set_job_type(job_type))
+                    job_type = "full time"
+                    sub_type = "remote"
+                    append_data(data, set_job_type(job_type, sub_type))
 
                     job_description_tags = job_desc.get_attribute("innerHTML")
                     append_data(data, str(job_description_tags))
 
             except exception as e:
                 print(e)
-
+            
             driver.close()
             driver.switch_to.window(original_window)
-
             scrapped_data.append(data)
 
     columns_name = [
