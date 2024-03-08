@@ -222,9 +222,9 @@ def find_jobs(driver, link, job_type):
 
 def ziprecruiter_scraping(link, job_type):
     print('Zip Recruiter')
+    driver = configure_webdriver(block_media=True, block_elements=['css', 'img', 'cookies'])
     try:
         print("Start in try portion.\n")
-        driver = configure_webdriver(block_media=True, block_elements=['css', 'img', 'cookies'])
         driver.maximize_window()
         run_pia_proxy(driver)
         try:
@@ -235,7 +235,7 @@ def ziprecruiter_scraping(link, job_type):
             saveLogs(e)
             print("Error occurred during scraping. Details: ", e)
         finally:
-            driver.close()
+            driver.quit()
     except Exception as e:
         saveLogs(e)
         print("Error occurred. Details: ", e)

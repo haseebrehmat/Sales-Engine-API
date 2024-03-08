@@ -115,9 +115,9 @@ def append_data(data, field):
 # Create your views here.
 def jooble(link, job_type):
     print("Jooble")
+    driver = configure_webdriver()
     try:
         total_job = 0
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -128,6 +128,6 @@ def jooble(link, job_type):
                 print("Fetching...")
         except Exception as e:
             print(e)
-        driver.quit()
     except:
         print("Error Occurs. \n")
+    driver.quit()

@@ -131,9 +131,9 @@ def append_data(data, field):
 # Create your views here.
 def recruit(link, job_type):
     print("Recruit")
+    driver = configure_webdriver()
     try:
         total_job = 0
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -144,6 +144,6 @@ def recruit(link, job_type):
         except Exception as e:
             print(e)
 
-        driver.quit()
     except Exception as e:
         print(e)
+    driver.quit()

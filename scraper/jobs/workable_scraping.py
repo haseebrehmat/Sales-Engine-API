@@ -143,8 +143,8 @@ def determine_job_sub_type(type):
 # code starts from here
 def workable(link, job_type):
     print("Workable")
+    driver = configure_webdriver(block_media=True, block_elements=['img'])
     try:
-        driver = configure_webdriver(block_media=True, block_elements=['img'])
         driver.maximize_window()
         try:
             flag = True
@@ -161,9 +161,9 @@ def workable(link, job_type):
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-        driver.quit()
     except Exception as e:
         saveLogs(e)
+    driver.quit()
 
 
 # workable('https://jobs.workable.com/search?query=developer&location=United%20States&remote=true', 'remote')

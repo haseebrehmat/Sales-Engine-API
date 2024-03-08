@@ -138,8 +138,8 @@ def find_jobs(driver, job_type):
 
 def job_gether(link, job_type):
     print("Job Gether")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             driver.get(link)
@@ -148,7 +148,7 @@ def job_gether(link, job_type):
         except Exception as e:
             saveLogs(e)
             print("out from for loop")
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print("Error Occurs. \n")
+    driver.quit()

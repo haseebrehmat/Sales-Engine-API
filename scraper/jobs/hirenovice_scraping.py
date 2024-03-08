@@ -146,6 +146,7 @@ def hirenovice(link, job_type):
     print("Hirenovice Scraper")
     total_job = 0
     i = 1
+    driver = configure_webdriver()
     try:
         while (i < 5):
             if i == 1:
@@ -165,7 +166,6 @@ def hirenovice(link, job_type):
                 location_type = "united states"
                 remote_status = True
             try:
-                driver = configure_webdriver()
                 driver.maximize_window()
                 try:
                     flag = True
@@ -176,9 +176,9 @@ def hirenovice(link, job_type):
                         print("Fetching...")
                 except Exception as e:
                     print(e)
-                driver.quit()
             except:
                 print("Error Occurs. \n")
             i += 1
     except Exception as e:
         print(e)
+    driver.quit()

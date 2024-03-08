@@ -121,8 +121,8 @@ def determine_job_sub_type(type):
 def monster(link, job_type):
     total_job = 0
     print("Monster")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         try:
             driver.maximize_window()
             driver.get(link)
@@ -132,7 +132,7 @@ def monster(link, job_type):
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

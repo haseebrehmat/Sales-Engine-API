@@ -118,8 +118,8 @@ def determine_job_sub_type(type):
 def dice(link, job_type):
     total_job = 0
     print("Dice")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         try:
@@ -132,7 +132,7 @@ def dice(link, job_type):
             saveLogs(e)
             print(LINK_ISSUE)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

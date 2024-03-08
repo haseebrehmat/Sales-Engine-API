@@ -139,9 +139,8 @@ def find_jobs(driver, job_type):
 # code starts from here
 def startwire(link, job_type):
     print("startwire")
-
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         try:
@@ -155,9 +154,9 @@ def startwire(link, job_type):
             saveLogs(e)
             print(LINK_ISSUE)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()
 
 

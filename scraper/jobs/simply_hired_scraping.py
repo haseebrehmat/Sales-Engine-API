@@ -118,8 +118,8 @@ def determine_job_sub_type(type):
 # code starts from here
 def simply_hired(link, job_type):
     print("Simply hired")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -133,7 +133,7 @@ def simply_hired(link, job_type):
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

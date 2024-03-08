@@ -108,9 +108,9 @@ def find_jobs(driver, job_type):
 
 def remote_co(link, job_type):
     print('Remote CO Scraper ... ')
+    driver = configure_webdriver(block_media=True)
     try:
         print("Start in try portion. \n")
-        driver = configure_webdriver(block_media=True)
         driver.maximize_window()
         try:
             driver.get(link)
@@ -121,7 +121,7 @@ def remote_co(link, job_type):
         except Exception as e:
             saveLogs(e)
             print("out from for loop")
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print("Error Occurs. \n")
+    driver.quit()

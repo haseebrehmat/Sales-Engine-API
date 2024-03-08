@@ -220,6 +220,7 @@ def data_exists(driver):
 # code starts from here
 def linkedin_group(driver, link, job_type):
     print("linkedin group")
+    saveLogs("linkedin_group_scraping.py")
     count = 0
     total_job = 0
     try:

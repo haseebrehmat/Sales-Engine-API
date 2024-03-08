@@ -89,8 +89,8 @@ def find_jobs(driver, job_type):
 # code starts from here
 def getwork(link, job_type):
     print("Getwork")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -101,7 +101,7 @@ def getwork(link, job_type):
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

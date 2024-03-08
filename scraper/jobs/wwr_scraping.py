@@ -28,14 +28,15 @@ class WeWorkRemotelyScraper:
     @classmethod
     def call(cls, url):
         print("Running We Work Remotely...")
+        driver: WebDriver = configure_webdriver(block_media=True, block_elements=['img', 'cookies'])
         try:
-            driver: WebDriver = configure_webdriver(block_media=True, block_elements=['img', 'cookies'])
             driver.maximize_window()
             wwr_scraper: cls.__class__ = cls(driver=driver, url=url)
             wwr_scraper.find_jobs()
         except Exception as e:
             print(e)
             saveLogs(e)
+        driver.quit()
         print("Done We Work Remotely...")
 
     def request_page(self) -> None:
