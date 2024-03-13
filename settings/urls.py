@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/error_logger/', include("error_logger.urls")),
     path('api/lead_managament/', include("lead_management.urls")),
     path('api/candidate_management/', include("candidate.urls")),
+    path('api/flask/', include("flaskscrapper.urls"))
     ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
