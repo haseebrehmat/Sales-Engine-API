@@ -1,5 +1,5 @@
-from .views import FlaskResponse
+from .views import JobsPoster
 from django.urls import path
 urlpatterns = [
-    path('flask-response/', FlaskResponse.as_view())
+    path('post-jobs/', JobsPoster.as_view())
 ]
