@@ -85,8 +85,8 @@ def append_data(data, field):
 
 def receptix(link, job_type):
     print("Receptix Scraper starter")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -99,6 +99,6 @@ def receptix(link, job_type):
         except Exception as e:
             print(e)
 
-        driver.quit()
     except Exception as e:
         print(e)
+    driver.quit()

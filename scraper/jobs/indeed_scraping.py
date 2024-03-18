@@ -122,8 +122,8 @@ def data_exists(driver):
 # code starts from here
 def indeed(link, job_type):
     print("Indeed")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         run_pia_proxy(driver, location="mumbai")
         try:
@@ -137,7 +137,7 @@ def indeed(link, job_type):
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

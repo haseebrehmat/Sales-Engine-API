@@ -154,6 +154,7 @@ def himalayas(link, job_type):
     print("Himalayas Scraper")
     total_job = 0
     i = 1
+    driver = configure_webdriver()
     try:
         while(i < 5):
             if i == 1:
@@ -169,7 +170,6 @@ def himalayas(link, job_type):
                 search_keyword = "Developer"
                 location_type = "Only 100% remote jobs"
             try:
-                driver = configure_webdriver()
                 driver.maximize_window()
                 try:
                     flag = True
@@ -180,9 +180,9 @@ def himalayas(link, job_type):
                         print("Fetching...")
                 except Exception as e:
                     print(e)
-                driver.quit()
             except:
                 print("Error Occurs. \n")
             i += 1
     except Exception as e:
         print(e)
+    driver.quit()

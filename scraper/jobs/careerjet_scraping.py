@@ -124,9 +124,9 @@ def find_jobs(driver, job_type, total_job):
 # code starts from here
 def careerjet(link, job_type):
     print("CareerJet")
+    driver = configure_webdriver()
     try:
         total_job = 0
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             request_url(driver, link)
@@ -136,7 +136,7 @@ def careerjet(link, job_type):
         except Exception as e:
             saveLogs(e)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

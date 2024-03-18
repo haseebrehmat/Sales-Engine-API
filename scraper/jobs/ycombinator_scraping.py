@@ -210,9 +210,9 @@ def find_jobs(driver, total_job):
 # code starts from here
 def ycombinator(link, job_type):
     print("YCombinator")
+    driver = configure_webdriver()
     try:
         total_job = 0
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             request_url(driver, YCOMBINATOR_LOGIN_URL)
@@ -226,8 +226,7 @@ def ycombinator(link, job_type):
         except Exception as e:
             saveLogs(e)
             print(LINK_ISSUE)
-
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

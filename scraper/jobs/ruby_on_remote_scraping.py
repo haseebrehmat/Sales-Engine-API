@@ -169,13 +169,10 @@ def find_jobs(driver, job_type, total_job, link):
 # code starts from here
 def ruby_on_remote(link, job_type):
     base_link = link
-
     total_job = 0
-
     print("RubyOnRemote")
-
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         count = 0
@@ -189,10 +186,10 @@ def ruby_on_remote(link, job_type):
         except Exception as e:
             print(e)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()
 
 # link = "https://rubyonremote.com/remote-jobs-in-us/"
 # job_type = "Remote"

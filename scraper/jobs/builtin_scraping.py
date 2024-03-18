@@ -163,10 +163,10 @@ def find_jobs(driver, job_type, total_job):
 # code starts from here
 def builtin(link, job_type):
     print("Builtin")
+    driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
     try:
         total_job = 0
         count = 0
-        driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
         driver.maximize_window()
         run_pia_proxy(driver)
         try:
@@ -179,6 +179,6 @@ def builtin(link, job_type):
         except Exception as e:
             saveLogs(e)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
+    driver.quit()

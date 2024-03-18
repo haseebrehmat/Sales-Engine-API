@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from tqdm import tqdm
 
 from job_portal.models import JobArchive, Analytics, TechStats, JobDetail
+# from collections import Counter
 from scraper.utils.thread import start_new_thread
 from utils.helpers import saveLogs
 
@@ -155,3 +156,15 @@ class ArchiveJobs(APIView):
             current_date = next_date
 
         print("Script Terminated!")
+
+# overall_tech = []
+# last_30_days = datetime.datetime.now() - datetime.timedelta(days=29)
+# data = JobArchive.objects.filter(job_posted_date__gte=last_30_days).values_list('tech_keywords', flat=True)
+# for instance in data:
+#     temp = instance.split(",")
+#     for tech in temp:
+#         overall_tech.append(tech)
+# total_count = Counter(overall_tech)
+# import pdb
+# pdb.set_trace()
+

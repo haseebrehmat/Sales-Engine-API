@@ -99,8 +99,8 @@ def find_jobs(driver, job_type, total_job):
 def google_careers(links, job_type):
     print("Google Careers")
     total_job = 0
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -110,6 +110,6 @@ def google_careers(links, job_type):
                 flag, total_job = find_jobs(driver, job_type, total_job)
         except Exception as e:
             saveLogs(e)
-        driver.quit()
     except Exception as e:
         print(e)
+    driver.quit()

@@ -178,8 +178,8 @@ def load_jobs(driver):
 
 def glassdoor(link, job_type):
     print("Glassdoor")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         run_pia_proxy(driver)
         for x in Accounts.objects.filter(source='glassdoor'):
@@ -206,10 +206,10 @@ def glassdoor(link, job_type):
             print(SCRAPING_ENDED)
         else:
             print(LOGIN_FAILED)
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()
 
 
 # glassdoor('https://www.glassdoor.com/Job/remote-aws-engineer-jobs-SRCH_IL.0,6_IS11047_KO7,19.htm?fromAge=3', '')

@@ -121,9 +121,9 @@ def append_data(data, field):
 
 def workopolis(link, job_type):
     print("Workopolis")
+    driver = configure_webdriver()
     try:
         total_job = 0
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -134,6 +134,6 @@ def workopolis(link, job_type):
                 print("Fetching...")
         except Exception as e:
             print(e)
-        driver.quit()
     except:
         print("Error Occurs. \n")
+    driver.quit()

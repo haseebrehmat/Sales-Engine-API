@@ -95,8 +95,8 @@ def find_jobs(driver, job_type, total_job):
 def adzuna_scraping(link, job_type):
     total_job = 0
     print("Adzuna")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         try:
@@ -109,7 +109,7 @@ def adzuna_scraping(link, job_type):
             saveLogs(e)
             print(LINK_ISSUE)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

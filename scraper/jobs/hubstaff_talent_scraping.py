@@ -148,9 +148,8 @@ def find_jobs(driver, job_type):
 # code starts from here
 def hubstaff_talent(link, job_type):
     print("hubstaff_talent")
-
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         try:
@@ -164,10 +163,10 @@ def hubstaff_talent(link, job_type):
             saveLogs(e)
             print(LINK_ISSUE)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()
 
 
 # hubstaff_talent('https://hubstafftalent.net/search/jobs?search%5Bkeywords%5D=dev&page=1&search%5Btype%5D=&search%5Blast_slider%5D=&search%5Bjob_type%5D%5B0%5D=1&search%5Bjob_type%5D%5B1%5D=1&search%5Bnewer_than%5D=Mon%2C+Sep+18+2023&search%5Bnewer_than%5D=Mon+Sep+18+2023+00%3A00%3A00+GMT%2B0500&search%5Bpayrate_start%5D=1&search%5Bpayrate_end%5D=100%2B&search%5Bpayrate_null%5D=0&search%5Bpayrate_null%5D=1&search%5Bbudget_start%5D=1&search%5Bbudget_end%5D=100000%2B&search%5Bbudget_null%5D=0&search%5Bbudget_null%5D=1&search%5Bexperience_level%5D=-1&search%5Bcountries%5D%5B%5D=&search%5Blanguages%5D%5B%5D=&search%5Bsort_by%5D=relevance',

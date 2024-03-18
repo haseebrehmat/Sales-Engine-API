@@ -145,8 +145,8 @@ def find_jobs(driver, job_type, total_job):
 # code starts from here
 def startup(link, job_type):
     total_job = 0
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         try:
@@ -159,10 +159,10 @@ def startup(link, job_type):
             saveLogs(e)
             print(LINK_ISSUE)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()
 #
 # for x in links:
 #     startup(x, "remote")

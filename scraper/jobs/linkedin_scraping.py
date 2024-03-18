@@ -247,23 +247,26 @@ def linkedin(link, job_type):
     try:
         for x in Accounts.objects.filter(source='linkedin'):
             driver = configure_webdriver()
-            request_url(driver, LOGIN_URL)
-            logged_in = login(driver, x.email, x.password)
             try:
-                if logged_in:
-                    jobs_types(driver, link, job_type, total_job)
-                    print(SCRAPING_ENDED)
-                    driver.quit()
-                    break
-                else:
-                    print(LOGIN_FAILED)
-                    driver.quit()
+                request_url(driver, LOGIN_URL)
+                logged_in = login(driver, x.email, x.password)
+                try:
+                    if logged_in:
+                        jobs_types(driver, link, job_type, total_job)
+                        print(SCRAPING_ENDED)
+                        driver.quit()
+                        break
+                    else:
+                        print(LOGIN_FAILED)
+                        driver.quit()
+                except Exception as e:
+                    print("Exception in linkedin => ", e)
+                    saveLogs(e)
+                    print(LINK_ISSUE)
             except Exception as e:
-                print("Exception in linkedin => ", e)
                 saveLogs(e)
-                print(LINK_ISSUE)
-                driver.quit()
-                break
+            driver.quit()
+            break
     except Exception as e:
         saveLogs(e)
         print(e)

@@ -168,8 +168,8 @@ def career_builder(link, job_type):
     total_job = 0
     total_count = 0
     print("Career builder")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         run_pia_proxy(driver, location='US Miami')
         try:
@@ -187,7 +187,7 @@ def career_builder(link, job_type):
             saveLogs(e)
             print(LINK_ISSUE)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()

@@ -132,8 +132,8 @@ def rubynow(link, job_type):
     print("Ruby Now")
     # link = "https://jobs.rubynow.com/"
     # job_type = "Full Time"
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         try:
@@ -147,8 +147,7 @@ def rubynow(link, job_type):
             saveLogs(e)
             print(LINK_ISSUE)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
-
+    driver.quit()

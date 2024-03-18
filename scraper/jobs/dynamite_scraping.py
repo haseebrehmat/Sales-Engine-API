@@ -101,8 +101,8 @@ def find_jobs(driver, job_type, total_job):
 def dynamite(link, job_type):
     total_job = 0
     print("Dynamite")
+    driver = configure_webdriver()
     try:
-        driver = configure_webdriver()
         driver.maximize_window()
         flag = True
         count = 0
@@ -116,8 +116,8 @@ def dynamite(link, job_type):
             saveLogs(e)
             print(e)
 
-        driver.quit()
     except Exception as e:
         saveLogs(e)
         print(e)
+    driver.quit()
 

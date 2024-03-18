@@ -121,9 +121,9 @@ def append_data(data, field):
 # Create your views here.
 def dailyremote(link, job_type):
     print("Daily Remote")
+    driver = configure_webdriver()
     try:
         total_job = 0
-        driver = configure_webdriver()
         driver.maximize_window()
         try:
             flag = True
@@ -134,6 +134,6 @@ def dailyremote(link, job_type):
                 print("Fetching...")
         except Exception as e:
             print(e)
-        driver.quit()
     except:
         print("Error Occurs. \n")
+    driver.quit()
