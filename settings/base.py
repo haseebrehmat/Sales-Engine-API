@@ -33,6 +33,7 @@ CUSTOM_APPS = [
     'error_logger',
     'lead_management',
     'candidate',
+    'flaskscrapper'
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
