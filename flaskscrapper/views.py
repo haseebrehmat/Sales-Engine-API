@@ -34,7 +34,7 @@ class JobsPoster(APIView):
             )
             return False
 
-        if not len(jobs) == 0:
+        if len(jobs) == 0:
             self.responsee = Response(
                 {"message": "No jobs data provided"},
                 status=status.HTTP_204_NO_CONTENT
