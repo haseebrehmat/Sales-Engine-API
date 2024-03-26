@@ -1,6 +1,7 @@
 from error_logger.models import Log
 from django.utils import timezone
 import traceback
+import os, requests
 
 def validate_request(request, permissions):
     try:
@@ -49,3 +50,18 @@ def saveLogs(exception, level='ERROR', request=None):
         log.save()
     except Exception as e:
         print(e)
+
+def send_request_to_flask(payload):
+    try:
+        base_url = os.getenv("FLASK_API_URL")
+        url = f"{base_url}/run-scraper"
+        headers = {
+            "content-type": "application/json",
+        }
+        response = requests.post(url, json=payload, headers=headers)
+        print(response.json())
+        return response.status_code == 200
+
+    except Exception as e:
+        print(str(e))
+        return False
