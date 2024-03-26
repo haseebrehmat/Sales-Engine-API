@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 import pandas as pd
-from flaskscrapper.models import ScrapersLoopStatus
+from flaskscrapper.models import ScrapersRunningStatus
 from scraper.utils.helpers import generate_scraper_filename
 from scraper.schedulers.job_upload_scheduler import upload_jobs
 from rest_framework import status
@@ -47,5 +47,5 @@ class JobsPoster(APIView):
     
     def get(self, request, job_source, loop_status):
         if loop_status == 'False':
-            ScrapersLoopStatus.objects.filter(job_source=job_source, loop_status=True).update(loop_status=False)
+            ScrapersRunningStatus.objects.filter(job_source=job_source, loop=True).update(loop=False)
         return Response({"message": f"Loop completed for {job_source}"}, status=status.HTTP_200_OK)

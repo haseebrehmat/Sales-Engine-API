@@ -1,4 +1,3 @@
-from flaskscrapper.models import ScraperRunningStatus, ScrapersLoopStatus
+from flaskscrapper.models import ScrapersRunningStatus
 
-ScraperRunningStatus.objects.filter(status=True).update(status=False)
-ScrapersLoopStatus.objects.filter(loop_status=True).update(loop_status=False)
+ScrapersRunningStatus.objects.all().update(running=False, loop=False)

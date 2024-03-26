@@ -2,10 +2,7 @@ from django.db import models
 from utils.model_fields.timestamped import TimeStamped
 
 
-class ScraperRunningStatus(TimeStamped):
+class ScrapersRunningStatus(TimeStamped):
     job_source = models.CharField(max_length=250, blank=True, null=True)
-    status = models.BooleanField(default=False)
-
-class ScrapersLoopStatus(TimeStamped):
-    job_source = models.CharField(max_length=250, blank=True, null=True)
-    loop_status = models.BooleanField(default=False)
+    running = models.BooleanField(default=False)
+    loop = models.BooleanField(default=False)
