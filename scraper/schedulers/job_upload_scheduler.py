@@ -210,6 +210,8 @@ def upload_jobs(scheduler_type, job_source):
         path = 'scraper/job_data/'
         temp = os.listdir(path)
         files = [path + file for file in temp]
+        if not SchedulerSync.objects.filter(job_source=job_source, type=scheduler_type):
+            SchedulerSync.objects.create(job_source=job_source, type=scheduler_type)
         SchedulerSync.objects.filter(
             job_source=job_source, type=scheduler_type).update(uploading=True)
         for file in files:

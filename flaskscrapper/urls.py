@@ -4,6 +4,5 @@ from django.urls import path
 
 urlpatterns = [
     path('post-jobs/', JobsPoster.as_view(), name='post_job'),
-    path('post-jobs/<job_source>/<loop_status>/', JobsPoster.as_view(), name='post_jobs_with_pk'),  # URL pattern with pk
     path('start-job/<job_source>/', JobsStart.as_view(), name='start_job')
 ]
