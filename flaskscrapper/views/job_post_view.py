@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 import pandas as pd
+from flaskscrapper.models import ScrapersRunningStatus
 from scraper.utils.helpers import generate_scraper_filename
-from scraper.schedulers.job_upload_scheduler import upload_jobs
+from scraper.schedulers.job_upload_scheduler import remove_files, upload_jobs
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -17,12 +18,14 @@ class JobsPoster(APIView):
     def post(self, request):
         jobs = request.data.get('jobs')
         job_source = request.data.get('job_source')
+
         validated = self.validate_data(jobs, job_source)
         if validated:
             df = pd.DataFrame(jobs)
             filename: str = generate_scraper_filename(job_source)
             df.to_excel(filename, index=False)
-            upload_jobs('instant', job_source)
+            upload_jobs('infinite', job_source)
+            remove_files('infinite', job_source)
 
         return self.responsee
 
@@ -42,3 +45,4 @@ class JobsPoster(APIView):
             return False
 
         return True
+    

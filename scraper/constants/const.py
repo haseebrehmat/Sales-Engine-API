@@ -55,3 +55,4 @@ Y_PASSWORD = "uzair@123"
 ERROR_TEXT = "Error occured while scraping"
 # JOB_TYPE = ["Full Time Remote", "Contract Remote"]
 JOB_TYPE = ["Full Time Remote", "Full Time on Site", "Full Time Hybrid", "Contract Hybrid", "Contract Onsite", "Contract Remote"]
+SCRAPERS_NAME = ['weworkremotely', 'glassdoor', 'indeed', 'linkedin', 'rubyonremote', 'justremote', 'monster', 'remoteok', 'builtin', 'workable', 'ziprecruiter', 'simplyhired', 'ycombinator', 'dice', 'talent']
