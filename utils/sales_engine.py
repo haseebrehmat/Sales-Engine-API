@@ -148,16 +148,20 @@ def check_job_role(techstacks, job_roles):
                         job_roles_data.add(role)
             else:
                 for x in job_roles:
-                    if tech.lower() in job_roles_dict[x.lower()]:
+                    if x.lower() in job_roles_dict and tech.lower() in job_roles_dict[x.lower()]:
                         job_roles_data.add(x)
         if job_roles_data:
             job_roles_data = list(job_roles_data)
             return "Dev" if len(job_roles_data) > 1 else job_roles_data[0] if job_roles_data else 'N/A'
+        else:
+            return 'N/A'
     except Exception as e:
-        print(e)
+        print("Error during role assignment => ", e)
         if job_roles_data:
             job_roles_data = list(job_roles_data)
             return "Dev" if len(job_roles_data) > 1 else job_roles_data[0] if job_roles_data else 'N/A'
+        else:
+            return 'N/A'
 
 
 
