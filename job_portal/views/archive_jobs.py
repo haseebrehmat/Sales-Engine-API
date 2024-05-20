@@ -4,6 +4,7 @@ from django.db.models import Count, Q, Func, F
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 from tqdm import tqdm
 
 from job_portal.models import JobArchive, Analytics, TechStats, JobDetail
@@ -43,12 +44,11 @@ class ArchiveJobs(APIView):
 
     def get(self, request):
         message = "Only Admin has access to this endpoint!"
-        if not self.request.user.is_superuser:
-            if request.GET.get("archive") == "true":
-                self.migrate_jobs_to_archive()
-                message = "Job migration in progress!"
-
-        return Response({"detail": message}, status=200)
+        if self.request.user.is_superuser:
+            self.migrate_jobs_to_archive()
+            message = "Job migration in progress!"
+            return Response({"detail": message}, status=200)
+        return Response({"detail": "Only Admin has access to this endpoint"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def migrate_jobs_to_archive(self, classify_data=None):
         try:
@@ -98,10 +98,9 @@ class ArchiveJobs(APIView):
     def save_tech_stacks_stats(self, queryset, current_date):
         data = []
         expression = Func(F('tech_stacks'), function='unnest')
-        tech_keywords = set(
-            JobDetail.objects.only('tech_stacks').annotate(keywords=expression).values_list('keywords', flat=True))
+        tech_keywords = set(JobDetail.objects.only('tech_stacks').annotate(keywords=expression).values_list('keywords', flat=True))
         for x in tech_keywords:
-            qs = queryset.filter(tech_keywords=x).aggregate(
+            qs = queryset.filter(tech_keywords__icontains=x).aggregate(
                 total=Count("id"),
                 contract_on_site=Count('id', filter=Q(job_type__in=self.contract_onsite_enums)),
                 contract_remote=Count('id', filter=Q(job_type__in=self.contract_remote_enums)),
@@ -137,10 +136,9 @@ class ArchiveJobs(APIView):
 
     def save_analytics(self):
         fields = ['job_type', 'job_posted_date', 'tech_keywords', 'job_type']
-
         queryset = JobArchive.objects.only(*fields)
         current_date = datetime.datetime.now().date()
-        qs = Analytics.objects.first()
+        qs = Analytics.objects.order_by('-job_posted_date').first()
         if qs:
             end_date = qs.job_posted_date.date()
         else:
