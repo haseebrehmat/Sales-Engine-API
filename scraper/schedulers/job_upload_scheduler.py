@@ -31,7 +31,7 @@ from scraper.jobs.indeed_scraping import indeed
 from scraper.jobs.jooble_scraping import jooble
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
-from scraper.jobs.simply_hired_scraping import simply_hired
+# from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.dailyremote_scraping import dailyremote
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
@@ -54,6 +54,7 @@ from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 from scraper.jobs.just_remote_scraping import just_remote
 from scraper.jobs.linkedin_group_scraping import linkedin_group
 from scraper.jobs.wwr_scraping import weworkremotely
+from scraper.jobs.optimized.simplyhired import simply_hired
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.accounts import Accounts
@@ -206,6 +207,8 @@ scraper_functions = {
 
 def upload_jobs(scheduler_type, job_source):
     try:
+        import pdb
+        pdb.set_trace()
         print('Uploading files ...')
         path = 'scraper/job_data/'
         temp = os.listdir(path)
@@ -289,6 +292,8 @@ def remove_files(scheduler_type, job_source="all"):
 
 @transaction.atomic
 def upload_file(job_parser, filename):
+    import pdb
+    pdb.set_trace()
     # parse, classify and upload data to database
     classify_data = JobClassifier(job_parser.data_frame)
     classify_data.classify()
