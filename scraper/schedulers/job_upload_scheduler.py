@@ -207,8 +207,6 @@ scraper_functions = {
 
 def upload_jobs(scheduler_type, job_source):
     try:
-        import pdb
-        pdb.set_trace()
         print('Uploading files ...')
         path = 'scraper/job_data/'
         temp = os.listdir(path)
@@ -292,8 +290,6 @@ def remove_files(scheduler_type, job_source="all"):
 
 @transaction.atomic
 def upload_file(job_parser, filename):
-    import pdb
-    pdb.set_trace()
     # parse, classify and upload data to database
     classify_data = JobClassifier(job_parser.data_frame)
     classify_data.classify()
