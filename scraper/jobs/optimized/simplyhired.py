@@ -1,13 +1,11 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from scraper.constants.const import *
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
 from utils.helpers import saveLogs
 import time
 import pandas as pd
 from scraper.models.scraper_logs import ScraperLogs
-from datetime import datetime
 from typing import List
 from job_portal.models import JobDetail
 
