@@ -97,6 +97,10 @@ def upload_jobs_in_sales_engine(jobs_data, filename=None):
 
         before_filter = jobs
         jobs = filter_restricted_jobs(jobs)
+        if len(jobs) == 0:
+            saveLogs("Jobs array is Empty.", 'INFO')
+            print("Total Uploaded Jobs: 0")
+            return
         payload = json.dumps(
             {
                 "jobs": jobs
