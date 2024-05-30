@@ -15,7 +15,6 @@ class SimplyHiredScraper:
         self.driver: WebDriver = driver
         self.url: str = url
         self.job_type: str = type
-        self.previous_jobs: List[str] = []
         self.scraped_jobs: List[dict] = []
         self.urls: List[str] = []
         self.job: dict = {}
@@ -29,11 +28,6 @@ class SimplyHiredScraper:
             simply_hired_scraper: cls.__class__ = cls(
                 driver=driver, url=url, type=type)
             simply_hired_scraper.driver.get(url)
-            jobs = JobDetail.objects.filter(
-                job_source='simplyhired'
-                ).values_list('job_source_url', flat=True)
-
-            simply_hired_scraper.previous_jobs = list(jobs)
 
             try:
                 flag = True
@@ -41,6 +35,12 @@ class SimplyHiredScraper:
                 while flag and page_no <= 40:
                     flag = simply_hired_scraper.find_urls(page_no)
                     page_no += 1
+                if len(simply_hired_scraper.urls) > 0:
+                    jobs = JobDetail.objects.filter(
+                            job_source='simplyhired'
+                            ).values_list('job_source_url', flat=True)
+                    previous_jobs = set(jobs)
+                    simply_hired_scraper.urls = [url for url in simply_hired_scraper.urls if url not in previous_jobs]
                 simply_hired_scraper.find_jobs() 
                 if len(simply_hired_scraper.scraped_jobs) > 0:             
                     simply_hired_scraper.export_to_excel()
@@ -55,9 +55,7 @@ class SimplyHiredScraper:
         jobs = self.driver.find_elements(By.CLASS_NAME,"css-1igwmid")
         for job in jobs:
             job_url = job.find_element(
-                    By.CSS_SELECTOR, "h2 > .css-1djbb1k").get_attribute("href")
-            if job_url in self.previous_jobs:
-                continue 
+                    By.CSS_SELECTOR, "h2 > .css-1djbb1k").get_attribute("href") 
             self.urls.append(job_url)   
         try:
             next_page = self.driver.find_elements(By.CLASS_NAME, "css-1vdegr")
@@ -72,7 +70,48 @@ class SimplyHiredScraper:
         except Exception as e:
             saveLogs(e)
             self.driver.quit()
-            return False        
+            return False   
+
+    def populate_salary(self,context):
+        salary = context[3].text
+        if len(context) == 5:
+            estimated_salary = salary.split(' a')[0]
+            if "d: " in estimated_salary:
+                estimated_salary = estimated_salary.split(": ")[1]
+            if "to " in estimated_salary:
+                estimated_salary = estimated_salary.split("to ")[1]
+            self.job["estimated_salary"] = k_conversion(
+                                estimated_salary)
+            try:
+                self.job["salary_min"] = k_conversion(
+                            estimated_salary.split(' - ')[0])
+            except:
+                self.job["salary_min"] = "N/A"
+            try:
+                self.job["salary_max"] = k_conversion(
+                            estimated_salary.split(' - ')[1])
+            except:
+                self.job["salary_max"] = "N/A"           
+            if 'year' in salary:
+                salary_format = 'yearly'
+            elif 'month' in salary:
+                salary_format = 'monthly'
+            elif 'day' in salary:
+                salary_format = 'daily'
+            elif 'hour' in salary:
+                salary_format = 'hourly'
+            else:
+                salary_format = 'N/A'
+            self.job['salary_format'] = salary_format
+
+            job_posted_date = context[4].text
+        else:
+            self.job["estimated_salary"] = 'N/A'
+            self.job["salary_min"] = 'N/A'
+            self.job["salary_max"] = 'N/A'
+            self.job['salary_format'] = 'N/A'
+            job_posted_date = context[3].text
+        self.job['job_posted_date'] = job_posted_date             
 
     def find_jobs(self):
         for job in self.urls:
@@ -91,47 +130,9 @@ class SimplyHiredScraper:
                 self.job['job_source_url'] = job
                 self.job['job_source'] = 'simplyhired'
                 self.job['job_type'] = self.job_type
-                salary = context[3].text
-                if len(context) == 5:
-                    estimated_salary = salary.split(' a')[0]
-                    if "d: " in estimated_salary:
-                        estimated_salary = estimated_salary.split(": ")[1]
-                    if "to " in estimated_salary:
-                        estimated_salary = estimated_salary.split("to ")[1]
-                    self.job["estimated_salary"] = k_conversion(
-                                estimated_salary)
-                    try:
-                        self.job["salary_min"] = k_conversion(
-                            estimated_salary.split(' - ')[0])
-                    except:
-                        self.job["salary_min"] = "N/A"
-                    try:
-                        self.job["salary_max"] = k_conversion(
-                            estimated_salary.split(' - ')[1])
-                    except:
-                        self.job["salary_max"] = "N/A"           
-                    if 'year' in salary:
-                        salary_format = 'yearly'
-                    elif 'month' in salary:
-                        salary_format = 'monthly'
-                    elif 'day' in salary:
-                        salary_format = 'daily'
-                    elif 'hour' in salary:
-                        salary_format = 'hourly'
-                    else:
-                        salary_format = 'N/A'
-                    self.job['salary_format'] = salary_format
-
-                    job_posted_date = context[4].text
-                else:
-                    self.job["estimated_salary"] = 'N/A'
-                    self.job["salary_min"] = 'N/A'
-                    self.job["salary_max"] = 'N/A'
-                    self.job['salary_format'] = 'N/A'
-                    job_posted_date = context[3].text
-
                 
-                self.job['job_posted_date'] = job_posted_date
+                self.populate_salary(context)
+                
                 descriptions = self.driver.find_elements(By.CLASS_NAME,'css-10747oj')
                 self.job['job_description'] = descriptions[1].text
                 self.job['job_description_tags'] = descriptions[1].get_attribute('innerHTML')
