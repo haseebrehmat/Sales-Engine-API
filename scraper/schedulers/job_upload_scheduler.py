@@ -293,6 +293,7 @@ def upload_file(job_parser, filename):
     classify_data = JobClassifier(job_parser.data_frame)
     classify_data.classify()
     before_uploading_jobs = JobDetail.objects.count()
+    before_upload_time = timezone.now()
 
     # migrate_jobs_to_archive(classify_data)
 
@@ -313,11 +314,11 @@ def upload_file(job_parser, filename):
         for job_item in classify_data.data_frame.itertuples() if
         job_item.job_source_url != "" and isinstance(job_item.job_source_url,
                                                      str)]
-    JobDetail.objects.bulk_create(
-        model_instances, ignore_conflicts=True, batch_size=1000)
+    JobDetail.objects.bulk_create(model_instances, ignore_conflicts=True, batch_size=1000)
+    job_detail = JobDetail.objects.filter(created_at__gte=before_upload_time)
     if env("ENVIRONMENT") == 'staging' or env("ENVIRONMENT") == 'development':
         upload_jobs_in_production(model_instances, filename)
-    upload_jobs_in_sales_engine(model_instances, filename)
+    upload_jobs_in_sales_engine(job_detail, filename)
     after_uploading_jobs_count = JobDetail.objects.count()
     scraper_log = ScraperLogs.objects.filter(
         filename=filename, uploaded_jobs=0).first()
