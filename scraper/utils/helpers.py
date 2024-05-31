@@ -15,6 +15,7 @@ from scraper.constants.const import JOB_TYPE
 from scraper.models import GroupScraper, GroupScraperQuery
 from scraper.models.accounts import Accounts
 
+from job_portal.models import JobDetail
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -272,6 +273,18 @@ def set_job_type(job_type, sub_type="remote"):
 
 def make_plural(word: str = '', num: int = 1):
     return word + 's' if word and word.strip() and (num > 1 or num == 0) else word
+
+
+
+def previous_jobs(source, urls=[]):
+    jobs = JobDetail.objects.filter(job_source=source) 
+    if len(urls) > 0:
+        jobs = jobs.filter(job_source_url__in=urls)
+    previous_jobs = set(jobs.values_list('job_source_url', flat=True))
+    return {job: True for job in previous_jobs}
+
+
+
 
 
 # pia extension ids

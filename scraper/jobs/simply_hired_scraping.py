@@ -1,7 +1,7 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from scraper.constants.const import *
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, previous_jobs
 from utils.helpers import saveLogs
 import time
 import pandas as pd
@@ -36,13 +36,8 @@ class SimplyHiredScraper:
                     flag = simply_hired_scraper.find_urls(page_no)
                     page_no += 1
                 if len(simply_hired_scraper.scrape_job_urls) > 0:
-                    jobs = JobDetail.objects.filter(
-                            job_source='simplyhired',
-                            job_source_url__in = simply_hired_scraper.scrape_job_urls
-                            ).values_list('job_source_url', flat=True)
-                    previous_jobs = list(jobs)
-                    existing_jobs_dictionary = {job: True for job in previous_jobs}
-                simply_hired_scraper.find_jobs(existing_jobs_dictionary)
+                    existing_jobs_dictionary = previous_jobs(source='simplyhired', urls=simply_hired_scraper.scrape_job_urls) 
+                    simply_hired_scraper.find_jobs(existing_jobs_dictionary)
                 if len(simply_hired_scraper.scraped_jobs) > 0:             
                     simply_hired_scraper.export_to_excel()
                 simply_hired_scraper.driver.quit()
