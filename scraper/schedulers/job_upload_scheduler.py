@@ -31,7 +31,7 @@ from scraper.jobs.indeed_scraping import indeed
 from scraper.jobs.jooble_scraping import jooble
 from scraper.jobs.linkedin_scraping import linkedin
 from scraper.jobs.monster_scraping import monster
-# from scraper.jobs.simply_hired_scraping import simply_hired
+from scraper.jobs.simply_hired_scraping import simply_hired
 from scraper.jobs.dailyremote_scraping import dailyremote
 from scraper.jobs.talent_scraping import talent
 from scraper.jobs.ziprecruiter_scraping import ziprecruiter_scraping
@@ -54,7 +54,6 @@ from scraper.jobs.ruby_on_remote_scraping import ruby_on_remote
 from scraper.jobs.just_remote_scraping import just_remote
 from scraper.jobs.linkedin_group_scraping import linkedin_group
 from scraper.jobs.wwr_scraping import weworkremotely
-from scraper.jobs.optimized.simplyhired import simply_hired
 
 from scraper.models import JobSourceQuery, ScraperLogs
 from scraper.models.accounts import Accounts
