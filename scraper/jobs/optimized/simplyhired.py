@@ -16,7 +16,7 @@ class SimplyHiredScraper:
         self.url: str = url
         self.job_type: str = type
         self.scraped_jobs: List[dict] = []
-        self.urls: List[str] = []
+        self.scrape_job_urls: List[str] = []
         self.job: dict = {}
 
     @classmethod
@@ -35,13 +35,14 @@ class SimplyHiredScraper:
                 while flag and page_no <= 40:
                     flag = simply_hired_scraper.find_urls(page_no)
                     page_no += 1
-                if len(simply_hired_scraper.urls) > 0:
+                if len(simply_hired_scraper.scrape_job_urls) > 0:
                     jobs = JobDetail.objects.filter(
-                            job_source='simplyhired'
+                            job_source='simplyhired',
+                            job_source_url__in = simply_hired_scraper.scrape_job_urls
                             ).values_list('job_source_url', flat=True)
-                    previous_jobs = set(jobs)
-                    simply_hired_scraper.urls = [url for url in simply_hired_scraper.urls if url not in previous_jobs]
-                simply_hired_scraper.find_jobs() 
+                    previous_jobs = list(jobs)
+                    existing_jobs_dictionary = {job: True for job in previous_jobs}
+                simply_hired_scraper.find_jobs(existing_jobs_dictionary)
                 if len(simply_hired_scraper.scraped_jobs) > 0:             
                     simply_hired_scraper.export_to_excel()
                 simply_hired_scraper.driver.quit()
@@ -56,7 +57,7 @@ class SimplyHiredScraper:
         for job in jobs:
             job_url = job.find_element(
                     By.CSS_SELECTOR, "h2 > .css-1djbb1k").get_attribute("href") 
-            self.urls.append(job_url)   
+            self.scrape_job_urls.append(job_url)   
         try:
             next_page = self.driver.find_elements(By.CLASS_NAME, "css-1vdegr")
             next_page_clicked = False
@@ -113,8 +114,10 @@ class SimplyHiredScraper:
             job_posted_date = context[3].text
         self.job['job_posted_date'] = job_posted_date             
 
-    def find_jobs(self):
-        for job in self.urls:
+    def find_jobs(self,existing_jobs_dictionary):
+        for job in self.scrape_job_urls:
+            if existing_jobs_dictionary.get(job):
+                continue
             try:
                 self.driver.get(job)
                 job_title = self.driver.find_element(By.CLASS_NAME,'css-yvgnf2').text
