@@ -1,272 +1,217 @@
-from datetime import datetime
-from scraper.models.accounts import Accounts
-from scraper.constants.const import *
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import pandas as pd
 import time
-
-from scraper.models import JobSourceQuery
+import random
+import traceback
+from typing import List, Union, Set
+import pandas as pd
+from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchElementException, \
+    ElementNotVisibleException
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, run_pia_proxy, previous_jobs
 from utils.helpers import saveLogs
+from job_portal.models import JobDetail
 
-total_job = 0
+class LinkedinScraper:
+    def __init__(self, driver, url) -> None:
+        self.driver: WebDriver = driver
+        self.url: str = url
+        self.links: Set[str] = []
+        self.scraped_jobs: List[dict] = []
+        self.job: dict = {}
+        self.errs: List[dict] = []
 
-
-# calls url
-def request_url(driver, url):
-    driver.get(url)
-
-
-# login method
-def login(driver, email, password):
-    try:
-        WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.ID, "username"))
+    @classmethod
+    def call(cls, url, job_type):
+        driver: WebDriver = configure_webdriver(
+            block_media=True,
+            block_elements=['img', 'cookies']
         )
-    except Exception as e:
-        print(e)
-        saveLogs(e)
-        return False
-
-    try:
-        driver.find_element(By.ID, "username").click()
-        driver.find_element(By.ID, "username").clear()
-        driver.find_element(By.ID, "username").send_keys(email)
-
-        driver.find_element(By.ID, "password").click()
-        driver.find_element(By.ID, "password").clear()
-        driver.find_element(By.ID, "password").send_keys(password)
-
-        driver.find_element(By.CLASS_NAME, "btn__primary--large").click()
-        not_logged_in = driver.find_elements(
-            By.CLASS_NAME, "form__label--error")
-        if len(not_logged_in) > 0:
-            return False
-
-        WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (By.CLASS_NAME, "global-nav__primary-item"))
-        )
-        return True
-
-    except Exception as e:
-        print(e)
-        saveLogs(e)
-        return False
-
-
-# append data for csv file
-def append_data(data, field):
-    data.append(str(field).strip("+"))
-
-
-# find's job name
-def find_jobs(driver, job_type, total_jobs, url=None):
-    scrapped_data = []
-    try:
-        WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (By.CLASS_NAME, "jobs-search-results__list-item"))
-        )
-    except:
-        print("waited for jobs")
-
-    try:
-        if url is not None:
-            get_url = driver.current_url
-            request_url(driver, get_url + str(url))
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "jobs-search-results__list-item"))
-            )
-    except Exception as e:
-        saveLogs(e)
-        return False, total_jobs
-
-    time.sleep(2)
-    if not data_exists(driver):
-        return False, total_jobs
-
-    jobs = driver.find_elements(
-        By.CLASS_NAME, "jobs-search-results__list-item")
-
-    for job in jobs:
         try:
-            job.location_once_scrolled_into_view
+            driver.maximize_window()
+            run_pia_proxy(driver)
+            linkdedin_scraper: cls.__class__ = cls(driver=driver, url=url)
+            linkdedin_scraper.find_jobs(job_type)
         except Exception as e:
-            print(e)
+            cls.handle_exception(e)
+        driver.quit()
 
-    jobs = driver.find_elements(
-        By.CLASS_NAME, "jobs-search-results__list-item")
+    def request_page(self) -> None:
+        self.driver.get(self.url)
 
-    address = driver.find_elements(By.CLASS_NAME, "artdeco-entity-lockup__caption")
-    count = 0
-    for job in jobs:
+    def handle_exception(self, exception: Union[Exception, str]) -> None:
+        saveLogs(exception)
+        traceback.format_exc()
+        traceback_data = traceback.extract_tb(exception.__traceback__)
+        if traceback_data and traceback_data[0]:
+            self.errs.append({
+                'scraper': 'linkedin',
+                'file_path': traceback_data[0].filename or "",
+                'line_number': traceback_data[0].lineno or "",
+                'error_line': traceback_data[0].line or "",
+                'from_function': traceback_data[0].name or ""
+            })
+
+    def get_element(self, locator: str, parent: WebElement = None, selector: str = 'class',
+                    alls: bool = False) -> Union[WebElement, List[WebElement], None]:
         try:
-            data = []
-            job.click()
+            by: str = By.CLASS_NAME
+            if selector == 'css':
+                by: str = By.CSS_SELECTOR
+            if selector == 'xpath':
+                by: str = By.XPATH
+            if selector == 'tag':
+                by: str = By.TAG_NAME
+            if selector == 'name':
+                by: str = By.NAME  # For Input fields
+            wait: WebDriverWait = WebDriverWait(parent or self.driver, 10)
+            ec: EC = EC.presence_of_all_elements_located((by, locator)) if alls else EC.presence_of_element_located(
+                (by, locator))
+            return wait.until(ec)
+        except (
+                WebDriverException, TimeoutException, NoSuchElementException, ElementNotVisibleException,
+                Exception) as e:
+            self.handle_exception(e)
+            return None
 
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "jobs-description-content__text"))
-            )
-
-            job_title = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-title")
-            append_data(data, job_title.text)
-            company_name = job.find_element(By.CLASS_NAME, "job-card-container__primary-description")
-            append_data(data, company_name.text)
-            append_data(data, address[count].text)
-            job_description = driver.find_element(By.CLASS_NAME, "jobs-description-content__text")
-            append_data(data, job_description.text)
-            job_source_url = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__content--two-pane")
-            url = job_source_url.find_element(By.TAG_NAME, 'a')
-            append_data(data, url.get_attribute('href'))
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "tvm__text--positive"))
-            )
-            job_posted_date = driver.find_element(By.CLASS_NAME, "tvm__text--positive")
-            job_date = job_posted_date.text.split('\n')[0]
-            append_data(data, job_date)
-
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight"))
-            )
-
+    def home_page_loaded(self) -> bool:
+        loaded: bool = False
+        for retry in range(1, 6):
             try:
-                estimated_salary = driver.find_elements(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight")[0].text
-                if '$' in estimated_salary:
-                    estimated_salary = estimated_salary.split('Full-time')[0]
-                    estimated_salary = estimated_salary.split('Remote')[0]
+                self.request_page()
+                homepage_element: WebElement = self.get_element(
+                    locator='jobs-search__results-list')
+                if homepage_element:
+                    loaded = True
+                    break
+            except (WebDriverException, TimeoutException, NoSuchElementException, ElementNotVisibleException) as e:
+                if retry < 5:
+                    print(f"Retry {retry}/{5} due to: {e}")
+                else:
+                    self.handle_exception(e)
+                    self.driver.quit()
+                    break
+        return loaded
+
+    def extract_links(self) -> None:
+        load_more_btn: WebElement = self.get_element(
+            locator="infinite-scroller__show-more-button"
+        )
+        no_more_jobs_alert: WebElement = self.get_element(
+            locator="see-more-jobs__viewed-all"
+        )
+        if not load_more_btn and not no_more_jobs_alert:
+            return
+        while not (load_more_btn.is_displayed() or no_more_jobs_alert.is_displayed()):
+            time.sleep(1)
+            self.driver.execute_script(
+                "window.scrollTo(0, document.body.scrollHeight);"
+            )
+            try:
+                WebDriverWait(self.driver, 5).until(
+                    EC.visibility_of(load_more_btn))
+                WebDriverWait(self.driver, 5).until(
+                    EC.visibility_of(no_more_jobs_alert))
+            except TimeoutException:
+                continue
+        self.populate_links()
+        while not no_more_jobs_alert.is_displayed():
+            load_more_btn.click()
+            self.populate_links()
+
+    def populate_links(self) -> int:
+        time.sleep(random.uniform(1, 5))
+        jobs_list: list[WebElement] = self.get_element(
+            locator='base-card__full-link',
+            alls=True
+        )
+        start = len(self.links)
+        for item in jobs_list[start:]:
+            if item:
+                self.links.append(item.get_attribute('href').split('?')[0])
+
+    def find_jobs(self, job_type) -> None:
+        try:
+            if self.home_page_loaded():
+                self.extract_links()
+            existing_jobs = previous_jobs(source='linkedin', urls=self.links)
+            if len(self.links) > 0:
+                for url in self.links:
+                    if existing_jobs.get(url):
+                        continue
                     try:
-                        if 'yr' in estimated_salary:
-                            append_data(data, "yearly")
-                        elif 'hr' in estimated_salary:
-                            append_data(data, "hourly")
+                        self.job['job_source_url'] = url
+                        self.job['job_source'] = 'linkedin'
+                        self.job['job_type'] = job_type
+                        self.driver.get(url=url)
+                        visited: bool = self.tab_visited()
+                        if visited:
+                            self.scraped_jobs.append(self.job.copy())
+                            self.job = {}
                         else:
-                            append_data(data, "N/A")
-                    except:
-                        append_data(data, "N/A")
-                    try:
-                        append_data(data, k_conversion(estimated_salary))
-                    except:
-                        append_data(data, 'N/A')
-                    try:
-                        salary_min = estimated_salary.split('$')[1]
-                        salary_min = salary_min.split(' ')[0]
-                        append_data(data, k_conversion(salary_min.split('-')[0]))
-                    except:
-                        append_data(data, 'N/A')
-                    try:
-                        salary_max = estimated_salary.split('$')[2]
-                        append_data(data, k_conversion(salary_max.split(' ')[0]))
-                    except:
-                        append_data(data, 'N/A')
-                else:
-                    append_data(data, 'N/A')
-                    append_data(data, 'N/A')
-                    append_data(data, 'N/A')
-                    append_data(data, 'N/A')
-            except:
-                append_data(data, 'N/A')
-                append_data(data, 'N/A')
-                append_data(data, 'N/A')
-                append_data(data, 'N/A')
-
-            append_data(data, "Linkedin")
-            try:
-                WebDriverWait(driver, 30).until(
-                    EC.presence_of_element_located(
-                        (By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight"))
-                )
-                job_type_check = driver.find_element(By.CLASS_NAME, "job-details-jobs-unified-top-card__job-insight")
-                if 'Contract' in job_type_check.text:
-                    append_data(data, set_job_type('Contract'))
-                elif 'Full-time' in job_type_check.text:
-                    append_data(data, set_job_type('Full time'))
-                else:
-                    append_data(data, set_job_type(job_type))
-            except Exception as e:
-                print(e)
-                append_data(data, set_job_type(job_type))
-            append_data(data, job_description.get_attribute('innerHTML'))
-
-            scrapped_data.append(data)
-            total_jobs += 1
+                            continue
+                    except Exception as e:
+                        self.handle_exception(e)
+                        continue
+            self.driver.quit()
+            self.export_to_excel() if len(self.scraped_jobs) > 0 else None
         except Exception as e:
-            print(e)
-            saveLogs(e)
-        count += 1
+            self.handle_exception(e)
+            self.driver.quit()
 
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.LINKEDIN)
-    df.to_excel(filename, index=False)
-    ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="Linkedin", filename=filename)
-    return True, total_jobs
+    def populate_salary(self):
+        try:
+            salaryElement = self.get_element(locator='compensation__salary').text
+            if 'yr' in salaryElement:
+                self.job['salary_format'] = 'yearly'
+            elif 'hr' in salaryElement:
+                self.job['salary_format'] = 'hourly'
+            else:
+                self.job['salary_format'] = 'N/A'
+            self.job['estimated_salary'] = salaryElement
+            salary = salaryElement.split('-')
+            salary_min = salary[0].split('/')
+            salary_max = salary[1].split('/')
+            self.job['salary_min'] = salary_min[0]
+            self.job['salary_max'] = salary_max[0]
+        except:
+            self.job["salary_format"] = "N/A"
+            self.job["estimated_salary"] = "N/A"
+            self.job["salary_min"] = "N/A"
+            self.job["salary_max"] = "N/A"
 
-
-# check if there is more jobs available or not
-def data_exists(driver):
-    try:
-        page_exists = driver.find_elements(
-            By.CLASS_NAME, "jobs-search-no-results-banner__image")
-        return True if page_exists[0].text == '' else False
-    except Exception as e:
+    def tab_visited(self) -> bool:
+        title = self.get_element(locator='top-card-layout__title').text
+        self.job['job_title'] = title
+        company_name = self.get_element(locator='topcard__org-name-link').text
+        self.job['company_name'] = company_name
+        address = self.get_element(locator='topcard__flavor--bullet').text
+        self.job['address'] = address
+        date_posted = self.get_element(locator='posted-time-ago__text').text        
+        self.job['job_posted_date'] = date_posted
+        self.populate_salary()
+        button = self.get_element(locator='show-more-less-html__button')
+        button.click()
+        description = self.get_element(locator='show-more-less-html__markup')
+        self.job['job_description'] = description.text
+        self.job["job_description_tags"] = description.get_attribute('innerHTML')
         return True
 
-
-def jobs_types(driver, url, job_type, total_job):
-    count = 0
-    request_url(driver, url)  # select type from the const file
-    flag = True
-    flag, total_job = find_jobs(driver, job_type, total_job)
-    if flag:
-        count += 25
-
-        while flag:
-            flag, total_job = find_jobs(driver, job_type, total_job, "&start=" + str(count))
-            count += 25
-    else:
-        print(NO_JOB_RESULT)
+    def export_to_excel(self) -> None:
+        columns_name: list[str] = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                                   "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+        df = pd.DataFrame(data=self.scraped_jobs, columns=columns_name)
+        filename: str = generate_scraper_filename(
+            ScraperNaming.LINKEDIN)
+        df.to_excel(filename, index=False)
+        ScraperLogs.objects.create(
+            total_jobs=len(df), job_source="Linkedin", filename=filename)
 
 
-# code starts from here
-def linkedin(link, job_type):
-    print("linkedin")
-    total_job = 0
-    try:
-        for x in Accounts.objects.filter(source='linkedin'):
-            driver = configure_webdriver()
-            try:
-                request_url(driver, LOGIN_URL)
-                logged_in = login(driver, x.email, x.password)
-                try:
-                    if logged_in:
-                        jobs_types(driver, link, job_type, total_job)
-                        print(SCRAPING_ENDED)
-                        driver.quit()
-                        break
-                    else:
-                        print(LOGIN_FAILED)
-                        driver.quit()
-                except Exception as e:
-                    print("Exception in linkedin => ", e)
-                    saveLogs(e)
-                    print(LINK_ISSUE)
-            except Exception as e:
-                saveLogs(e)
-            driver.quit()
-            break
-    except Exception as e:
-        saveLogs(e)
-        print(e)
+def linkedin(url: str, job_type: str) -> None:
+    saveLogs('Linkedin started',level='INFO')
+    LinkedinScraper.call(url, job_type)
+    saveLogs('Linkedin ended', level='INFO')
