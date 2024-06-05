@@ -285,6 +285,9 @@ def previous_jobs(source, urls=[]):
 
 
 
+def sleeper(sec=0):
+    seconds = sec if sec else random.randint(1, 5)
+    time.sleep(seconds)
 
 
 # pia extension ids

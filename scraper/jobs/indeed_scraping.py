@@ -1,143 +1,155 @@
-import time
-
 import pandas as pd
 from selenium.webdriver.common.by import By
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type, run_pia_proxy
+    set_job_type, sleeper, previous_jobs
 from utils.helpers import saveLogs
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
-# calls url
-def request_url(driver, url):
-    driver.get(url)
+def filter_jobs(driver):
+    filtered = []
+    jobs_exist = True
+    while jobs_exist:
+        sleeper()
+        all_jobs = driver.find_elements(By.CLASS_NAME, "slider_container")
+        for job in all_jobs:
+            try:
+                job_key = job.find_element(
+                    By.TAG_NAME, 'a').get_attribute('data-jk')
+                posted_date = job.find_element(
+                    By.CSS_SELECTOR, '[data-testid="myJobsStateDate"]')
+                filtered.append({
+                    'link': f"https://www.indeed.com/viewjob?jk={job_key}",
+                    'posted_date': posted_date.text.split('\n')[1]
+                })
+            except:
+                continue
+        try:
+            next_page = driver.find_element(
+                By.CSS_SELECTOR, "a[aria-label='Next Page']"
+            )
+            next_page.click()
+            sleeper()
+        except:
+            jobs_exist = False
+            break
+    return filtered
 
 
-# append data for csv file
-def append_data(data, field):
-    data.append(str(field).strip("+"))
-
-
-# find's job name
 def find_jobs(driver, job_type):
     scrapped_data = []
-    c = 0
-    time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "slider_container")
-    for job in jobs:
+    filtered_jobs = filter_jobs(driver)
+    previous_links = previous_jobs('indeed', [row['link'] for row in filtered_jobs])
+    for job in filtered_jobs:
+        if job['link'] in previous_links:
+            continue
+        data = {}
         try:
-
-            data = []
-            time.sleep(1)
-            job_posted_date = job.find_element(By.CLASS_NAME, "date")
-            try:
-                append_data(data, job_posted_date.text.split('\n')[1])
-            except:
-                append_data(data, 'N/A')
-
-            job.click()
-            time.sleep(4)
-            append_data(data, job.text.split('\n')[0])
-            append_data(data, job.text.split('\n')[1])
-            append_data(data, job.text.split('\n')[2])
-            job_description = driver.find_element(
-                By.CLASS_NAME, "jobsearch-jobDescriptionText")
-            append_data(data, job_description.text)
-            append_data(data, driver.current_url)
-            try:
-                estimated_salary = driver.find_element(By.CLASS_NAME, "css-2iqe2o")
-                if '$' in estimated_salary.text:
-                    a_an = ''
-                    if 'an' in estimated_salary.text:
-                        a_an = 'an'
-                    else:
-                        a_an = 'a'
-                    if 'hour' in estimated_salary.text.split(a_an)[1]:
-                        append_data(data, "hourly")
-                    elif ('year' or 'annum') in estimated_salary.text.split(a_an)[1]:
-                        append_data(data, "yearly")
-                    elif 'month' in estimated_salary.text.split(a_an)[1]:
-                        append_data(data, "monthly")
-                    else:
-                        append_data(data, "N/A")
-                    try:
-                        append_data(data, k_conversion(estimated_salary.text.split(a_an)[0]))
-                    except:
-                        append_data(data, "N/A")
-                    try:
-                        salary_min = estimated_salary.text.split('$')[1]
-                        append_data(data, k_conversion(salary_min.split(' ')[0]))
-                    except:
-                        append_data(data, "N/A")
-                    try:
-                        salary_max = estimated_salary.text.split('$')[2]
-                        append_data(data, k_conversion(salary_max.split(' ')[0]))
-                    except:
-                        append_data(data, "N/A")
-                else:
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-            except:
-                append_data(data, "N/A")
-                append_data(data, "N/A")
-                append_data(data, "N/A")
-                append_data(data, "N/A")
-            append_data(data, "Indeed")
-            append_data(data, set_job_type(job_type))
-            append_data(data, job_description.get_attribute('innerHTML'))
-
+            driver.get(job["link"])
+            sleeper()
+            main_job_container = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "jobsearch-JobComponent"))
+            )
+            job_title = main_job_container.find_element(
+                By.CLASS_NAME, "jobsearch-JobInfoHeader-title"
+            )
+            data["job_title"] = job_title.text
+            company_name = main_job_container.find_element(
+                By.CSS_SELECTOR, '[data-testid="inlineHeader-companyName"]'
+            )
+            data["company_name"] = company_name.text
+            data["address"] = extract_address(main_job_container)
+            data["job_type"] = set_job_type(job_type)
+            description = main_job_container.find_element(
+                By.ID, "jobDescriptionText"
+            )
+            data["job_description_tags"] = description.get_attribute(
+                'innerHTML')
+            data["job_description"] = description.text
+            # Extracting Salary Details
+            data = extract_salary(data, main_job_container)
+            data["job_source"] = "Indeed"
+            data["job_source_url"] = job["link"]
+            data["job_posted_date"] = job["posted_date"]
             scrapped_data.append(data)
-            c += 1
-            driver.back()
         except Exception as e:
-            print(e)
-
+            saveLogs(e)
     columns_name = ["job_posted_date", "job_title", "company_name", "address", "job_description",
                     'job_source_url', "salary_format", "estimated_salary", "salary_min", "salary_max",
                     "job_source", "job_type", "job_description_tags"]
-
     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
     filename = generate_scraper_filename(ScraperNaming.INDEED)
     df.to_excel(filename, index=False)
-
-    ScraperLogs.objects.create(total_jobs=len(df), job_source="Indeed", filename=filename)
-
-    if not data_exists(driver):
-        return False
-
-    next_page = driver.find_element(By.CSS_SELECTOR, "a[aria-label='Next Page']")
-    next_page.click()
-    return True
+    ScraperLogs.objects.create(
+        total_jobs=len(df), job_source="Indeed", filename=filename
+    )
 
 
-# check if there is more jobs available or not
-def data_exists(driver):
-    page_exists = driver.find_elements(By.CSS_SELECTOR, "a[aria-label='Next Page']")
-    return False if len(page_exists) == 0 else True
+def extract_salary(data, main_job_container):
+    salary = main_job_container.find_element(
+        By.XPATH, '//*[@id="salaryInfoAndJobType"]/span[1]'
+    )
+    if salary and '$' in salary.text:
+        if 'hour' in salary.text:
+            data["salary_format"] = "hourly"
+        elif ('year' or 'annum') in salary.text:
+            data["salary_format"] = "yearly"
+        elif 'month' in salary.text:
+            data["salary_format"] = "monthly"
+        else:
+            data["salary_format"] = "N/A"
+        try:
+            delimiter = ' a' if ' a ' in salary.text else ' an'
+            data["estimated_salary"] = k_conversion(
+                salary.text.split(delimiter)[0])
+        except:
+            data["estimated_salary"] = "N/A"
+        try:
+            salary_min = salary.text.split('$')[1]
+            data["salary_min"] = k_conversion(
+                salary_min.split(' ')[0])
+        except:
+            data["salary_min"] = "N/A"
+        try:
+            salary_max = salary.text.split('$')[2]
+            data["salary_max"] = k_conversion(
+                salary_max.split(' ')[0])
+        except:
+            data["salary_max"] = "N/A"
+    else:
+        data["salary_max"] = "N/A"
+        data["salary_min"] = "N/A"
+        data["salary_format"] = "N/A"
+        data["estimated_salary"] = "N/A"
+    return data
 
-# code starts from here
+
+def extract_address(main_job_container):
+    try:
+        address = main_job_container.find_element(
+            By.CSS_SELECTOR, '[data-testid="inlineHeader-companyLocation"]'
+        )
+        return address.text
+    except:
+        "remote"
+
+
 def indeed(link, job_type):
-    print("Indeed")
-    driver = configure_webdriver()
+    driver = configure_webdriver(True)
     try:
         driver.maximize_window()
-        run_pia_proxy(driver, location="mumbai")
         try:
-            flag = True
-            request_url(driver, link)
+            driver.get(link)
             driver.maximize_window()
-            while flag:
-                flag = find_jobs(driver, job_type)
-                print("Fetching...")
-            print(SCRAPING_ENDED)
+            sleeper()
+            find_jobs(driver, job_type)
         except Exception as e:
             saveLogs(e)
-            print(LINK_ISSUE)
     except Exception as e:
         saveLogs(e)
-        print(e)
     driver.quit()
