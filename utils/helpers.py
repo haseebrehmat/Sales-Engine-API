@@ -1,7 +1,10 @@
 from error_logger.models import Log
 from django.utils import timezone
 import traceback
-import os, requests
+from datetime import datetime
+import os
+import requests
+
 
 def validate_request(request, permissions):
     try:
@@ -29,7 +32,9 @@ def saveLogs(exception, level='ERROR', request=None):
         if request:
             if hasattr(request, 'user') and request.user.is_authenticated:
                 user_id = request.user
-        traceback_data = traceback.extract_tb(exception.__traceback__)
+        traceback_data = []
+        if hasattr(exception, '__traceback__'):
+            traceback_data = traceback.extract_tb(exception.__traceback__)
         if len(traceback_data) > 0:
             path = traceback_data[0].filename
             error_line = traceback_data[0].line
@@ -65,3 +70,32 @@ def send_request_to_flask(payload):
     except Exception as e:
         print(str(e))
         return False
+
+
+def log_scraper_running_time(job_source):
+    def time_decorator(func):
+        def wrapper(*args, **kwargs):
+            url, _ = args
+            start_time = datetime.now()
+            result = func(*args, **kwargs)
+            end_time = datetime.now()
+            elapsed_seconds = (end_time - start_time).total_seconds()
+            elapsed_minutes = elapsed_seconds / 60
+            elapsed_hours = elapsed_minutes / 60
+            if elapsed_seconds < 60:
+                elapsed_time_str = f"{elapsed_seconds:.2f} seconds"
+            elif elapsed_minutes < 60:
+                elapsed_time_str = f"{elapsed_minutes:.2f} minutes"
+            else:
+                elapsed_time_str = f"{elapsed_hours:.2f} hours"
+            msg = (
+                f"[ Job Source: {job_source} ]--------"
+                f"[ Started At: {start_time.strftime('%b %d, %Y %I:%M:%S %p')} ]--------"
+                f"[ Ended At: {end_time.strftime('%b %d, %Y %I:%M:%S %p')} ]--------"
+                f"[ Time Taken: {elapsed_time_str} ]--------"
+                f"[ Link: {url} ]"
+            )
+            saveLogs(msg, 'INFO')
+            return result
+        return wrapper
+    return time_decorator

@@ -10,7 +10,7 @@ from scraper.models.accounts import Accounts
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, previous_jobs, \
     set_job_type, run_pia_proxy
-from utils.helpers import saveLogs
+from utils.helpers import saveLogs, log_scraper_running_time
 from random import randint
 
 def login(driver, email, password):
@@ -35,7 +35,6 @@ def login(driver, email, password):
         except Exception as e:
             return True
     except Exception as e:
-        print(e)
         return False
 
 
@@ -80,11 +79,9 @@ def find_jobs(driver, job_type):
                         df), job_source='Glassdoor', filename=filename)
                     scrapped_data = []
             except Exception as e:
-                print(e)
                 saveLogs(e)
     except Exception as e:
         saveLogs(e)
-        print(e)
 
 
 def get_job_detail(driver, jobs, job_type):
@@ -150,7 +147,6 @@ def get_job_detail(driver, jobs, job_type):
                     job["salary_min"] = salary_range[0].split(" Per")[0]
                     job["salary_max"] = salary_range[1].split(" Per")[0]
         except Exception as e:
-            print(e)
             saveLogs(e)
         return job, False
     except Exception as e:
@@ -178,8 +174,8 @@ def load_jobs(driver):
 
 
 # code starts from here
+@log_scraper_running_time("Glassdoor")
 def glassdoor(link, job_type):
-    print("Glassdoor")
     driver = configure_webdriver()
     try:
         driver.maximize_window()
@@ -195,10 +191,6 @@ def glassdoor(link, job_type):
             while flag:
                 flag = load_jobs(driver)
             find_jobs(driver, job_type)
-            print(SCRAPING_ENDED)
-        else:
-            print(LOGIN_FAILED)
     except Exception as e:
         saveLogs(e)
-        print(e)
     driver.quit()

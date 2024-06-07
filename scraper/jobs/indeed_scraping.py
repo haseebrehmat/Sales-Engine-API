@@ -5,7 +5,7 @@ from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
     set_job_type, sleeper, previous_jobs
-from utils.helpers import saveLogs
+from utils.helpers import log_scraper_running_time, saveLogs
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -138,9 +138,9 @@ def extract_address(main_job_container):
     except:
         "remote"
 
-
+@log_scraper_running_time("Indeed")
 def indeed(link, job_type):
-    driver = configure_webdriver(True)
+    driver = configure_webdriver()
     try:
         driver.maximize_window()
         try:

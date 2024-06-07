@@ -12,8 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, run_pia_proxy, previous_jobs
-from utils.helpers import saveLogs
-from job_portal.models import JobDetail
+from utils.helpers import log_scraper_running_time, saveLogs
 
 class LinkedinScraper:
     def __init__(self, driver, url) -> None:
@@ -210,8 +209,6 @@ class LinkedinScraper:
         ScraperLogs.objects.create(
             total_jobs=len(df), job_source="Linkedin", filename=filename)
 
-
+@log_scraper_running_time("LinkedIn")
 def linkedin(url: str, job_type: str) -> None:
-    saveLogs('Linkedin started',level='INFO')
     LinkedinScraper.call(url, job_type)
-    saveLogs('Linkedin ended', level='INFO')

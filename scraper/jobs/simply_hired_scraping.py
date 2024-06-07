@@ -2,12 +2,11 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from scraper.constants.const import *
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, previous_jobs
-from utils.helpers import saveLogs
+from utils.helpers import log_scraper_running_time, saveLogs
 import time
 import pandas as pd
 from scraper.models.scraper_logs import ScraperLogs
 from typing import List
-from job_portal.models import JobDetail
 
 class SimplyHiredScraper:
 
@@ -21,7 +20,6 @@ class SimplyHiredScraper:
 
     @classmethod
     def call(cls, url, type):
-        print("Running Simply Hired...")
         try:
             driver: WebDriver = configure_webdriver()
             driver.maximize_window()
@@ -45,7 +43,6 @@ class SimplyHiredScraper:
                 saveLogs(e)
         except Exception as e:
             saveLogs(e)
-        print("Done Simply Hired...")
 
     def find_urls(self, next_page_no):
         jobs = self.driver.find_elements(By.CLASS_NAME,"css-1igwmid")
@@ -152,7 +149,6 @@ class SimplyHiredScraper:
             total_jobs=len(df), job_source="Simply Hired", filename=filename)
 
 
+@log_scraper_running_time("SimplyHired")
 def simply_hired(url:str, job_type:str) -> None:
-    print('simplyhired started')
     SimplyHiredScraper.call(url, job_type)
-    print('simplyhired ended')
