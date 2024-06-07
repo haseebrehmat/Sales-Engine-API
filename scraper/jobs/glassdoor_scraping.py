@@ -8,10 +8,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from scraper.constants.const import *
 from scraper.models.accounts import Accounts
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, previous_jobs, \
     set_job_type, run_pia_proxy
 from utils.helpers import saveLogs
-
+from random import randint
 
 def login(driver, email, password):
     try:
@@ -46,11 +46,9 @@ def find_jobs(driver, job_type):
                     "job_description_tags"]
     time.sleep(3)
     try:
-        jobs = driver.find_elements(
-            By.CLASS_NAME, "JobCard_jobCardContainer__l0svv")
+        jobs = driver.find_elements(By.CLASS_NAME, "JobCard_jobCardContainer___hKKI")
         total_jobs = len(jobs)
         count = 0
-        print(total_jobs)
         batch_size = 50
         try:
             close_button = WebDriverWait(driver, 30).until(EC.presence_of_element_located(
@@ -58,13 +56,20 @@ def find_jobs(driver, job_type):
             close_button.click()
         except:
             pass
+
+        job_urls = [job.find_element(By.CLASS_NAME, "JobCard_jobTitle___7I6y").get_attribute('href') for job in jobs]
+        existing_jobs_dictionary = previous_jobs("glassdoor", job_urls)
+
         for job in jobs:
             try:
+                if existing_jobs_dictionary.get(job):
+                    continue
                 job, error = get_job_detail(driver, job, job_type)
                 if not error:
                     data = [job[c] for c in columns_name]
                     scrapped_data.append(data)
                 count += 1
+
                 # upload jobs in chunks of 50 size
                 if scrapped_data and count > 0 and (count % batch_size == 0 or count == total_jobs - 1):
                     df = pd.DataFrame(data=scrapped_data, columns=columns_name)
@@ -85,26 +90,23 @@ def find_jobs(driver, job_type):
 def get_job_detail(driver, jobs, job_type):
     try:
         jobs.click()
-        time.sleep(3)
+        WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "JobDetails_jobDescription__uW_fK"))
+        )
+        time.sleep(randint(1, 3))
         job_detail = jobs.text.split('\n')
-        job_title = jobs.find_element(
-            By.CLASS_NAME, "JobCard_jobTitle__rbjTE").text
-        company_name = jobs.find_element(
-            By.CLASS_NAME, "EmployerProfile_profileContainer__4qyNU").text.split('\n')[0]
-        address = jobs.find_element(
-            By.CLASS_NAME, "JobCard_location__N_iYE").text
+        job_title = jobs.find_element(By.CLASS_NAME, "JobCard_jobTitle___7I6y")
+        company_name = jobs.find_element(By.CLASS_NAME, "EmployerProfile_compactEmployerName__LE242").text.split('\n')[0]
+        address = jobs.find_element(By.CLASS_NAME, "JobCard_location__rCz3x").text
 
-        job_url = jobs.find_element(
-            By.CLASS_NAME, "JobCard_trackingLink__zUSOo").get_attribute('href')
+        job_url = job_title.get_attribute('href')
         # click show more details for description
         try:
-            driver.find_element(
-                By.CLASS_NAME, "JobDetails_showMore__j5Z_h").click()
+            driver.find_element(By.CLASS_NAME, "JobDetails_showMoreWrapper__ja2_y").click()
             time.sleep(0.5)
         except:
             pass
-        job_description = driver.find_element(
-            By.CLASS_NAME, "JobDetails_jobDescription__6VeBn")
+        job_description = driver.find_element(By.CLASS_NAME, "JobDetails_jobDescription__uW_fK")
 
         try:
             job_posted_date = job_detail[-1]
@@ -112,7 +114,7 @@ def get_job_detail(driver, jobs, job_type):
             job_posted_date = "24h"
 
         job = {
-            "job_title": job_title,
+            "job_title": job_title.text,
             "company_name": company_name,
             "address": address,
             "job_description": job_description.text,
@@ -166,16 +168,16 @@ def determine_job_sub_type(type):
 
 def load_jobs(driver):
     try:
-        time.sleep(3)
-        driver.find_element(
-            By.CSS_SELECTOR, "div.JobsList_wrapper__wgimi > div > button").click()
+        time.sleep(10)
+        load_button = driver.find_element(By.CLASS_NAME, "JobsList_buttonWrapper__ticwb")
+        load_button.location_once_scrolled_into_view
+        load_button.find_element(By.TAG_NAME, "button").click()
         return True
     except Exception as e:
         return False
 
+
 # code starts from here
-
-
 def glassdoor(link, job_type):
     print("Glassdoor")
     driver = configure_webdriver()
@@ -190,18 +192,8 @@ def glassdoor(link, job_type):
         if logged_in:
             flag = True
             driver.get(link)
-            pre = driver.find_elements(
-                By.CLASS_NAME, 'JobCard_jobCardContainer__l0svv')
             while flag:
-
                 flag = load_jobs(driver)
-                next = driver.find_elements(
-                    By.CLASS_NAME, 'JobCard_jobCardContainer__l0svv')
-                if len(pre) == len(next):
-                    break
-                else:
-                    pre = next
-
             find_jobs(driver, job_type)
             print(SCRAPING_ENDED)
         else:
@@ -210,6 +202,3 @@ def glassdoor(link, job_type):
         saveLogs(e)
         print(e)
     driver.quit()
-
-
-# glassdoor('https://www.glassdoor.com/Job/remote-aws-engineer-jobs-SRCH_IL.0,6_IS11047_KO7,19.htm?fromAge=3', '')
