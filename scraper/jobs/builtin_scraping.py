@@ -1,184 +1,194 @@
-import time
-
-import pandas as pd
+from typing import List
 from selenium.webdriver.common.by import By
-
-from scraper.constants.const import *
+from selenium.webdriver.chrome.webdriver import WebDriver
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type, run_pia_proxy, change_pia_location, previous_jobs, sleeper
+import pandas as pd
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type, run_pia_proxy, change_pia_location
-from utils.helpers import saveLogs
+from utils.helpers import saveLogs, log_scraper_running_time
 
-total_job = 0
+class BuiltinScraper:
 
-# calls url
-def request_url(driver, url):
-    driver.get(url)
+    def __init__(self, driver, url, type):
+        self.driver: WebDriver = driver
+        self.url: str = url
+        self.job_type: str = type
+        self.scraped_jobs: List[dict] = []
+        self.job: dict = {}
+        self.errs: List[dict] = []   
 
-# append data for csv file
-def append_data(data, field):
-    data.append(str(field).strip("+"))
-
-# find's job name
-def find_jobs(driver, job_type, total_job):
-    try:
-        scrapped_data = []
-        time.sleep(2)
-        job_links = []
-        links = driver.find_elements(By.CSS_SELECTOR, "a[data-id='view-job-button']")
-        for link in links:
-            job_links.append(link.get_attribute('href'))
-
-        job_details = driver.find_elements(By.CLASS_NAME, "job-bounded-responsive")
-        job_det = []
-        for job in job_details:
-            job_det.append(job.text)
-        original_window = driver.current_url
-
-        retries  = 5
-        for i, url in enumerate(job_links):
+    @classmethod
+    def call(cls,url,type):
+        try:
+            driver: WebDriver = configure_webdriver()
+            builtin_scraper: cls.__class__ = cls(
+                driver=driver, url=url, type=type) 
             try:
-                data = []
-                job_detail = job_det[i].split('\n')
-                append_data(data, job_detail[1])
-                append_data(data, job_detail[0])
-                append_data(data, job_detail[2])
-                # driver.switch_to.new_window('tab')
-                driver.get(url)
-                time.sleep(2)
-                outer_loop_exit = False
-                for retry in range(retries):
-                    try:
-                        driver.find_element(By.ID, "read-more-description-toggle").click()
-                        # time.sleep(1)
-                        break
-                    except Exception as e:
-                        if retry == retries:
-                            saveLogs(e)
-                            outer_loop_exit = True
-                            break
-                        error_status = change_pia_location(driver)
-                        if not error_status:
-                            driver.get(url)
-                        else:
-                            outer_loop_exit = True
-                            break
-                if outer_loop_exit:
-                    continue
-                try:
-                    address = driver.find_element(By.CLASS_NAME, "company-address").text
-                except:
-                    try:
-                        address = driver.find_element(By.CLASS_NAME, "icon-description").text
-                    except:
-                        address = 'USA'
-                append_data(data, address)
-                job_description = driver.find_element(By.CLASS_NAME, "job-description")
-                append_data(data, job_description.text)
-                append_data(data, driver.current_url)
-                try:
-                    estimated_salary = driver.find_element(By.CLASS_NAME, "provided-salary")
-                    salary = estimated_salary.text
-                    if 'hour' in salary:
-                        append_data(data, "hourly")
-                    elif ('year' or 'annum' or 'Annually') in salary:
-                        append_data(data, "yearly")
-                    elif 'month' in salary:
-                        append_data(data, "monthly")
-                    else:
-                        append_data(data, "N/A")
-                    try:
-                        append_data(data, k_conversion(salary.split(' A')[0]))
-                    except:
-                        append_data(data, "N/A")
-                    try:
-                        salary_min = salary.split('$')[1].split('-')[0]
-                        append_data(data, k_conversion(salary_min))
-                    except:
-                        append_data(data, "N/A")
-                    try:
-                        salary_max = salary.split('$')[2].split(' A')[0]
-                        append_data(data, k_conversion(salary_max))
-                    except:
-                        append_data(data, "N/A")
-                except:
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-                    append_data(data, "N/A")
-                append_data(data, "Builtin")
-                try:
-                    job_type_check = driver.find_element(By.CLASS_NAME, "company-info")
-                    if 'remote' in job_type_check.text.lower():
-                        append_data(data, set_job_type('Full time', 'remote'))
-                    elif 'hybrid' in job_type_check.text.lower():
-                        append_data(data, set_job_type('Full time', 'hybrid'))
-                    else:
-                        append_data(data, set_job_type('Full time', 'onsite'))
-                except Exception as e:
-                    try:
-                        job_type_check = driver.find_element(By.CLASS_NAME, "company-options")
-                        if 'remote' in job_type_check.text.lower():
-                            append_data(data, set_job_type('Full time', 'remote'))
-                        elif 'hybrid' in job_type_check.text.lower():
-                            append_data(data, set_job_type('Full time', 'hybrid'))
-                        else:
-                            append_data(data, set_job_type('Full time', 'onsite'))
-                    except Exception as e:
-                        print(e)
-                        append_data(data, set_job_type(job_type))
-                append_data(data, job_description.get_attribute('innerHTML'))
-
-                scrapped_data.append(data)
-                total_job += 1
+                flag = True
+                builtin_scraper.driver.maximize_window()
+                run_pia_proxy(builtin_scraper.driver)
+                sleeper()
+                builtin_scraper.driver.get(url)
+                existing_jobs = previous_jobs(source='builtin')
+                while flag:
+                    flag= builtin_scraper.find_jobs(existing_jobs)
+                if len(builtin_scraper.scraped_jobs) > 0:
+                    builtin_scraper.export_to_excel()
             except Exception as e:
                 saveLogs(e)
-                print(e)
+            finally:
+                builtin_scraper.driver.quit()
+ 
+        except:
+            pass           
 
-            # switch_tab(driver, c, original_window)
+    def find_jobs(self, existing_jobs_dictionary):
+        try:
+            sleeper()
+            links = self.driver.find_elements(By.CSS_SELECTOR, "a[data-id='view-job-button']")
+            job_details = self.driver.find_elements(By.CLASS_NAME, "job-bounded-responsive")
+            job_links = []
+            job_det = []
 
-        columns_name = ["job_title", "company_name", "job_posted_date", "address", "job_description", 'job_source_url', "salary_format",
-                        "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        filename = generate_scraper_filename(ScraperNaming.BUILTIN)
+            for link, job in zip(links,job_details):
+                cur_link = link.get_attribute('href') 
+                if existing_jobs_dictionary.get(cur_link):
+                    continue
+                job_links.append(cur_link)
+                job_det.append(job.text)
+
+
+            original_window = self.driver.current_url
+
+            retries  = 5
+            for i, url in enumerate(job_links):
+                try:
+                    job_detail = job_det[i].split('\n')
+                    self.job["job_title"] = job_detail[1]
+                    self.job["company_name"] = job_detail[0]
+                    self.job["job_source"] = "Builtin"
+                    self.job["job_posted_date"] = job_detail[2]
+                    self.driver.get(url)
+                    sleeper()
+                    outer_loop_exit = False
+                    for retry in range(retries):
+                        try:
+                            self.driver.find_element(By.ID, "read-more-description-toggle").click()
+                            sleeper()
+                            break
+                        except Exception as e:
+                            if retry == retries:
+                                outer_loop_exit = True
+                                break
+                            error_status = change_pia_location(self.driver)
+                            if not error_status:
+                                self.driver.get(url)
+                            else:
+                                outer_loop_exit = True
+                                break
+                    if outer_loop_exit:
+                        continue
+                    try:
+                        address = self.driver.find_element(By.CLASS_NAME, "company-address").text
+                    except:
+                        try:
+                            address = self.driver.find_element(By.CLASS_NAME, "icon-description").text
+                        except:
+                            address = 'USA'
+                    self.job["address"] = address
+                    job_description = self.driver.find_element(By.CLASS_NAME, "job-description")
+                    self.job["job_description"] = job_description.text
+                    self.job["job_source_url"] = self.driver.current_url
+                    self.populate_salary()
+                    try:
+                        job_type_check = self.driver.find_element(By.CLASS_NAME, "company-info")
+                        if 'remote' in job_type_check.text.lower():
+                            self.job["job_type"] = set_job_type('Full time', 'remote')
+                        elif 'hybrid' in job_type_check.text.lower():
+                            self.job["job_type"] = set_job_type('Full time', 'hybrid')
+                        else:
+                            self.job["job_type"] = set_job_type('Full time', 'onsite')
+                    except Exception as e:
+                        try:
+                            job_type_check = self.driver.find_element(By.CLASS_NAME, "company-options")
+                            if 'remote' in job_type_check.text.lower():
+                                self.job["job_type"] = set_job_type('Full time', 'remote')
+                            elif 'hybrid' in job_type_check.text.lower():
+                                self.job["job_type"] = set_job_type('Full time', 'hybrid')
+                            else:
+                                self.job["job_type"] = set_job_type('Full time', 'onsite')
+                        except Exception as e:
+                            saveLogs(e)
+                            self.job["job_type"] = set_job_type(self.job_type)
+                    self.job["job_description_tags"] = job_description.get_attribute('innerHTML')
+
+                    self.scraped_jobs.append(self.job.copy())
+                    self.job = {}
+                except Exception as e:
+                    saveLogs(e)
+                
+
+                # switch_tab(driver, c, original_window)
+
+            try:
+                self.driver.get(original_window)
+                sleeper()
+                next_page = self.driver.find_element(By.CLASS_NAME, 'pagination')
+                pagination = next_page.find_elements(By.TAG_NAME, 'li')
+                next_page_anchor = pagination[-1].find_element(By.TAG_NAME, 'a')
+                next_page_url = next_page_anchor.get_attribute('href')
+                self.driver.get(next_page_url)
+                return True
+            except Exception as e:
+                return False
+        except Exception as e:
+            saveLogs(e)
+            return False
+
+
+    def populate_salary(self):
+        try:
+            estimated_salary = self.driver.find_element(By.CLASS_NAME, "provided-salary")
+            salary = estimated_salary.text
+            if 'hour' in salary:
+                 self.job["salary_format"] = "hourly"
+            elif 'Annually' in salary or 'ANNUALLY' in salary:
+                self.job["salary_format"] = "yearly"
+            elif 'month' in salary:
+                self.job["salary_format"] = "monthly"
+            else:
+                self.job["salary_format"] = "N/A"
+            try:
+                self.job["estimated_salary"] = k_conversion(salary.split(' A')[0])
+            except:
+                self.job["estimated_salary"] = "N/A"
+            try:
+                salary_min = salary.split('A')[0].split('-')[0]
+                self.job["salary_min"] = k_conversion(salary_min)
+            except:
+                self.job["salary_min"] = "N/A"
+            try:
+                salary_max = salary.split('A')[0].split('-')[1]
+                self.job["salary_max"] = k_conversion(salary_max)
+            except:
+                self.job["salary_max"] = "N/A"
+        except:
+            self.job["salary_format"] = "N/A"
+            self.job["estimated_salary"] = "N/A"
+            self.job["salary_min"] = "N/A"
+            self.job["salary_max"] = "N/A"
+
+
+    def export_to_excel(self) -> None:
+        columns_name: list[str] = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
+                                   "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
+        df = pd.DataFrame(data=self.scraped_jobs, columns=columns_name)
+        filename: str = generate_scraper_filename(
+            ScraperNaming.BUILTIN)
         df.to_excel(filename, index=False)
-
         ScraperLogs.objects.create(
             total_jobs=len(df), job_source="Builtin", filename=filename)
 
-        try:
-            driver.get(original_window)
-            time.sleep(2)
-            next_page = driver.find_element(By.CLASS_NAME, 'pagination')
-            pagination = next_page.find_elements(By.TAG_NAME, 'li')
-            next_page_anchor = pagination[-1].find_element(By.TAG_NAME, 'a')
-            next_page_url = next_page_anchor.get_attribute('href')
-            driver.get(next_page_url)
-            return True, total_job
-        except Exception as e:
-            return False, total_job
-    except Exception as e:
-        saveLogs(e)
-        return False, total_job
-
-# code starts from here
+@log_scraper_running_time("Builtin")
 def builtin(link, job_type):
-    print("Builtin")
-    driver = configure_webdriver(block_media=True, block_elements=['css', 'img'])
-    try:
-        total_job = 0
-        count = 0
-        driver.maximize_window()
-        run_pia_proxy(driver)
-        try:
-            flag = True
-            request_url(driver, link)
-            driver.maximize_window()
-            while flag:
-                flag, total_job = find_jobs(driver, job_type, total_job)
-            count += 1
-        except Exception as e:
-            saveLogs(e)
+    BuiltinScraper.call(link, job_type)
 
-    except Exception as e:
-        saveLogs(e)
-    driver.quit()
