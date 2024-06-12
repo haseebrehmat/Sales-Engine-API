@@ -3,6 +3,7 @@ import random
 import re
 import time
 
+from django.db.models import Value, CharField, functions as fn
 import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -14,7 +15,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from scraper.constants.const import JOB_TYPE
 from scraper.models import GroupScraper, GroupScraperQuery
 from scraper.models.accounts import Accounts
-
 from job_portal.models import JobDetail
 
 def convert_time_into_minutes(interval, interval_type):
@@ -288,6 +288,23 @@ def previous_jobs(source, urls=[]):
 def sleeper(sec=0):
     seconds = sec if sec else random.randint(1, 5)
     time.sleep(seconds)
+    
+    
+def previous_company_wise_titles(data: list = []):
+    """
+    Get the existing job TITLE-COMPANY (derived field)
+
+    Args:
+        data (list): list of combined job titles & company name
+
+    Returns:
+        dict: {title-company: True/False}
+    """
+    titles = JobDetail.objects.annotate(
+        tc=fn.Concat('job_title', Value('-'), 'company_name',
+                     output_field=CharField())
+    ).filter(tc__in=data).values_list('tc', flat=True)
+    return {title: True for title in titles}
 
 
 # pia extension ids
