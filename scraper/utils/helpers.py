@@ -92,7 +92,7 @@ class ScraperNaming(enum.Enum):
     CLEARANCE = 'clearance'
     SMARTRECRUITER = 'smartrecruiter'
     GETWORK = 'getwork'
-    RUBY_ON_REMOTE = 'ruby_on_remote'
+    RUBY_ON_REMOTE = 'rubyonremote'
     HUBSTAFF_TALENT = 'hubstaff_talent'
     JUST_REMOTE = 'just_remote'
     REMOTE_CO = 'remote_co'

@@ -2,16 +2,15 @@ import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from scraper.constants.const import COLUMN_NAME, SALARY_FORMAT
 from scraper.models import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
-from utils.helpers import saveLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, previous_jobs, set_job_type
+from utils.helpers import log_scraper_running_time, saveLogs
 from scraper.utils.helpers import configure_webdriver
 
 from datetime import datetime, timedelta
 
 total_job = 0
-posted_date_max_checks = 3
-
 
 # calls url
 def request_url(driver, url):
@@ -55,118 +54,105 @@ def update_job_description(driver, data):
 def find_jobs(driver, job_type, total_job, link):
     try:
         request_url(driver, f'{link}')
-        stop_flag = False
-
         scrapped_data = []
+        pagination_check = True
 
-        job_section = driver.find_elements(By.TAG_NAME, "ul")[3]
-
+        job_section = driver.find_elements(By.TAG_NAME, "ul")[4]
         jobs = job_section.find_elements(By.TAG_NAME, "li")
 
-        salary_format = ""
+        job_urls = [job.find_element(By.TAG_NAME, "a").get_attribute('href') for job in jobs if job.find_element(By.TAG_NAME, "a")]
+        existing_jobs_dictionary = previous_jobs("ruby on remote", job_urls)
+        count = 0
 
-        for job in jobs:
+        original_window = driver.current_window_handle
+        driver.switch_to.new_window('tab')
+        for url in job_urls:
+            try:
+                if not existing_jobs_dictionary.get(url):
+                    data = []
+                    if count > 3:
+                        pagination_check = False
+                        break
+                    driver.get(url)
+                    tags = driver.find_element(By.TAG_NAME, "article")
+                    tags.find_element(By.CLASS_NAME, "font-medium")
+                    date = tags.find_element(By.CLASS_NAME, "font-medium").text
+                    posted_date = date.split('Published on ')[1].split(',')[0]
+                    fields = tags.text.split('\n')
 
-            data = []
+                    if is_one_week_ago(posted_date):
+                        if count > 0:
+                            count-=1
+                        data.append(fields[0])
+                        company_name = driver.find_elements(By.TAG_NAME, "h3")[1].text
+                        data.append(company_name)
+                        if 'featured' in fields[1].lower():
+                            data.append(fields[2])
+                            job_type = fields[3]
+                        else:
+                            data.append(fields[1])
+                            job_type = fields[2]
 
-            if len(job.text.split("\n")) == 5:
+                        job_description = tags.find_element(By.CLASS_NAME, "trix-content")
+                        data.append(job_description.text)
+                        job_url = driver.current_url
+                        data.append(job_url)
+                        data.append(posted_date)
+                        salary_format = "N/A"
+                        estimated_salary = "N/A"
+                        min_salary = "N/A"
+                        max_salary = "N/A"
+                        try:
+                            format = tags.find_elements(By.TAG_NAME, "div")[1]
+                            estimated_salary = format.find_elements(By.TAG_NAME, "span")[-1].text
+                            if 'yearly' in estimated_salary.lower():
+                                estimated_salary = estimated_salary.split(' Yearly')
+                                salary_extrema = estimated_salary[0].split(" - ")
+                                min_salary = salary_extrema[0]
+                                salary_format = SALARY_FORMAT
+                                max_salary = salary_extrema[1] if len(salary_extrema) > 1 else 'N/A'
+                        except:
+                            pass
+                        data.append(salary_format)
+                        data.append(estimated_salary[0])
+                        data.append(min_salary)
+                        data.append(max_salary)
+                        data.append("Ruby On Remote")
+                        data.append(set_job_type(job_type))
+                        data.append(job_description.get_attribute("innerHTML"))
+                        scrapped_data.append(data)
+                    else:
+                        if 'featured' not in fields[1].lower():
+                            count+=1
+            except:
+                pass
 
-                job_title, company_name, address, estimated_salary, job_posted_date = job.text.split("\n")
-
-                if "k" in estimated_salary or "K" in estimated_salary:
-                    salary_format = "Yearly"
-
-                elif "year" in estimated_salary.lower():
-                    salary_format = "Yearly"
-                elif "hour" in estimated_salary.lower():
-                    salary_format = "Hourly"
-                elif "month" in estimated_salary.lower():
-                    salary_format = "Monthly"
-
-                estimated_salary = k_conversion(estimated_salary)
-
-                salary_extrema = estimated_salary.split("-")
-                min_salary = salary_extrema[0]
-                max_salary = salary_extrema[1] if len(salary_extrema) > 1 else min_salary
-
-            elif len(job.text.split("\n")) == 4:
-                # Character to search for
-                char_to_find = "$"
-
-                # Check if the character exists in any string
-                found = any(char_to_find in s for s in job.text.split("\n"))
-
-                if not found:
-                    job_title, company_name, address, job_posted_date = job.text.split("\n")
-                    salary_format = "N/A"
-                    estimated_salary = "N/A"
-                    min_salary = "N/A"
-                    max_salary = "N/A"
-
-            elif len(job.text.split("\n")) == 3:
-                job_title, company_name, job_posted_date = job.text.split("\n")
-                address = ""
-                salary_format = "N/A"
-                estimated_salary = "N/A"
-                min_salary = "N/A"
-                max_salary = "N/A"
-
-            if is_one_week_ago(job_posted_date):
-                job_description = ""
-                job_url = job.find_element(By.TAG_NAME, "a").get_attribute("href")
-                data.append(job_title)
-                data.append(company_name)
-                data.append(address if  address else "Remote")
-                data.append(job_description)
-                data.append(job_url)
-                data.append(job_posted_date)
-                data.append(salary_format)
-                data.append(estimated_salary)
-                data.append(min_salary)
-                data.append(max_salary)
-                data.append("Ruby On Remote")
-                data.append(set_job_type("Full time remote"))
-                scrapped_data.append(data)
-                total_job += 1
-            else:
-                global posted_date_max_checks
-                posted_date_max_checks -= 1
-                if posted_date_max_checks <= 0:
-                    break
-                else:
-                    continue
-        update_job_description(driver, scrapped_data)
-
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                        "salary_format", "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
-                        "job_description_tags"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        filename = generate_scraper_filename(ScraperNaming.RUBY_ON_REMOTE)
-        df.to_excel(filename, index=False)
-        ScraperLogs.objects.create(total_jobs=len(df), job_source="RubyOnRemote", filename=filename)
-        # Stop for Link (No pagination then)
-        if posted_date_max_checks <= 0:
-            return False
+        if len(scrapped_data) > 0:
+            df = pd.DataFrame(data=scrapped_data, columns=COLUMN_NAME)
+            filename = generate_scraper_filename(ScraperNaming.RUBY_ON_REMOTE)
+            df.to_excel(filename, index=False)
+            ScraperLogs.objects.create(total_jobs=len(df), job_source="RubyOnRemote", filename=filename)
         
         index = -1
         try:
-            # pagination = driver.find_elements(By.CLASS_NAME, "paging")[0].find_elements(By.TAG_NAME, 'li')
-            index = driver.find_elements(By.CLASS_NAME, "next")[0].get_attribute('class').find('disabled')
-            if index != -1:
-                return False
+            if pagination_check:
+                driver.close()
+                driver.switch_to.window(original_window)
+                index = driver.find_elements(By.CLASS_NAME, "next")[0].get_attribute('class').find('disabled')
+                return index == -1
             else:
-                return True
+                return False
         except Exception as e:
             saveLogs(e)
             return False
 
     except Exception as e:
         saveLogs(e)
-        print(f'scrapped stopped due to: {e}')
         return False
 
 
 # code starts from here
+@log_scraper_running_time("Ruby on Remote")
 def ruby_on_remote(link, job_type):
     base_link = link
     total_job = 0
@@ -182,19 +168,9 @@ def ruby_on_remote(link, job_type):
                     link = f'{base_link}?page={count + 1}'
                 flag = find_jobs(driver, job_type, total_job, link)
                 count = count + 1
-                print("Fetching...")
-        except Exception as e:
-            print(e)
+        except:
+            pass
 
     except Exception as e:
         saveLogs(e)
-        print(e)
     driver.quit()
-
-# link = "https://rubyonremote.com/remote-jobs-in-us/"
-# job_type = "Remote"
-#
-# ruby_on_remote(link,job_type)
-
-# contract_remote = "https://rubyonremote.com/contract-remote-jobs/"
-# ft_remote = "https://rubyonremote.com/full-time-remote-jobs/"

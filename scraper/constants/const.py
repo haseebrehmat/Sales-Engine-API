@@ -58,3 +58,4 @@ JOB_TYPE = ["Full Time Remote", "Full Time on Site", "Full Time Hybrid", "Contra
 SCRAPERS_NAME = ['weworkremotely', 'glassdoor', 'indeed', 'linkedin', 'rubyonremote', 'justremote', 'monster', 'remoteok', 'builtin', 'workable', 'ziprecruiter', 'simplyhired', 'ycombinator', 'dice', 'talent']
 COLUMN_NAME = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format", "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
 REMOTE = 'remote'
+SALARY_FORMAT = '$'
