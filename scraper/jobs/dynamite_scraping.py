@@ -1,17 +1,17 @@
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.models import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
-from utils.helpers import saveLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type,\
+    previous_jobs
+from utils.helpers import saveLogs, log_scraper_running_time
 from scraper.utils.helpers import configure_webdriver
-total_job = 0
 
+
+# Dynamite Constants
+PAGES_TO_SCRAP = 6
 
 # calls url
 def request_url(driver, url):
@@ -22,15 +22,38 @@ def request_url(driver, url):
 def append_data(data, field):
     data.append(str(field).strip("+"))
 
+def is_new_job(posted_at_str):
+    return 'new' in posted_at_str.lower()
 
-# find's job name
-def find_jobs(driver, job_type, total_job):
+def filter_by_links(driver, jobs):
+    filtered_jobs = []
+    base = "https://dynamitejobs.com" 
     try:
-        stop_flag = False
+        # Get all links
+        url_elms = driver.find_elements(By.CSS_SELECTOR, '.result-item h2')
+        urls = [f"{base}{elm.get_attribute('href')}" for elm in url_elms]
+        # Get existing jobs
+        existing_jobs = previous_jobs(source='dynamite', urls=urls)
+        for job in jobs:
+            link_elm = job.find_element(By.TAG_NAME, 'h2')
+            posted_at = job.find_element(By.CSS_SELECTOR, 'span.leading-6')
+            # Continue if job already exists
+            if ((link_elm and existing_jobs.get(f"{base}{link_elm.get_attribute('href')}")) 
+                or (posted_at and not is_new_job(posted_at.text))
+            ): continue
+            filtered_jobs.append(job)
+    except Exception as e:
+        saveLogs(e)
+    return filtered_jobs
+    
+# find's job name
+def find_jobs(driver, job_type):
+    try:
         scrapped_data = []
         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "result-item")))
 
-        jobs = driver.find_elements(By.CLASS_NAME, "result-item")
+        raw_jobs = driver.find_elements(By.CLASS_NAME, "result-item")
+        jobs = filter_by_links(driver, raw_jobs)
 
         for job in jobs:
             data = []
@@ -90,34 +113,25 @@ def find_jobs(driver, job_type, total_job):
         filename = generate_scraper_filename(ScraperNaming.DYNAMITE)
         df.to_excel(filename, index=False)
         ScraperLogs.objects.create(total_jobs=len(df), job_source="Dynamite", filename=filename)
-        return not stop_flag, total_job
     except Exception as e:
         saveLogs(e)
-        print(f'scrapped stopped due to: {e}')
-        return False, total_job
 
 
-# code starts from here
+@log_scraper_running_time("Dynamite")
 def dynamite(link, job_type):
-    total_job = 0
-    print("Dynamite")
     driver = configure_webdriver()
     try:
         driver.maximize_window()
-        flag = True
-        count = 0
+        page = 1
         try:
-            while flag and count < 15:
-                request_url(driver, f'{link}&page={count+1}')
-                flag, total_job = find_jobs(driver, job_type, total_job)
-                count += 1
-                print("Fetching...")  # print(SCRAPING_ENDED)
+            while page <= PAGES_TO_SCRAP:
+                request_url(driver, f'{link}&page={page}')
+                find_jobs(driver, job_type)
+                page += 1
         except Exception as e:
             saveLogs(e)
-            print(e)
-
     except Exception as e:
         saveLogs(e)
-        print(e)
-    driver.quit()
+    finally:
+        driver.quit()
 
