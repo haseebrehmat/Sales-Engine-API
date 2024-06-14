@@ -4,7 +4,9 @@ import traceback
 from datetime import datetime
 import os
 import requests
-
+import rollbar
+from django.forms.models import model_to_dict
+from settings.base import env
 
 def validate_request(request, permissions):
     try:
@@ -53,6 +55,10 @@ def saveLogs(exception, level='ERROR', request=None):
             time=timezone.now()
         )
         log.save()
+        # Save error on rollbar if enabled
+        if env.bool('ROLLBAR_ENABLED', False):
+            data = model_to_dict(log)   
+            rollbar.report_exc_info(extra_data=data)
     except Exception as e:
         print(e)
 

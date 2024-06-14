@@ -11,4 +11,13 @@ DATABASES = {
         'PORT': env("PRODUCTION_DB_PORT"),
     }
 }
-print("Production")
+
+ROLLBAR = {
+    'enabled': env.bool('ROLLBAR_ENABLED', False),
+    'access_token': env('ROLLBAR_ACCESS_TOKEN'),
+    'environment': 'production',
+    'code_version': '1.0',
+    'root': BASE_DIR,
+    'class': 'rollbar.logger.RollbarHandler',
+
+}
