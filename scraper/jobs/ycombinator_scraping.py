@@ -1,20 +1,11 @@
-import time
-from datetime import datetime
-
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
-from utils.helpers import saveLogs
-
-total_job = 0
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type, sleeper, previous_jobs
+from utils.helpers import saveLogs, log_scraper_running_time
 
 def save_data(scrapped_data, job_title, company_name, address, job_description, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, job_description_tags, loc_type):
     try:
@@ -34,7 +25,7 @@ def save_data(scrapped_data, job_title, company_name, address, job_description, 
         append_data(data, job_description_tags)
         scrapped_data.append(data)
     except Exception as e:
-        print(e)
+        saveLogs(e)
 
 def finding_job(driver, company_name, scrapped_data):
     try:
@@ -91,9 +82,9 @@ def finding_job(driver, company_name, scrapped_data):
         if flag:
             save_data(scrapped_data, job_title, company_name, address, desc, job_source_url, salary_format, estimated_salary, salary_min, salary_max, job_type, desc_tags, loc_type)
     except Exception as e:
-        print(e)
+        saveLogs(e)
 
-def company_jobs(driver, scrapped_data):
+def company_jobs(driver, scrapped_data, existing_jobs):
     try:
         WebDriverWait(driver, 60).until(
             EC.presence_of_element_located(
@@ -103,6 +94,8 @@ def company_jobs(driver, scrapped_data):
         for job in job_name:
             try:
                 link = job.find_element(By.TAG_NAME, "a").get_attribute("href")
+                if existing_jobs.get(link):
+                    continue
                 company_name = driver.find_element(By.CLASS_NAME, "company-name").text
                 original_window = driver.current_window_handle
                 driver.switch_to.new_window('tab')
@@ -111,14 +104,14 @@ def company_jobs(driver, scrapped_data):
                 driver.close()
                 driver.switch_to.window(original_window)
             except Exception as e:
-                print(e)
+                saveLogs(e)
     except Exception as e:
-        print(e)
+        saveLogs(e)
 
 def loading(driver):
     while True:
         try:
-            time.sleep(3)
+            sleeper()
             WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located(
                     (By.CLASS_NAME, "loading"))
@@ -137,29 +130,29 @@ def login(driver):
         #     EC.presence_of_element_located(
         #         (By.CLASS_NAME, "MuiTypography-root"))
         # )
-        time.sleep(10)
+        sleeper()
         driver.find_element(By.CLASS_NAME, "MuiTypography-root").click()
-        time.sleep(10)
+        sleeper()
         # WebDriverWait(driver, 60).until(
         #     EC.presence_of_element_located(
         #         (By.CLASS_NAME, "input-group"))
         # )
         driver.find_elements(By.CLASS_NAME, "input-group")[3].click()
-        time.sleep(10)
+        sleeper()
         email = driver.find_elements(By.CLASS_NAME, "MuiInput-input")[3]
         email.clear()
         email.send_keys(Y_EMAIL)
-        time.sleep(10)
+        sleeper()
 
         driver.find_elements(By.CLASS_NAME, "input-group")[4].click()
-        time.sleep(10)
+        sleeper()
         password = driver.find_elements(By.CLASS_NAME, "MuiInput-input")[4]
         password.clear()
         password.send_keys(Y_PASSWORD)
-        time.sleep(10)
+        sleeper()
 
         driver.find_element(By.CLASS_NAME, "sign-in-button").click()
-        time.sleep(20)
+        sleeper()
 
         return True
     except Exception as e:
@@ -177,10 +170,10 @@ def append_data(data, field):
 
 
 # find's job name
-def find_jobs(driver, total_job):
-    c = 0
+def find_jobs(driver):
     try:
         companies = driver.find_elements(By.CLASS_NAME, "text-2xl")
+        existing_jobs = previous_jobs(source='ycombinator')
         scrapped_data = []
         for i in range(1, len(companies)):
             try:
@@ -188,45 +181,36 @@ def find_jobs(driver, total_job):
                 original_window = driver.current_window_handle
                 driver.switch_to.new_window('tab')
                 driver.get(link)
-                company_jobs(driver, scrapped_data)
+                company_jobs(driver, scrapped_data, existing_jobs)
                 driver.close()
                 driver.switch_to.window(original_window)
-                passed = True
             except Exception as e:
-                print(e)
-
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                        "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        filename = generate_scraper_filename(ScraperNaming.YCOMBINATOR)
-        df.to_excel(filename, index=False)
-        ScraperLogs.objects.create(
-            total_jobs=len(df), job_source="YCombinator", filename=filename)
+                saveLogs(e)
+        if len(scrapped_data) > 0:
+            df = pd.DataFrame(data=scrapped_data, columns=COLUMN_NAME)
+            filename = generate_scraper_filename(ScraperNaming.YCOMBINATOR)
+            df.to_excel(filename, index=False)
+            ScraperLogs.objects.create(
+                total_jobs=len(df), job_source="YCombinator", filename=filename)
 
     except Exception as e:
-        print(e)
+        saveLogs(e)
 
 
 # code starts from here
+@log_scraper_running_time("YCombinator")
 def ycombinator(link, job_type):
-    print("YCombinator")
     driver = configure_webdriver()
     try:
-        total_job = 0
         driver.maximize_window()
         try:
             request_url(driver, YCOMBINATOR_LOGIN_URL)
-            driver.maximize_window()
             if login(driver):
                 request_url(driver, link)
                 loading(driver)
-                find_jobs(driver, total_job)
-            else:
-                print("Login failed")
+                find_jobs(driver)
         except Exception as e:
             saveLogs(e)
-            print(LINK_ISSUE)
     except Exception as e:
         saveLogs(e)
-        print(e)
     driver.quit()
