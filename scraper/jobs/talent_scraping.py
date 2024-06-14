@@ -1,23 +1,18 @@
-import time
-from datetime import datetime
-
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type
-from utils.helpers import saveLogs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, set_job_type, \
+    previous_jobs, sleeper
+from utils.helpers import saveLogs, log_scraper_running_time
 
-total_job = 0
 
+
+# Talent Constants
+BASE_URL = "https://www.talent.com"
 
 # calls url
-
-
 def request_url(driver, url):
     driver.get(url)
 
@@ -27,19 +22,30 @@ def append_data(data, field):
     data.append(str(field).strip("+"))
 
 
-# find's job name
-def find_jobs(driver, job_type, total_job):
-    scrapped_data = []
-    c = 0
-    # time.sleep(3)
-    jobs = driver.find_elements(By.CLASS_NAME, "link-job-wrap")
+def filter_links(jobs):
+    existing_jobs = {}
+    try:
+        urls = [f"{BASE_URL}{elm.get_attribute('data-link')}" for elm in jobs]
+        existing_jobs = previous_jobs(source='talent', urls=urls)
+    except Exception as e:
+        saveLogs(e)
+    return existing_jobs
 
+# find's job name
+def find_jobs(driver, job_type):
+    scrapped_data = []
+    sleeper()
+    jobs = driver.find_elements(By.CLASS_NAME, "link-job-wrap")
+    existing_jobs = filter_links(jobs)
     for job in jobs:
         try:
+            job_url = f"{BASE_URL}{job.get_attribute('data-link')}"
+            if existing_jobs.get(job_url):
+                continue
             data = []
-            time.sleep(1)
+            sleeper()
             job.click()
-            time.sleep(3)
+            sleeper()
 
             job_title = driver.find_element(
                 By.CLASS_NAME, "jobPreview__header--title")
@@ -53,13 +59,10 @@ def find_jobs(driver, job_type, total_job):
             job_description = driver.find_element(
                 By.CLASS_NAME, "jobPreview__body--description")
             append_data(data, job_description.text)
-            append_data(data, driver.current_url)
-            job_posted_date = driver.find_elements(
-                By.CLASS_NAME, "c-card__jobDatePosted")
-            if len(job_posted_date) > 0:
-                append_data(data, job_posted_date[0].text)
-            else:
-                append_data(data, 'Posted Today')
+            append_data(data, job_url)
+            posted_at = job.find_element(
+                By.CLASS_NAME, "c-card__jobDatePosted")            
+            append_data(data, posted_at.text if posted_at else 'Posted Today')
             append_data(data, "N/A")
             append_data(data, "N/A")
             append_data(data, "N/A")
@@ -74,15 +77,9 @@ def find_jobs(driver, job_type, total_job):
             append_data(data, job_description.get_attribute('innerHTML'))
 
             scrapped_data.append(data)
-            c += 1
-            total_job += 1
         except Exception as e:
-            msg = f"Exception in Talent Scraping {e}"
-
-    date_time = str(datetime.now())
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                    "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
+            saveLogs(e)
+    df = pd.DataFrame(data=scrapped_data, columns=COLUMN_NAME)
     filename = generate_scraper_filename(ScraperNaming.TALENT)
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
@@ -91,38 +88,33 @@ def find_jobs(driver, job_type, total_job):
         By.CLASS_NAME, "pagination")
 
     if len(pagination) == 0:
-        return False, total_job
+        return False
     else:
         next_page = pagination[0].find_elements(
             By.TAG_NAME, "a")
         try:
             next_page[-1].click()
-            return True, total_job
+            return True
         except Exception as e:
-            return False, total_job
+            saveLogs(e)
+            return False
 
 
 # code starts from here
+@log_scraper_running_time("Talent")
 def talent(link, job_type):
-    print("Talent")
-    driver = configure_webdriver()
+    driver = configure_webdriver(block_media=True, block_elements=['img'])
     try:
-        total_job = 0
         driver.maximize_window()
         try:
             flag = True
             request_url(driver, link)
             driver.maximize_window()
             while flag:
-                flag, total_job = find_jobs(
-                    driver, job_type, total_job)
-                print("Fetching...")
-            print(SCRAPING_ENDED)
+                flag = find_jobs(driver, job_type)
         except Exception as e:
             saveLogs(e)
-            print(LINK_ISSUE)
 
     except Exception as e:
         saveLogs(e)
-        print(e)
     driver.quit()
