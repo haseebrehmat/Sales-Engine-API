@@ -1,5 +1,3 @@
-import time
-import random
 import traceback
 from typing import List, Union, Set
 import pandas as pd
@@ -11,7 +9,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, run_pia_proxy, previous_jobs
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, configure_webdriver, run_pia_proxy, previous_jobs, sleeper
 from utils.helpers import log_scraper_running_time, saveLogs
 
 class LinkedinScraper:
@@ -104,8 +102,9 @@ class LinkedinScraper:
         )
         if not load_more_btn and not no_more_jobs_alert:
             return
-        while not (load_more_btn.is_displayed() or no_more_jobs_alert.is_displayed()):
-            time.sleep(1)
+        
+        while not ((no_more_jobs_alert and no_more_jobs_alert.is_displayed()) or (load_more_btn and load_more_btn.is_displayed())):
+            sleeper()
             self.driver.execute_script(
                 "window.scrollTo(0, document.body.scrollHeight);"
             )
@@ -116,13 +115,15 @@ class LinkedinScraper:
                     EC.visibility_of(no_more_jobs_alert))
             except TimeoutException:
                 continue
-        self.populate_links()
+        curr_jobs = self.populate_links(0)
         while not no_more_jobs_alert.is_displayed():
             load_more_btn.click()
-            self.populate_links()
+            curr_jobs = self.populate_links(curr_jobs)
+            if curr_jobs == 0:
+                break
 
-    def populate_links(self) -> int:
-        time.sleep(random.uniform(1, 5))
+    def populate_links(self, previous_len) -> int:
+        sleeper()
         jobs_list: list[WebElement] = self.get_element(
             locator='base-card__full-link',
             alls=True
@@ -131,6 +132,7 @@ class LinkedinScraper:
         for item in jobs_list[start:]:
             if item:
                 self.links.append(item.get_attribute('href').split('?')[0])
+        return 0 if len(jobs_list)==previous_len else len(jobs_list)
 
     def find_jobs(self, job_type) -> None:
         try:
