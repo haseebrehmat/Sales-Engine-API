@@ -1,11 +1,7 @@
-import pandas as pd
 from selenium.webdriver.common.by import By
-
-from scraper.constants.const import *
-from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
-    set_job_type, sleeper, previous_jobs
-from utils.helpers import log_scraper_running_time, saveLogs
+from scraper.utils.helpers import ScraperNaming, k_conversion, configure_webdriver, \
+    set_job_type, sleeper, previous_jobs, export_to_excel
+from utils.helpers import log_scraper_running_time, saveLogs, is_cloudflare
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -50,6 +46,7 @@ def find_jobs(driver, job_type):
         data = {}
         try:
             driver.get(job["link"])
+            if is_cloudflare(driver, 'Indeed'): continue
             sleeper()
             main_job_container = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
@@ -79,16 +76,8 @@ def find_jobs(driver, job_type):
             scrapped_data.append(data)
         except Exception as e:
             saveLogs(e)
-    columns_name = ["job_posted_date", "job_title", "company_name", "address", "job_description",
-                    'job_source_url', "salary_format", "estimated_salary", "salary_min", "salary_max",
-                    "job_source", "job_type", "job_description_tags"]
-    df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-    filename = generate_scraper_filename(ScraperNaming.INDEED)
-    df.to_excel(filename, index=False)
-    ScraperLogs.objects.create(
-        total_jobs=len(df), job_source="Indeed", filename=filename
-    )
-
+    if scrapped_data:
+        export_to_excel(scrapped_data, ScraperNaming.INDEED, 'Indeed')
 
 def extract_salary(data, main_job_container):
     salary = main_job_container.find_element(
@@ -146,6 +135,7 @@ def indeed(link, job_type):
         try:
             driver.get(link)
             driver.maximize_window()
+            if is_cloudflare(driver, 'Indeed'): return
             sleeper()
             find_jobs(driver, job_type)
         except Exception as e:

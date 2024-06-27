@@ -2,6 +2,7 @@ import datetime
 import random
 import re
 import time
+import pandas as pd
 
 from django.db.models import Value, CharField, functions as fn
 import undetected_chromedriver as uc
@@ -12,10 +13,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-from scraper.constants.const import JOB_TYPE
+from scraper.constants.const import JOB_TYPE, COLUMN_NAME
 from scraper.models import GroupScraper, GroupScraperQuery
 from scraper.models.accounts import Accounts
 from job_portal.models import JobDetail
+from scraper.models.scraper_logs import ScraperLogs
 
 def convert_time_into_minutes(interval, interval_type):
     if interval_type.lower() == 'minutes':
@@ -306,6 +308,17 @@ def previous_company_wise_titles(data: list = []):
     ).filter(tc__in=data).values_list('tc', flat=True)
     return {title: True for title in titles}
 
+def export_to_excel(data, scraper_name, job_source):
+    if not data or not scraper_name or not job_source:
+        return
+    df = pd.DataFrame(data=data, columns=COLUMN_NAME)
+    filename = generate_scraper_filename(scraper_name)
+    df.to_excel(filename, index=False)
+    ScraperLogs.objects.create(
+        total_jobs=len(df), 
+        job_source=job_source, 
+        filename=filename
+    )
 
 # pia extension ids
 PIA_CRX_EXTENSION_ID = 'jplnlifepflhkbkgonidnobkakhmpnmh'

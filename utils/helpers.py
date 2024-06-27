@@ -7,6 +7,8 @@ import requests
 import rollbar
 from django.forms.models import model_to_dict
 from settings.base import env
+from selenium.webdriver.common.by import By
+
 
 def validate_request(request, permissions):
     try:
@@ -105,3 +107,15 @@ def log_scraper_running_time(job_source):
             return result
         return wrapper
     return time_decorator
+
+
+def is_cloudflare(driver, source=''):
+    try:
+        cloudflare_footer = driver.find_element(By.ID, "footer-text")
+        cloudflare_text = cloudflare_footer.text.lower() if cloudflare_footer else ""
+        flag = "cloudflare" in cloudflare_text
+        if flag:
+            saveLogs(f"{source} Scraper got blocked due to Cloudflare Captcha.")
+        return flag
+    except:
+        return False
