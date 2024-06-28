@@ -9,7 +9,7 @@ from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
 from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, \
     set_job_type, sleeper, previous_company_wise_titles
-from utils.helpers import saveLogs, log_scraper_running_time
+from utils.helpers import saveLogs, log_scraper_running_time, take_screenshot
 
 estimated_pay_popup_closed = False
 
@@ -66,13 +66,14 @@ def get_from_script(driver):
         if raw_data:
             json_data = json.loads(raw_data)
             for j in json_data["jobList"]:
-                data_hash[j["Title"] + "-" + j["OrgName"]] = {
+                hash_key = f"{j['Title']}-{j['OrgName']}".lower()
+                data_hash[hash_key] = {
                     "address": j["City"],
                     "job_source_url": j["QuickApplyHref"],
                     "estimated_salary": j["FormattedSalary"],
                 }
-    except Exception:
-        saveLogs(Exception)
+    except Exception as e:
+        saveLogs(e)
     return data_hash
 
 
@@ -100,10 +101,7 @@ def extract_salary(salary_str):
 
 
 def export_jobs(scraped_data):
-    columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date",
-                    "salary_format", "estimated_salary", "salary_min", "salary_max", "job_source", "job_type",
-                    "job_description_tags"]
-    df = pd.DataFrame(data=scraped_data, columns=columns_name)
+    df = pd.DataFrame(data=scraped_data, columns=COLUMN_NAME)
     filename = generate_scraper_filename(ScraperNaming.ZIP_RECRUITER)
     df.to_excel(filename, index=False)
     ScraperLogs.objects.create(
@@ -122,7 +120,7 @@ def parse_jobs(driver, groups, existed, dhash, job_type):
             By.CSS_SELECTOR, "a[data-testid='job-card-company']"
         )
         company = "" if company_elm is None else company_elm.text
-        key = f"{title}-{company}"
+        key = f"{title}-{company}".lower()
         if existed.get(key):
             continue
         description = description_tags = posted_date = "N/A"
@@ -169,12 +167,12 @@ def find_jobs(driver, link,  job_type):
     skip_email_popup(driver)
     data_hash = get_from_script(driver)
     if data_hash:
-        existed_titles = previous_company_wise_titles(set(data_hash.keys()))
+        existed_titles = previous_company_wise_titles(list(data_hash.keys()))
         job_groups = driver.find_elements(By.CSS_SELECTOR, 'article.group')
         scraped_jobs = parse_jobs(
             driver, job_groups, existed_titles, data_hash, job_type
         )
-        export_jobs(scraped_jobs)
+        if scraped_jobs: export_jobs(scraped_jobs)
         next_page_url = get_next_link(driver)
         if next_page_url:
             find_jobs(driver, next_page_url, job_type)
@@ -190,4 +188,5 @@ def ziprecruiter_scraping(link, job_type):
     except Exception as e:
         saveLogs(e)
     finally:
+        take_screenshot(driver, 'ziprecruiter')
         driver.quit()

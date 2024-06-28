@@ -9,6 +9,7 @@ from django.forms.models import model_to_dict
 from settings.base import env
 from selenium.webdriver.common.by import By
 
+from django.conf import settings
 
 def validate_request(request, permissions):
     try:
@@ -119,3 +120,8 @@ def is_cloudflare(driver, source=''):
         return flag
     except:
         return False
+    
+def take_screenshot(driver, filename='ss'):
+    screenshot_folder = os.path.join(settings.BASE_DIR, 'screenshots')
+    os.makedirs(screenshot_folder, exist_ok=True)
+    driver.save_screenshot(os.path.join(screenshot_folder, f"{filename}.png"))
