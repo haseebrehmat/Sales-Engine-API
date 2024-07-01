@@ -1,28 +1,10 @@
-from tqdm import tqdm
-import time
-from datetime import datetime
-
-import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-from scraper.constants.const import *
-from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, k_conversion, configure_webdriver, set_job_type
-from utils.helpers import saveLogs
-
-total_job = 0
-
-# calls url
-
-
-def request_url(driver, url):
-    driver.get(url)
-
+from scraper.utils.helpers import ScraperNaming, configure_webdriver, set_job_type, \
+     previous_jobs, sleeper, export_to_excel, previous_company_wise_titles
+from utils.helpers import saveLogs, log_scraper_running_time
+import html
 
 # append data for csv file
 def append_data(data, field):
@@ -32,7 +14,7 @@ def append_data(data, field):
 # loading jobs
 def loading(driver, count):
     try:
-        time.sleep(3)
+        sleeper()
         load = driver.find_element(
             By.CLASS_NAME, "jobsList__button-container--3FEJ-")
         btn = load.find_element(By.TAG_NAME, "button")
@@ -42,39 +24,48 @@ def loading(driver, count):
         if count == 30:
             return False, count
         return True, count
-    except Exception as e:
+    except:
         return False, count
 
 
-# click accept cookie modal
+# click accept cookie footer
 def accept_cookie(driver):
     try:
         driver.find_element(
-            By.CLASS_NAME, "styles__accept-button--1eW01").click()
+            By.CLASS_NAME, "styles__primary-button--tFH2O").click()
     except Exception as e:
-        print(e)
+        saveLogs(e)
 
 
-def find_job_link(job):
-    return job.find_element(By.TAG_NAME, "a").get_attribute("href")
+def find_job_data_hash(job):
+    dhash = {"link": "", "tc": ""} # tc stands for title and company
+    try:
+        anchor = job.find_element(By.TAG_NAME, "a")
+        title_n_company = anchor.get_attribute("aria-label")
+        dhash["link"] = anchor.get_attribute("href")
+        dhash["tc"] = str(html.unescape(title_n_company.replace(" at ", "-"))).lower()
+    except Exception as e:
+        saveLogs(e)
+    return dhash
+
 
 # find's job
-
-
 def find_jobs(driver, job_type):
     try:
         scrapped_data = []
-        count = 0
-        time.sleep(3)
-        jobs = driver.find_elements(
+        sleeper()
+        raw_jobs = driver.find_elements(
             By.CLASS_NAME, "jobsList__list-item--3HLIF")
-        job_urls = [find_job_link(job) for job in jobs]
-        print('total jobs', len(jobs))
-        for url in tqdm(job_urls):
+        jobs, tcs, urls = zip(*[(dhash := find_job_data_hash(job), dhash["tc"], dhash["link"])
+              for job in raw_jobs])
+        existed_tcs = previous_company_wise_titles(list(tcs))
+        existed_urls = previous_jobs(source='workable', urls=list(urls))
+        for job in list(jobs):
             try:
+                if existed_urls.get(job["link"]) or existed_tcs.get(job["tc"]): 
+                    continue
                 data = []
-                driver.get(url)
-
+                driver.get(job["link"])
                 WebDriverWait(driver, 30).until(
                     EC.presence_of_element_located(
                         (By.CLASS_NAME, "jobBreakdown__job-breakdown--31MGR"))
@@ -110,26 +101,16 @@ def find_jobs(driver, job_type):
                     else:
                         append_data(data, set_job_type(job_type))
                 except Exception as e:
-                    print(e)
+                    saveLogs(e)
                     append_data(data, set_job_type(job_type))
                 append_data(data, job_description.get_attribute('innerHTML'))
                 scrapped_data.append(data)
-                count += 1
             except Exception as e:
                 saveLogs(e)
-
-        columns_name = ["job_title", "company_name", "address", "job_description", 'job_source_url', "job_posted_date", "salary_format",
-                        "estimated_salary", "salary_min", "salary_max", "job_source", "job_type", "job_description_tags"]
-        df = pd.DataFrame(data=scrapped_data, columns=columns_name)
-        filename = generate_scraper_filename(ScraperNaming.WORKABLE)
-        df.to_excel(filename, index=False)
-
-        ScraperLogs.objects.create(
-            total_jobs=len(df), job_source="Workable", filename=filename)
-        return True
+        if scrapped_data:
+            export_to_excel(scrapped_data, ScraperNaming.WORKABLE, 'Workable')
     except Exception as e:
         saveLogs(e)
-        return False
 
 def determine_job_sub_type(type):
     sub_type = 'onsite'
@@ -140,30 +121,23 @@ def determine_job_sub_type(type):
     return sub_type
     
 
-# code starts from here
+@log_scraper_running_time("Workable")
 def workable(link, job_type):
-    print("Workable")
     driver = configure_webdriver(block_media=True, block_elements=['img'])
     try:
         driver.maximize_window()
         try:
             flag = True
-            request_url(driver, link)
+            driver.get(link)
             driver.maximize_window()
             accept_cookie(driver)
             count = 0
             while flag:
                 flag, count = loading(driver, count)
-            if find_jobs(driver, job_type):
-                print(SCRAPING_ENDED)
-            else:
-                print(ERROR_TEXT)
+            find_jobs(driver, job_type)
         except Exception as e:
             saveLogs(e)
-            print(LINK_ISSUE)
     except Exception as e:
         saveLogs(e)
     driver.quit()
-
-
-# workable('https://jobs.workable.com/search?query=developer&location=United%20States&remote=true', 'remote')
+    
