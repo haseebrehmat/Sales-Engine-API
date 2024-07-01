@@ -1,5 +1,4 @@
 from datetime import timedelta, datetime
-from logging import exception
 import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.constants.const import *
 from scraper.models.scraper_logs import ScraperLogs
-from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, k_conversion, configure_webdriver, set_job_type, previous_jobs, sleeper
+from scraper.utils.helpers import generate_scraper_filename, ScraperNaming, remove_emojis, configure_webdriver, previous_jobs, sleeper
 from utils.helpers import saveLogs, log_scraper_running_time
 
 
@@ -105,7 +104,6 @@ def find_jobs(driver, job_type):
                     job_desc = WebDriverWait(driver, 40).until(
                         EC.presence_of_element_located(
                         (By.CLASS_NAME, "expandContents")))
-
                     temp = job.find_element(
                         By.CLASS_NAME, "company_and_position").text
                     temp = temp.splitlines()
@@ -114,11 +112,11 @@ def find_jobs(driver, job_type):
                     company_name = remove_emojis(temp[1])
                     append_data(data, company_name)
                     address = remove_emojis(temp[2])
-                    append_data(data, address)
-                    job_source_url = link
-                    append_data(data, job_source_url)
+                    address = address.split('$')
+                    append_data(data, address[0])
                     job_description = job_desc.text
                     append_data(data, job_description)
+                    append_data(data, link)
                     temp1 = job.find_element(By.CLASS_NAME, "time").text
                     job_posted_date = temp1
                     append_data(data, job_posted_date)
@@ -129,23 +127,23 @@ def find_jobs(driver, job_type):
                         salary_min = remove_emojis(temp2[-3])
                     else:
                         salary_min = "N/A"
-                    append_data(data, salary_min)
                     if len(temp2[-1]) >= 4 and temp2[-1][0] == "$":
                         salary_max = remove_emojis(temp2[-1])
                     else:
                         salary_max = "N/A"
-                    append_data(data, salary_max)
                     if salary_max == "N/A" or salary_min == "N/A":
                         estimated_salary = "N/A"
                     else:
                         estimated_salary = f"{salary_min}-{salary_max}"
                     append_data(data, estimated_salary)
+                    append_data(data, salary_min)
+                    append_data(data, salary_max)
                     job_source = ScraperNaming.REMOTE_OK
                     append_data(data, job_source)
                     append_data(data, job_type)
                     job_description_tags = job_desc.get_attribute("innerHTML")
                     append_data(data, str(job_description_tags))
-            except exception as e:
+            except Exception as e:
                     saveLogs(e)
                 
             driver.close()
