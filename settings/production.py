@@ -1,4 +1,5 @@
 from settings.base import *
+import rollbar
 DEBUG = True
 print("Production DB")
 DATABASES = {
@@ -21,3 +22,5 @@ ROLLBAR = {
     'class': 'rollbar.logger.RollbarHandler',
 
 }
+
+rollbar.init(**ROLLBAR)
