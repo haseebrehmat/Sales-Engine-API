@@ -49,7 +49,7 @@ To install Octagon on your local machine, follow these steps:
 
     git clone https://github.com/Devsinc-Org/Octagon-BE
 
-    - Change branch to development as development is the latest branch
+- Change the branch to development as development is the latest branch
 
 #### 2. Familiarize yourself with the following files and directories:
 
