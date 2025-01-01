@@ -1,25 +1,6 @@
-<p align="center">
-    <img width="300" src="https://user-images.githubusercontent.com/85288256/220799197-734504e0-81b7-4b0c-bd49-2225161e0045.png" alt="https://octagonapp.io/">
-    </p>
-
 <h1 align="center">
-Octagon - We do the hard work so you don't have to.
+Sales Engine - We do the hard work so you don't have to.
   </h1>
-
-## Tracking Project Status - Octagon (BackEnd)
-
-We use the [SCRUM](https://www.scrum.org/resources/what-is-scrum) framework for project management.
-All active and closed issues can be viewed on the [Jira](https://www.atlassian.com/software/jira). Some useful links for reference:
-
-| Resource                       | Link                                                                                                              |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| Jira - Project Board           | [Octagon - Jira Software Project](https://devsinc.atlassian.net/jira/software/projects/OC/boards/22)              |
-| Compass - A developer Exp      | [Octagon - Compass](https://devsinc.atlassian.net/compass/component/b4c343cc-e008-4417-963d-a071155335cb)         |
-| Confluence Documentation       | [Octagon - Confluence](https://devsinc.atlassian.net/wiki/spaces/OC/overview)                                     |
-| Postman-API docs & Automation  | [Octagon - PostmanTeam](https://octagonapp.postman.co/)                                                           |
-| Test Plan - Automation         | [Octagon - SQA Strategy](https://devsinc.atlassian.net/wiki/spaces/OC/pages/699367438/Octagon+-+Testing+Strategy) |
-| Development - Coding Standards | [Octagon - Coding Standards](https://devsinc.atlassian.net/wiki/spaces/OC/pages/687276056/Standards)              |
-
 
 ## Technology Stack
  -  Python Django ( Backend )
@@ -35,7 +16,7 @@ All active and closed issues can be viewed on the [Jira](https://www.atlassian.c
 
 Be sure, you have installed following dependenices installed on your development machine:
 
-- python >= 3.7
+- python >= 3.8
 - git
 - pip
 - postgresql
@@ -43,11 +24,11 @@ Be sure, you have installed following dependenices installed on your development
 
 ### Installation:
 
-To install Octagon on your local machine, follow these steps:
+To install Sales Engine on your local machine, follow these steps:
 
-#### 1. Clone the Octagon BE repository:
+#### 1. Clone the Sales Engine BE repository:
 
-    git clone https://github.com/Devsinc-Org/Octagon-BE
+    git clone https://github.com/haseebrehmat/Sales-Engine-API.git
 
 - Change the branch to development as development is the latest branch
 
@@ -66,7 +47,7 @@ To install Octagon on your local machine, follow these steps:
 
 ### Usage
 
-To use Octagon, follow these steps:
+To use Sales Engine, follow these steps:
 
 #### 1. Create and activate virtual environment
 
